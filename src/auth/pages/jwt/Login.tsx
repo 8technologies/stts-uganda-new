@@ -189,14 +189,14 @@ const Login = () => {
           )}
         </div>
 
-        <label className="checkbox-group">
-          <input
-            className="checkbox checkbox-sm"
-            type="checkbox"
-            {...formik.getFieldProps('remember')}
-          />
-          <span className="checkbox-label">Remember me</span>
-        </label>
+         <label className="checkbox-group ">
+            <input
+              className="checkbox checkbox-sm"
+              type="checkbox"
+              {...formik.getFieldProps('remember')}
+            />
+            <span className="checkbox-label">Remember me</span>
+          </label>
 
         <button
           type="submit"
@@ -205,6 +205,18 @@ const Login = () => {
         >
           {loading ? 'Please wait...' : 'Login'}
         </button>
+
+        <Link
+          to={
+            currentLayout?.name === 'auth-branded'
+              ? '/auth/signup'
+              : '/auth/classic/signup'
+          }
+          className="text-3sm link shrink-0 ml-auto"
+        >
+          Register
+        </Link>
+        
       </form>
     </div>
   );

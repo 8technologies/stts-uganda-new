@@ -10,13 +10,33 @@ import { Alert, KeenIcon } from '@/components';
 import { useLayout } from '@/providers';
 
 const initialValues = {
+  username:'',
+  first_name:'',
+  other_names:'',
   email: '',
+  district:'',
   password: '',
   changepassword: '',
   acceptTerms: false
 };
 
 const signupSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('Username is required'),
+  first_name: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('First name is required'),
+  other_names: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('Other name is required'),
+  district: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('District is required'),
   email: Yup.string()
     .email('Wrong email format')
     .min(3, 'Minimum 3 symbols')
@@ -94,28 +114,6 @@ const Signup = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2.5">
-          <a href="#" className="btn btn-light btn-sm justify-center">
-            <img
-              src={toAbsoluteUrl('/media/brand-logos/google.svg')}
-              className="size-3.5 shrink-0"
-            />
-            Use Google
-          </a>
-
-          <a href="#" className="btn btn-light btn-sm justify-center">
-            <img
-              src={toAbsoluteUrl('/media/brand-logos/apple-black.svg')}
-              className="size-3.5 shrink-0 dark:hidden"
-            />
-            <img
-              src={toAbsoluteUrl('/media/brand-logos/apple-white.svg')}
-              className="size-3.5 shrink-0 light:hidden"
-            />
-            Use Apple
-          </a>
-        </div>
-
         <div className="flex items-center gap-2">
           <span className="border-t border-gray-200 w-full"></span>
           <span className="text-2xs text-gray-500 font-medium uppercase">Or</span>
@@ -123,6 +121,77 @@ const Signup = () => {
         </div>
 
         {formik.status && <Alert variant="danger">{formik.status}</Alert>}
+
+        <div className="flex flex-col gap-1">
+          <label className="form-label text-gray-900">Username</label>
+          <label className="input">
+            <input
+              placeholder="NASECO SEEDS"
+              type="text"
+              autoComplete="off"
+              {...formik.getFieldProps('username')}
+              className={clsx(
+                'form-control bg-transparent',
+                { 'is-invalid': formik.touched.username && formik.errors.username },
+                {
+                  'is-valid': formik.touched.username && !formik.errors.username
+                }
+              )}
+            />
+          </label>
+          {formik.touched.username && formik.errors.username && (
+            <span role="alert" className="text-danger text-xs mt-1">
+              {formik.errors.username}
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="form-label text-gray-900">First Name</label>
+          <label className="input">
+            <input
+              placeholder="Nakiganda"
+              type="text"
+              autoComplete="off"
+              {...formik.getFieldProps('first_name')}
+              className={clsx(
+                'form-control bg-transparent',
+                { 'is-invalid': formik.touched.first_name && formik.errors.first_name },
+                {
+                  'is-valid': formik.touched.first_name && !formik.errors.first_name
+                }
+              )}
+            />
+          </label>
+          {formik.touched.first_name && formik.errors.first_name && (
+            <span role="alert" className="text-danger text-xs mt-1">
+              {formik.errors.first_name}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="form-label text-gray-900">Other names</label>
+          <label className="input">
+            <input
+              placeholder="Mary"
+              type="text"
+              autoComplete="off"
+              {...formik.getFieldProps('other_names')}
+              className={clsx(
+                'form-control bg-transparent',
+                { 'is-invalid': formik.touched.other_names && formik.errors.other_names },
+                {
+                  'is-valid': formik.touched.other_names && !formik.errors.other_names
+                }
+              )}
+            />
+          </label>
+          {formik.touched.other_names && formik.errors.other_names && (
+            <span role="alert" className="text-danger text-xs mt-1">
+              {formik.errors.other_names}
+            </span>
+          )}
+        </div>
 
         <div className="flex flex-col gap-1">
           <label className="form-label text-gray-900">Email</label>
@@ -144,6 +213,29 @@ const Signup = () => {
           {formik.touched.email && formik.errors.email && (
             <span role="alert" className="text-danger text-xs mt-1">
               {formik.errors.email}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="form-label text-gray-900">District</label>
+          <label className="input">
+            <input
+              placeholder="Kampala"
+              type="text"
+              autoComplete="off"
+              {...formik.getFieldProps('district')}
+              className={clsx(
+                'form-control bg-transparent',
+                { 'is-invalid': formik.touched.district && formik.errors.district },
+                {
+                  'is-valid': formik.touched.district && !formik.errors.district
+                }
+              )}
+            />
+          </label>
+          {formik.touched.district && formik.errors.district && (
+            <span role="alert" className="text-danger text-xs mt-1">
+              {formik.errors.district}
             </span>
           )}
         </div>
