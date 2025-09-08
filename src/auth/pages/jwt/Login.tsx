@@ -8,6 +8,8 @@ import { toAbsoluteUrl } from '@/utils';
 import { useAuthContext } from '@/auth';
 import { useLayout } from '@/providers';
 import { Alert } from '@/components';
+import { useQuery } from '@apollo/client/react';
+import { LOAD_USERS } from '@/gql/queries';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -36,6 +38,9 @@ const Login = () => {
   const from = location.state?.from?.pathname || '/';
   const [showPassword, setShowPassword] = useState(false);
   const { currentLayout } = useLayout();
+  const { loading: loadingUsers, error, data } = useQuery(LOAD_USERS);
+
+  console.log('users', data);
 
   const formik = useFormik({
     initialValues,

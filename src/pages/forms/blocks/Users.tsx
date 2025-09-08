@@ -21,6 +21,15 @@ import {
 import { UsersData, IUsersData } from './UsersData';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -186,6 +195,35 @@ const Users = () => {
               <button className="btn btn-sm btn-icon btn-clear btn-light">
                 <KeenIcon icon="dots-vertical" />
               </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="light" size="sm">
+                    <KeenIcon icon="setting-4" />
+                    {!hideTitle && 'Columns'}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[150px]">
+                  <DropdownMenuLabel className="font-medium">Toggle Columns</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {table
+                    .getAllColumns()
+                    .filter(
+                      (column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()
+                    )
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                        >
+                          {column.columnDef.meta?.headerTitle || column.id}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           );
         },
