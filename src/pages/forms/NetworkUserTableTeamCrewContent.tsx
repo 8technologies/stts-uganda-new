@@ -1,0 +1,12 @@
+import { Users } from './blocks/Users';
+import { MiscFaq, MiscHelp2 } from '@/partials/misc';
+
+const NetworkUserTableTeamCrewContent = () => {
+  return (
+    <div className="grid gap-5 lg:gap-7.5">
+      <Users />
+    </div>
+  );
+};
+
+export { NetworkUserTableTeamCrewContent };
