@@ -77,8 +77,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         email,
         password
       });
+      console.log(auth)
       saveAuth(auth);
       const { data: user } = await getUser();
+      console.log(user)
       setCurrentUser(user);
     } catch (error) {
       saveAuth(undefined);

@@ -1,4 +1,4 @@
-import { type MouseEvent, useState } from 'react';
+import { type MouseEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import * as Yup from 'yup';
@@ -8,15 +8,15 @@ import { toAbsoluteUrl } from '@/utils';
 import { useAuthContext } from '@/auth';
 import { useLayout } from '@/providers';
 import { Alert } from '@/components';
-import { useQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
 import { LOAD_USERS } from '@/gql/queries';
+import { LOGIN } from '@/gql/mutations';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .email('Wrong email format')
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
+    .required('Username is required'),
   password: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
@@ -32,15 +32,14 @@ const initialValues = {
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const { login } = useAuthContext();
+  const { login, setCurrentUser, saveAuth } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
   const [showPassword, setShowPassword] = useState(false);
   const { currentLayout } = useLayout();
-  const { loading: loadingUsers, error, data } = useQuery(LOAD_USERS);
+const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
 
-  console.log('users', data);
 
   const formik = useFormik({
     initialValues,
@@ -53,7 +52,17 @@ const Login = () => {
           throw new Error('JWTProvider is required for this form.');
         }
 
-        await login(values.email, values.password);
+        // await login(values.email, values.password);
+       const res = await loginUser({
+          variables: {
+            "username": values.email,
+            "password": values.password
+          }
+        })
+
+
+        saveAuth(res.data.login.token);
+        setCurrentUser(res.data.login.user);
 
         if (values.remember) {
           localStorage.setItem('email', values.email);
@@ -61,9 +70,19 @@ const Login = () => {
           localStorage.removeItem('email');
         }
 
-        navigate(from, { replace: true });
+        // if (data) {
+        //   // Save token if needed
+        //   console.log(data);
+        //   // navigate(from , { replace: true });
+          
+          navigate(from || '', { replace: true });
+        // } else {
+        //   throw new Error('Invalid login response4');
+        // }
+
       } catch {
-        setStatus('The login details are incorrect');
+        // setStatus(error?.message);
+        setStatus(error?.message || 'Login failed');
         setSubmitting(false);
       }
       setLoading(false);
@@ -79,7 +98,8 @@ const Login = () => {
     <div className="card max-w-[420px] w-full">
       <form
         className="card-body flex flex-col gap-5 p-10"
-        onSubmit={formik.handleSubmit}
+        onSubmit={(e) => { e.preventDefault(); formik.handleSubmit(e); }}
+        // onSubmit={formik.handleSubmit}
         noValidate
       >
         <div className="text-center mb-2.5 flex flex-col items-center gap-2">
@@ -129,7 +149,7 @@ const Login = () => {
           <span className="font-semibold text-gray-900">demo1234</span> password.
         </Alert> */}
 
-        {formik.status && <Alert variant="danger">{formik.status}</Alert>}
+        {error?.message && <Alert variant="danger">{error?.message}</Alert>}
 
         <div className="flex flex-col gap-1">
           <label className="form-label text-gray-900">Username or Email</label>
@@ -201,9 +221,9 @@ const Login = () => {
         <button
           type="submit"
           className="btn btn-primary flex justify-center grow"
-          disabled={loading || formik.isSubmitting}
+          disabled={logingIn || loading || formik.isSubmitting}
         >
-          {loading ? 'Please wait...' : 'Login'}
+          {logingIn || loading ? 'Please wait...' : 'Login'}
         </button>
 
         <Link
