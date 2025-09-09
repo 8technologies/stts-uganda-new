@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   createContext,
   type Dispatch,
@@ -11,6 +11,8 @@ import {
 
 import * as authHelper from '../_helpers';
 import { type AuthModel, type UserModel } from '@/auth';
+import { useLazyQuery } from '@apollo/client/react';
+import { ME } from '@/gql/queries';
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 export const LOGIN_URL = `${API_URL}/login`;
@@ -38,7 +40,7 @@ interface AuthContextProps {
     password: string,
     password_confirmation: string
   ) => Promise<void>;
-  getUser: () => Promise<AxiosResponse<any>>;
+  getUser: () => Promise<UserModel>;
   logout: () => void;
   verify: () => Promise<void>;
 }
@@ -50,15 +52,22 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const [auth, setAuth] = useState<AuthModel | undefined>(authHelper.getAuth());
   const [currentUser, setCurrentUser] = useState<UserModel | undefined>();
 
+  const [loadMe] = useLazyQuery(ME, {
+    fetchPolicy: 'network-only'
+  });
+
   const verify = async () => {
-    if (auth) {
-      try {
-        const { data: user } = await getUser();
-        setCurrentUser(user);
-      } catch {
-        saveAuth(undefined);
-        setCurrentUser(undefined);
-      }
+    if (!auth) return;
+    try {
+      const { data } = await loadMe();
+      const u = data?.me;
+      if (!u) throw new Error('No user');
+
+      setCurrentUser(u);
+    } catch (e) {
+      // If token is invalid, clear auth so the app redirects
+      saveAuth(undefined);
+      setCurrentUser(undefined);
     }
   };
 
@@ -78,7 +87,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         password
       });
       saveAuth(auth);
-      const { data: user } = await getUser();
+      const user = await getUser();
       setCurrentUser(user);
     } catch (error) {
       saveAuth(undefined);
@@ -94,7 +103,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
         password_confirmation
       });
       saveAuth(auth);
-      const { data: user } = await getUser();
+      const user = await getUser();
       setCurrentUser(user);
     } catch (error) {
       saveAuth(undefined);
@@ -122,8 +131,10 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     });
   };
 
-  const getUser = async () => {
-    return await axios.get<UserModel>(GET_USER_URL);
+  const getUser = async (): Promise<UserModel> => {
+    const { data } = await loadMe();
+    const u = data?.me;
+    return u;
   };
 
   const logout = () => {

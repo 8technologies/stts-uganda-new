@@ -1,20 +1,21 @@
 import clsx from 'clsx';
 import { useFormik } from 'formik';
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import { useAuthContext } from '../../useAuthContext';
-import { toAbsoluteUrl } from '@/utils';
 import { Alert, KeenIcon } from '@/components';
 import { useLayout } from '@/providers';
+import { useMutation } from '@apollo/client/react';
+import { SIGNUP } from '@/gql/mutations';
 
 const initialValues = {
-  username:'',
-  first_name:'',
-  other_names:'',
+  username: '',
+  first_name: '',
+  other_names: '',
   email: '',
-  district:'',
+  district: '',
   password: '',
   changepassword: '',
   acceptTerms: false
@@ -58,11 +59,11 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const { register } = useAuthContext();
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { currentLayout } = useLayout();
+
+  const [RegisterUser, { loading: createUser, error, data }] = useMutation(SIGNUP);
 
   const formik = useFormik({
     initialValues,
@@ -73,8 +74,24 @@ const Signup = () => {
         if (!register) {
           throw new Error('JWTProvider is required for this form.');
         }
-        await register(values.email, values.password, values.changepassword);
-        navigate(from, { replace: true });
+        // await register(values.email, values.password, values.changepassword);
+        const res = await RegisterUser({
+          variables: {
+            payload: {
+              username: values.username,
+              first_name: values.first_name,
+              other_names: values.other_names,
+              email: values.email,
+              district: values.email,
+              password: values.password
+            }
+          }
+        });
+        // Redirect to login with success state so alert is shown there
+        const loginPath =
+          currentLayout?.name === 'auth-branded' ? '/auth/login' : '/auth/classic/login';
+        setLoading(false);
+        navigate(loginPath, { replace: true, state: { signupSuccess: true } });
       } catch (error) {
         console.error(error);
         setStatus('The sign up details are incorrect');
@@ -95,32 +112,27 @@ const Signup = () => {
   };
 
   return (
-    <div className="card max-w-[370px] w-full">
+    <div className="card max-w-[420px] lg:max-w-[520px] w-full">
       <form
-        className="card-body flex flex-col gap-5 p-10"
+        className="card-body flex flex-col gap-5 lg:gap-4 p-10"
         noValidate
         onSubmit={formik.handleSubmit}
       >
-        <div className="text-center mb-2.5">
-          <h3 className="text-lg font-semibold text-gray-900 leading-none mb-2.5">Sign up</h3>
+        <div className="text-center mb-2.5 flex flex-col items-center gap-2">
+          <img src={`https://seedtracker.net/assets/images/maaif.png`} className="h-20 w-20" />
+          <h3 className="text-lg font-semibold text-gray-900 leading-none mb-1">Create Account</h3>
           <div className="flex items-center justify-center font-medium">
-            <span className="text-2sm text-gray-600 me-1.5">Already have an Account ?</span>
+            <span className="text-2sm text-gray-600 me-1.5">Already have an account?</span>
             <Link
               to={currentLayout?.name === 'auth-branded' ? '/auth/login' : '/auth/classic/login'}
               className="text-2sm link"
             >
-              Sign In
+              Sign in
             </Link>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="border-t border-gray-200 w-full"></span>
-          <span className="text-2xs text-gray-500 font-medium uppercase">Or</span>
-          <span className="border-t border-gray-200 w-full"></span>
-        </div>
-
-        {formik.status && <Alert variant="danger">{formik.status}</Alert>}
+        {error?.message && <Alert variant="danger">{error.message}</Alert>}
 
         <div className="flex flex-col gap-1">
           <label className="form-label text-gray-900">Username</label>
@@ -131,7 +143,7 @@ const Signup = () => {
               autoComplete="off"
               {...formik.getFieldProps('username')}
               className={clsx(
-                'form-control bg-transparent',
+                'form-control',
                 { 'is-invalid': formik.touched.username && formik.errors.username },
                 {
                   'is-valid': formik.touched.username && !formik.errors.username
@@ -146,167 +158,173 @@ const Signup = () => {
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">First Name</label>
-          <label className="input">
-            <input
-              placeholder="Nakiganda"
-              type="text"
-              autoComplete="off"
-              {...formik.getFieldProps('first_name')}
-              className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.first_name && formik.errors.first_name },
-                {
-                  'is-valid': formik.touched.first_name && !formik.errors.first_name
-                }
-              )}
-            />
-          </label>
-          {formik.touched.first_name && formik.errors.first_name && (
-            <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.first_name}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Other names</label>
-          <label className="input">
-            <input
-              placeholder="Mary"
-              type="text"
-              autoComplete="off"
-              {...formik.getFieldProps('other_names')}
-              className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.other_names && formik.errors.other_names },
-                {
-                  'is-valid': formik.touched.other_names && !formik.errors.other_names
-                }
-              )}
-            />
-          </label>
-          {formik.touched.other_names && formik.errors.other_names && (
-            <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.other_names}
-            </span>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">First Name</label>
+            <label className="input">
+              <input
+                placeholder="Nakiganda"
+                type="text"
+                autoComplete="off"
+                {...formik.getFieldProps('first_name')}
+                className={clsx(
+                  'form-control',
+                  { 'is-invalid': formik.touched.first_name && formik.errors.first_name },
+                  {
+                    'is-valid': formik.touched.first_name && !formik.errors.first_name
+                  }
+                )}
+              />
+            </label>
+            {formik.touched.first_name && formik.errors.first_name && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.first_name}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">Other names</label>
+            <label className="input">
+              <input
+                placeholder="Mary"
+                type="text"
+                autoComplete="off"
+                {...formik.getFieldProps('other_names')}
+                className={clsx(
+                  'form-control',
+                  { 'is-invalid': formik.touched.other_names && formik.errors.other_names },
+                  {
+                    'is-valid': formik.touched.other_names && !formik.errors.other_names
+                  }
+                )}
+              />
+            </label>
+            {formik.touched.other_names && formik.errors.other_names && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.other_names}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Email</label>
-          <label className="input">
-            <input
-              placeholder="email@email.com"
-              type="email"
-              autoComplete="off"
-              {...formik.getFieldProps('email')}
-              className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.email && formik.errors.email },
-                {
-                  'is-valid': formik.touched.email && !formik.errors.email
-                }
-              )}
-            />
-          </label>
-          {formik.touched.email && formik.errors.email && (
-            <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.email}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">District</label>
-          <label className="input">
-            <input
-              placeholder="Kampala"
-              type="text"
-              autoComplete="off"
-              {...formik.getFieldProps('district')}
-              className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.district && formik.errors.district },
-                {
-                  'is-valid': formik.touched.district && !formik.errors.district
-                }
-              )}
-            />
-          </label>
-          {formik.touched.district && formik.errors.district && (
-            <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.district}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Password</label>
-          <label className="input">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter Password"
-              autoComplete="off"
-              {...formik.getFieldProps('password')}
-              className={clsx(
-                'form-control bg-transparent',
-                {
-                  'is-invalid': formik.touched.password && formik.errors.password
-                },
-                {
-                  'is-valid': formik.touched.password && !formik.errors.password
-                }
-              )}
-            />
-            <button className="btn btn-icon" onClick={togglePassword}>
-              <KeenIcon icon="eye" className={clsx('text-gray-500', { hidden: showPassword })} />
-              <KeenIcon
-                icon="eye-slash"
-                className={clsx('text-gray-500', { hidden: !showPassword })}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">Email</label>
+            <label className="input">
+              <input
+                placeholder="email@email.com"
+                type="email"
+                autoComplete="off"
+                {...formik.getFieldProps('email')}
+                className={clsx(
+                  'form-control',
+                  { 'is-invalid': formik.touched.email && formik.errors.email },
+                  {
+                    'is-valid': formik.touched.email && !formik.errors.email
+                  }
+                )}
               />
-            </button>
-          </label>
-          {formik.touched.password && formik.errors.password && (
-            <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.password}
-            </span>
-          )}
+            </label>
+            {formik.touched.email && formik.errors.email && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.email}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">District</label>
+            <label className="input">
+              <input
+                placeholder="Kampala"
+                type="text"
+                autoComplete="off"
+                {...formik.getFieldProps('district')}
+                className={clsx(
+                  'form-control',
+                  { 'is-invalid': formik.touched.district && formik.errors.district },
+                  {
+                    'is-valid': formik.touched.district && !formik.errors.district
+                  }
+                )}
+              />
+            </label>
+            {formik.touched.district && formik.errors.district && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.district}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Confirm Password</label>
-          <label className="input">
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Re-enter Password"
-              autoComplete="off"
-              {...formik.getFieldProps('changepassword')}
-              className={clsx(
-                'form-control bg-transparent',
-                {
-                  'is-invalid': formik.touched.changepassword && formik.errors.changepassword
-                },
-                {
-                  'is-valid': formik.touched.changepassword && !formik.errors.changepassword
-                }
-              )}
-            />
-            <button className="btn btn-icon" onClick={toggleConfirmPassword}>
-              <KeenIcon
-                icon="eye"
-                className={clsx('text-gray-500', { hidden: showConfirmPassword })}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">Password</label>
+            <label className="input">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter Password"
+                autoComplete="off"
+                {...formik.getFieldProps('password')}
+                className={clsx(
+                  'form-control',
+                  {
+                    'is-invalid': formik.touched.password && formik.errors.password
+                  },
+                  {
+                    'is-valid': formik.touched.password && !formik.errors.password
+                  }
+                )}
               />
-              <KeenIcon
-                icon="eye-slash"
-                className={clsx('text-gray-500', { hidden: !showConfirmPassword })}
+              <button className="btn btn-icon" onClick={togglePassword}>
+                <KeenIcon icon="eye" className={clsx('text-gray-500', { hidden: showPassword })} />
+                <KeenIcon
+                  icon="eye-slash"
+                  className={clsx('text-gray-500', { hidden: !showPassword })}
+                />
+              </button>
+            </label>
+            {formik.touched.password && formik.errors.password && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.password}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">Confirm Password</label>
+            <label className="input">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Re-enter Password"
+                autoComplete="off"
+                {...formik.getFieldProps('changepassword')}
+                className={clsx(
+                  'form-control',
+                  {
+                    'is-invalid': formik.touched.changepassword && formik.errors.changepassword
+                  },
+                  {
+                    'is-valid': formik.touched.changepassword && !formik.errors.changepassword
+                  }
+                )}
               />
-            </button>
-          </label>
-          {formik.touched.changepassword && formik.errors.changepassword && (
-            <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.changepassword}
-            </span>
-          )}
+              <button className="btn btn-icon" onClick={toggleConfirmPassword}>
+                <KeenIcon
+                  icon="eye"
+                  className={clsx('text-gray-500', { hidden: showConfirmPassword })}
+                />
+                <KeenIcon
+                  icon="eye-slash"
+                  className={clsx('text-gray-500', { hidden: !showConfirmPassword })}
+                />
+              </button>
+            </label>
+            {formik.touched.changepassword && formik.errors.changepassword && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.changepassword}
+              </span>
+            )}
+          </div>
         </div>
 
         <label className="checkbox-group">
@@ -332,9 +350,9 @@ const Signup = () => {
         <button
           type="submit"
           className="btn btn-primary flex justify-center grow"
-          disabled={loading || formik.isSubmitting}
+          disabled={createUser || formik.isSubmitting}
         >
-          {loading ? 'Please wait...' : 'Sign UP'}
+          {createUser ? 'Please wait...' : 'Sign UP'}
         </button>
       </form>
     </div>
