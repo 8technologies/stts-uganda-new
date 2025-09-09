@@ -24,12 +24,14 @@ import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { UserEditDialog } from './UserEditDialog';
+import { UserDetailsDialog } from './UserDetailsDialog';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -50,7 +52,7 @@ const Users = () => {
   const columns = useMemo<ColumnDef<IUsersData>[]>(
     () => [
       {
-        accessorKey: 'id',
+        id: 'select',
         header: () => <DataGridRowSelectAll />,
         cell: ({ row }) => <DataGridRowSelect row={row} />,
         enableSorting: false,
@@ -174,7 +176,7 @@ const Users = () => {
       },
       {
         accessorFn: (row) => row.activity,
-        id: 'activity',
+        id: 'created_by',
         header: ({ column }) => <DataGridColumnHeader title="Created By" column={column} />,
         enableSorting: true,
         cell: (info) => {
@@ -189,39 +191,27 @@ const Users = () => {
         id: 'edit',
         header: () => '',
         enableSorting: false,
-        cell: () => {
+        cell: (info) => {
           return (
             <>
-              <button className="btn btn-sm btn-icon btn-clear btn-light">
-                <KeenIcon icon="dots-vertical" />
-              </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="light" size="sm">
-                    <KeenIcon icon="setting-4" />
-                    {!hideTitle && 'Columns'}
-                  </Button>
+                  <button className="btn btn-sm btn-icon btn-clear btn-light">
+                    <KeenIcon icon="dots-vertical" />
+                  </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[150px]">
-                  <DropdownMenuLabel className="font-medium">Toggle Columns</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-[190px]">
+                  <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {table
-                    .getAllColumns()
-                    .filter(
-                      (column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()
-                    )
-                    .map((column) => {
-                      return (
-                        <DropdownMenuCheckboxItem
-                          key={column.id}
-                          className="capitalize"
-                          checked={column.getIsVisible()}
-                          onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                        >
-                          {column.columnDef.meta?.headerTitle || column.id}
-                        </DropdownMenuCheckboxItem>
-                      );
-                    })}
+                  <DropdownMenuItem onClick={() => { setSelected(info.row.original); setEditOpen(true); }}>
+                    <KeenIcon icon="note" /> Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { setSelected(info.row.original); setDetailsOpen(true); }}>
+                    <KeenIcon icon="eye" /> Details
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => console.log('Print Certificate', info.row.original)}>
+                    <KeenIcon icon="printer" /> Print Certificate
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
@@ -236,6 +226,9 @@ const Users = () => {
   );
 
   const data: IUsersData[] = useMemo(() => UsersData, []);
+  const [editOpen, setEditOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selected, setSelected] = useState<IUsersData | null>(null);
 
   const handleRowSelection = (state: RowSelectionState) => {
     const selectedRowIds = Object.keys(state);
@@ -305,19 +298,29 @@ const Users = () => {
   };
 
   return (
-    <DataGrid
-      columns={columns}
-      data={data}
-      rowSelection={true}
-      onRowSelectionChange={handleRowSelection}
-      pagination={{ size: 5 }}
-      sorting={[{ id: 'users', desc: false }]}
-      toolbar={<Toolbar />}
-      layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
-      messages={{
-        loading: true
-      }}
-    />
+    <>
+      <DataGrid
+        columns={columns}
+        data={data}
+        rowSelection={true}
+        onRowSelectionChange={handleRowSelection}
+        pagination={{ size: 5 }}
+        sorting={[{ id: 'users', desc: false }]}
+        toolbar={<Toolbar />}
+        layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
+        messages={{
+          loading: true
+        }}
+      />
+
+      <UserEditDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        data={selected || undefined}
+        onSave={(vals) => console.log('Save edit', { row: selected, vals })}
+      />
+      <UserDetailsDialog open={detailsOpen} onOpenChange={setDetailsOpen} data={selected || undefined} />
+    </>
   );
 };
 
