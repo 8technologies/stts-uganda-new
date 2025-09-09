@@ -39,4 +39,13 @@ const SIGNUP = gql`
   }
 `;
 
-export { LOGIN, SIGNUP };
+const ADDROLE = gql `
+  mutation SaveRole($payload: RoleInput!) {
+  saveRole(payload: $payload) {
+    success
+    message
+  }
+}
+`;
+
+export { LOGIN, SIGNUP, ADDROLE };

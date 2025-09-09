@@ -15,7 +15,6 @@ query Users {
     updated_at
   }
 }
-
 `
 
 const ME = gql`
@@ -34,7 +33,19 @@ const ME = gql`
   }
 `;
 
+const ROLES = gql`
+  query Roles {
+    all_roles {
+      id
+      name
+      description
+      permissions
+    }
+  }
+`;
+
 export {
   LOAD_USERS,
-  ME
+  ME,
+  ROLES
 }

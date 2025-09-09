@@ -44,7 +44,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
     title: 'System Configuration',
     icon: 'setting-2',
     children: [
-      { title: 'Users & Roles', path: '/admin/users' },
+      { title: 'Users', path: '/admin/users' },
+      { title: 'Roles', path: '/admin/roles' },
       { title: 'Settings', path: '/admin/settings' }
     ]
   },
