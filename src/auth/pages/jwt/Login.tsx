@@ -9,7 +9,6 @@ import { useAuthContext } from '@/auth';
 import { useLayout } from '@/providers';
 import { Alert } from '@/components';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
-import { LOAD_USERS } from '@/gql/queries';
 import { LOGIN } from '@/gql/mutations';
 
 const loginSchema = Yup.object().shape({
@@ -25,8 +24,8 @@ const loginSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  email: 'demo@keenthemes.com',
-  password: 'demo1234',
+  email: '',
+  password: '',
   remember: false
 };
 
@@ -36,10 +35,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
+  const signupSuccess = location.state?.signupSuccess as boolean | undefined;
   const [showPassword, setShowPassword] = useState(false);
   const { currentLayout } = useLayout();
-const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
-
+  const [loginUser, { error, loading: logingIn, data }] = useMutation(LOGIN);
 
   const formik = useFormik({
     initialValues,
@@ -53,15 +52,17 @@ const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
         }
 
         // await login(values.email, values.password);
-       const res = await loginUser({
+        const res = await loginUser({
           variables: {
-            "username": values.email,
-            "password": values.password
+            username: values.email,
+            password: values.password
           }
-        })
+        });
 
-
-        saveAuth(res.data.login.token);
+        saveAuth({
+          access_token: res.data.login.token,
+          refreshToken: null
+        });
         setCurrentUser(res.data.login.user);
 
         if (values.remember) {
@@ -74,18 +75,18 @@ const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
         //   // Save token if needed
         //   console.log(data);
         //   // navigate(from , { replace: true });
-          
-          navigate(from || '', { replace: true });
+
+        navigate(from || '', { replace: true });
         // } else {
         //   throw new Error('Invalid login response4');
         // }
-
       } catch {
         // setStatus(error?.message);
         setStatus(error?.message || 'Login failed');
         setSubmitting(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
   });
 
@@ -98,7 +99,10 @@ const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
     <div className="card max-w-[420px] w-full">
       <form
         className="card-body flex flex-col gap-5 p-10"
-        onSubmit={(e) => { e.preventDefault(); formik.handleSubmit(e); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          formik.handleSubmit(e);
+        }}
         // onSubmit={formik.handleSubmit}
         noValidate
       >
@@ -144,18 +148,17 @@ const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
           <span className="border-t border-gray-200 w-full"></span>
         </div> */}
 
-        {/* <Alert variant="primary">
-          Use <span className="font-semibold text-gray-900">demo@stts.gov</span> username and{' '}
-          <span className="font-semibold text-gray-900">demo1234</span> password.
-        </Alert> */}
+        {signupSuccess && (
+          <Alert variant="success">Account created successfully. You can now sign in.</Alert>
+        )}
 
         {error?.message && <Alert variant="danger">{error?.message}</Alert>}
 
         <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Username or Email</label>
+          <label className="form-label text-gray-900">Username</label>
           <label className="input">
             <input
-              placeholder="Enter username or email"
+              placeholder="Enter username"
               autoComplete="off"
               {...formik.getFieldProps('email')}
               className={clsx('form-control', {
@@ -209,14 +212,14 @@ const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
           )}
         </div>
 
-         <label className="checkbox-group ">
-            <input
-              className="checkbox checkbox-sm"
-              type="checkbox"
-              {...formik.getFieldProps('remember')}
-            />
-            <span className="checkbox-label">Remember me</span>
-          </label>
+        <label className="checkbox-group ">
+          <input
+            className="checkbox checkbox-sm"
+            type="checkbox"
+            {...formik.getFieldProps('remember')}
+          />
+          <span className="checkbox-label">Remember me</span>
+        </label>
 
         <button
           type="submit"
@@ -227,16 +230,11 @@ const [loginUser, {error, loading: logingIn, data}] = useMutation(LOGIN)
         </button>
 
         <Link
-          to={
-            currentLayout?.name === 'auth-branded'
-              ? '/auth/signup'
-              : '/auth/classic/signup'
-          }
+          to={currentLayout?.name === 'auth-branded' ? '/auth/signup' : '/auth/classic/signup'}
           className="text-3sm link shrink-0 ml-auto"
         >
           Register
         </Link>
-        
       </form>
     </div>
   );

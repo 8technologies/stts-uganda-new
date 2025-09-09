@@ -35,6 +35,9 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
   };
 
   const buildHeader = () => {
+    const { currentUser } = useAuthContext();
+
+    console.log('currentUser', currentUser);
     return (
       <div className="flex items-center justify-between px-5 py-1.5 gap-1.5">
         <div className="flex items-center gap-2">
@@ -48,17 +51,17 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
               to="/account/hoteme/get-stard"
               className="text-sm text-gray-800 hover:text-primary font-semibold leading-none"
             >
-              Cody Fisher
+              {`${currentUser?.first_name} ${currentUser?.other_names}`}
             </Link>
             <a
-              href="mailto:c.fisher@gmail.com"
+              href={`mailto:${currentUser?.email}`}
               className="text-xs text-gray-600 hover:text-primary font-medium leading-none"
             >
-              c.fisher@gmail.com
+              {`${currentUser?.email}`}
             </a>
           </div>
         </div>
-        <span className="badge badge-xs badge-primary badge-outline">Pro</span>
+        {/* <span className="badge badge-xs badge-primary badge-outline">Pro</span> */}
       </div>
     );
   };

@@ -18,6 +18,23 @@ query Users {
 
 `
 
+const ME = gql`
+  query Me {
+    me {
+      id
+      username
+      first_name
+      other_names
+      email
+      district
+      image
+      created_at
+      updated_at
+    }
+  }
+`;
+
 export {
-  LOAD_USERS
+  LOAD_USERS,
+  ME
 }
