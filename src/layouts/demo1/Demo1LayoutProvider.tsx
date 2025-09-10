@@ -3,6 +3,8 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useState 
 import { useLocation } from 'react-router';
 import { useMenuChildren } from '@/components/menu';
 import { MENU_SIDEBAR } from '@/config/menu.config';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
 import { useScrollPosition } from '@/hooks/useScrollPosition';
 import { useMenus } from '@/providers';
 import { ILayoutConfig, useLayout } from '@/providers';
@@ -63,10 +65,40 @@ const useDemo1Layout = () => useContext(Demo1LayoutContext);
 const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
   const { pathname } = useLocation(); // Gets the current path
   const { setMenuConfig } = useMenus(); // Accesses menu configuration methods
-  const secondaryMenu = useMenuChildren(pathname, MENU_SIDEBAR, 0); // Retrieves the secondary menu
+  const { auth } = useAuthContext();
+
+  // Filter menu using JWT permissions
+  const filterMenuByPermissions = (items: any[], perms: Record<string, boolean>): any[] => {
+    const result: any[] = [];
+    for (const item of items) {
+      // If item has children, filter them recursively
+      let keep = true;
+      let filteredChildren = undefined as any[] | undefined;
+      if (Array.isArray(item.children)) {
+        filteredChildren = filterMenuByPermissions(item.children, perms);
+        keep = (filteredChildren?.length ?? 0) > 0;
+      }
+
+      // Check requiredPermissions on the item itself
+      const req: string[] | undefined = (item as any).requiredPermissions;
+      if (req && req.length > 0) {
+        const ok = req.every((key) => !!perms[key]);
+        keep = keep && ok;
+      }
+
+      if (keep) {
+        result.push({ ...item, ...(filteredChildren && { children: filteredChildren }) });
+      }
+    }
+    return result;
+  };
+
+  const perms = getPermissionsFromToken(auth?.access_token);
+  const filteredPrimary = filterMenuByPermissions(MENU_SIDEBAR, perms);
+  const secondaryMenu = useMenuChildren(pathname, filteredPrimary, 0); // Retrieves the secondary menu from filtered
 
   // Sets the primary and secondary menu configurations
-  setMenuConfig('primary', MENU_SIDEBAR);
+  setMenuConfig('primary', filteredPrimary);
   setMenuConfig('secondary', secondaryMenu);
 
   const { getLayout, updateLayout, setCurrentLayout } = useLayout(); // Layout management methods
