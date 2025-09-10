@@ -8,8 +8,11 @@ import { DropdownApps } from '@/partials/dropdowns/apps';
 import { DropdownChat } from '@/partials/dropdowns/chat';
 import { ModalSearch } from '@/partials/modals/search/ModalSearch';
 import { useLanguage } from '@/i18n';
+import { useAuthContext } from '@/auth';
+import { URL_2 } from '@/config/urls';
 
 const HeaderTopbar = () => {
+  const { currentUser } = useAuthContext();
   const { isRTL } = useLanguage();
   const itemChatRef = useRef<any>(null);
   const itemAppsRef = useRef<any>(null);
@@ -131,7 +134,11 @@ const HeaderTopbar = () => {
           <MenuToggle className="btn btn-icon rounded-full">
             <img
               className="size-9 rounded-full border-2 border-white/60 shrink-0"
-              src={toAbsoluteUrl('/media/avatars/300-2.png')}
+              src={
+                currentUser?.image
+                  ? `${URL_2}/imgs/${currentUser?.image}`
+                  : toAbsoluteUrl('/media/avatars/blank.png')
+              }
               alt=""
             />
           </MenuToggle>

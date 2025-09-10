@@ -85,8 +85,10 @@ import {
   AuthenticationGetStartedPage
 } from '@/pages/authentication';
 import { SR4ListPage } from '@/pages/forms/SR4ListPage';
+import { PermissionGuard } from '@/auth/PermissionGuard';
 import { RolesListPage } from '@/pages/roles/RolesListPage';
 import { SR6ListPage } from '@/pages/forms/SR6 forms/SR6ListPage';
+import { UsersListPage } from '@/pages/users/UsersListPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -96,10 +98,19 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<SttsDashboardPage />} />
           <Route path="/dark-sidebar" element={<Demo1DarkSidebarPage />} />
           <Route path="/track-trace" element={<TrackTracePage />} />
-          <Route path="/apps/sr4" element={<SR4ListPage />} />
+          {/* <Route path="/apps/sr4" element={<SR4ListPage />} /> */}
           <Route path="/apps/sr6" element={<SR6ListPage />} />
           <Route path="/apps/qds" element={<SR4ListPage />} />
+          <Route
+            path="/apps/sr4"
+            element={
+              <PermissionGuard required={["can_view_sr4_forms"]}>
+                <SR4ListPage />
+              </PermissionGuard>
+            }
+          />
           <Route path="/admin/roles" element={<RolesListPage />} />
+          <Route path="/admin/users" element={<UsersListPage />} />
           <Route path="/public-profile/profiles/default" element={<ProfileDefaultPage />} />
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />

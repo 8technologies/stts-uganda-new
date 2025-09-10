@@ -1,118 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Users, Settings, Shield } from 'lucide-react';
+import { Plus, Edit, Trash2 } from 'lucide-react';
 import { ModulesPermissions } from './ModulesPermissions';
 import AddRoleDialog from './blocks/AddRoleDialog';
-import AddModuleDialog from './blocks/AddModuleDialog';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { ROLES } from '@/gql/queries';
-import { ADDROLE, LOGIN } from '@/gql/mutations';
-import { useLocation, useNavigate } from 'react-router';
-import { AuthModel, useAuthContext } from '@/auth';
-import * as authHelper from '../../auth/_helpers';
-import { getData } from '@/utils';
+import { ADD_ROLE, DELETE_ROLE } from '@/gql/mutations';
+import { Container } from '@/components/container';
+import { Toolbar, ToolbarActions, ToolbarHeading } from '@/layouts/demo1/toolbar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 
+type Role = { id: string | number; name: string; description?: string; permissions?: any };
 
-const mockModules = {
-  1: [ // Admin modules
-    {
-      id: 1,
-      name: 'User Management',
-      icon: Users,
-      permissions: ['Create Users', 'Edit Users', 'Delete Users', 'View Users']
-    },
-    {
-      id: 2,
-      name: 'System Configuration',
-      icon: Settings,
-      permissions: ['View Settings', 'Edit Settings', 'Manage Integrations', 'System Logs']
-    },
-    {
-      id: 3,
-      name: 'Security',
-      icon: Shield,
-      permissions: ['Manage Roles', 'Audit Logs', 'Security Settings', 'Access Control']
-    }
-  ],
-  2: [ // Designer modules
-    {
-      id: 1,
-      name: 'User Management',
-      icon: Users,
-      permissions: ['View Users']
-    }
-  ],
-  3: [ // Engineer modules
-    {
-      id: 1,
-      name: 'User Management',
-      icon: Users,
-      permissions: ['Create Users', 'Edit Users', 'View Users']
-    },
-    {
-      id: 2,
-      name: 'System Configuration',
-      icon: Settings,
-      permissions: ['View Settings', 'Edit Settings']
-    }
-  ],
-  4: [ // Viewer modules
-    {
-      id: 1,
-      name: 'User Management',
-      icon: Users,
-      permissions: ['View Users']
-    }
-  ],
-  5: [ // Analyst modules
-    {
-      id: 1,
-      name: 'User Management',
-      icon: Users,
-      permissions: ['View Users']
-    },
-    {
-      id: 2,
-      name: 'System Configuration',
-      icon: Settings,
-      permissions: ['View Settings']
-    }
-  ]
-};
-
-const RolesList = ({ roles, selectedRole, onRoleSelect, onAddRole }/* : IRolesListProps */) => {
+const RolesList = ({
+  roles,
+  selectedRole,
+  onRoleSelect,
+  onAddRole,
+  onEditRole,
+  onDeleteRole,
+  deletingRoleId
+}: {
+  roles: Role[];
+  selectedRole: Role | null;
+  onRoleSelect: (r: Role) => void;
+  onAddRole: () => void;
+  onEditRole: (r: Role) => void;
+  onDeleteRole: (r: Role) => void;
+  deletingRoleId: string | null;
+}) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full">
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">Roles</h2>
-        <button
-          onClick={onAddRole}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium transition-colors"
-        >
+    <div className="bg-white rounded-lg shadow-md border border-gray-200 h-full flex flex-col">
+      <div className="px-6 py-2 border-b border-gray-200 flex items-center justify-between">
+        <h2 className="text-base font-semibold text-gray-900">Roles</h2>
+
+        <a href="#" className="btn btn-sm btn-primary" onClick={onAddRole}>
           <Plus size={16} />
           Add Role
-        </button>
+        </a>
       </div>
-      <div className="p-6">
+      <div className="p-4 flex-1 overflow-y-auto">
         <div className="space-y-2">
           {roles?.map((role) => (
             <div
               key={role.id}
               onClick={() => onRoleSelect(role)}
-              className={`p-4 rounded-lg border cursor-pointer transition-all ${
+              className={`p-3 rounded-lg border cursor-pointer transition-all ${
                 selectedRole?.id === role.id
                   ? 'border-green-500 bg-green-50'
                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-medium text-gray-900">{role.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{role.description}</p>
+                  <h5 className="font-semibold text-gray-900 text-md">{role.name}</h5>
+                  <p className="text-sm text-gray-600 font-medium mt-1">{role.description}</p>
                 </div>
-                {/* <div className="text-right">
-                  <span className="text-sm font-medium text-gray-900">{role.userCount}</span>
-                  <p className="text-xs text-gray-500">users</p>
-                </div> */}
+                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                  <button className="btn btn-light btn-sm" onClick={() => onEditRole(role)}>
+                    <Edit size={14} /> Edit
+                  </button>
+                  <button
+                    className="btn btn-light btn-sm text-danger"
+                    onClick={() => onDeleteRole(role)}
+                    disabled={String(deletingRoleId) === String(role.id)}
+                  >
+                    <Trash2 size={14} />
+                    {String(deletingRoleId) === String(role.id) ? 'Deleting…' : 'Delete'}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -122,110 +78,179 @@ const RolesList = ({ roles, selectedRole, onRoleSelect, onAddRole }/* : IRolesLi
   );
 };
 
-// Main Roles Component
+const RolesListSkeleton = () => (
+  <div className="bg-white rounded-lg shadow-md border border-gray-200 h-full flex flex-col">
+    <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between">
+      <Skeleton className="h-5 w-24" />
+      <Skeleton className="h-9 w-24" />
+    </div>
+    <div className="p-6 space-y-3">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="p-3 rounded-lg border border-gray-200">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-3 w-60 mt-2" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+const PermissionsSkeleton = () => (
+  <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
+    <div className="px-6 py-3 border-b border-gray-200">
+      <Skeleton className="h-5 w-48" />
+    </div>
+    <div className="p-4 space-y-3 flex-1 overflow-y-auto">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="border rounded-lg p-4">
+          <Skeleton className="h-4 w-56" />
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        </div>
+      ))}
+    </div>
+    <div className="px-4 py-3 border-t">
+      <Skeleton className="h-10 w-24 ml-auto" />
+    </div>
+  </div>
+);
+
 const RolesListPage = () => {
-//   const [roles, setRoles] = useState(null);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isAddRoleDialogOpen, setIsAddRoleDialogOpen] = useState(false);
+  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [resetForm, setResetForm] = useState(false);
+  const [deletingRoleId, setDeletingRoleId] = useState<string | null>(null);
   const { loading, error, data } = useQuery(ROLES);
-  
-  const auth = authHelper.getAuth(); // retrieves from localStorage/sessionStorage
-    const token = auth?.access_token;
-    
-  const from = location.state?.from?.pathname || '/';
-  const [addRole, { error:err, loading: addingRole }] = useMutation(ADDROLE);
-  
 
-  const roles = data?.all_roles || [];
-  console.log('data', data);
+  const [addRole, { loading: savingRole }] = useMutation(ADD_ROLE, {
+    refetchQueries: [{ query: ROLES }],
+    awaitRefetchQueries: true
+  });
+  const [deleteRole] = useMutation(DELETE_ROLE, {
+    refetchQueries: [{ query: ROLES }],
+    awaitRefetchQueries: true
+  });
 
-  if (loading) return <div>Loading roles...</div>;
-if (error){ 
-    console.log(error);
-    return <div>Error loading roles</div>};
+  const roles = (data?.roles || []) as Role[];
 
+  useEffect(() => {
+    if (!selectedRole) return;
+    const updated = roles.find((r) => String(r.id) === String(selectedRole.id));
+    if (updated) setSelectedRole(updated);
+  }, [data?.roles]);
 
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
-  };
+  if (loading)
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Container>
+          <Toolbar>
+            <ToolbarHeading title="Roles" description="Manage system roles and their permission" />
+            <ToolbarActions></ToolbarActions>
+          </Toolbar>
+        </Container>
+        <Container>
+          <div className="grid grid-cols-1 lg:[grid-template-columns:360px_1fr] gap-6 h-[calc(100vh-200px)] overflow-hidden">
+            <RolesListSkeleton />
+            <PermissionsSkeleton />
+          </div>
+        </Container>
+      </div>
+    );
+
+  if (error) return <div>Error loading roles</div>;
+
+  const handleRoleSelect = (role: Role) => setSelectedRole(role);
 
   const handleAddRole = () => {
+    setEditingRole(null);
     setIsAddRoleDialogOpen(true);
-    // alert('Add Role functionality would be implemented here');
+    setResetForm(true);
+    setTimeout(() => setResetForm(false), 0);
   };
 
-  const handleAddModule = () => {
-    alert('Add Module functionality would be implemented here');
+  const handleEditRole = (role: Role) => {
+    setEditingRole(role);
+    setIsAddRoleDialogOpen(true);
   };
 
+  const handleDeleteRole = async (role: Role) => {
+    if (!window.confirm(`Delete role "${role.name}"?`)) return;
+    try {
+      setDeletingRoleId(String(role.id));
+      await deleteRole({
+        variables: {
+          roleId: role.id
+        }
+      });
+      toast('Role deleted');
+      if (String(selectedRole?.id) === String(role.id)) setSelectedRole(null);
+    } catch (e: any) {
+      toast('Failed to delete role', { description: e?.message ?? 'Unknown error' });
+    } finally {
+      setDeletingRoleId(null);
+    }
+  };
 
-const handleAddRoleSubmit = async (roleData) => {
-  try {
-    const res = await addRole({
-      variables: {
-        payload: {
-              role_name: roleData.name,
-              description: roleData.description,
-            }
-      },
-    });
+  const handleAddRoleSubmit = async (roleData: { name: string; description: string }) => {
+    try {
+      const payload: any = {
+        role_name: roleData.name,
+        description: roleData.description
+      };
+      if (editingRole?.id) payload.id = String(editingRole.id);
 
-    // Log the response from the mutation
-    console.log('Role added successfully:', res);
-    
-    // Optionally, you can handle the successful response here, like refreshing the list or closing the dialog
-    setIsAddRoleDialogOpen(false);
-
-  }catch {
-    console.error('Error adding role:');
-
-    // Handle error case
-    setIsAddRoleDialogOpen(false);
-  }
-};
-
-  const selectedRoleModules = selectedRole ? mockModules[selectedRole.id] || [] : [];
-//   const selectedRoleModules = selectedRole ? selectedRole.permissions || [] : [];
+      await addRole({ variables: { payload } });
+      toast(editingRole ? 'Role updated' : 'Role added');
+      setIsAddRoleDialogOpen(false);
+      setEditingRole(null);
+    } catch (e: any) {
+      toast('Failed to save role', { description: e?.message ?? 'Unknown error' });
+      setIsAddRoleDialogOpen(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-
-      {/* Main Content */}
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Roles</h1>
-          <p className="text-gray-600 mt-1">Manage system roles and their permissions</p>
-        </div>
-        
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-200px)]">
+      <Container>
+        <Toolbar>
+          <ToolbarHeading title="Roles" description="Manage system roles and their permission" />
+          <ToolbarActions></ToolbarActions>
+        </Toolbar>
+      </Container>
+      <Container>
+        <div className="grid grid-cols-1 lg:[grid-template-columns:360px_1fr] gap-6 overflow-hidden">
           <RolesList
             roles={roles}
             selectedRole={selectedRole}
             onRoleSelect={handleRoleSelect}
             onAddRole={handleAddRole}
+            onEditRole={handleEditRole}
+            onDeleteRole={handleDeleteRole}
+            deletingRoleId={deletingRoleId}
           />
-          
-          <ModulesPermissions
-            selectedRole={selectedRole}
-            modules={selectedRoleModules}
-            onAddModule={handleAddModule}
-          />
+
+          <ModulesPermissions selectedRole={selectedRole} />
         </div>
-      </div>
+      </Container>
       <AddRoleDialog
         isOpen={isAddRoleDialogOpen}
         onClose={() => setIsAddRoleDialogOpen(false)}
         onSubmit={handleAddRoleSubmit}
-      />
-
-      <AddModuleDialog
-        isOpen={isAddRoleDialogOpen}
-        onClose={() => setIsAddRoleDialogOpen(false)}
-        onSubmit={handleAddRoleSubmit}
+        loading={savingRole}
+        resetForm={resetForm}
+        initialValues={
+          editingRole ? { name: editingRole.name, description: editingRole.description } : null
+        }
+        title={editingRole ? 'Edit Role' : 'Add New Role'}
+        submitLabel={editingRole ? 'Save Changes' : 'Add Role'}
       />
     </div>
   );
 };
 
-export  {RolesListPage};
+export { RolesListPage };

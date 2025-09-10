@@ -1,22 +1,46 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogFooter
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 interface IAddRoleDialogProps<T = any> {
   isOpen: boolean;
   onClose: (open: boolean) => void;
   onSubmit?: (values: Record<string, any>) => void;
+  loading: boolean;
+  resetForm: boolean;
+  initialValues?: { name?: string; description?: string } | null;
+  title?: string;
+  submitLabel?: string;
 }
 
-const AddRoleDialog = ({ isOpen, onClose, onSubmit }: IAddRoleDialogProps) => {
+const AddRoleDialog = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  loading,
+  resetForm,
+  initialValues,
+  title,
+  submitLabel
+}: IAddRoleDialogProps) => {
   const [formData, setFormData] = useState({
     name: '',
     description: ''
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (formData.name.trim() && formData.description.trim()) {
       onSubmit?.(formData);
-      setFormData({ name: '', description: '' });
     }
   };
 
@@ -25,70 +49,64 @@ const AddRoleDialog = ({ isOpen, onClose, onSubmit }: IAddRoleDialogProps) => {
     onClose?.(false);
   };
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (resetForm) {
+      setFormData({ name: '', description: '' });
+    }
+  }, [resetForm]);
+
+  useEffect(() => {
+    if (isOpen && initialValues) {
+      setFormData({
+        name: initialValues.name ?? '',
+        description: initialValues.description ?? ''
+      });
+    }
+  }, [isOpen, initialValues?.name, initialValues?.description]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Add New Role</h3>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Role Name
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                placeholder="Enter role name"
-                required
-              />
+    <Dialog open={isOpen} onOpenChange={(open) => (!open ? handleClose() : undefined)}>
+      <DialogContent className="max-w-[480px]">
+        <DialogHeader>
+          <DialogTitle>{title ?? 'Add New Role'}</DialogTitle>
+        </DialogHeader>
+        <DialogBody>
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Role Name</label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter role name"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, description: e.target.value }))
+                  }
+                  rows={3}
+                  placeholder="Enter role description"
+                  required
+                />
+              </div>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                placeholder="Enter role description"
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="flex gap-3 mt-6">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="flex-1 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
-              Add Role
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            <DialogFooter className="mt-6 flex gap-3">
+              <Button type="button" variant="outline" className="flex-1" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="default" className="flex-1" disabled={loading}>
+                {loading ? 'Please wait...' : submitLabel ?? 'Add Role'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogBody>
+      </DialogContent>
+    </Dialog>
   );
 };
 
