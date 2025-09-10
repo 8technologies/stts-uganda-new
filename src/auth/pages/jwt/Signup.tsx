@@ -9,6 +9,7 @@ import { Alert, KeenIcon } from '@/components';
 import { useLayout } from '@/providers';
 import { useMutation } from '@apollo/client/react';
 import { SIGNUP } from '@/gql/mutations';
+import { REGISTER } from '@/gql/queries';
 
 const initialValues = {
   username: '',
@@ -63,7 +64,7 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { currentLayout } = useLayout();
 
-  const [RegisterUser, { loading: createUser, error, data }] = useMutation(SIGNUP);
+  const [RegisterUser, { loading: createUser, error, data }] = useMutation(REGISTER);
 
   const formik = useFormik({
     initialValues,
