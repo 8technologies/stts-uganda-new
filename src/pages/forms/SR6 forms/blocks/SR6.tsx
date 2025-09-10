@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { UsersData, IUsersData } from './UsersData';
+import { SR6Data, ISR6Data } from './SR6Data';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import {
@@ -30,14 +30,14 @@ import {
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { UserEditDialog } from './UserEditDialog';
-import { UserDetailsDialog } from './UserDetailsDialog';
+import { SR6EditDialog } from './SR6EditDialog';
+import { SR6DetailsDialog } from './SR6DetailsDialog';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
 }
 
-const Users = () => {
+const SR6s = () => {
   const ColumnInputFilter = <TData, TValue>({ column }: IColumnFilterProps<TData, TValue>) => {
     return (
       <Input
@@ -49,7 +49,7 @@ const Users = () => {
     );
   };
 
-  const columns = useMemo<ColumnDef<IUsersData>[]>(
+  const columns = useMemo<ColumnDef<ISR6Data>[]>(
     () => [
       {
         id: 'select',
@@ -62,7 +62,7 @@ const Users = () => {
         }
       },
       {
-        accessorFn: (row: IUsersData) => row.user,
+        accessorFn: (row: ISR6Data) => row.user,
         id: 'users',
         header: ({ column }) => (
           <DataGridColumnHeader
@@ -238,10 +238,10 @@ const Users = () => {
     []
   );
 
-  const data: IUsersData[] = useMemo(() => UsersData, []);
+  const data: ISR6Data[] = useMemo(() => SR6Data, []);
   const [editOpen, setEditOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selected, setSelected] = useState<IUsersData | null>(null);
+  const [selected, setSelected] = useState<ISR6Data | null>(null);
 
   const handleRowSelection = (state: RowSelectionState) => {
     const selectedRowIds = Object.keys(state);
@@ -326,15 +326,15 @@ const Users = () => {
         }}
       />
 
-      <UserEditDialog
+      <SR6EditDialog
         open={editOpen}
         onOpenChange={setEditOpen}
         data={selected || undefined}
         onSave={(vals) => console.log('Save edit', { row: selected, vals })}
       />
-      <UserDetailsDialog open={detailsOpen} onOpenChange={setDetailsOpen} data={selected || undefined} />
+      <SR6DetailsDialog open={detailsOpen} onOpenChange={setDetailsOpen} data={selected || undefined} />
     </>
   );
 };
 
-export { Users };
+export { SR6s };

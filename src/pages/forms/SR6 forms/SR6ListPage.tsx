@@ -11,9 +11,9 @@ import {
 
 import { NetworkUserTableTeamCrewContent } from './NetworkUserTableTeamCrewContent';
 import { useLayout } from '@/providers';
-import { UserCreateDialog } from './blocks/UserCreateDialog';
+import { SR6CreateDialog } from './blocks/SR6CreateDialog';
 
-const SR4ListPage = () => {
+const SR6ListPage = () => {
   const { currentLayout } = useLayout();
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -50,7 +50,7 @@ const SR4ListPage = () => {
         <NetworkUserTableTeamCrewContent />
       </Container>
     </Fragment>
-    <UserCreateDialog
+    <SR6CreateDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         // data={selected || undefined}
@@ -60,4 +60,4 @@ const SR4ListPage = () => {
   );
 };
 
-export { SR4ListPage };
+export { SR6ListPage };

@@ -16,15 +16,14 @@ import { KeenIcon } from '@/components';
 interface IUserEditDialogProps<T = any> {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data?: T;
   onSave?: (values: Record<string, any>) => void;
 }
 
-const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProps) => {
+const UserCreateDialog = ({ open, onOpenChange, onSave }: IUserEditDialogProps) => {
   const [values, setValues] = useState<Record<string, any>>({
-    applicationCategory: data?.role || 'Seed Merchant/Company',
+    applicationCategory: 'Seed Merchant/Company',
     registrationNumber: 'MAAIF/MER/1029/2025',
-    applicantName: data?.user?.userName || '',
+    applicantName: '',
     address: '',
     phone: '',
     initials: '',
@@ -59,7 +58,7 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
   <DialogContent className="max-w-[980px] w-[96vw]">
     <DialogHeader>
       <DialogTitle className="flex items-center gap-2">
-        <KeenIcon icon="note" /> Edit Application
+        <KeenIcon icon="note" /> Create Application
       </DialogTitle>
     </DialogHeader>
     <DialogBody className="space-y-8">
@@ -80,10 +79,10 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
               </SelectContent>
             </Select>
           </div>
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <label className="form-label">Seed board registration number</label>
             <Input value={values.registrationNumber} onChange={(e) => handleChange('registrationNumber', e.target.value)} />
-          </div>
+          </div> */}
           <div className="flex flex-col gap-1">
             <label className="form-label">Name of applicant</label>
             <Input value={values.applicantName} onChange={(e) => handleChange('applicantName', e.target.value)} />
@@ -246,92 +245,7 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
       </div>
 
       {/* Application Status Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Application Status</h3>
-        <div className="space-y-4">
-          <div className="flex flex-col gap-3">
-            <label className="form-label">Select Action</label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { value: 'assign_inspector', label: 'Assign Inspector', color: 'text-blue-600' },
-                { value: 'halt', label: 'Halt', color: 'text-orange-600' },
-                { value: 'reject', label: 'Reject', color: 'text-red-600' },
-                { value: 'accept', label: 'Accept', color: 'text-green-600' }
-              ].map((option) => (
-                <div key={option.value} className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50">
-                  <input 
-                    type="radio" 
-                    id={option.value}
-                    name="applicationStatus" 
-                    value={option.value}
-                    checked={values.applicationStatus === option.value}
-                    onChange={(e) => handleChange('applicationStatus', e.target.value)}
-                    className="text-blue-600" 
-                  />
-                  <label 
-                    htmlFor={option.value} 
-                    className={`form-label text-sm font-medium cursor-pointer ${option.color}`}
-                  >
-                    {option.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Status Comment - Only show when Halt or Reject is selected */}
-          {(values.applicationStatus === 'halt' || values.applicationStatus === 'reject') && (
-            <div className="flex flex-col gap-1 animate-in slide-in-from-top-2 duration-200">
-              <label className="form-label">Status comment *</label>
-              <Textarea 
-                rows={3} 
-                value={values.statusComment} 
-                onChange={(e) => handleChange('statusComment', e.target.value)}
-                placeholder={`Please provide a reason for ${values.applicationStatus === 'halt' ? 'halting' : 'rejecting'} this application...`}
-                className="border-orange-300 focus:border-orange-500"
-              />
-            </div>
-            
-          )}
-          {(values.applicationStatus === 'assign_inspector') && (
-            <div className="flex flex-col gap-1">
-              <label className="form-label">Select Inspector</label>
-              <Select value={values.landSize} onValueChange={(v) => handleChange('landSize', v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Isaac">Isaac Mbabazi</SelectItem>
-                  <SelectItem value="Otim">Otim Jb</SelectItem>
-                  <SelectItem value="Hilda">Hilda</SelectItem>
-                </SelectContent>
-              </Select>
-              {/* <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} /> */}
-            </div>
-            
-          )}
-          {(values.applicationStatus === 'accept') && (
-            <div>
-            <div className="flex flex-col gap-1">
-              <label className="form-label">Enter Seed Board Registration number</label>
-              <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-            </div>
-            <div className='flex flex-row gap-4'>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Valid from?</label>
-                <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Valid until?</label>
-                <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-              </div>
-            </div>
-
-            </div>
-            
-          )}
-        </div>
-      </div>
+     
     </DialogBody>
     
     <DialogFooter className="flex items-center justify-between border-t pt-4">
@@ -354,5 +268,5 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
   );
 };
 
-export { UserEditDialog };
+export { UserCreateDialog };
 
