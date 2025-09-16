@@ -77,4 +77,64 @@ const DELETE_USER = gql`
   }
 `;
 
-export { LOGIN, SIGNUP, CREATE_USER, ADD_ROLE, UPDATE_ROLE_PERMISSIONS, DELETE_ROLE, DELETE_USER };
+const SAVE_SR4_FORMS = gql`
+  mutation SaveSr4Form($payload: SR4ApplicationFormInput!) {
+    saveSr4Form(payload: $payload) {
+      success
+      message
+      result {
+        id
+        user_id
+        name_of_applicant
+        address
+        phone_number
+        company_initials
+        premises_location
+        years_of_experience
+        experienced_in
+        dealers_in
+        processing_of
+        marketing_of
+        have_adequate_land
+        land_size
+        equipment
+        have_adequate_equipment
+        have_contractual_agreement
+        have_adequate_field_officers
+        have_conversant_seed_matters
+        have_adequate_land_for_production
+        have_internal_quality_program
+        source_of_seed
+        receipt
+        accept_declaration
+        valid_from
+        valid_until
+        status
+        status_comment
+        recommendation
+        inspector_id
+        dealers_in_other
+        marketing_of_other
+        have_adequate_storage
+        seed_board_registration_number
+        type
+        processing_of_other
+        inspector {
+          first_name
+          other_names
+        }
+      }
+    }
+  }
+`;
+
+export {
+  LOGIN,
+  SIGNUP,
+  CREATE_USER,
+  ADD_ROLE,
+  UPDATE_ROLE_PERMISSIONS,
+  DELETE_ROLE,
+  DELETE_USER,
+  SAVE_SR4_FORMS
+};
