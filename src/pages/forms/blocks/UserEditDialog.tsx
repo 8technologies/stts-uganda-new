@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,30 +22,62 @@ interface IUserEditDialogProps<T = any> {
 
 const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProps) => {
   const [values, setValues] = useState<Record<string, any>>({
-    applicationCategory: data?.role || 'Seed Merchant/Company',
-    registrationNumber: 'MAAIF/MER/1029/2025',
-    applicantName: data?.user?.userName || '',
+    applicationCategory: 'seed_merchant',
+    registrationNumber: '',
+    applicantName: '',
     address: '',
     phone: '',
     initials: '',
     premises: '',
     experienceIn: '',
     yearsOfExperience: '',
-    dealersIn: 'Agricultural crops',
-    marketingOf: 'Agricultural crops',
-    adequateLand: 'Yes',
-    adequateStorage: 'Yes',
+    dealersIn: '',
+    marketingOf: '',
+    adequateLand: 'No',
+    adequateStorage: 'No',
     landSize: '',
     adequateEquipment: 'No',
-    contractualAgreement: 'Yes',
-    fieldOfficers: 'Yes',
-    conversantSeedMatters: 'Yes',
+    contractualAgreement: 'No',
+    fieldOfficers: 'No',
+    conversantSeedMatters: 'No',
     sourceOfSeed: '',
-    adequateLandForProduction: 'Yes',
-    internalQualityProgram: 'Yes',
-    receipt:'',
-    statusComment: '',
+    adequateLandForProduction: 'No',
+    internalQualityProgram: 'No',
+    receipt: '',
+    statusComment: ''
   });
+
+  // hydrate values from SR4 record
+  useEffect(() => {
+    if (!open || !data) return;
+    const d: any = data;
+    const yesno = (b: any) => (b ? 'Yes' : 'No');
+    setValues({
+      applicationCategory: d.type ?? 'seed_merchant',
+      registrationNumber: d.seed_board_registration_number ?? '',
+      applicantName: d.name_of_applicant ?? '',
+      address: d.address ?? '',
+      phone: d.phone_number ?? '',
+      initials: d.company_initials ?? '',
+      premises: d.premises_location ?? '',
+      experienceIn: d.experienced_in ?? '',
+      yearsOfExperience: d.years_of_experience ?? '',
+      dealersIn: d.dealers_in ?? '',
+      marketingOf: d.marketing_of ?? '',
+      adequateLand: yesno(d.have_adequate_land),
+      adequateStorage: yesno(d.have_adequate_storage),
+      landSize: d.land_size ?? '',
+      adequateEquipment: yesno(d.have_adequate_equipment),
+      contractualAgreement: yesno(d.have_contractual_agreement),
+      fieldOfficers: yesno(d.have_adequate_field_officers),
+      conversantSeedMatters: yesno(d.have_conversant_seed_matters),
+      sourceOfSeed: d.source_of_seed ?? '',
+      adequateLandForProduction: yesno(d.have_adequate_land_for_production),
+      internalQualityProgram: yesno(d.have_internal_quality_program),
+      receipt: '',
+      statusComment: d.status_comment ?? ''
+    });
+  }, [open, data]);
 
   const handleChange = (key: string, value: any) => setValues((v) => ({ ...v, [key]: value }));
 
@@ -74,9 +106,8 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Seed Merchant/Company">Seed Merchant/Company</SelectItem>
-                <SelectItem value="Grower/Producer/Breeder">Grower/Producer/Breeder</SelectItem>
-                <SelectItem value="QDS Producer">QDS Producer</SelectItem>
+                <SelectItem value="seed_merchant">Seed Merchant/Company</SelectItem>
+                <SelectItem value="seed_exporter_or_importer">Seed Exporter/Importer</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -355,4 +386,3 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
 };
 
 export { UserEditDialog };
-

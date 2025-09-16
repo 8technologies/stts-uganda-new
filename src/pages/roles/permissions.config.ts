@@ -26,7 +26,7 @@ export const MODULES_CONFIG: ModuleConfig[] = [
     name: 'Application Forms',
     icon: FileText,
     permissions: [
-      { id: 'can_maange_all_forms', label: 'Can Manage All Forms' },
+      { id: 'can_manage_all_forms', label: 'Can Manage All Forms' },
       { id: 'can_approve', label: 'Can Approve' },
       { id: 'can_view_sr4_forms', label: 'Can View SR4 Forms' },
       { id: 'can_create_sr4_forms', label: 'Can Create SR4 Forms' },
