@@ -54,7 +54,7 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
               to="/account/hoteme/get-stard"
               className="text-sm text-gray-800 hover:text-primary font-semibold leading-none"
             >
-              {`${currentUser?.first_name} ${currentUser?.other_names}`}
+              {`${currentUser?.name} ${currentUser?.company_initials}`}
             </Link>
             <a
               href={`mailto:${currentUser?.email}`}

@@ -28,7 +28,7 @@ export const TeamUsers = ({ users }: TeamUsersProps) => {
                     `hover:z-5 relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-3xs size-[30px] text-${each.color}-inverse ring-${each.color}-light bg-${each.color}`
                   )}
                 >
-                  {each.first_name.charAt(0)}
+                  {each.name.charAt(0)}
                 </span>
               )}
             </div>

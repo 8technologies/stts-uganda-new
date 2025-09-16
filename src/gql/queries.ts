@@ -5,8 +5,10 @@ const LOAD_USERS = gql`
     users {
       id
       username
-      first_name
-      other_names
+      name
+      company_initials
+      phone_number
+      premises_location
       email
       district
       image
@@ -23,10 +25,12 @@ const ME = gql`
     me {
       id
       username
-      first_name
-      other_names
+      name
+      company_initials
       email
       district
+      premises_location
+      phone_number
       image
       created_at
       updated_at
@@ -46,6 +50,8 @@ const ROLES = gql`
 `;
 
 const REGISTER = gql`
+  
+
   mutation Register($payload: RegisterInput!) {
     register(payload: $payload) {
       success
@@ -53,10 +59,12 @@ const REGISTER = gql`
       user {
         id
         username
-        first_name
-        other_names
+        name
+        company_initials
         email
         district
+        premises_location
+        phone_number
         image
         role_id
         role_name

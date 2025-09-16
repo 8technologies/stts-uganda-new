@@ -13,9 +13,11 @@ import { REGISTER } from '@/gql/queries';
 
 const initialValues = {
   username: '',
-  first_name: '',
-  other_names: '',
+  name: '',
+  company_initials: '',
   email: '',
+  premises_location: '',
+  phone_number: '',
   district: '',
   password: '',
   changepassword: '',
@@ -27,14 +29,14 @@ const signupSchema = Yup.object().shape({
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Username is required'),
-  first_name: Yup.string()
+  name: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('First name is required'),
-  other_names: Yup.string()
+    .required('Name is required'),
+  company_initials: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('Other name is required'),
+    .required('Company initials is required'),
   district: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
@@ -44,6 +46,14 @@ const signupSchema = Yup.object().shape({
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Email is required'),
+  premises_location: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('Premises Location is required'),
+  phone_number: Yup.string()
+    .min(3, 'Minimum 3 symbols')
+    .max(50, 'Maximum 50 symbols')
+    .required('Phone number is required'),
   password: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
@@ -80,8 +90,10 @@ const Signup = () => {
           variables: {
             payload: {
               username: values.username,
-              first_name: values.first_name,
-              other_names: values.other_names,
+              name: values.name,
+              company_initials: values.company_initials,
+              premises_location: values.premises_location,
+              phone_number: values.phone_number,
               email: values.email,
               district: values.email,
               password: values.password
@@ -161,48 +173,48 @@ const Signup = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
-            <label className="form-label text-gray-900">First Name</label>
+            <label className="form-label text-gray-900">Name</label>
             <label className="input">
               <input
-                placeholder="Nakiganda"
+                placeholder="National seed company"
                 type="text"
                 autoComplete="off"
-                {...formik.getFieldProps('first_name')}
+                {...formik.getFieldProps('name')}
                 className={clsx(
                   'form-control',
-                  { 'is-invalid': formik.touched.first_name && formik.errors.first_name },
+                  { 'is-invalid': formik.touched.name && formik.errors.name },
                   {
-                    'is-valid': formik.touched.first_name && !formik.errors.first_name
+                    'is-valid': formik.touched.name && !formik.errors.name
                   }
                 )}
               />
             </label>
-            {formik.touched.first_name && formik.errors.first_name && (
+            {formik.touched.name && formik.errors.name && (
               <span role="alert" className="text-danger text-xs mt-1">
-                {formik.errors.first_name}
+                {formik.errors.name}
               </span>
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <label className="form-label text-gray-900">Other names</label>
+            <label className="form-label text-gray-900">Company Initials</label>
             <label className="input">
               <input
                 placeholder="Mary"
                 type="text"
                 autoComplete="off"
-                {...formik.getFieldProps('other_names')}
+                {...formik.getFieldProps('company_initials')}
                 className={clsx(
                   'form-control',
-                  { 'is-invalid': formik.touched.other_names && formik.errors.other_names },
+                  { 'is-invalid': formik.touched.company_initials && formik.errors.company_initials },
                   {
-                    'is-valid': formik.touched.other_names && !formik.errors.other_names
+                    'is-valid': formik.touched.company_initials && !formik.errors.company_initials
                   }
                 )}
               />
             </label>
-            {formik.touched.other_names && formik.errors.other_names && (
+            {formik.touched.company_initials && formik.errors.company_initials && (
               <span role="alert" className="text-danger text-xs mt-1">
-                {formik.errors.other_names}
+                {formik.errors.company_initials}
               </span>
             )}
           </div>
@@ -233,6 +245,32 @@ const Signup = () => {
             )}
           </div>
           <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">Phone Number</label>
+            <label className="input">
+              <input
+                placeholder="0753....."
+                type="text"
+                autoComplete="off"
+                {...formik.getFieldProps('phone_number')}
+                className={clsx(
+                  'form-control',
+                  { 'is-invalid': formik.touched.phone_number && formik.errors.phone_number },
+                  {
+                    'is-valid': formik.touched.phone_number && !formik.errors.phone_number
+                  }
+                )}
+              />
+            </label>
+            {formik.touched.phone_number && formik.errors.phone_number && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.phone_number}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
             <label className="form-label text-gray-900">District</label>
             <label className="input">
               <input
@@ -255,6 +293,30 @@ const Signup = () => {
               </span>
             )}
           </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label text-gray-900">Premises location</label>
+            <label className="input">
+              <input
+                placeholder="Naguru plot 12"
+                type="email"
+                autoComplete="off"
+                {...formik.getFieldProps('premises_location')}
+                className={clsx(
+                  'form-control',
+                  { 'is-invalid': formik.touched.premises_location && formik.errors.premises_location },
+                  {
+                    'is-valid': formik.touched.premises_location && !formik.errors.premises_location
+                  }
+                )}
+              />
+            </label>
+            {formik.touched.premises_location && formik.errors.premises_location && (
+              <span role="alert" className="text-danger text-xs mt-1">
+                {formik.errors.premises_location}
+              </span>
+            )}
+          </div>
+          
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -11,7 +11,7 @@ export interface AuthModel {
 //   username: string;
 //   password: string | undefined;
 //   email: string;
-//   first_name: string;
+//   name: string;
 //   last_name: string;
 //   fullname?: string;
 //   occupation?: string;
@@ -28,8 +28,10 @@ export interface UserModel {
   username: string;
   password: string | undefined;
   email: string;
-  first_name: string;
-  other_names: string;
+  name: string;
+  company_initials: string;
+  premises_location: string;
+  phone_number: string;
   district?: string;
   image?: string;
   created_at?: string;

@@ -18,8 +18,10 @@ const AccountDetailsEditor = () => {
   const [form, setForm] = useState({
     id: '',
     username: '',
-    first_name: '',
-    other_names: '',
+    name: '',
+    company_initials: '',
+    phone_number: '',
+    premises_location: '',
     email: '',
     district: '',
     image: '',
@@ -32,8 +34,10 @@ const AccountDetailsEditor = () => {
       setForm({
         id: String(me.id ?? ''),
         username: me.username ?? '',
-        first_name: me.first_name ?? '',
-        other_names: me.other_names ?? '',
+        name: me.name ?? '',
+        company_initials: me.company_initials ?? '',
+        phone_number: me.phone_number ?? '',
+        premises_location: me.premises_location,
         email: me.email ?? '',
         district: me.district ?? '',
         image: me.image ?? '',
@@ -55,8 +59,10 @@ const AccountDetailsEditor = () => {
           payload: {
             id: form.id,
             username: form.username,
-            first_name: form.first_name,
-            other_names: form.other_names,
+            name: form.name,
+            company_initials: form.company_initials,
+            phone_number: form.phone_number,
+            premises_location: form.premises_location,
             email: form.email,
             district: form.district,
             image: form.imageFile ? form.imageFile : undefined
@@ -107,17 +113,17 @@ const AccountDetailsEditor = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">First Name</label>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Name</label>
                 <Input
-                  value={form.first_name}
-                  onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Other Names</label>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Company initials</label>
                 <Input
-                  value={form.other_names}
-                  onChange={(e) => setForm({ ...form, other_names: e.target.value })}
+                  value={form.company_initials}
+                  onChange={(e) => setForm({ ...form, company_initials: e.target.value })}
                 />
               </div>
               <div>
@@ -133,6 +139,20 @@ const AccountDetailsEditor = () => {
                 <Input
                   value={form.district}
                   onChange={(e) => setForm({ ...form, district: e.target.value })}
+                />
+              </div>
+            <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">District</label>
+                <Input
+                  value={form.phone_number}
+                  onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                />
+              </div>
+            <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">District</label>
+                <Input
+                  value={form.premises_location}
+                  onChange={(e) => setForm({ ...form, premises_location: e.target.value })}
                 />
               </div>
             </div>

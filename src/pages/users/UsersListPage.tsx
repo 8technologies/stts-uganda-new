@@ -39,8 +39,10 @@ import { MAIN_URL, URL_2 } from '@/config/urls';
 type User = {
   id: string | number;
   username: string;
-  first_name?: string;
-  other_names?: string;
+  name?: string;
+  company_initials?: string;
+  phone_number?: string;
+  premises_location?: string;
   email?: string;
   district?: string;
   image?: string | null;
@@ -67,8 +69,10 @@ const UserFormDialog = ({
   const [form, setForm] = useState({
     id: '',
     username: '',
-    first_name: '',
-    other_names: '',
+    name: '',
+    company_initials: '',
+    phone_number: '',
+    premises_location: '',
     email: '',
     district: '',
     imageFile: null as File | null,
@@ -82,8 +86,10 @@ const UserFormDialog = ({
       setForm({
         id: String(initialValues?.id ?? ''),
         username: initialValues?.username ?? '',
-        first_name: initialValues?.first_name ?? '',
-        other_names: initialValues?.other_names ?? '',
+        name: initialValues?.name ?? '',
+        company_initials: initialValues?.company_initials ?? '',
+        phone_number: initialValues?.phone_number ?? '',
+        premises_location: initialValues?.premises_location ?? '',
         email: initialValues?.email ?? '',
         district: initialValues?.district ?? '',
         imageFile: null,
@@ -104,8 +110,10 @@ const UserFormDialog = ({
     const payload: any = {
       id: form.id ? String(form.id) : null,
       username: form.username,
-      first_name: form.first_name,
-      other_names: form.other_names,
+      name: form.name,
+      company_initials: form.company_initials,
+      phone_number: form.phone_number,
+      premises_location: form.premises_location,
       email: form.email,
       district: form.district,
       password: form.password || undefined
@@ -138,18 +146,18 @@ const UserFormDialog = ({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">First Name</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Name</label>
               <Input
-                value={form.first_name}
-                onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required={!isEditing}
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Other Names</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Company initials</label>
               <Input
-                value={form.other_names}
-                onChange={(e) => setForm({ ...form, other_names: e.target.value })}
+                value={form.company_initials}
+                onChange={(e) => setForm({ ...form, company_initials: e.target.value })}
                 required={!isEditing}
               />
             </div>
@@ -163,10 +171,27 @@ const UserFormDialog = ({
               />
             </div>
             <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Phone Number</label>
+              <Input
+                type="phone_number"
+                value={form.phone_number}
+                onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                required={!isEditing}
+              />
+            </div>
+            <div>
               <label className="text-sm font-medium text-gray-700 mb-1 block">District</label>
               <Input
                 value={form.district}
                 onChange={(e) => setForm({ ...form, district: e.target.value })}
+                required={!isEditing}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Premises location</label>
+              <Input
+                value={form.premises_location}
+                onChange={(e) => setForm({ ...form, premises_location: e.target.value })}
                 required={!isEditing}
               />
             </div>
@@ -275,7 +300,7 @@ const UserPreviewDialog = ({
             <div className="space-y-1">
               <div className="text-base font-semibold text-gray-900">{user.username}</div>
               <div className="text-sm text-gray-700">
-                {user.first_name} {user.other_names}
+                {user.name} {user.company_initials}
               </div>
               <div className="text-sm text-gray-700">{user.email}</div>
               <div className="text-sm text-gray-700">{user.district}</div>
@@ -461,7 +486,7 @@ const UsersDataGrid = ({
               alt={row.original.username}
             />
             <div>
-              <div className="text-sm font-semibold text-gray-800">{`${row.original.first_name} ${row.original.other_names}`}</div>
+              <div className="text-sm font-semibold text-gray-800">{`${row.original.name} ${row.original.company_initials}`}</div>
               <div className="text-xs text-gray-600">{`@${row.original.username}`}</div>
             </div>
           </div>

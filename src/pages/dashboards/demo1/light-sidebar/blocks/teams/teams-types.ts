@@ -32,7 +32,7 @@ export type User = {
   created_at: IsoDate;
   email: `${string}@${string}`;
   email_verified_at: null | boolean;
-  first_name: string;
+  name: string;
   id: number;
   last_name: string;
   role: string;
