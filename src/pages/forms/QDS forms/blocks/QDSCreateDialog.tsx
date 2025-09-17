@@ -58,20 +58,6 @@ const SR6CreateDialog = ({ open, onOpenChange, onSave }: ISR6EditDialogProps) =>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
 
               <div className="flex flex-col gap-1">
-                <label className="form-label">Application category</label>
-                {/* <Input value={values.applicationCategory} onChange={(e) => handleChange('applicationCategory', e.target.value)} /> */}
-                <Select value={values.applicationCategory} onValueChange={(e) => handleChange('applicationCategory', e)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select an Option" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seed_breeder">Seed Breeder</SelectItem>
-                    <SelectItem value="seed_producer">Seed Producer</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="flex flex-col gap-1">
                 <label className="form-label">Years of experience</label>
                 <Input value={values.yearsOfExperience} onChange={(e) => handleChange('yearsOfExperience', e.target.value)} />
               </div>

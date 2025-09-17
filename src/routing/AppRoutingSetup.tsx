@@ -89,6 +89,7 @@ import { PermissionGuard } from '@/auth/PermissionGuard';
 import { RolesListPage } from '@/pages/roles/RolesListPage';
 import { SR6ListPage } from '@/pages/forms/SR6 forms/SR6ListPage';
 import { UsersListPage } from '@/pages/users/UsersListPage';
+import { QDSListPage } from '@/pages/forms/QDS forms/QDsListPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -100,7 +101,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/track-trace" element={<TrackTracePage />} />
           {/* <Route path="/apps/sr4" element={<SR4ListPage />} /> */}
           <Route path="/apps/sr6" element={<SR6ListPage />} />
-          <Route path="/apps/qds" element={<SR4ListPage />} />
+          <Route path="/apps/qds" element={<QDSListPage />} />
           <Route
             path="/apps/sr4"
             element={

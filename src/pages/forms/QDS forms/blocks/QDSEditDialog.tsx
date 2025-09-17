@@ -61,25 +61,62 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
       </DialogTitle>
     </DialogHeader>
     <DialogBody className="space-y-8">
-      
+      {/* Basic Information Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="form-label">Application Category</label>
+            <Select value={values.applicationCategory} onValueChange={(v) => handleChange('applicationCategory', v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Seed Merchant/Company">Seed Merchant/Company</SelectItem>
+                <SelectItem value="Grower/Producer/Breeder">Grower/Producer/Breeder</SelectItem>
+                <SelectItem value="QDS Producer">QDS Producer</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label">Seed board registration number</label>
+            <Input value={values.registrationNumber} onChange={(e) => handleChange('registrationNumber', e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label">Name of applicant</label>
+            <Input value={values.applicantName} onChange={(e) => handleChange('applicantName', e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label">Company initials</label>
+            <Input value={values.initials} onChange={(e) => handleChange('initials', e.target.value)} />
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Information Section */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Contact Information</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="form-label">Address</label>
+            <Input value={values.address} onChange={(e) => handleChange('address', e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="form-label">Phone number</label>
+            <Input value={values.phone} onChange={(e) => handleChange('phone', e.target.value)} />
+          </div>
+          <div className="md:col-span-2 flex flex-col gap-1">
+            <label className="form-label">Premises location</label>
+            <Input value={values.premises} onChange={(e) => handleChange('premises', e.target.value)} />
+          </div>
+        </div>
+      </div>
 
       {/* Experience & Business Details Section */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Experience & Business Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Application category</label>
-                {/* <Input value={values.applicationCategory} onChange={(e) => handleChange('applicationCategory', e.target.value)} /> */}
-                <Select value={values.applicationCategory} onValueChange={(e) => handleChange('applicationCategory', e)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select an Option" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seed_breeder">Seed Breeder</SelectItem>
-                    <SelectItem value="seed_producer">Seed Producer</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              
               <div className="flex flex-col gap-1">
                 <label className="form-label">Years of experience</label>
                 <Input value={values.yearsOfExperience} onChange={(e) => handleChange('yearsOfExperience', e.target.value)} />

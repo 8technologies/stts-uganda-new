@@ -92,11 +92,6 @@ const SAVE_SR4_FORMS = gql`
       result {
         id
         user_id
-        name_of_applicant
-        address
-        phone_number
-        company_initials
-        premises_location
         years_of_experience
         experienced_in
         dealers_in
@@ -127,12 +122,52 @@ const SAVE_SR4_FORMS = gql`
         type
         processing_of_other
         inspector {
-          first_name
-          other_names
+          name
+          district
+        }
+        user {
+          name
+          username
+          company_initials
+          email
+          district
+          premises_location
         }
       }
     }
   }
+`;
+
+const SAVE_SR6_FORMS = gql`
+  mutation SaveSr6Form($payload: SR6ApplicationFormInput!) {
+  saveSr6Form(payload: $payload) {
+    success
+    message
+    result {
+      id
+      user_id
+      years_of_experience
+      dealers_in
+      previous_grower_number
+      cropping_history
+      have_adequate_isolation
+      have_adequate_labor
+      aware_of_minimum_standards
+      signature_of_applicant
+      grower_number
+      registration_number
+      valid_from
+      valid_until
+      status
+      inspector_id
+      status_comment
+      recommendation
+      have_adequate_storage
+      seed_grower_in_past
+      type
+    }
+  }
+}
 `;
 
 export {
@@ -143,5 +178,6 @@ export {
   UPDATE_ROLE_PERMISSIONS,
   DELETE_ROLE,
   DELETE_USER,
-  SAVE_SR4_FORMS
+  SAVE_SR4_FORMS,
+  SAVE_SR6_FORMS
 };

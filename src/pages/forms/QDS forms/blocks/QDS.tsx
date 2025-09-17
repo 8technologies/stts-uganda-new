@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { SR6Data, ISR6Data } from './SR6Data';
+import { SR6Data, ISR6Data } from './QDSData';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import {
@@ -30,27 +30,27 @@ import {
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { SR6EditDialog } from './SR6EditDialog';
-import { SR6DetailsDialog } from './SR6DetailsDialog';
-import { LOAD_SR6_FORMS } from '@/gql/queries';
+import { SR6EditDialog } from './QDSEditDialog';
+import { SR6DetailsDialog } from './QDSDetailsDialog';
+import { LOAD_QDS_FORMS } from '@/gql/queries';
 import { useQuery } from '@apollo/client/react';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
 }
 
-type Sr6Application = {
+type QDSApplication = {
   id: string;
   status?: string | null;
   type: 'seed_breeder' | 'seed_producer';
-  inspector?: { name?: string; district?: string } | null;
+  inspector?: { name?: string; district?: string; } | null;
   user?:  {name?: string; username?: string;
       company_initials?: string;
       email?: string;
       district?: string;
       phone_number?: string;
       premises_location?: string;
-    }
+    } | null;
 };
 const statusToColor = (status?: string | null) => {
   switch (status) {
@@ -68,8 +68,8 @@ const statusToColor = (status?: string | null) => {
 };
 
 
-const SR6s = () => {
-  const { data, loading, error, refetch } = useQuery(LOAD_SR6_FORMS);
+const QDs = () => {
+  const { data, loading, error, refetch } = useQuery(LOAD_QDS_FORMS);
     const ColumnInputFilter = <TData, TValue>({ column }: IColumnFilterProps<TData, TValue>) => {
       return (
         <Input
@@ -304,14 +304,14 @@ const SR6s = () => {
     []
   );
 
-  const forms = (data?.sr6_applications || []) as Sr6Application[];
+  const forms = (data?.qds_applications || []) as QDSApplication[];
   const mapped: ISR6Data[] = useMemo(
     () =>
       forms.map((f) => ({
         user: {
           avatar: 'blank.png',
-          userName: f.user.name,
-          userGmail: f.phone_number || ''
+          userName: f.user?.name,
+          userGmail: f.user.phone_number || ''
         },
         role: f.type === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
@@ -328,7 +328,7 @@ const SR6s = () => {
   );
   const [editOpen, setEditOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedForm, setSelectedForm] = useState<Sr6Application | null>(null);
+  const [selectedForm, setSelectedForm] = useState<QDSApplication | null>(null);
 
   const handleRowSelection = (state: RowSelectionState) => {
     const selectedRowIds = Object.keys(state);
@@ -436,7 +436,7 @@ const SR6s = () => {
     return (
       <div className="card p-6">
         <div className="flex items-center justify-between mb-2 text-red-700">
-          Failed to load SR4 applications
+          Failed to load Qds applications
           <button className="btn btn-sm" onClick={() => refetch()}>
             <KeenIcon icon="arrow-rotate-right" /> Retry
           </button>
@@ -459,7 +459,7 @@ const SR6s = () => {
         layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
         messages={{
           loading: loading,
-          empty: 'No SR6 applications found'
+          empty: 'No QDS applications found'
         }}
       />
 
@@ -478,4 +478,4 @@ const SR6s = () => {
   );
 };
 
-export { SR6s };
+export { QDs };

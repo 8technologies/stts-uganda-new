@@ -50,8 +50,6 @@ const ROLES = gql`
 `;
 
 const REGISTER = gql`
-  
-
   mutation Register($payload: RegisterInput!) {
     register(payload: $payload) {
       success
@@ -80,11 +78,6 @@ const LOAD_SR4_FORMS = gql`
     sr4_applications {
       id
       user_id
-      name_of_applicant
-      address
-      phone_number
-      company_initials
-      premises_location
       years_of_experience
       experienced_in
       dealers_in
@@ -114,14 +107,109 @@ const LOAD_SR4_FORMS = gql`
       seed_board_registration_number
       type
       processing_of_other
-      created_at
-      updated_at
       inspector {
-        first_name
-        other_names
+        id
+        name
+        district
+      }
+      user {
+        name
+        username
+        company_initials
+        email
+        district
+        premises_location
       }
     }
   }
 `;
 
-export { LOAD_USERS, ME, ROLES, REGISTER, LOAD_SR4_FORMS };
+const LOAD_SR6_FORMS = gql`
+  query Sr6_applications {
+    sr6_applications {
+      id
+      user_id
+      years_of_experience
+      dealers_in
+      previous_grower_number
+      cropping_history
+      have_adequate_isolation
+      have_adequate_labor
+      aware_of_minimum_standards
+      signature_of_applicant
+      grower_number
+      registration_number
+      valid_from
+      valid_until
+      status
+      inspector_id
+      status_comment
+      recommendation
+      have_adequate_storage
+      seed_grower_in_past
+      type
+      user {
+        username
+        name
+        company_initials
+        email
+        premises_location
+        district
+        phone_number
+      }
+      inspector {
+        name
+        district
+      }
+    }
+  }
+`;
+
+const LOAD_QDS_FORMS = gql`
+  query Qds_applications {
+    qds_applications {
+      id
+      user_id
+      farm_location
+      recommendation
+      certification
+      years_of_experience
+      dealers_in
+      previous_grower_number
+      cropping_history
+      have_adequate_isolation
+      have_adequate_labor
+      aware_of_minimum_standards
+      signature_of_applicant
+      grower_number
+      registration_number
+      valid_from
+      valid_until
+      status
+      inspector_id
+      status_comment
+      inspector_comment
+      have_been_qds
+      isolation_distance
+      number_of_labors
+      have_adequate_storage_facility
+      is_not_used
+      examination_category
+      user {
+        username
+        name
+        company_initials
+        email
+        premises_location
+        district
+        phone_number
+      }
+      inspector {
+        name
+        district
+      }
+    }
+  }
+`;
+
+export { LOAD_USERS, ME, ROLES, REGISTER, LOAD_SR4_FORMS, LOAD_SR6_FORMS, LOAD_QDS_FORMS };

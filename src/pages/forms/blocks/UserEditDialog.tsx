@@ -55,11 +55,6 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
     setValues({
       applicationCategory: d.type ?? 'seed_merchant',
       registrationNumber: d.seed_board_registration_number ?? '',
-      applicantName: d.name_of_applicant ?? '',
-      address: d.address ?? '',
-      phone: d.phone_number ?? '',
-      initials: d.company_initials ?? '',
-      premises: d.premises_location ?? '',
       experienceIn: d.experienced_in ?? '',
       yearsOfExperience: d.years_of_experience ?? '',
       dealersIn: d.dealers_in ?? '',
@@ -95,56 +90,7 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
       </DialogTitle>
     </DialogHeader>
     <DialogBody className="space-y-8">
-      {/* Basic Information Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="form-label">Application Category</label>
-            <Select value={values.applicationCategory} onValueChange={(v) => handleChange('applicationCategory', v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="seed_merchant">Seed Merchant/Company</SelectItem>
-                <SelectItem value="seed_exporter_or_importer">Seed Exporter/Importer</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="form-label">Seed board registration number</label>
-            <Input value={values.registrationNumber} onChange={(e) => handleChange('registrationNumber', e.target.value)} />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="form-label">Name of applicant</label>
-            <Input value={values.applicantName} onChange={(e) => handleChange('applicantName', e.target.value)} />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="form-label">Company initials</label>
-            <Input value={values.initials} onChange={(e) => handleChange('initials', e.target.value)} />
-          </div>
-        </div>
-      </div>
-
-      {/* Contact Information Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Contact Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="form-label">Address</label>
-            <Input value={values.address} onChange={(e) => handleChange('address', e.target.value)} />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="form-label">Phone number</label>
-            <Input value={values.phone} onChange={(e) => handleChange('phone', e.target.value)} />
-          </div>
-          <div className="md:col-span-2 flex flex-col gap-1">
-            <label className="form-label">Premises location</label>
-            <Input value={values.premises} onChange={(e) => handleChange('premises', e.target.value)} />
-          </div>
-        </div>
-      </div>
-
+      
       {/* Experience & Business Details Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Experience & Business Details</h3>
@@ -262,107 +208,8 @@ const UserEditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogPro
         </div>
       </div>
 
-      {/* Declaration Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Declaration</h3>
-        <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-          <p className="text-sm text-gray-700 leading-relaxed">
-            I/WE* AT ANY TIME DURING OFFICIAL WORKING HOURS EVEN WITHOUT previous appointment will allow the inspectors entry to the seed stores and thereby provide them with the facilities necessary to carry out their inspection work as laid out in the seed and plant regulations, 2015. I/We further declare that I/We am/are conversant with the Regulations. In addition I/We will send a list of all seed lots in our stores on a given date and/or at such a date as can be mutually agreed upon between the National Seed Certification Service and ourselves.
-          </p>
-          <div className='flex items-center gap-2'>
-            <input type="radio" id="accept-declaration" name="declaration" className="text-blue-600" />
-            <label htmlFor="accept-declaration" className="form-label text-sm cursor-pointer">I Accept</label>
-          </div>
-        </div>
-      </div>
+      
 
-      {/* Application Status Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Application Status</h3>
-        <div className="space-y-4">
-          <div className="flex flex-col gap-3">
-            <label className="form-label">Select Action</label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { value: 'assign_inspector', label: 'Assign Inspector', color: 'text-blue-600' },
-                { value: 'halt', label: 'Halt', color: 'text-orange-600' },
-                { value: 'reject', label: 'Reject', color: 'text-red-600' },
-                { value: 'accept', label: 'Accept', color: 'text-green-600' }
-              ].map((option) => (
-                <div key={option.value} className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50">
-                  <input 
-                    type="radio" 
-                    id={option.value}
-                    name="applicationStatus" 
-                    value={option.value}
-                    checked={values.applicationStatus === option.value}
-                    onChange={(e) => handleChange('applicationStatus', e.target.value)}
-                    className="text-blue-600" 
-                  />
-                  <label 
-                    htmlFor={option.value} 
-                    className={`form-label text-sm font-medium cursor-pointer ${option.color}`}
-                  >
-                    {option.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Status Comment - Only show when Halt or Reject is selected */}
-          {(values.applicationStatus === 'halt' || values.applicationStatus === 'reject') && (
-            <div className="flex flex-col gap-1 animate-in slide-in-from-top-2 duration-200">
-              <label className="form-label">Status comment *</label>
-              <Textarea 
-                rows={3} 
-                value={values.statusComment} 
-                onChange={(e) => handleChange('statusComment', e.target.value)}
-                placeholder={`Please provide a reason for ${values.applicationStatus === 'halt' ? 'halting' : 'rejecting'} this application...`}
-                className="border-orange-300 focus:border-orange-500"
-              />
-            </div>
-            
-          )}
-          {(values.applicationStatus === 'assign_inspector') && (
-            <div className="flex flex-col gap-1">
-              <label className="form-label">Select Inspector</label>
-              <Select value={values.landSize} onValueChange={(v) => handleChange('landSize', v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Isaac">Isaac Mbabazi</SelectItem>
-                  <SelectItem value="Otim">Otim Jb</SelectItem>
-                  <SelectItem value="Hilda">Hilda</SelectItem>
-                </SelectContent>
-              </Select>
-              {/* <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} /> */}
-            </div>
-            
-          )}
-          {(values.applicationStatus === 'accept') && (
-            <div>
-            <div className="flex flex-col gap-1">
-              <label className="form-label">Enter Seed Board Registration number</label>
-              <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-            </div>
-            <div className='flex flex-row gap-4'>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Valid from?</label>
-                <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Valid until?</label>
-                <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-              </div>
-            </div>
-
-            </div>
-            
-          )}
-        </div>
-      </div>
     </DialogBody>
     
     <DialogFooter className="flex items-center justify-between border-t pt-4">

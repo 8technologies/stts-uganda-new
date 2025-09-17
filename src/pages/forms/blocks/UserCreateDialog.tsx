@@ -39,6 +39,8 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
     yearsOfExperience: '',
     dealersIn: 'Agricultural crops',
     marketingOf: 'Agricultural crops',
+    otherDealersIn: '',
+    otherMarketingOf: '',
     adequateLand: 'Yes',
     adequateStorage: 'Yes',
     landSize: '',
@@ -71,49 +73,10 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
         </DialogHeader>
         <DialogBody className="space-y-8">
           {/* Basic Information Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Application Category</label>
-                <Select
-                  value={values.applicationCategory}
-                  onValueChange={(v) => handleChange('applicationCategory', v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seed_merchant">Seed Merchant/Company</SelectItem>
-                    <SelectItem value="seed_exporter_or_importer">
-                      Seed Exporter/Importer
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {/* <div className="flex flex-col gap-1">
-            <label className="form-label">Seed board registration number</label>
-            <Input value={values.registrationNumber} onChange={(e) => handleChange('registrationNumber', e.target.value)} />
-          </div> */}
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Name of applicant</label>
-                <Input
-                  value={values.applicantName}
-                  onChange={(e) => handleChange('applicantName', e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Company initials</label>
-                <Input
-                  value={values.initials}
-                  onChange={(e) => handleChange('initials', e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
+          
 
           {/* Contact Information Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
               Contact Information
             </h3>
@@ -140,7 +103,7 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Experience & Business Details Section */}
           <div className="space-y-4">
@@ -163,26 +126,44 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="form-label">Dealers in</label>
-                <Input
-                  value={values.dealersIn}
-                  onChange={(e) => handleChange('dealersIn', e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Marketing of</label>
-                <Input
-                  value={values.marketingOf}
-                  onChange={(e) => handleChange('marketingOf', e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
                 <label className="form-label">Land size (In Acres)</label>
                 <Input
                   value={values.landSize}
                   onChange={(e) => handleChange('landSize', e.target.value)}
                 />
               </div>
+              
+              <div className="flex flex-col gap-1">
+                <label className="form-label">Dealers in</label>
+                <Select value={values.dealersIn} onValueChange={(e) => handleChange('dealersIn', e)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an Option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="agricultural">Agricultural crops</SelectItem>
+                    <SelectItem value="horticultural">Horticultural crops</SelectItem>
+                    <SelectItem value="Both">Both crops</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="form-label">Marketing of</label>
+                <Select value={values.marketingOf} onValueChange={(e) => handleChange('marketingOf', e)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an Option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="agricultural">Agricultural crops</SelectItem>
+                    <SelectItem value="horticultural">Horticultural crops</SelectItem>
+                    <SelectItem value="Both">Both crops</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              
               <div className="flex flex-col gap-1">
                 <label className="form-label">Source of seed</label>
                 <Input
@@ -190,6 +171,27 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
                   onChange={(e) => handleChange('sourceOfSeed', e.target.value)}
                 />
               </div>
+              {values.dealersIn === 'other' && (
+                <div className="flex flex-col gap-1">
+                  <label className="form-label">Please specify</label>
+                  <Input
+                    value={values.otherDealersIn || ''}
+                    onChange={(e) => handleChange('otherDealersIn', e.target.value)}
+                    placeholder="Please specify what you are producing"
+                  />
+                </div>
+              )}
+
+              {values.marketingOf === 'other' && (
+                <div className="flex flex-col gap-1">
+                  <label className="form-label">Please specify</label>
+                  <Input
+                    value={values.otherMarketingOf || ''}
+                    onChange={(e) => handleChange('otherMarketingOf', e.target.value)}
+                    placeholder="Please specify what you are producing"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

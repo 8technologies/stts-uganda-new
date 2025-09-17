@@ -70,11 +70,6 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
             <LabeledRow label="Seed board registration number">
               {d.seed_board_registration_number || '-'}
             </LabeledRow>
-            <LabeledRow label="Name of applicant">{d.name_of_applicant || '-'}</LabeledRow>
-            <LabeledRow label="Address">{d.address || '-'}</LabeledRow>
-            <LabeledRow label="Phone number">{d.phone_number || '-'}</LabeledRow>
-            <LabeledRow label="Company initials">{d.company_initials || '-'}</LabeledRow>
-            <LabeledRow label="Premises location">{d.premises_location || '-'}</LabeledRow>
             <LabeledRow label="Experience in">{d.experienced_in || '-'}</LabeledRow>
             <LabeledRow label="Years of experience">{d.years_of_experience || '-'}</LabeledRow>
             <LabeledRow label="Dealers in">{d.dealers_in || '-'}</LabeledRow>

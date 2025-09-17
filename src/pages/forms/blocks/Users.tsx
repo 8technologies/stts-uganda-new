@@ -41,14 +41,15 @@ interface IColumnFilterProps<TData, TValue> {
 
 type Sr4Application = {
   id: string;
-  name_of_applicant: string;
-  address: string;
-  phone_number: string;
-  company_initials: string;
-  premises_location: string;
   status?: string | null;
   type: 'seed_merchant' | 'seed_exporter_or_importer';
-  inspector?: { first_name?: string; other_names?: string } | null;
+  inspector?: { name?: string; district?: string } | null;
+  user?:  {name?: string; username?: string;
+      company_initials?: string;
+      email?: string;
+      district?: string;
+      premises_location?: string;
+    }
 };
 
 const statusToColor = (status?: string | null) => {
@@ -293,15 +294,15 @@ const Users = () => {
       forms.map((f) => ({
         user: {
           avatar: 'blank.png',
-          userName: f.name_of_applicant,
+          userName: f.user.name,
           userGmail: f.phone_number || ''
         },
         role: f.type === 'seed_merchant' ? 'Seed Merchant/Company' : 'Seed Exporter/Importer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
-        location: f.premises_location || f.address || '-',
+        location: f.user.premises_location || f.user.premises_location|| '-',
         // flag: 'uganda.svg',
         activity: f.inspector
-          ? `${f.inspector.first_name ?? ''} ${f.inspector.other_names ?? ''}`.trim()
+          ? `${f.inspector.name ?? ''} ${f.inspector.district ?? ''}`.trim()
           : '-',
         created_user: '-',
         valid_until: undefined as any,
