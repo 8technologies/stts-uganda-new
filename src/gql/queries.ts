@@ -93,7 +93,7 @@ const LOAD_SR4_FORMS = gql`
       have_adequate_land_for_production
       have_internal_quality_program
       source_of_seed
-      receipt
+      receipt_id
       accept_declaration
       valid_from
       valid_until
@@ -107,6 +107,8 @@ const LOAD_SR4_FORMS = gql`
       seed_board_registration_number
       type
       processing_of_other
+      created_at
+      updated_at
       inspector {
         id
         name
@@ -116,6 +118,7 @@ const LOAD_SR4_FORMS = gql`
         name
         username
         company_initials
+        phone_number
         email
         district
         premises_location

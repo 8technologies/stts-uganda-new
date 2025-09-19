@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client';
 
 const LOGIN = gql`
-
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       success
@@ -107,7 +106,7 @@ const SAVE_SR4_FORMS = gql`
         have_adequate_land_for_production
         have_internal_quality_program
         source_of_seed
-        receipt
+        receipt_id
         accept_declaration
         valid_from
         valid_until
@@ -129,6 +128,7 @@ const SAVE_SR4_FORMS = gql`
           name
           username
           company_initials
+          phone_number
           email
           district
           premises_location
@@ -140,34 +140,34 @@ const SAVE_SR4_FORMS = gql`
 
 const SAVE_SR6_FORMS = gql`
   mutation SaveSr6Form($payload: SR6ApplicationFormInput!) {
-  saveSr6Form(payload: $payload) {
-    success
-    message
-    result {
-      id
-      user_id
-      years_of_experience
-      dealers_in
-      previous_grower_number
-      cropping_history
-      have_adequate_isolation
-      have_adequate_labor
-      aware_of_minimum_standards
-      signature_of_applicant
-      grower_number
-      registration_number
-      valid_from
-      valid_until
-      status
-      inspector_id
-      status_comment
-      recommendation
-      have_adequate_storage
-      seed_grower_in_past
-      type
+    saveSr6Form(payload: $payload) {
+      success
+      message
+      result {
+        id
+        user_id
+        years_of_experience
+        dealers_in
+        previous_grower_number
+        cropping_history
+        have_adequate_isolation
+        have_adequate_labor
+        aware_of_minimum_standards
+        signature_of_applicant
+        grower_number
+        registration_number
+        valid_from
+        valid_until
+        status
+        inspector_id
+        status_comment
+        recommendation
+        have_adequate_storage
+        seed_grower_in_past
+        type
+      }
     }
   }
-}
 `;
 
 const SAVE_QDS_FORMS = gql `

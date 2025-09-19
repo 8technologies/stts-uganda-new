@@ -31,15 +31,16 @@ const SR4ListPage = () => {
   const handleSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
     const payload: any = {
-      years_of_experience: vals.yearsOfExperience || undefined,
-      experienced_in: vals.experienceIn || undefined,
-      dealers_in: vals.dealersIn || undefined,
-      marketing_of: vals.marketingOf || undefined,
+      years_of_experience: vals.yearsOfExperience || null,
+      experienced_in: vals.experienceIn || null,
+      dealers_in: vals.dealersIn || null,
+      marketing_of: vals.marketingOf || null,
       marketing_of_other: vals.otherMarketingOf,
-      dealers_in_other: vals.otherDealersIn || undefined,
+      dealers_in_other: vals.otherDealersIn || null,
       status: null,
       have_adequate_land: toBool(vals.adequateLand),
-      land_size: vals.landSize || undefined,
+      land_size: vals.landSize || null,
+      receipt: vals.receipt,
       have_adequate_equipment: toBool(vals.adequateEquipment),
       equipment: null,
       have_contractual_agreement: toBool(vals.contractualAgreement),
@@ -48,10 +49,9 @@ const SR4ListPage = () => {
       have_adequate_land_for_production: toBool(vals.adequateLandForProduction),
       have_internal_quality_program: toBool(vals.internalQualityProgram),
       have_adequate_storage: toBool(vals.adequateStorage),
-      source_of_seed: vals.sourceOfSeed || undefined,
-      seed_board_registration_number: vals.registrationNumber || undefined,
+      source_of_seed: vals.sourceOfSeed || null,
+      seed_board_registration_number: vals.registrationNumber || null,
       type: vals.applicationCategory
-
     };
 
     try {
