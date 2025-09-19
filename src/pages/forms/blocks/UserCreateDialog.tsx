@@ -26,40 +26,44 @@ interface IUserEditDialogProps<T = any> {
   saving?: boolean;
 }
 
+const defaultCreateValues = {
+  applicationCategory: 'seed_merchant',
+  registrationNumber: '',
+  applicantName: '',
+  address: '',
+  phone: '',
+  initials: '',
+  premises: '',
+  experienceIn: '',
+  yearsOfExperience: '',
+  dealersIn: 'Agricultural crops',
+  marketingOf: 'Agricultural crops',
+  otherDealersIn: '',
+  otherMarketingOf: '',
+  adequateLand: 'Yes',
+  adequateStorage: 'Yes',
+  landSize: '',
+  adequateEquipment: 'No',
+  contractualAgreement: 'Yes',
+  fieldOfficers: 'Yes',
+  conversantSeedMatters: 'Yes',
+  sourceOfSeed: '',
+  adequateLandForProduction: 'Yes',
+  internalQualityProgram: 'Yes',
+  receipt: '',
+  statusComment: '',
+  acceptDeclaration: false
+};
+
 const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialogProps) => {
-  const [values, setValues] = useState<Record<string, any>>({
-    applicationCategory: 'seed_merchant',
-    registrationNumber: '',
-    applicantName: '',
-    address: '',
-    phone: '',
-    initials: '',
-    premises: '',
-    experienceIn: '',
-    yearsOfExperience: '',
-    dealersIn: 'Agricultural crops',
-    marketingOf: 'Agricultural crops',
-    otherDealersIn: '',
-    otherMarketingOf: '',
-    adequateLand: 'Yes',
-    adequateStorage: 'Yes',
-    landSize: '',
-    adequateEquipment: 'No',
-    contractualAgreement: 'Yes',
-    fieldOfficers: 'Yes',
-    conversantSeedMatters: 'Yes',
-    sourceOfSeed: '',
-    adequateLandForProduction: 'Yes',
-    internalQualityProgram: 'Yes',
-    receipt: '',
-    statusComment: '',
-    acceptDeclaration: false
-  });
+  const [values, setValues] = useState<Record<string, any>>({ ...defaultCreateValues });
 
   const handleChange = (key: string, value: any) => setValues((v) => ({ ...v, [key]: value }));
 
   const handleSubmit = async () => {
     await onSave?.(values);
+    // Reset the form after successful save
+    setValues({ ...defaultCreateValues });
     // Parent controls closing once mutation + refetch complete
   };
 
@@ -72,8 +76,29 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
           </DialogTitle>
         </DialogHeader>
         <DialogBody className="space-y-8">
+          {/* Application Category */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Application Category
+            </h3>
+            <div className="max-w-sm">
+              <label className="form-label">Application Category</label>
+              <Select
+                value={values.applicationCategory}
+                onValueChange={(v) => handleChange('applicationCategory', v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="seed_merchant">Seed Merchant/Company</SelectItem>
+                  <SelectItem value="seed_exporter_or_importer">Seed Exporter/Importer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Basic Information Section */}
-          
 
           {/* Contact Information Section */}
           {/* <div className="space-y-4">

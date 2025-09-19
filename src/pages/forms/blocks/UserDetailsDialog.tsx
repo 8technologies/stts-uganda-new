@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { URL_2 } from '@/config/urls';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components';
@@ -10,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
 
 interface IUserDetailsDialogProps<T = any> {
   open: boolean;
@@ -48,14 +51,36 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
   const [action, setAction] = useState<'assign_inspector' | 'halt' | 'reject' | ''>('');
   const [inspector, setInspector] = useState('');
   const [comment, setComment] = useState('');
+  const { auth } = useAuthContext();
+  const perms = getPermissionsFromToken(auth?.access_token);
+  const canApprove = !!perms['can_approve'];
+  const canAssignInspector = !!perms['can_assign_inspector'];
+  const canReject = !!perms['can_reject'];
+  const canHalt = !!perms['can_halt'];
+  const permittedActions = useMemo(
+    () =>
+      [
+        {
+          value: 'assign_inspector' as const,
+          label: 'Assign Inspector',
+          allowed: canAssignInspector
+        },
+        { value: 'halt' as const, label: 'Halt', allowed: canHalt },
+        { value: 'reject' as const, label: 'Reject', allowed: canReject }
+      ].filter((a) => a.allowed),
+    [canAssignInspector, canHalt, canReject]
+  );
+  const isActionPermitted = permittedActions.some((a) => a.value === action);
   const isConfirmDisabled =
     !action ||
     (action === 'assign_inspector' && !inspector) ||
-    ((action === 'halt' || action === 'reject') && !comment);
+    ((action === 'halt' || action === 'reject') && !comment) ||
+    !isActionPermitted;
   const handleConfirm = () => {
     console.log('Confirm action', { id: d?.id, action, inspector, comment });
     onOpenChange(false);
   };
+  const u = d?.user || {};
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-[570px] h-full flex flex-col">
@@ -65,6 +90,17 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
           </SheetTitle>
         </SheetHeader>
         <div className="flex-1 min-h-0 overflow-y-auto px-2 pb-6 space-y-6">
+          {/* Applicant Information */}
+          <div className="space-y-4">
+            <div className="text-sm font-semibold text-gray-900">Applicant Information</div>
+            <LabeledRow label="Name of Applicant">{u.name || u.username || '-'}</LabeledRow>
+            <LabeledRow label="Phone No">{u.phone_number || d?.phone_number || '-'}</LabeledRow>
+            <LabeledRow label="Company Initials">{u.company_initials || '-'}</LabeledRow>
+            <LabeledRow label="Email">{u.email || '-'}</LabeledRow>
+            <LabeledRow label="District">{u.district || '-'}</LabeledRow>
+            <LabeledRow label="Premises Location">{u.premises_location || '-'}</LabeledRow>
+          </div>
+
           <div className="space-y-4">
             <LabeledRow label="Application Category">{typeLabel(d.type)}</LabeledRow>
             <LabeledRow label="Seed board registration number">
@@ -96,6 +132,20 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
             <LabeledRow label="Have internal quality program">
               {yesno(d.have_internal_quality_program)}
             </LabeledRow>
+            <LabeledRow label="Receipt">
+              {d.receipt_id ? (
+                <a
+                  href={`${URL_2}/form_attachments/${d.receipt_id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary-600 hover:underline"
+                >
+                  View receipt
+                </a>
+              ) : (
+                '-'
+              )}
+            </LabeledRow>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
@@ -112,31 +162,31 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
 
           {/* Actions */}
           <div className="space-y-4">
-            <div className="text-sm font-semibold text-gray-900">Take Action</div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {[
-                { value: 'assign_inspector', label: 'Assign Inspector' },
-                { value: 'halt', label: 'Halt' },
-                { value: 'reject', label: 'Reject' }
-              ].map((opt) => (
-                <label
-                  key={opt.value}
-                  className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                    action === (opt.value as any) ? 'border-primary-500' : 'border-gray-200'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="sr4-action"
-                    value={opt.value}
-                    checked={action === (opt.value as any)}
-                    onChange={() => setAction(opt.value as any)}
-                    className="text-primary-600"
-                  />
-                  <span className="text-sm font-medium text-gray-800">{opt.label}</span>
-                </label>
-              ))}
-            </div>
+            {permittedActions.length > 0 && (
+              <div className="text-sm font-semibold text-gray-900">Take Action</div>
+            )}
+            {permittedActions.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {permittedActions.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
+                      action === opt.value ? 'border-primary-500' : 'border-gray-200'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="sr4-action"
+                      value={opt.value}
+                      checked={action === opt.value}
+                      onChange={() => setAction(opt.value)}
+                      className="text-primary-600"
+                    />
+                    <span className="text-sm font-medium text-gray-800">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            )}
 
             {action === 'assign_inspector' && (
               <div className="max-w-sm">
@@ -173,18 +223,22 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
               Close
             </Button>
           </div>
-          <div className="flex gap-2">
-            <Button
-              className="btn btn-secondary"
-              onClick={handleConfirm}
-              disabled={isConfirmDisabled}
-            >
-              <KeenIcon icon="tick-square" /> Approve
-            </Button>
-            <Button onClick={handleConfirm} disabled={isConfirmDisabled}>
-              <KeenIcon icon="tick-square" /> Confirm Action
-            </Button>
-          </div>
+          {permittedActions.length > 0 && (
+            <div className="flex gap-2">
+              {canApprove && (
+                <Button
+                  className="btn btn-secondary"
+                  onClick={handleConfirm}
+                  disabled={isConfirmDisabled}
+                >
+                  <KeenIcon icon="tick-square" /> Approve
+                </Button>
+              )}
+              <Button onClick={handleConfirm} disabled={isConfirmDisabled}>
+                <KeenIcon icon="tick-square" /> Confirm Action
+              </Button>
+            </div>
+          )}
         </div>
       </SheetContent>
     </Sheet>
