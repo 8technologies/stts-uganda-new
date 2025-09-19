@@ -28,6 +28,9 @@ export const MODULES_CONFIG: ModuleConfig[] = [
     permissions: [
       { id: 'can_manage_all_forms', label: 'Can Manage All Forms' },
       { id: 'can_approve', label: 'Can Approve' },
+      { id: 'can_assign_inspector', label: 'Can Assign Inspector' },
+      { id: 'can_reject', label: 'Can Reject' },
+      { id: 'can_halt', label: 'Can Halt' },
       { id: 'can_view_sr4_forms', label: 'Can View SR4 Forms' },
       { id: 'can_create_sr4_forms', label: 'Can Create SR4 Forms' },
       { id: 'can_edit_sr4_forms', label: 'Can Edit SR4 Forms' },

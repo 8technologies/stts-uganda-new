@@ -12,6 +12,7 @@ interface IUsersData {
   location: string;
   flag: string;
   activity: string;
+  created_at?: string;
 }
 
 const UsersData: IUsersData[] = [
