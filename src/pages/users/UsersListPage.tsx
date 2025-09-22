@@ -135,7 +135,14 @@ const UserFormDialog = ({
         <SheetHeader className="mb-4">
           <SheetTitle>{isEditing ? 'Edit User' : 'Create User'}</SheetTitle>
         </SheetHeader>
-        <form onSubmit={handleSubmit} className="h-full flex flex-col">
+        <form
+          onSubmit={handleSubmit}
+          className="h-full flex flex-col"
+          style={{
+            height: 'calc(100vh - 75px)',
+            overflow: 'auto'
+          }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-1 block">Username</label>
@@ -154,7 +161,9 @@ const UserFormDialog = ({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Company initials</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Company initials
+              </label>
               <Input
                 value={form.company_initials}
                 onChange={(e) => setForm({ ...form, company_initials: e.target.value })}
@@ -188,7 +197,9 @@ const UserFormDialog = ({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Premises location</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Premises location
+              </label>
               <Input
                 value={form.premises_location}
                 onChange={(e) => setForm({ ...form, premises_location: e.target.value })}
@@ -244,17 +255,17 @@ const UserFormDialog = ({
                 </div>
               )}
             </div>
-            {!isEditing && (
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Password</label>
-                <Input
-                  type="password"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  required
-                />
-              </div>
-            )}
+            {/* {!isEditing && ( */}
+            <div className="md:col-span-2">
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Password</label>
+              <Input
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                required
+              />
+            </div>
+            {/* )} */}
           </div>
           <div className="mt-6 flex justify-end gap-3 border-t pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

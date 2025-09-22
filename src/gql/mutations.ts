@@ -170,6 +170,51 @@ const SAVE_SR6_FORMS = gql`
   }
 `;
 
+const ASSIGN_INSPECTOR = gql`
+  mutation AssignInspector($payload: AsignInspectorInput!) {
+    assignInspector(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const HALT_FORM = gql`
+  mutation HaltForm($payload: HaltPayload!) {
+    haltForm(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const REJECT_FORM = gql`
+  mutation RejectForm($payload: HaltPayload!) {
+    rejectForm(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const APPROVE_FORM = gql`
+  mutation ApproveForm($payload: ApprovePayload!) {
+    approveForm(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const RECOMMEND = gql`
+  mutation Recommend($payload: HaltPayload!) {
+    recommend(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
 export {
   LOGIN,
   SIGNUP,
@@ -179,5 +224,10 @@ export {
   DELETE_ROLE,
   DELETE_USER,
   SAVE_SR4_FORMS,
-  SAVE_SR6_FORMS
+  SAVE_SR6_FORMS,
+  ASSIGN_INSPECTOR,
+  HALT_FORM,
+  REJECT_FORM,
+  APPROVE_FORM,
+  RECOMMEND
 };
