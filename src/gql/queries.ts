@@ -99,6 +99,7 @@ const LOAD_SR4_FORMS = gql`
       valid_until
       status
       status_comment
+      inspector_comment
       recommendation
       inspector_id
       dealers_in_other
@@ -217,4 +218,26 @@ const LOAD_QDS_FORMS = gql`
   }
 `;
 
-export { LOAD_USERS, ME, ROLES, REGISTER, LOAD_SR4_FORMS, LOAD_SR6_FORMS, LOAD_QDS_FORMS };
+const LOAD_INSPECTORS = gql`
+  query Inspectors {
+    inspectors {
+      id
+      username
+      name
+      company_initials
+      email
+      district
+    }
+  }
+`;
+
+export {
+  LOAD_USERS,
+  ME,
+  ROLES,
+  REGISTER,
+  LOAD_SR4_FORMS,
+  LOAD_SR6_FORMS,
+  LOAD_QDS_FORMS,
+  LOAD_INSPECTORS
+};
