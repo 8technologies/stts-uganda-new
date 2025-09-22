@@ -215,6 +215,44 @@ const RECOMMEND = gql`
   }
 `;
 
+const SAVE_QDS_FORMS = gql`
+  mutation SaveQdsForm($payload: QDSApplicationFormInput!) {
+    saveQdsForm(payload: $payload) {
+      success
+      message
+      result {
+        id
+        user_id
+        farm_location
+        recommendation
+        certification
+        years_of_experience
+        dealers_in
+        previous_grower_number
+        cropping_history
+        have_adequate_isolation
+        have_adequate_labor
+        aware_of_minimum_standards
+        signature_of_applicant
+        grower_number
+        registration_number
+        valid_from
+        valid_until
+        status
+        inspector_id
+        status_comment
+        inspector_comment
+        have_been_qds
+        isolation_distance
+        number_of_labors
+        have_adequate_storage_facility
+        is_not_used
+        examination_category
+      }
+    }
+  }
+`;
+
 export {
   LOGIN,
   SIGNUP,
@@ -225,6 +263,7 @@ export {
   DELETE_USER,
   SAVE_SR4_FORMS,
   SAVE_SR6_FORMS,
+  SAVE_QDS_FORMS,
   ASSIGN_INSPECTOR,
   HALT_FORM,
   REJECT_FORM,

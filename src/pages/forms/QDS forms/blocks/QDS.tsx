@@ -29,29 +29,58 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
+import { KeenIcon as Icon } from '@/components';
 import { Button } from '@/components/ui/button';
-import { SR6EditDialog } from './QDSEditDialog';
 import { SR6DetailsDialog } from './QDSDetailsDialog';
 import { LOAD_QDS_FORMS } from '@/gql/queries';
-import { useQuery } from '@apollo/client/react';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { SAVE_QDS_FORMS } from '@/gql/mutations';// <-- new unified dialog
+import { QDSFormDialog } from './QDSCreateDialog';
 
+// --- Types ---
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
 }
+
+type Qds = {
+  id: string | number;
+  certification: string;
+  years_of_experience: string;
+  dealers_in: string;
+  previous_grower_number: string;
+  cropping_history: string;
+  have_adequate_isolation: boolean;
+  have_adequate_labor: boolean;
+  aware_of_minimum_standards: boolean;
+  signature_of_applicant: string;
+  grower_number: string;
+  registration_number: string;
+  status: any;
+  have_been_qds: boolean;
+  isolation_distance: number;
+  number_of_labors: number;
+  have_adequate_storage_facility: boolean;
+  is_not_used: boolean;
+  examination_category: number;
+};
 
 type QDSApplication = {
   id: string;
   status?: string | null;
   type: 'seed_breeder' | 'seed_producer';
-  inspector?: { name?: string; district?: string; } | null;
-  user?:  {name?: string; username?: string;
-      company_initials?: string;
-      email?: string;
-      district?: string;
-      phone_number?: string;
-      premises_location?: string;
-    } | null;
+  inspector?: { name?: string; district?: string } | null;
+  user?: {
+    name?: string;
+    username?: string;
+    company_initials?: string;
+    email?: string;
+    district?: string;
+    phone_number?: string;
+    premises_location?: string;
+  } | null;
 };
+
+// --- Utils ---
 const statusToColor = (status?: string | null) => {
   switch (status) {
     case 'accepted':
@@ -67,20 +96,73 @@ const statusToColor = (status?: string | null) => {
   }
 };
 
-
+// --- Main ---
 const QDs = () => {
   const { data, loading, error, refetch } = useQuery(LOAD_QDS_FORMS);
-    const ColumnInputFilter = <TData, TValue>({ column }: IColumnFilterProps<TData, TValue>) => {
-      return (
-        <Input
-          placeholder="Filter..."
-          value={(column.getFilterValue() as string) ?? ''}
-          onChange={(event) => column.setFilterValue(event.target.value)}
-          className="h-9 w-full max-w-40"
-        />
-      );
+
+  const ColumnInputFilter = <TData, TValue>({
+    column
+  }: IColumnFilterProps<TData, TValue>) => (
+    <Input
+      placeholder="Filter..."
+      value={(column.getFilterValue() as string) ?? ''}
+      onChange={(event) => column.setFilterValue(event.target.value)}
+      className="h-9 w-full max-w-40"
+    />
+  );
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingQds, setEditingQds] = useState<Qds | null>(null);
+
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedForm, setSelectedForm] = useState<QDSApplication | null>(null);
+
+  const [saveForm, { loading: saving }] = useMutation(SAVE_QDS_FORMS, {
+    refetchQueries: [{ query: LOAD_QDS_FORMS }],
+    awaitRefetchQueries: true
+  });
+
+  const handleSave = async (vals: Record<string, any>) => {
+    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const payload: any = {
+      id: editingQds?.id ?? undefined,
+      certification: vals.otherDocuments,
+      years_of_experience: vals.yearsOfExperience,
+      dealers_in: null,
+      previous_grower_number: vals.previousGrowerNumber,
+      cropping_history: vals.croppingHistory,
+      have_adequate_isolation: toBool(vals.adequateIsolation),
+      have_adequate_labor: toBool(vals.adequateLabour),
+      aware_of_minimum_standards: toBool(vals.standardSeed),
+      signature_of_applicant: null,
+      grower_number: null,
+      registration_number: vals.previousGrowerNumber,
+      have_been_qds: toBool(vals.BeenQdsProducer),
+      isolation_distance: vals.isolationDistance
+        ? parseInt(vals.isolationDistance, 10)
+        : 0,
+      status: null,
+      number_of_labors: vals.numberOfLabours
+        ? parseInt(vals.numberOfLabours, 10)
+        : 0,
+      have_adequate_storage_facility: toBool(vals.adequateStorage),
+      is_not_used: null,
+      examination_category: null
     };
 
+    try {
+      await saveForm({ variables: { payload } });
+      toast(editingQds ? 'QDS application updated' : 'QDS application created');
+      setDialogOpen(false);
+      setEditingQds(null);
+    } catch (e: any) {
+      toast('Failed to save application', {
+        description: e?.message ?? 'Unknown error'
+      });
+    }
+  };
+
+  // --- Columns ---
   const columns = useMemo<ColumnDef<ISR6Data>[]>(
     () => [
       {
@@ -89,9 +171,7 @@ const QDs = () => {
         cell: ({ row }) => <DataGridRowSelect row={row} />,
         enableSorting: false,
         enableHiding: false,
-        meta: {
-          headerClassName: 'w-0'
-        }
+        meta: { headerClassName: 'w-0' }
       },
       {
         accessorFn: (row: ISR6Data) => row.user.userName,
@@ -104,34 +184,13 @@ const QDs = () => {
           />
         ),
         enableSorting: true,
-        // cell: ({ row }) => {
-        //   // 'row' argumentini cell funksiyasiga qo'shdik
-        //   return (
-        //     <div className="flex items-center gap-4">
-        //       <div className="flex flex-col gap-0.5">
-        //         <Link
-        //           to="#"
-        //           className="text-sm font-medium text-gray-900 hover:text-primary-active mb-px"
-        //         >
-        //           {row.original.user.userName}
-        //         </Link>
-
-        //         {/* <Link
-        //           to="#"
-        //           className="text-2sm text-gray-700 font-normal hover:text-primary-active"
-        //         >
-        //           {row.original.user.userGmail}
-        //         </Link> */}
-        //       </div>
-        //     </div>
-        //   );
-          
-        // },
-        cell: (info) => {
-          return info.row.original.user.userName != '-' ? (
+        cell: (info) =>
+          info.row.original.user.userName != '-' ? (
             <div className="flex items-center gap-2">
               <img
-                src={toAbsoluteUrl(`/media/avatars/${info.row.original.user.avatar}`)}
+                src={toAbsoluteUrl(
+                  `/media/avatars/${info.row.original.user.avatar}`
+                )}
                 className="rounded-full size-9 shrink-0"
                 alt={`${info.row.original.user.userName}`}
               />
@@ -139,8 +198,7 @@ const QDs = () => {
             </div>
           ) : (
             info.row.original.user.userName
-          );
-        },
+          ),
         meta: {
           className: 'min-w-[200px]',
           headerClassName: 'min-w-[200px]',
@@ -148,72 +206,52 @@ const QDs = () => {
         }
       },
       {
-        accessorFn: (row) => row.role,
-        id: 'role',
-        header: ({ column }) => (
-          <DataGridColumnHeader title="Application Category" column={column} />
-        ),
-        enableSorting: true,
-        cell: (info) => {
-          return info.row.original.role;
-        },
-        meta: {
-          headerClassName: 'min-w-[180px]'
-        }
-      },
-      {
-        // return label for filtering
         accessorFn: (row) => row.status.label,
         id: 'status',
-        header: ({ column }) => <DataGridColumnHeader title="Status" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Status" column={column} />
+        ),
         enableSorting: true,
-        cell: (info) => {
-          return (
+        cell: (info) => (
+          <span
+            className={`badge badge-${info.row.original.status.color} shrink-0 badge-outline rounded-[30px]`}
+          >
             <span
-              className={`badge badge-${info.row.original.status.color} shrink-0 badge-outline rounded-[30px]`}
-            >
-              <span
-                className={`size-1.5 rounded-full bg-${info.row.original.status.color} me-1.5`}
-              ></span>
-              {info.row.original.status.label}
-            </span>
-          );
-        },
-        meta: {
-          headerClassName: 'min-w-[120px]'
-        }
+              className={`size-1.5 rounded-full bg-${info.row.original.status.color} me-1.5`}
+            ></span>
+            {info.row.original.status.label}
+          </span>
+        ),
+        meta: { headerClassName: 'min-w-[120px]' }
       },
       {
         accessorFn: (row) => row.location,
         id: 'location',
-        header: ({ column }) => <DataGridColumnHeader title="Location" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Location" column={column} />
+        ),
         enableSorting: true,
-        cell: (info) => {
-          return (
-            <div className="flex items-center text-gray-800 font-normal gap-1.5">
-              {/* <img
-                src={toAbsoluteUrl(`/media/flags/${info.row.original.flag}`)}
-                className="rounded-full size-4 shrink-0"
-                alt={`${info.row.original.user.userName}`}
-              /> */}
-              {info.row.original.location}
-            </div>
-          );
-        },
-        meta: {
-          headerClassName: 'min-w-[120px]'
-        }
+        cell: (info) => (
+          <div className="flex items-center text-gray-800 font-normal gap-1.5">
+            {info.row.original.location}
+          </div>
+        ),
+        meta: { headerClassName: 'min-w-[120px]' }
       },
       {
         accessorFn: (row) => row.activity,
         id: 'activity',
-        header: ({ column }) => <DataGridColumnHeader title="Inspector" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Inspector" column={column} />
+        ),
         enableSorting: true,
-        cell: (info) => {
-          return info.row.original.activity != '-' ? (
+        cell: (info) =>
+          info.row.original.activity != '-' ? (
             <div className="flex items-center gap-2">
               <img
-                src={toAbsoluteUrl(`/media/avatars/${info.row.original.user.avatar}`)}
+                src={toAbsoluteUrl(
+                  `/media/avatars/${info.row.original.user.avatar}`
+                )}
                 className="rounded-full size-9 shrink-0"
                 alt={`${info.row.original.user.userName}`}
               />
@@ -221,8 +259,7 @@ const QDs = () => {
             </div>
           ) : (
             info.row.original.activity
-          );
-        },
+          ),
         meta: {
           headerClassName: 'min-w-[160px]',
           cellClassName: 'text-gray-800 font-normal'
@@ -231,11 +268,11 @@ const QDs = () => {
       {
         accessorFn: (row) => row.activity,
         id: 'created_by',
-        header: ({ column }) => <DataGridColumnHeader title="Created By" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Created By" column={column} />
+        ),
         enableSorting: true,
-        cell: (info) => {
-          return info.row.original.created_user;
-        },
+        cell: (info) => info.row.original.created_user,
         meta: {
           headerClassName: 'min-w-[160px]',
           cellClassName: 'text-gray-800 font-normal'
@@ -244,11 +281,11 @@ const QDs = () => {
       {
         accessorFn: (row) => row.activity,
         id: 'expires_on',
-        header: ({ column }) => <DataGridColumnHeader title="Expires On" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Expires On" column={column} />
+        ),
         enableSorting: true,
-        cell: (info) => {
-          return info.row.original?.valid_until;
-        },
+        cell: (info) => info.row.original?.valid_until,
         meta: {
           headerClassName: 'min-w-[150px]',
           cellClassName: 'text-gray-800 font-normal'
@@ -258,47 +295,45 @@ const QDs = () => {
         id: 'edit',
         header: () => '',
         enableSorting: false,
-        cell: (info) => {
-          return (
-            <>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="btn btn-sm btn-icon btn-clear btn-light">
-                    <KeenIcon icon="dots-vertical" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[190px]">
-                  <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedForm((info.row.original as any).raw);
-                      setEditOpen(true);
-                    }}
-                  >
-                    <KeenIcon icon="note" /> Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedForm((info.row.original as any).raw);
-                      setDetailsOpen(true);
-                    }}
-                  >
-                    <KeenIcon icon="eye" /> Details
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => console.log('Print Certificate', info.row.original)}
-                  >
-                    <KeenIcon icon="printer" /> Print Certificate
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          );
-        },
-        meta: {
-          headerClassName: 'w-[60px]'
-        }
+        cell: (info) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="btn btn-sm btn-icon btn-clear btn-light">
+                <KeenIcon icon="dots-vertical" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[190px]">
+              <DropdownMenuLabel className="font-medium">
+                Actions
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  setEditingQds(info.row.original.raw as any);
+                  setDialogOpen(true);
+                }}
+              >
+                <KeenIcon icon="note" /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedForm(info.row.original.raw as any);
+                  setDetailsOpen(true);
+                }}
+              >
+                <KeenIcon icon="eye" /> Details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  console.log('Print Certificate', info.row.original)
+                }
+              >
+                <KeenIcon icon="printer" /> Print Certificate
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+        meta: { headerClassName: 'w-[60px]' }
       }
     ],
     []
@@ -311,12 +346,11 @@ const QDs = () => {
         user: {
           avatar: 'blank.png',
           userName: f.user?.name,
-          userGmail: f.user.phone_number || ''
+          userGmail: f.user?.phone_number || ''
         },
         role: f.type === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
-        location: f.user.premises_location || f.user.premises_location|| '-',
-        // flag: 'uganda.svg',
+        location: f.user?.premises_location || '-',
         activity: f.inspector
           ? `${f.inspector.name ?? ''} ${f.inspector.district ?? ''}`.trim()
           : '-',
@@ -326,9 +360,6 @@ const QDs = () => {
       })),
     [forms]
   );
-  const [editOpen, setEditOpen] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedForm, setSelectedForm] = useState<QDSApplication | null>(null);
 
   const handleRowSelection = (state: RowSelectionState) => {
     const selectedRowIds = Object.keys(state);
@@ -377,7 +408,6 @@ const QDs = () => {
           </div>
 
           <div className="flex flex-wrap gap-2.5">
-            {/* Status filter */}
             <Select
               value={statusFilter}
               onValueChange={(v) => {
@@ -394,12 +424,13 @@ const QDs = () => {
                 <SelectItem value="accepted">Accepted</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
                 <SelectItem value="halted">Halted</SelectItem>
-                <SelectItem value="assigned_inspector">Assigned inspector</SelectItem>
+                <SelectItem value="assigned_inspector">
+                  Assigned inspector
+                </SelectItem>
                 <SelectItem value="recommended">Recommended</SelectItem>
               </SelectContent>
             </Select>
 
-            {/* Category filter */}
             <Select
               value={typeFilter}
               onValueChange={(v) => {
@@ -408,8 +439,8 @@ const QDs = () => {
                   v === 'seed_merchant'
                     ? 'Seed Merchant/Company'
                     : v === 'seed_exporter_or_importer'
-                      ? 'Seed Exporter/Importer'
-                      : '';
+                    ? 'Seed Exporter/Importer'
+                    : '';
                 table.getColumn('role')?.setFilterValue(label);
               }}
             >
@@ -419,7 +450,9 @@ const QDs = () => {
               <SelectContent className="w-56">
                 <SelectItem value="all">All Categories</SelectItem>
                 <SelectItem value="seed_merchant">Seed Merchant/Company</SelectItem>
-                <SelectItem value="seed_exporter_or_importer">Seed Exporter/Importer</SelectItem>
+                <SelectItem value="seed_exporter_or_importer">
+                  Seed Exporter/Importer
+                </SelectItem>
               </SelectContent>
             </Select>
 
@@ -441,7 +474,9 @@ const QDs = () => {
             <KeenIcon icon="arrow-rotate-right" /> Retry
           </button>
         </div>
-        <div className="text-xs text-gray-600">{String(error.message || 'Unknown error')}</div>
+        <div className="text-xs text-gray-600">
+          {String(error.message || 'Unknown error')}
+        </div>
       </div>
     );
   }
@@ -463,12 +498,14 @@ const QDs = () => {
         }}
       />
 
-      <SR6EditDialog
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        data={selectedForm || undefined}
-        onSave={(vals) => console.log('Save edit', { row: selectedForm, vals })}
+      <QDSFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        data={editingQds}
+        onSave={handleSave}
+        saving={saving}
       />
+
       <SR6DetailsDialog
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
