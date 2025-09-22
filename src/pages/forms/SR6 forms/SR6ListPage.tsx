@@ -31,8 +31,8 @@ const SR6ListPage = () => {
   const handleSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
     const payload: any = {
-      
 
+      years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
       previous_grower_number: vals.previousGrowerNumber,
       cropping_history: vals.croppingHistory,
@@ -41,10 +41,6 @@ const SR6ListPage = () => {
       aware_of_minimum_standards: toBool(vals.standardSeed),
       signature_of_applicant: null,
       grower_number: null,
-      registration_number: vals.previousGrowerNumber,
-      
-      valid_from: null,
-      valid_until: null,
       status: null,
       inspector_id: null,
       status_comment: null,
@@ -52,14 +48,15 @@ const SR6ListPage = () => {
       have_adequate_storage: toBool(vals.adequateStorage),
       seed_grower_in_past: toBool(vals.BeenSeedGrower),
       type: vals.applicationCategory,
-      years_of_experience: vals.yearsOfExperience,
-
+      id: null,
+      receipt: vals.receipt,
+      other_documents: vals.otherDocuments
 
     };
 
     try {
       await saveForm({ variables: { payload } });
-      toast('SR4 application saved');
+      toast('SR6 application saved');
       setCreateOpen(false);
     } catch (e: any) {
       toast('Failed to save application', { description: e?.message ?? 'Unknown error' });
@@ -166,6 +163,7 @@ const SR6ListPage = () => {
           <NetworkUserTableTeamCrewContent />
         </Container>
       </Fragment>
+      
       <SR6CreateDialog
         open={createOpen}
         onOpenChange={setCreateOpen}

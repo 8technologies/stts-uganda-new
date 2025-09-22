@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,44 +12,60 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components';
+import { URL_2 } from '@/config/urls';
 
 interface IUserEditDialogProps<T = any> {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   data?: T;
   onSave?: (values: Record<string, any>) => void;
+  saving?: boolean;
 }
 
-const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProps) => {
+const SR6EditDialog = ({ open, onOpenChange, data, onSave, saving }: IUserEditDialogProps) => {
   const [values, setValues] = useState<Record<string, any>>({
-    applicationCategory: data?.role || 'Seed Merchant/Company',
-    registrationNumber: 'MAAIF/MER/1029/2025',
-    applicantName: data?.user?.userName || '',
-    address: '',
-    phone: '',
-    initials: '',
-    premises: '',
-    experienceIn: '',
+    // applicationCategory: data?.role || 'Seed Merchant/Company',
+    applicationCategory: 'seed_breeder',
+    registrationNumber: '',
+    croppingHistory: '',
     yearsOfExperience: '',
-    dealersIn: 'Agricultural crops',
-    marketingOf: 'Agricultural crops',
-    BeenSeedGrower: 'Yes',
+    previousGrowerNumber: '',
+    BeenSeedGrower: '',
     adequateStorage: 'Yes',
-    landSize: '',
     adequateIsolation: 'No',
     adequateLabour: 'Yes',
     standardSeed: 'Yes',
-    sourceOfSeed: '',
     receipt:'',
     otherDocuments: '',
-    statusComment: '',
   });
+
+   // hydrate values from SR4 record
+    useEffect(() => {
+      if (!open || !data) return;
+      const d: any = data;
+      const yesno = (b: any) => (b ? 'Yes' : 'No');
+      setValues({
+        applicationCategory: d.type ?? 'seed_breeder',
+        registrationNumber: d.seed_board_registration_number ?? '',
+        croppingHistory: d.cropping_history ?? '',
+        yearsOfExperience: d.years_of_experience ?? '',
+        previousGrowerNumber: d.previous_grower_number ?? '',
+        BeenSeedGrower: yesno(d.seed_grower_in_past),
+        adequateStorage: yesno(d.have_adequate_storage),
+        adequateIsolation: yesno(d.have_adequate_isolation),
+        adequateLabour: yesno(d.have_adequate_labor),
+        standardSeed: yesno(d.aware_of_minimum_standards),
+        receipt:'',
+        otherDocuments: '',
+      });
+    }, [open, data]);
+  
 
   const handleChange = (key: string, value: any) => setValues((v) => ({ ...v, [key]: value }));
 
-  const handleSubmit = () => {
-    onSave?.(values);
-    onOpenChange(false);
+  const handleSubmit = async () => {
+    // Let parent close after successful update
+    await onSave?.(values);
   };
 
   return (
@@ -86,7 +102,7 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">Crop history for the last three season or years</label>
-                <Textarea value={values.yearsOfExperience} onChange={(e) => handleChange('yearsOfExperience', e.target.value)} />
+                <Textarea value={values.croppingHistory} onChange={(e) => handleChange('croppingHistory', e.target.value)} />
               </div>
               
             </div>
@@ -117,8 +133,19 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
               </Select>
             </div>
           ))}
+              {values.BeenSeedGrower === 'Yes' && (
+                <div className="flex flex-col gap-1">
+                  <label className="form-label">Enter Previous grower number</label>
+                  <Input
+                    value={values.previousGrowerNumber || ''}
+                    onChange={(e) => handleChange('previousGrowerNumber', e.target.value)}
+                    placeholder="Please specify you previous grower number"
+                  />
+                </div>
+              )}
         </div>
       </div>
+      
 
       {/* Receipt Upload Section */}
       <div className="space-y-4">
@@ -165,6 +192,36 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
                 </p>
               )}
 
+              {/* Existing receipt when record has one and no new file selected */}
+                {!values.receipt && (data as any)?.receipt_id && (
+                  <div className="mt-2 text-sm text-gray-700">
+                    <div className="mb-1">Existing receipt:</div>
+                    {/\.(png|jpe?g|gif|bmp|webp)$/i.test(String((data as any)?.receipt_id)) ? (
+                      <a
+                        href={`${URL_2}/form_attachments/${(data as any)?.receipt_id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-block"
+                      >
+                        <img
+                          src={`${URL_2}/form_attachments/${(data as any)?.receipt_id}`}
+                          alt="Existing receipt preview"
+                          className="mt-1 w-40 rounded-lg shadow"
+                        />
+                      </a>
+                    ) : (
+                      <a
+                        href={`${URL_2}/form_attachments/${(data as any)?.receipt_id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary-600 hover:underline"
+                      >
+                        View existing receipt
+                      </a>
+                    )}
+                  </div>
+                )}
+
               {/* Image preview if it's an image */}
               {values.receipt && values.receipt.type.startsWith("image/") && (
                 <img
@@ -180,7 +237,7 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
               <label className="form-label text-gray-700 font-medium">Attach Other Documents</label>
               
               <label
-                htmlFor="receipt-upload"
+                htmlFor="otherDocuments-upload"
                 className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 transition"
               >
                 <div className="flex flex-col items-center">
@@ -216,6 +273,36 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
                 </p>
               )}
 
+              {/* Existing receipt when record has one and no new file selected */}
+                {!values.otherDocuments && (data as any)?.other_documents && (
+                  <div className="mt-2 text-sm text-gray-700">
+                    <div className="mb-1">Existing documents:</div>
+                    {/\.(png|jpe?g|gif|bmp|webp)$/i.test(String((data as any)?.other_documents)) ? (
+                      <a
+                        href={`${URL_2}/form_attachments/${(data as any)?.other_documents}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-block"
+                      >
+                        <img
+                          src={`${URL_2}/form_attachments/${(data as any)?.other_documents}`}
+                          alt="Existing receipt preview"
+                          className="mt-1 w-40 rounded-lg shadow"
+                        />
+                      </a>
+                    ) : (
+                      <a
+                        href={`${URL_2}/form_attachments/${(data as any)?.other_documents}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary-600 hover:underline"
+                      >
+                        View existing Attachments
+                      </a>
+                    )}
+                  </div>
+                )}
+
               {/* Image preview if it's an image */}
               {values.otherDocuments && values.otherDocuments.type.startsWith("image/") && (
                 <img
@@ -229,40 +316,29 @@ const SR6EditDialog = ({ open, onOpenChange, data, onSave }: IUserEditDialogProp
         </div>
       </div>
 
-
-      {/* Declaration Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Declaration</h3>
-        <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-          <p className="text-sm text-gray-700 leading-relaxed">
-            I/WE* AT ANY TIME DURING OFFICIAL WORKING HOURS EVEN WITHOUT previous appointment will allow the inspectors entry to the seed stores and thereby provide them with the facilities necessary to carry out their inspection work as laid out in the seed and plant regulations, 2015. I/We further declare that I/We am/are conversant with the Regulations. In addition I/We will send a list of all seed lots in our stores on a given date and/or at such a date as can be mutually agreed upon between the National Seed Certification Service and ourselves.
-          </p>
-          <div className='flex items-center gap-2'>
-            <input type="radio" id="accept-declaration" name="declaration" className="text-blue-600" />
-            <label htmlFor="accept-declaration" className="form-label text-sm cursor-pointer">I Accept</label>
-          </div>
-        </div>
-      </div>
-
       {/* Application Status Section */}
       
     </DialogBody>
     
     <DialogFooter className="flex items-center justify-between border-t pt-4">
-      <div className="flex gap-2">
-        <Button variant="light" onClick={() => onOpenChange(false)}>
-          Cancel
-        </Button>
-      </div>
-      <div className="flex gap-2">
-        <Button variant="outline" onClick={() => console.log('Save draft', values)}>
-          <KeenIcon icon="task" /> Save Draft
-        </Button>
-        <Button onClick={handleSubmit}>
-          <KeenIcon icon="tick-square" /> Save Changes
-        </Button>
-      </div>
-    </DialogFooter>
+          <div className="flex gap-2">
+            <Button variant="light" onClick={() => onOpenChange(false)} disabled={!!saving}>
+              Cancel
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => console.log('Save draft', values)}
+              disabled={!!saving}
+            >
+              <KeenIcon icon="task" /> Save Draft
+            </Button>
+            <Button onClick={handleSubmit} disabled={!!saving}>
+              <KeenIcon icon="tick-square" /> {saving ? 'Saving…' : 'Save Changes'}
+            </Button>
+          </div>
+        </DialogFooter>
   </DialogContent>
 </Dialog>
   );

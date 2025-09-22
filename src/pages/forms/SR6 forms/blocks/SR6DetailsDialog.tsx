@@ -1,18 +1,18 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
+import { useMemo, useState } from 'react';
+import { URL_2 } from '@/config/urls';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { KeenIcon } from '@/components';
 import { Textarea } from '@/components/ui/textarea';
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
 
 interface IUserDetailsDialogProps<T = any> {
   open: boolean;
@@ -21,195 +21,241 @@ interface IUserDetailsDialogProps<T = any> {
 }
 
 const LabeledRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
-    <div className="text-sm text-gray-700 font-medium">{label}</div>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-6 md:gap-y-4 md:gap-x-8 items-start">
+    <div className="text-sm text-gray-700 font-medium pt-1">{label}</div>
     <div className="md:col-span-2">
       <div className="form-control">{children}</div>
     </div>
   </div>
 );
 
-const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps) => {
-  const [values, setValues] = useState<Record<string, any>>({
-      applicationCategory: data?.role || 'Seed Merchant/Company',
-      registrationNumber: 'MAAIF/MER/1029/2025',
-      applicantName: data?.user?.userName || '',
-      address: '',
-      phone: '',
-      initials: '',
-      premises: '',
-      experienceIn: '',
-      yearsOfExperience: '',
-      dealersIn: 'Agricultural crops',
-      marketingOf: 'Agricultural crops',
-      BeenSeedGrower: 'Yes',
-      adequateStorage: 'Yes',
-      landSize: '',
-      adequateIsolation: 'No',
-      adequateLabour: 'Yes',
-      standardSeed: 'Yes',
-      sourceOfSeed: '',
-      receipt:'',
-      otherDocuments: '',
-      statusComment: '',
-    });
+const yesno = (b?: boolean | null) => (b ? 'Yes' : 'No');
 
-  const handleChange = (key: string, value: any) => setValues((v) => ({ ...v, [key]: value }));
+const typeLabel = (t?: string) =>
+  t === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer';
 
+const statusBadge = (s?: string | null) => {
+  const color =
+    s === 'accepted' || s === 'recommended'
+      ? 'success'
+      : s === 'rejected' || s === 'halted'
+        ? 'danger'
+        : 'primary';
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[980px] w-[96vw]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+    <span className={`badge badge-${color} badge-outline rounded-[30px]`}>{s || 'pending'}</span>
+  );
+};
+
+const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<any>) => {
+  const d = data || {};
+  const [action, setAction] = useState<'assign_inspector' | 'halt' | 'reject' | ''>('');
+  const [inspector, setInspector] = useState('');
+  const [comment, setComment] = useState('');
+  const { auth } = useAuthContext();
+  const perms = getPermissionsFromToken(auth?.access_token);
+  const canApprove = !!perms['can_approve'];
+  const canAssignInspector = !!perms['can_assign_inspector'];
+  const canReject = !!perms['can_reject'];
+  const canHalt = !!perms['can_halt'];
+  const permittedActions = useMemo(
+    () =>
+      [
+        {
+          value: 'assign_inspector' as const,
+          label: 'Assign Inspector',
+          allowed: canAssignInspector
+        },
+        { value: 'halt' as const, label: 'Halt', allowed: canHalt },
+        { value: 'reject' as const, label: 'Reject', allowed: canReject }
+      ].filter((a) => a.allowed),
+    [canAssignInspector, canHalt, canReject]
+  );
+  const isActionPermitted = permittedActions.some((a) => a.value === action);
+  const isConfirmDisabled =
+    !action ||
+    (action === 'assign_inspector' && !inspector) ||
+    ((action === 'halt' || action === 'reject') && !comment) ||
+    !isActionPermitted;
+  const handleConfirm = () => {
+    console.log('Confirm action', { id: d?.id, action, inspector, comment });
+    onOpenChange(false);
+  };
+  const u = d?.user || {};
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full sm:max-w-[570px] h-full flex flex-col">
+        <SheetHeader className="mb-0 px-2 pt-0">
+          <SheetTitle className="flex items-center gap-2">
             <KeenIcon icon="information-2" /> Application Details
-          </DialogTitle>
-        </DialogHeader>
-        <DialogBody className="space-y-6">
+          </SheetTitle>
+        </SheetHeader>
+        <div className="flex-1 min-h-0 overflow-y-auto px-2 pb-6 space-y-6">
+          {/* Applicant Information */}
           <div className="space-y-4">
-            <LabeledRow label="Application Category">Seed Merchant/Company</LabeledRow>
-            <LabeledRow label="Seed board registration number">MAAIF/MER/1029/2025</LabeledRow>
-            <LabeledRow label="Name of applicant">{data?.user?.userName}</LabeledRow>
-            <LabeledRow label="Address">Itaque ab qui cillum</LabeledRow>
-            <LabeledRow label="Phone number">+1 (745) 145-3955</LabeledRow>
-            <LabeledRow label="Company initials">Holder Phelps Associates</LabeledRow>
-            <LabeledRow label="Premises location">Neque omnis nihil di</LabeledRow>
-            <LabeledRow label="Experience in">Iste sunt sunt sint</LabeledRow>
-            <LabeledRow label="Years of experience">1991 Years</LabeledRow>
-            <LabeledRow label="Dealers in">Agricultural crops</LabeledRow>
-            <LabeledRow label="Marketing of">Agricultural crops</LabeledRow>
-            <LabeledRow label="Have adequate land">Yes</LabeledRow>
-            <LabeledRow label="Have adequate storage">Yes</LabeledRow>
-            <LabeledRow label="Land size (In Acres)">56</LabeledRow>
-            <LabeledRow label="Have adequate equipment">No</LabeledRow>
-            <LabeledRow label="Have contractual agreement">Yes</LabeledRow>
-            <LabeledRow label="Have adequate field officers">Yes</LabeledRow>
-            <LabeledRow label="Have conversant seed matters">Yes</LabeledRow>
-            <LabeledRow label="Source of seed">Eos autem porro dolo</LabeledRow>
-            <LabeledRow label="Have adequate land for production">Yes</LabeledRow>
-            <LabeledRow label="Have internal quality program">Yes</LabeledRow>
+            <div className="text-sm font-semibold text-gray-900">Applicant Information</div>
+            <LabeledRow label="Name of Applicant">{u.name || u.username || '-'}</LabeledRow>
+            <LabeledRow label="Phone No">{u.phone_number || d?.phone_number || '-'}</LabeledRow>
+            <LabeledRow label="Company Initials">{u.company_initials || '-'}</LabeledRow>
+            <LabeledRow label="Email">{u.email || '-'}</LabeledRow>
+            <LabeledRow label="District">{u.district || '-'}</LabeledRow>
+            <LabeledRow label="Premises Location">{u.premises_location || '-'}</LabeledRow>
+          </div>
+
+          <div className="space-y-4">
+            <LabeledRow label="Application Category">{typeLabel(d.type)}</LabeledRow>
+            <LabeledRow label="Seed board registration number">
+              {d.seed_board_registration_number || '-'}
+            </LabeledRow>
+            <LabeledRow label="Experience in">{d.experienced_in || '-'}</LabeledRow>
+            <LabeledRow label="Years of experience">{d.years_of_experience || '-'}</LabeledRow>
+            <LabeledRow label="Dealers in">{d.dealers_in || '-'}</LabeledRow>
+            <LabeledRow label="Marketing of">{d.marketing_of || '-'}</LabeledRow>
+            <LabeledRow label="Have adequate land">{yesno(d.have_adequate_land)}</LabeledRow>
+            <LabeledRow label="Have adequate storage">{yesno(d.have_adequate_storage)}</LabeledRow>
+            <LabeledRow label="Land size (In Acres)">{d.land_size || '-'}</LabeledRow>
+            <LabeledRow label="Have adequate equipment">
+              {yesno(d.have_adequate_equipment)}
+            </LabeledRow>
+            <LabeledRow label="Have contractual agreement">
+              {yesno(d.have_contractual_agreement)}
+            </LabeledRow>
+            <LabeledRow label="Have adequate field officers">
+              {yesno(d.have_adequate_field_officers)}
+            </LabeledRow>
+            <LabeledRow label="Have conversant seed matters">
+              {yesno(d.have_conversant_seed_matters)}
+            </LabeledRow>
+            <LabeledRow label="Source of seed">{d.source_of_seed || '-'}</LabeledRow>
+            <LabeledRow label="Have adequate land for production">
+              {yesno(d.have_adequate_land_for_production)}
+            </LabeledRow>
+            <LabeledRow label="Have internal quality program">
+              {yesno(d.have_internal_quality_program)}
+            </LabeledRow>
+            <LabeledRow label="Receipt">
+              {d.receipt_id ? (
+                <a
+                  href={`${URL_2}/form_attachments/${d.receipt_id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary-600 hover:underline"
+                >
+                  View receipt
+                </a>
+              ) : (
+                '-'
+              )}
+            </LabeledRow>
+            <LabeledRow label="Supportive Documents">
+              {d.other_documents ? (
+                <a
+                  href={`${URL_2}/form_attachments/${d.other_documents}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary-600 hover:underline"
+                >
+                  View Supportive document
+                </a>
+              ) : (
+                '-'
+              )}
+            </LabeledRow>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
             <div className="text-sm text-gray-700 font-medium">Status</div>
-            <div className="md:col-span-2">
-              <span className="badge badge-success badge-outline rounded-[30px]">Accepted</span>
-            </div>
+            <div className="md:col-span-2">{statusBadge(d.status)}</div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
             <div className="text-sm text-gray-700 font-medium">Status comment</div>
             <div className="md:col-span-2">
-              <div className="form-control">No comment</div>
+              <div className="form-control">{d.status_comment || '-'}</div>
             </div>
           </div>
 
+          {/* Actions */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Application Status</h3>
-            <div className="space-y-4">
-              <div className="flex flex-col gap-3">
-                <label className="form-label">Select Action</label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {[
-                    { value: 'assign_inspector', label: 'Assign Inspector', color: 'text-blue-600' },
-                    { value: 'halt', label: 'Halt', color: 'text-orange-600' },
-                    { value: 'reject', label: 'Reject', color: 'text-red-600' },
-                    { value: 'accept', label: 'Accept', color: 'text-green-600' }
-                  ].map((option) => (
-                    <div key={option.value} className="flex items-center gap-2 p-3 border rounded-lg hover:bg-gray-50">
-                      <input 
-                        type="radio" 
-                        id={option.value}
-                        name="applicationStatus" 
-                        value={option.value}
-                        checked={values.applicationStatus === option.value}
-                        onChange={(e) => handleChange('applicationStatus', e.target.value)}
-                        className="text-blue-600" 
-                      />
-                      <label 
-                        htmlFor={option.value} 
-                        className={`form-label text-sm font-medium cursor-pointer ${option.color}`}
-                      >
-                        {option.label}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+            {permittedActions.length > 0 && (
+              <div className="text-sm font-semibold text-gray-900">Take Action</div>
+            )}
+            {permittedActions.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {permittedActions.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
+                      action === opt.value ? 'border-primary-500' : 'border-gray-200'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="sr4-action"
+                      value={opt.value}
+                      checked={action === opt.value}
+                      onChange={() => setAction(opt.value)}
+                      className="text-primary-600"
+                    />
+                    <span className="text-sm font-medium text-gray-800">{opt.label}</span>
+                  </label>
+                ))}
               </div>
-    
-              {/* Status Comment - Only show when Halt or Reject is selected */}
-              {(values.applicationStatus === 'halt' || values.applicationStatus === 'reject') && (
-                <div className="flex flex-col gap-1 animate-in slide-in-from-top-2 duration-200">
-                  <label className="form-label">Status comment *</label>
-                  <Textarea 
-                    rows={3} 
-                    value={values.statusComment} 
-                    onChange={(e) => handleChange('statusComment', e.target.value)}
-                    placeholder={`Please provide a reason for ${values.applicationStatus === 'halt' ? 'halting' : 'rejecting'} this application...`}
-                    className="border-orange-300 focus:border-orange-500"
-                  />
-                </div>
-                
-              )}
-              {(values.applicationStatus === 'assign_inspector') && (
-                <div className="flex flex-col gap-1">
-                  <label className="form-label">Select Inspector</label>
-                  <Select value={values.landSize} onValueChange={(v) => handleChange('landSize', v)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Isaac">Isaac Mbabazi</SelectItem>
-                      <SelectItem value="Otim">Otim Jb</SelectItem>
-                      <SelectItem value="Hilda">Hilda</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {/* <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} /> */}
-                </div>
-                
-              )}
-              {(values.applicationStatus === 'accept') && (
-                <div>
-                <div className="flex flex-col gap-1">
-                  <label className="form-label">Enter Seed Board Registration number</label>
-                  <Input value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="form-label">Valid from?</label>
-                    <Input type='date' className='' value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="form-label">Valid until?</label>
-                    <Input type='date' className='' value={values.landSize} onChange={(e) => handleChange('landSize', e.target.value)} />
-                  </div>
-                </div>
-    
-                </div>
-                
-              )}
-            </div>
+            )}
+
+            {action === 'assign_inspector' && (
+              <div className="max-w-sm">
+                <label className="form-label text-sm">Select Inspector</label>
+                <Select value={inspector} onValueChange={setInspector}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose inspector" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="isaac">Isaac Mbabazi</SelectItem>
+                    <SelectItem value="otim">Otim Jb</SelectItem>
+                    <SelectItem value="hilda">Hilda</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {(action === 'halt' || action === 'reject') && (
+              <div className="max-w-xl">
+                <label className="form-label text-sm">Status comment</label>
+                <Textarea
+                  rows={3}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder={`Provide a reason for ${action}…`}
+                />
+              </div>
+            )}
           </div>
-        </DialogBody>
-        <DialogFooter className="flex items-center justify-between">
+        </div>
+        <div className="mt-0 border-t px-2 py-4 flex items-center justify-between">
           <div className="flex gap-2">
             <Button variant="light" onClick={() => onOpenChange(false)}>
               Close
             </Button>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => console.log('Request changes', data)}>
-              <KeenIcon icon="message-text-2" /> Request Changes
-            </Button>
-            <Button onClick={() => console.log('Approve', data)}>
-              <KeenIcon icon="tick-square" /> Approve
-            </Button>
-            <Button variant="light" onClick={() => console.log('Print certificate', data)}>
-              <KeenIcon icon="printer" /> Print Certificate
-            </Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          {permittedActions.length > 0 && (
+            <div className="flex gap-2">
+              {canApprove && (
+                <Button
+                  className="btn btn-secondary"
+                  onClick={handleConfirm}
+                  disabled={isConfirmDisabled}
+                >
+                  <KeenIcon icon="tick-square" /> Approve
+                </Button>
+              )}
+              <Button onClick={handleConfirm} disabled={isConfirmDisabled}>
+                <KeenIcon icon="tick-square" /> Confirm Action
+              </Button>
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

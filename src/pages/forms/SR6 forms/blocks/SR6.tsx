@@ -33,7 +33,8 @@ import { Button } from '@/components/ui/button';
 import { SR6EditDialog } from './SR6EditDialog';
 import { SR6DetailsDialog } from './SR6DetailsDialog';
 import { LOAD_SR6_FORMS } from '@/gql/queries';
-import { useQuery } from '@apollo/client/react';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { SAVE_SR6_FORMS } from '@/gql/mutations';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -329,6 +330,43 @@ const SR6s = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<Sr6Application | null>(null);
+  const [saveForm, { loading: saving }] = useMutation(SAVE_SR6_FORMS, {
+      refetchQueries: [{ query: LOAD_SR6_FORMS }],
+      awaitRefetchQueries: true
+    });
+
+   const handleSave = async (vals: Record<string, any>) => {
+    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const payload: any = {
+
+      years_of_experience: vals.yearsOfExperience,
+      dealers_in: null,
+      previous_grower_number: vals.previousGrowerNumber,
+      cropping_history: vals.croppingHistory,
+      have_adequate_isolation: toBool(vals.adequateIsolation),
+      have_adequate_labor: toBool(vals.adequateLabour),
+      aware_of_minimum_standards: toBool(vals.standardSeed),
+      signature_of_applicant: null,
+      grower_number: null,
+      status: null,
+      inspector_id: null,
+      status_comment: null,
+      recommendation: null,
+      have_adequate_storage: toBool(vals.adequateStorage),
+      seed_grower_in_past: toBool(vals.BeenSeedGrower),
+      type: vals.applicationCategory,
+      id: null
+
+    };
+
+    try {
+      await saveForm({ variables: { payload } });
+      toast('SR6 application saved');
+      setEditOpen(false);
+    } catch (e: any) {
+      toast('Failed to save application', { description: e?.message ?? 'Unknown error' });
+    }
+  };
 
   const handleRowSelection = (state: RowSelectionState) => {
     const selectedRowIds = Object.keys(state);
@@ -467,8 +505,11 @@ const SR6s = () => {
         open={editOpen}
         onOpenChange={setEditOpen}
         data={selectedForm || undefined}
-        onSave={(vals) => console.log('Save edit', { row: selectedForm, vals })}
+        onSave={handleSave}
+        saving={saving}
       />
+
+      
       <SR6DetailsDialog
         open={detailsOpen}
         onOpenChange={setDetailsOpen}

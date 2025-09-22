@@ -151,6 +151,8 @@ const LOAD_SR6_FORMS = gql`
       have_adequate_storage
       seed_grower_in_past
       type
+      receipt_id
+      other_documents
       user {
         username
         name
