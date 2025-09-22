@@ -12,6 +12,7 @@ import {
 import * as authHelper from '../_helpers';
 import { type AuthModel, type UserModel } from '@/auth';
 import { useLazyQuery } from '@apollo/client/react';
+import { useApolloClient } from '@apollo/client/react';
 import { ME } from '@/gql/queries';
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
@@ -51,6 +52,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState<AuthModel | undefined>(authHelper.getAuth());
   const [currentUser, setCurrentUser] = useState<UserModel | undefined>();
+  const client = useApolloClient();
 
   const [loadMe] = useLazyQuery(ME, {
     fetchPolicy: 'network-only'
@@ -74,9 +76,18 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   const saveAuth = (auth: AuthModel | undefined) => {
     setAuth(auth);
     if (auth) {
+      // Persist token and refetch active queries with new headers
       authHelper.setAuth(auth);
+      // Reset store triggers re-fetch of observable queries
+      client.resetStore().catch(() => {
+        /* noop */
+      });
     } else {
+      // Remove token and clear cache without refetching
       authHelper.removeAuth();
+      client.clearStore().catch(() => {
+        /* noop */
+      });
     }
   };
 

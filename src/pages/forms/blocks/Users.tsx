@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@apollo/client/react';
 import { LOAD_SR4_FORMS } from '@/gql/queries';
 import { Link } from 'react-router-dom';
 import { toAbsoluteUrl } from '@/utils';
+import { URL_2 } from '@/config/urls';
 import {
   DataGrid,
   DataGridColumnHeader,
@@ -37,6 +38,7 @@ import { UserDetailsDialog } from './UserDetailsDialog';
 import { SAVE_SR4_FORMS } from '@/gql/mutations';
 import { useAuthContext } from '@/auth';
 import { getPermissionsFromToken } from '@/utils/permissions';
+import { _formatDate } from '@/utils/Date';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -129,7 +131,7 @@ const Users = () => {
         header: ({ column }) => <DataGridColumnHeader title="Created On" column={column} />,
         enableSorting: true,
         cell: (info) => formatDateTime(info.row.original.created_at),
-        meta: { headerClassName: 'min-w-[160px]', cellClassName: 'text-gray-800 font-normal' }
+        meta: { headerClassName: 'min-w-[200px]', cellClassName: 'text-gray-800 font-normal' }
       }
     ];
 
@@ -163,8 +165,8 @@ const Users = () => {
           </div>
         ),
         meta: {
-          className: 'min-w-[200px]',
-          headerClassName: 'min-w-[200px]',
+          className: 'min-w-[300px]',
+          headerClassName: 'min-w-[300px]',
           cellClassName: 'text-gray-800 font-normal'
         }
       });
@@ -228,7 +230,7 @@ const Users = () => {
           ) : (
             info.row.original.activity
           ),
-        meta: { headerClassName: 'min-w-[160px]', cellClassName: 'text-gray-800 font-normal' }
+        meta: { headerClassName: 'min-w-[200px]', cellClassName: 'text-gray-800 font-normal' }
       },
       // {
       //   accessorFn: (row) => row.activity,
@@ -244,7 +246,7 @@ const Users = () => {
         header: ({ column }) => <DataGridColumnHeader title="Expires On" column={column} />,
         enableSorting: true,
         cell: (info) => info.row.original?.valid_until,
-        meta: { headerClassName: 'min-w-[150px]', cellClassName: 'text-gray-800 font-normal' }
+        meta: { headerClassName: 'min-w-[170px]', cellClassName: 'text-gray-800 font-normal' }
       },
       {
         id: 'edit',
@@ -261,14 +263,16 @@ const Users = () => {
               <DropdownMenuContent align="end" className="w-[190px]">
                 <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedForm((info.row.original as any).raw);
-                    setEditOpen(true);
-                  }}
-                >
-                  <KeenIcon icon="note" /> Edit
-                </DropdownMenuItem>
+                {info.row.original.status.label === 'pending' && (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedForm((info.row.original as any).raw);
+                      setEditOpen(true);
+                    }}
+                  >
+                    <KeenIcon icon="note" /> Edit
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   onClick={() => {
                     setSelectedForm((info.row.original as any).raw);
@@ -277,11 +281,11 @@ const Users = () => {
                 >
                   <KeenIcon icon="eye" /> Details
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => console.log('Print Certificate', info.row.original)}
-                >
-                  <KeenIcon icon="printer" /> Print Certificate
-                </DropdownMenuItem>
+                {(info.row.original as any).raw?.status === 'approved' && (
+                  <DropdownMenuItem onClick={() => handlePrint((info.row.original as any).raw)}>
+                    <KeenIcon icon="printer" /> Print Certificate
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </>
@@ -305,9 +309,11 @@ const Users = () => {
     status: { label: f.status || 'pending', color: statusToColor(f.status) },
     location: f.user.premises_location || f.user.premises_location || '-',
     // flag: 'uganda.svg',
-    activity: f.inspector ? `${f.inspector.name ?? ''} ${f.inspector.district ?? ''}`.trim() : '-',
+    activity: f.inspector
+      ? `${f.inspector.name ?? ''} - ${f.inspector.district ?? ''}`.trim()
+      : '-',
     created_user: '-',
-    valid_until: undefined as any,
+    valid_until: _formatDate(f.valid_until),
     created_at: f.created_at,
     raw: f as any
   }));
@@ -346,14 +352,153 @@ const Users = () => {
     }
     try {
       await saveForm({ variables: { payload } });
-      // Sync category filter with the newly saved application category
-      if (vals.applicationCategory) {
-        setTypeFilter(vals.applicationCategory);
-      }
       setEditOpen(false);
       toast('SR4 application updated');
     } catch (e: any) {
       toast('Failed to update application', { description: e?.message ?? 'Unknown error' });
+    }
+  };
+
+  const handlePrint = (formDetails: any) => {
+    if (!formDetails) return;
+    if (formDetails.status !== 'approved') {
+      toast('Certificate not available', {
+        description: 'Form must be approved to print.'
+      });
+      return;
+    }
+
+    const serial_no = String(Math.floor(1000 + Math.random() * 9000));
+    const registration_number = formDetails.seed_board_registration_number;
+    const valid_from = _formatDate(formDetails.valid_from);
+    const valid_until = _formatDate(formDetails.valid_until);
+    const company_initials = formDetails.user.company_initials || '';
+    const address = formDetails.user.address || formDetails.user.premises_location || '';
+    const premises_location = formDetails.user.premises_location || '';
+    const phone_number = formDetails.user.phone_number || '';
+    const category = formDetails.marketing_of || '';
+    const date = _formatDate(new Date());
+    const formHTML = `
+     <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Certificate of Registration</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 20px;
+        }
+        th,
+        td {
+          border: 1px solid black;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        .permit-number {
+          position: absolute;
+          top: 10px; /* Adjust the top value to position it vertically */
+          left: 10px; /* Adjust the left value to position it horizontally */
+        }
+        .r-number {
+          position: absolute;
+          top: 10px; /* Adjust the top value to position it vertically */
+          right: 10px; /* Adjust the right value to position it horizontally */
+        }
+        .signature-container {
+          text-align: right;
+          margin-top: 20px;
+          margin-bottom: 20px;
+        }
+        .signature-text {
+          text-align: left;
+          margin-left: 300px;
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <img src="${URL_2}/imgs/coat.png" alt="logo" style="width:200px;height:auto;" />
+        <h1>Ministry of Agriculture, Animal Industry and Fisheries</h1>
+        <p>P.O. Box 102, Entebbe</p>
+        <h2>Certificate of Registration</h2>
+        <p class="permit-number">
+          <strong>Serial No.</strong>
+          ${serial_no}
+        </p>
+        <p class="r-number">[R.20(1)(c)]</p>
+      </header>
+  
+      <table>
+        <tr>
+          <td><strong>Registration Number</strong></td>
+          <td>${registration_number}</td>
+        </tr>
+        <tr>
+          <td><strong>For the year</strong></td>
+          <td>${valid_from}</td>
+        </tr>
+        <tr>
+          <td><strong>Until the year</strong></td>
+          <td>${valid_until}</td>
+        </tr>
+        <tr>
+          <td><strong>Company</strong></td>
+          <td>${company_initials}</td>
+        </tr>
+        <tr>
+          <td><strong>Address</strong></td>
+          <td>${address}</td>
+        </tr>
+        <tr>
+          <td><strong>Tel No</strong></td>
+          <td>${phone_number}</td>
+        </tr>
+        <tr>
+          <td><strong>Location of premises</strong></td>
+          <td>${premises_location}</td>
+        </tr>
+        <tr>
+          <td><strong>For the category of</strong></td>
+          <td>${category}</td>
+        </tr>
+      </table>
+  
+      <div class="signature-container">
+        <div class="signature-text">
+          <p>
+            Signature:
+            <span id="signaturePlaceholder">___________________________</span>
+          </p>
+          <p>National Seed Certification Service</p>
+          <p>Date: <span id="datePlaceholder">${date}</span></p>
+        </div>
+      </div>
+    </body>
+  </html>
+  
+      `;
+
+    // Open a popup window with specific dimensions
+    const popup = window.open('', '_blank', 'width=800,height=700,scrollbars=yes,resizable=no');
+
+    if (popup) {
+      // Write the testimonial HTML to the popup window
+      popup.document.open();
+      popup.document.write(formHTML);
+      popup.document.close();
     }
   };
 
@@ -434,7 +579,7 @@ const Users = () => {
               <SelectContent className="w-40">
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="accepted">Accepted</SelectItem>
+                <SelectItem value="approved">Accepted</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
                 <SelectItem value="halted">Halted</SelectItem>
                 <SelectItem value="assigned_inspector">Assigned inspector</SelectItem>

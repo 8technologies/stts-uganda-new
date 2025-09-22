@@ -40,7 +40,7 @@ const SR4ListPage = () => {
       status: null,
       have_adequate_land: toBool(vals.adequateLand),
       land_size: vals.landSize || null,
-      receipt: vals.receipt,
+      receipt: vals?.receipt || null,
       have_adequate_equipment: toBool(vals.adequateEquipment),
       equipment: null,
       have_contractual_agreement: toBool(vals.contractualAgreement),
@@ -50,7 +50,7 @@ const SR4ListPage = () => {
       have_internal_quality_program: toBool(vals.internalQualityProgram),
       have_adequate_storage: toBool(vals.adequateStorage),
       source_of_seed: vals.sourceOfSeed || null,
-      seed_board_registration_number: vals.registrationNumber || null,
+      // seed_board_registration_number: vals.registrationNumber || null,
       type: vals.applicationCategory
     };
 
