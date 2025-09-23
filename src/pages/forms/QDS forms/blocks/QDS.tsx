@@ -31,11 +31,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { KeenIcon as Icon } from '@/components';
 import { Button } from '@/components/ui/button';
-import { SR6DetailsDialog } from './QDSDetailsDialog';
+import { QDSDetailsDialog} from './QDSDetailsDialog';
 import { LOAD_QDS_FORMS } from '@/gql/queries';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { SAVE_QDS_FORMS } from '@/gql/mutations';// <-- new unified dialog
-import { QDSFormDialog } from './QDSCreateDialog';
+import { QDSFormDialog } from './QDSFormDialog';
 
 // --- Types ---
 interface IColumnFilterProps<TData, TValue> {
@@ -45,6 +45,8 @@ interface IColumnFilterProps<TData, TValue> {
 type Qds = {
   id: string | number;
   certification: string;
+  receipt: string;
+  recommendation_id: string;
   years_of_experience: string;
   dealers_in: string;
   previous_grower_number: string;
@@ -127,6 +129,8 @@ const QDs = () => {
     const payload: any = {
       id: editingQds?.id ?? undefined,
       certification: vals.otherDocuments,
+      receipt: vals.receipt,
+      recommendation_id: vals.recommendationLetter,
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
       previous_grower_number: vals.previousGrowerNumber,
@@ -149,6 +153,8 @@ const QDs = () => {
       is_not_used: null,
       examination_category: null
     };
+
+    console.log(payload);
 
     try {
       await saveForm({ variables: { payload } });
@@ -506,7 +512,7 @@ const QDs = () => {
         saving={saving}
       />
 
-      <SR6DetailsDialog
+      <QDSDetailsDialog
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         data={selectedForm || undefined}

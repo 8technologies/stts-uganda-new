@@ -98,37 +98,6 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
             </div>
           </div>
 
-          {/* Basic Information Section */}
-
-          {/* Contact Information Section */}
-          {/* <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-              Contact Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Address</label>
-                <Input
-                  value={values.address}
-                  onChange={(e) => handleChange('address', e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="form-label">Phone number</label>
-                <Input
-                  value={values.phone}
-                  onChange={(e) => handleChange('phone', e.target.value)}
-                />
-              </div>
-              <div className="md:col-span-2 flex flex-col gap-1">
-                <label className="form-label">Premises location</label>
-                <Input
-                  value={values.premises}
-                  onChange={(e) => handleChange('premises', e.target.value)}
-                />
-              </div>
-            </div>
-          </div> */}
 
           {/* Experience & Business Details Section */}
           <div className="space-y-4">
