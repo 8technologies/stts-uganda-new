@@ -45,6 +45,16 @@ export const MENU_SIDEBAR: TMenuConfig = [
     icon: 'folder-added',
     children: [
       {
+        title: 'Planting Returns',
+        path: '/qa/planting-returns',
+        requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+      },
+      {
+        title: 'Subgrowers',
+        path: '/qa/subgrowers',
+        requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+      },
+      {
         title: 'Field inspections',
         path: '/qa/inspections',
         requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]

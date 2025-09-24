@@ -89,7 +89,9 @@ import { PermissionGuard } from '@/auth/PermissionGuard';
 import { RolesListPage } from '@/pages/roles/RolesListPage';
 import { SR6ListPage } from '@/pages/forms/SR6 forms/SR6ListPage';
 import { UsersListPage } from '@/pages/users/UsersListPage';
-import { QDSListPage } from '@/pages/forms/QDS forms/QDsListPage';
+import { QDSListPage } from '@/pages/forms/QDS forms/QDSListPage';
+import { PlantingReturnsListPage } from '@/pages/QA/plantingReturns/PlantingReturnsListPage';
+import SubgrowersListPage from '@/pages/QA/Subgrowers/SubgrowersListPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -110,6 +112,9 @@ const AppRoutingSetup = (): ReactElement => {
               </PermissionGuard>
             }
           />
+          <Route path="/qa/planting-returns" element={<PlantingReturnsListPage />} />
+          <Route path="/qa/subgrowers" element={<SubgrowersListPage />} />
+
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/users" element={<UsersListPage />} />
           <Route path="/public-profile/profiles/default" element={<ProfileDefaultPage />} />

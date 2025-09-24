@@ -142,7 +142,7 @@ const LOAD_SR6_FORMS = gql`
       aware_of_minimum_standards
       signature_of_applicant
       grower_number
-      registration_number
+      # registration_number
       valid_from
       valid_until
       status
