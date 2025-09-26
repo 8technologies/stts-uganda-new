@@ -34,7 +34,7 @@ const AuthLayoutProvider = ({ children }: PropsWithChildren) => {
   // Effect hook to set the current layout whenever the layout state changes
   useEffect(() => {
     setCurrentLayout(layout);
-  });
+  }, [layout]);
 
   // Providing the layout context to all child components wrapped by AuthLayoutProvider
   return (

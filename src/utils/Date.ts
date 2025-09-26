@@ -30,3 +30,21 @@ export function _formatDate(value: any) {
   const year = date.getFullYear();
   return `${day} ${month} ${year}`;
 }
+
+export const formatDateTime = (iso?: string) => {
+  if (!iso) return '-';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch {
+    return iso as string;
+  }
+};

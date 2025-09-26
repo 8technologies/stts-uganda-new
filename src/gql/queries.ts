@@ -20,6 +20,143 @@ const LOAD_USERS = gql`
   }
 `;
 
+// Crops module ------------------------------------------------------
+const LOAD_CROPS = gql`
+  query Crops($filter: CropFilter, $pagination: PaginationInput) {
+    crops(filter: $filter, pagination: $pagination) {
+      total
+      items {
+        id
+        name
+        isQDS
+        daysBeforeSubmission
+        units
+        createdAt
+        updatedAt
+        varieties {
+          id
+        }
+      }
+    }
+  }
+`;
+
+const LOAD_CROP = gql`
+  query Crop($id: ID!) {
+    crop(id: $id) {
+      id
+      name
+      isQDS
+      daysBeforeSubmission
+      units
+      createdAt
+      updatedAt
+      varieties {
+        id
+        name
+      }
+      inspectionTypes {
+        id
+        stageName
+        order
+        required
+        periodAfterPlantingDays
+      }
+    }
+  }
+`;
+
+const LOAD_IMPORT_PERMITS = gql`
+  query ImportPermits($filter: ImportPermitFilter, $pagination: PaginationInput) {
+    importPermits(filter: $filter, pagination: $pagination) {
+      total
+      items {
+        id
+        applicantCategory
+        stockQuantity
+        countryOfOrigin
+        supplierName
+        supplierAddress
+        status
+        statusComment
+        inspector {
+          id
+          name
+          email
+          image
+        }
+        createdAt
+        updatedAt
+        createdBy {
+          id
+          username
+          image
+          name
+          email
+        }
+      }
+    }
+  }
+`;
+
+const LOAD_IMPORT_PERMIT = gql`
+  query ImportPermit($id: ID!) {
+    importPermit(id: $id) {
+      id
+      applicantCategory
+      status
+      statusComment
+      permitNumber
+      validFrom
+      validUntil
+      stockQuantity
+      countryOfOrigin
+      supplierName
+      supplierAddress
+      consignment
+      inspector {
+        id
+        name
+        email
+        image
+      }
+      items {
+        id
+        cropId
+        varietyId
+        category
+        weight
+        measure
+        crop {
+          id
+          name
+        }
+        variety {
+          id
+          name
+        }
+      }
+      attachments {
+        id
+        fileName
+        filePath
+        mimeType
+        fileSize
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+      createdBy {
+        id
+        username
+        name
+        email
+      }
+    }
+  }
+`;
+
 const ME = gql`
   query Me {
     me {
@@ -241,5 +378,9 @@ export {
   LOAD_SR4_FORMS,
   LOAD_SR6_FORMS,
   LOAD_QDS_FORMS,
-  LOAD_INSPECTORS
+  LOAD_INSPECTORS,
+  LOAD_CROPS,
+  LOAD_CROP,
+  LOAD_IMPORT_PERMITS,
+  LOAD_IMPORT_PERMIT
 };

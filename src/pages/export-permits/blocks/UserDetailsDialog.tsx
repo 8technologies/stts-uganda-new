@@ -15,7 +15,7 @@ import { useAuthContext } from '@/auth';
 import { toast } from 'sonner';
 import { getPermissionsFromToken } from '@/utils/permissions';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { LOAD_INSPECTORS, LOAD_SR4_FORMS } from '@/gql/queries';
+import { LOAD_IMPORT_PERMITS, LOAD_INSPECTORS } from '@/gql/queries';
 import { ASSIGN_INSPECTOR, HALT_FORM, REJECT_FORM, APPROVE_FORM, RECOMMEND } from '@/gql/mutations';
 import { _formatDate } from '@/utils/Date';
 
@@ -122,23 +122,64 @@ const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps
   }, [open, d]);
 
   const [assignInspector, { loading: assigning }] = useMutation(ASSIGN_INSPECTOR, {
-    refetchQueries: [{ query: LOAD_SR4_FORMS }],
+    refetchQueries: [
+      {
+        query: LOAD_IMPORT_PERMITS,
+        variables: {
+          filter: { type: 'export' as const },
+          pagination: { page: 1, size: 200 }
+        }
+      }
+    ],
     awaitRefetchQueries: true
   });
   const [approveForm, { loading: approving }] = useMutation(APPROVE_FORM, {
-    refetchQueries: [{ query: LOAD_SR4_FORMS }],
+    refetchQueries: [
+      {
+        query: LOAD_IMPORT_PERMITS,
+        variables: {
+          filter: { type: 'export' as const },
+          pagination: { page: 1, size: 200 }
+        }
+      }
+    ],
     awaitRefetchQueries: true
   });
   const [haltForm, { loading: halting }] = useMutation(HALT_FORM, {
-    refetchQueries: [{ query: LOAD_SR4_FORMS }],
+    refetchQueries: [
+      {
+        query: LOAD_IMPORT_PERMITS,
+
+        variables: {
+          filter: { type: 'export' as const },
+          pagination: { page: 1, size: 200 }
+        }
+      }
+    ],
     awaitRefetchQueries: true
   });
   const [rejectForm, { loading: rejecting }] = useMutation(REJECT_FORM, {
-    refetchQueries: [{ query: LOAD_SR4_FORMS }],
+    refetchQueries: [
+      {
+        query: LOAD_IMPORT_PERMITS,
+        variables: {
+          filter: { type: 'export' as const },
+          pagination: { page: 1, size: 200 }
+        }
+      }
+    ],
     awaitRefetchQueries: true
   });
   const [recommendForm, { loading: recommending }] = useMutation(RECOMMEND, {
-    refetchQueries: [{ query: LOAD_SR4_FORMS }],
+    refetchQueries: [
+      {
+        query: LOAD_IMPORT_PERMITS,
+        variables: {
+          filter: { type: 'export' as const },
+          pagination: { page: 1, size: 200 }
+        }
+      }
+    ],
     awaitRefetchQueries: true
   });
   const handleConfirm = async () => {

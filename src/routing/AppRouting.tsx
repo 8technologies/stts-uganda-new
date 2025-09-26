@@ -19,7 +19,7 @@ const AppRouting = (): ReactElement => {
         setFirstLoad(false);
       });
     }
-  });
+  }, [firstLoad]);
 
   useEffect(() => {
     if (!firstLoad) {

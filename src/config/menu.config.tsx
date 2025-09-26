@@ -45,6 +45,16 @@ export const MENU_SIDEBAR: TMenuConfig = [
     icon: 'folder-added',
     children: [
       {
+
+        title: 'Import Permits',
+        path: '/qa/import_permits'
+        // requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+      },
+      {
+        title: 'Export Permits',
+        path: '/qa/export_permits'
+        // requiredPermissions: [getPerm('quality_assurance', 'can_manage_all_qa_tasks')]
+
         title: 'Planting Returns',
         path: '/qa/planting-returns',
         requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
@@ -53,6 +63,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
         title: 'Subgrowers',
         path: '/qa/subgrowers',
         requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+
       },
       {
         title: 'Field inspections',
@@ -102,6 +113,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
         title: 'Roles',
         path: '/admin/roles',
         requiredPermissions: [getPerm('system_configuration', 'can_manage_roles')]
+      },
+      {
+        title: 'Crops',
+        path: '/admin/crops',
+        requiredPermissions: [getPerm('system_configuration', 'can_manage_crops')]
       },
       {
         title: 'Settings',
