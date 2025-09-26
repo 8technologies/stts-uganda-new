@@ -52,7 +52,17 @@ export const MODULES_CONFIG: ModuleConfig[] = [
     name: 'Quality Assurance',
     icon: ShieldCheck,
     permissions: [
+      { id: 'can_manage_import_permits', label: 'Can Manage Import Permits' },
+      { id: 'can_view_only_assigned_permits', label: 'Can View Only assigned Import Permits' },
+      { id: 'can_view_import_permits', label: 'Can View Import Permits' },
+      { id: 'can_create_permits', label: 'Can Create Import Permits' },
+      { id: 'can_edit_import_permits', label: 'Can Edit Import Permits' },
+      { id: 'can_delete_import_permits', label: 'Can Delete Import Permits' },
       { id: 'can_manage_all_qa_tasks', label: 'Can Manage ALL QA Tasks' },
+      { id: 'qa_can_assign_inspector', label: 'Can Assign Inspector' },
+      { id: 'qa_can_halt', label: 'Can Halt' },
+      { id: 'qa_can_reject', label: 'Can Reject' },
+      { id: 'qa_can_approve', label: 'Can Approve' },
       { id: 'can_view_field_inspections', label: 'Can View Field Inspections' },
       { id: 'can_edit_field_inspections', label: 'Can Edit Field Inspections' },
       { id: 'can_delete_field_inspections', label: 'Can Delete Field Inspections' }
@@ -82,7 +92,11 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: 'can_view_roles', label: 'Can View Roles' },
       { id: 'can_create_roles', label: 'Can Create or edit Roles' },
       { id: 'can_delete_roles', label: 'Can Delete Roles' },
-      { id: 'can_update_role_permissions', label: 'Can Update Role Permissions' }
+      { id: 'can_update_role_permissions', label: 'Can Update Role Permissions' },
+      { id: 'can_manage_crops', label: 'Can Manage Crops' },
+      { id: 'can_view_crops', label: 'Can View Crops' },
+      { id: 'can_edit_crops', label: 'Can Edit Crops' },
+      { id: 'can_delete_crops', label: 'Can Delete Crops' }
     ]
   }
 ];

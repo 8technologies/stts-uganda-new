@@ -253,6 +253,142 @@ const SAVE_QDS_FORMS = gql`
   }
 `;
 
+// Crops module ------------------------------------------------------
+const CREATE_CROP = gql`
+  mutation CreateCrop($input: CreateCropInput!) {
+    createCrop(input: $input) {
+      success
+      message
+      crop {
+        id
+        name
+        isQDS
+        daysBeforeSubmission
+        units
+        varieties {
+          id
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const UPDATE_CROP = gql`
+  mutation UpdateCrop($id: ID!, $input: UpdateCropInput!) {
+    updateCrop(id: $id, input: $input) {
+      success
+      message
+      crop {
+        id
+        name
+        isQDS
+        daysBeforeSubmission
+        units
+        varieties {
+          id
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const DELETE_CROP = gql`
+  mutation DeleteCrop($id: ID!) {
+    deleteCrop(id: $id) {
+      success
+      message
+    }
+  }
+`;
+
+// Import Permits ----------------------------------------------------
+const CREATE_IMPORT_PERMIT = gql`
+  mutation CreateImportPermit($input: CreateImportPermitInput!) {
+    createImportPermit(input: $input) {
+      success
+      message
+      permit {
+        id
+        applicantCategory
+        stockQuantity
+        countryOfOrigin
+        supplierName
+        supplierAddress
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const UPDATE_IMPORT_PERMIT = gql`
+  mutation UpdateImportPermit($id: ID!, $input: UpdateImportPermitInput!) {
+    updateImportPermit(id: $id, input: $input) {
+      success
+      message
+      permit {
+        id
+        applicantCategory
+        stockQuantity
+        countryOfOrigin
+        supplierName
+        supplierAddress
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const DELETE_IMPORT_PERMIT = gql`
+  mutation DeleteImportPermit($id: ID!) {
+    deleteImportPermit(id: $id) {
+      success
+      message
+    }
+  }
+`;
+
+const ASSIGN_PERMIT_INSPECTOR = gql`
+  mutation AssignPermitInspector($payload: AsignInspectorInput!) {
+    assignPermitInspector(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const HALT_PERMIT = gql`
+  mutation HaltPermit($payload: HaltPayload!) {
+    haltPermit(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const REJECT_PERMIT = gql`
+  mutation RejectPermit($payload: HaltPayload!) {
+    rejectPermit(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
+const APPROVE_PERMIT = gql`
+  mutation ApprovePermit($payload: ApprovePermitPayload!) {
+    approvePermit(payload: $payload) {
+      success
+      message
+    }
+  }
+`;
+
 export {
   LOGIN,
   SIGNUP,
@@ -268,5 +404,15 @@ export {
   HALT_FORM,
   REJECT_FORM,
   APPROVE_FORM,
-  RECOMMEND
+  RECOMMEND,
+  CREATE_CROP,
+  UPDATE_CROP,
+  DELETE_CROP,
+  CREATE_IMPORT_PERMIT,
+  UPDATE_IMPORT_PERMIT,
+  DELETE_IMPORT_PERMIT,
+  ASSIGN_PERMIT_INSPECTOR,
+  HALT_PERMIT,
+  REJECT_PERMIT,
+  APPROVE_PERMIT
 };
