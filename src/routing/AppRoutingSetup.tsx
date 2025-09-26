@@ -96,6 +96,9 @@ import ExportPermitsListPage from '@/pages/export-permits/ExportPermitsListPage'
 import { QDSListPage } from '@/pages/forms/QDS forms/QDSListPage';
 import { PlantingReturnsListPage } from '@/pages/QA/plantingReturns/PlantingReturnsListPage';
 import SubgrowersListPage from '@/pages/QA/Subgrowers/SubgrowersListPage';
+import MySr4ApplicationForms from '@/pages/forms/my_application_forms/MySr4ApplicationForms';
+import MySr6ApplicationForms from '@/pages/forms/my_application_forms/MySr6ApplicationForms';
+import MyQdsApplicationForms from '@/pages/forms/my_application_forms/MyQdsApplicationForms';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -113,6 +116,32 @@ const AppRoutingSetup = (): ReactElement => {
             element={
               <PermissionGuard required={['can_view_sr4_forms']}>
                 <SR4ListPage />
+              </PermissionGuard>
+            }
+          />
+
+          <Route
+            path="/my-apps/sr4"
+            element={
+              <PermissionGuard required={['can_view_only_own_created_forms']}>
+                <MySr4ApplicationForms />
+              </PermissionGuard>
+            }
+          />
+          <Route
+            path="/my-apps/sr6"
+            element={
+              <PermissionGuard required={['can_view_only_own_created_forms']}>
+                <MySr6ApplicationForms />
+              </PermissionGuard>
+            }
+          />
+
+          <Route
+            path="/my-apps/qds"
+            element={
+              <PermissionGuard required={['can_view_only_own_created_forms']}>
+                <MyQdsApplicationForms />
               </PermissionGuard>
             }
           />

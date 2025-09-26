@@ -33,6 +33,7 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: 'can_halt', label: 'Can Halt' },
       { id: 'can_recommend', label: 'Can Recommend' },
       { id: 'can_view_specific_assigned_forms', label: 'Can view specific assigned forms' },
+      { id: 'can_view_only_own_created_forms', label: 'Can View Only Own Created Forms' },
       { id: 'can_view_sr4_forms', label: 'Can View SR4 Forms' },
       { id: 'can_create_sr4_forms', label: 'Can Create SR4 Forms' },
       { id: 'can_edit_sr4_forms', label: 'Can Edit SR4 Forms' },
@@ -54,6 +55,7 @@ export const MODULES_CONFIG: ModuleConfig[] = [
     permissions: [
       { id: 'can_manage_import_permits', label: 'Can Manage Import Permits' },
       { id: 'can_view_only_assigned_permits', label: 'Can View Only assigned Import Permits' },
+
       { id: 'can_view_import_permits', label: 'Can View Import Permits' },
       { id: 'can_create_permits', label: 'Can Create Import Permits' },
       { id: 'can_edit_import_permits', label: 'Can Edit Import Permits' },

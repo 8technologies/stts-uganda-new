@@ -20,7 +20,6 @@ const LOAD_USERS = gql`
   }
 `;
 
-// Crops module ------------------------------------------------------
 const LOAD_CROPS = gql`
   query Crops($filter: CropFilter, $pagination: PaginationInput) {
     crops(filter: $filter, pagination: $pagination) {
@@ -290,6 +289,8 @@ const LOAD_SR6_FORMS = gql`
       seed_grower_in_past
       type
       receipt_id
+      created_at
+      updated_at
       other_documents
       user {
         username

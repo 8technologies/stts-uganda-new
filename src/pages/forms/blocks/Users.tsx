@@ -96,6 +96,7 @@ const Users = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canManageAllForms = !!perms['can_manage_all_forms'];
+  const canEditSr4Forms = !!perms['can_edit_sr4_forms'];
 
   const formatDateTime = (iso?: string) => {
     if (!iso) return '-';
@@ -263,7 +264,7 @@ const Users = () => {
               <DropdownMenuContent align="end" className="w-[190px]">
                 <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {info.row.original.status.label === 'pending' && (
+                {info.row.original.status.label === 'pending' && canEditSr4Forms && (
                   <DropdownMenuItem
                     onClick={() => {
                       setSelectedForm((info.row.original as any).raw);

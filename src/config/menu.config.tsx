@@ -20,6 +20,28 @@ export const MENU_SIDEBAR: TMenuConfig = [
     requiredPermissions: [getPerm('track_and_trace', 'can_view_tracking')]
   },
   {
+    title: 'My Application Forms',
+    icon: 'document',
+    children: [
+      {
+        title: 'SR4 - Stockist/Company',
+        path: '/my-apps/sr4',
+        requiredPermissions: [getPerm('application_forms', 'can_view_sr4_forms')]
+      },
+      {
+        title: 'SR6 - Grower/Producer',
+        path: '/my-apps/sr6',
+        requiredPermissions: [getPerm('application_forms', 'can_view_sr6_forms')]
+      },
+      {
+        title: 'QDS - Producer',
+        path: '/my-apps/qds',
+        requiredPermissions: [getPerm('application_forms', 'can_view_qds_forms')]
+      }
+    ],
+    requiredPermissions: [getPerm('application_forms', 'can_view_only_own_created_forms')]
+  },
+  {
     title: 'Application Forms',
     icon: 'document',
     children: [
@@ -38,14 +60,14 @@ export const MENU_SIDEBAR: TMenuConfig = [
         path: '/apps/qds',
         requiredPermissions: [getPerm('application_forms', 'can_view_qds_forms')]
       }
-    ]
+    ],
+    requiredPermissions: [getPerm('application_forms', 'can_manage_all_forms')]
   },
   {
     title: 'Quality Assurance',
     icon: 'folder-added',
     children: [
       {
-
         title: 'Import Permits',
         path: '/qa/import_permits'
         // requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
@@ -54,7 +76,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
         title: 'Export Permits',
         path: '/qa/export_permits'
         // requiredPermissions: [getPerm('quality_assurance', 'can_manage_all_qa_tasks')]
-
+      },
+      {
         title: 'Planting Returns',
         path: '/qa/planting-returns',
         requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
@@ -63,7 +86,6 @@ export const MENU_SIDEBAR: TMenuConfig = [
         title: 'Subgrowers',
         path: '/qa/subgrowers',
         requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
-
       },
       {
         title: 'Field inspections',

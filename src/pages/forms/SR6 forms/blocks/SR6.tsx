@@ -45,13 +45,15 @@ type Sr6Application = {
   status?: string | null;
   type: 'seed_breeder' | 'seed_producer';
   inspector?: { name?: string; district?: string } | null;
-  user?:  {name?: string; username?: string;
-      company_initials?: string;
-      email?: string;
-      district?: string;
-      phone_number?: string;
-      premises_location?: string;
-    }
+  user?: {
+    name?: string;
+    username?: string;
+    company_initials?: string;
+    email?: string;
+    district?: string;
+    phone_number?: string;
+    premises_location?: string;
+  };
 };
 const statusToColor = (status?: string | null) => {
   switch (status) {
@@ -68,19 +70,18 @@ const statusToColor = (status?: string | null) => {
   }
 };
 
-
 const SR6s = () => {
   const { data, loading, error, refetch } = useQuery(LOAD_SR6_FORMS);
-    const ColumnInputFilter = <TData, TValue>({ column }: IColumnFilterProps<TData, TValue>) => {
-      return (
-        <Input
-          placeholder="Filter..."
-          value={(column.getFilterValue() as string) ?? ''}
-          onChange={(event) => column.setFilterValue(event.target.value)}
-          className="h-9 w-full max-w-40"
-        />
-      );
-    };
+  const ColumnInputFilter = <TData, TValue>({ column }: IColumnFilterProps<TData, TValue>) => {
+    return (
+      <Input
+        placeholder="Filter..."
+        value={(column.getFilterValue() as string) ?? ''}
+        onChange={(event) => column.setFilterValue(event.target.value)}
+        className="h-9 w-full max-w-40"
+      />
+    );
+  };
 
   const columns = useMemo<ColumnDef<ISR6Data>[]>(
     () => [
@@ -126,7 +127,7 @@ const SR6s = () => {
         //       </div>
         //     </div>
         //   );
-          
+
         // },
         cell: (info) => {
           return info.row.original.user.userName != '-' ? (
@@ -271,7 +272,7 @@ const SR6s = () => {
                 <DropdownMenuContent align="end" className="w-[190px]">
                   <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  
+
                   {info.row.original.status.label === 'pending' && (
                     <DropdownMenuItem
                       onClick={() => {
@@ -290,7 +291,7 @@ const SR6s = () => {
                   >
                     <KeenIcon icon="eye" /> Details
                   </DropdownMenuItem>
-                  
+
                   {/* <DropdownMenuItem
                     onClick={() => console.log('Print Certificate', info.row.original)}
                   >
@@ -320,7 +321,7 @@ const SR6s = () => {
         },
         role: f.type === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
-        location: f.user.premises_location || f.user.premises_location|| '-',
+        location: f.user.premises_location || f.user.premises_location || '-',
         // flag: 'uganda.svg',
         activity: f.inspector
           ? `${f.inspector.name ?? ''} ${f.inspector.district ?? ''}`.trim()
@@ -335,14 +336,13 @@ const SR6s = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<Sr6Application | null>(null);
   const [saveForm, { loading: saving }] = useMutation(SAVE_SR6_FORMS, {
-      refetchQueries: [{ query: LOAD_SR6_FORMS }],
-      awaitRefetchQueries: true
-    });
+    refetchQueries: [{ query: LOAD_SR6_FORMS }],
+    awaitRefetchQueries: true
+  });
 
-   const handleSave = async (vals: Record<string, any>) => {
+  const handleSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
     const payload: any = {
-
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
       previous_grower_number: vals.previousGrowerNumber,
@@ -352,15 +352,14 @@ const SR6s = () => {
       aware_of_minimum_standards: toBool(vals.standardSeed),
       signature_of_applicant: null,
       grower_number: null,
-      status: null,
+      status: vals.status,
       inspector_id: null,
       status_comment: null,
       recommendation: null,
       have_adequate_storage: toBool(vals.adequateStorage),
       seed_grower_in_past: toBool(vals.BeenSeedGrower),
       type: vals.applicationCategory,
-      id: null
-
+      id: vals?.id || null
     };
 
     try {
@@ -513,7 +512,6 @@ const SR6s = () => {
         saving={saving}
       />
 
-      
       <SR6DetailsDialog
         open={detailsOpen}
         onOpenChange={setDetailsOpen}

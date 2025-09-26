@@ -262,7 +262,7 @@ const UserFormDialog = ({
                 type="password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                required
+                // required
               />
             </div>
             {/* )} */}
