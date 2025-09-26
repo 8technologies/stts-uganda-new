@@ -16,7 +16,7 @@ import { useMutation, useQuery } from '@apollo/client/react';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SAVE_QDS_FORMS,  } from '@/gql/mutations';
-import { QDSFormDialog } from './blocks/QDSCreateDialog';
+import { QDSFormDialog } from './blocks/QDSFormDialog';
 
 type Qds = {
   id: string | number;
@@ -55,27 +55,31 @@ const QDSListPage = () => {
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
     const payload: any = {
     
-    certification: vals.otherDocuments,
-    years_of_experience: vals.yearsOfExperience,
-    dealers_in: null,
-    previous_grower_number: vals.previousGrowerNumber,
-    cropping_history: vals.croppingHistory,
-    have_adequate_isolation: toBool(vals.adequateIsolation),
-    have_adequate_labor: toBool(vals.adequateLabour),
-    aware_of_minimum_standards: toBool(vals.standardSeed),
-    signature_of_applicant: null,
-    grower_number: null,
-    registration_number: vals.previousGrowerNumber,
-    have_been_qds: toBool(vals.BeenQdsProducer),
-    isolation_distance: vals.isolationDistance ? parseInt(vals.isolationDistance, 10) : 0,
-    status: null,
-    number_of_labors: vals.numberOfLabours ? parseInt(vals.numberOfLabours, 10) : 0,
-    have_adequate_storage_facility: toBool(vals.adequateStorage),
-    is_not_used: null,
-    examination_category: null
+      certification: vals.otherDocuments,
+      receipt: vals.receipt,
+      recommendation_id: vals.recommendationLetter,
+      years_of_experience: vals.yearsOfExperience,
+      dealers_in: null,
+      previous_grower_number: vals.previousGrowerNumber,
+      cropping_history: vals.croppingHistory,
+      have_adequate_isolation: toBool(vals.adequateIsolation),
+      have_adequate_labor: toBool(vals.adequateLabour),
+      aware_of_minimum_standards: toBool(vals.standardSeed),
+      signature_of_applicant: null,
+      grower_number: null,
+      registration_number: vals.previousGrowerNumber,
+      have_been_qds: toBool(vals.BeenQdsProducer),
+      isolation_distance: vals.isolationDistance ? parseInt(vals.isolationDistance, 10) : 0,
+      status: null,
+      number_of_labors: vals.numberOfLabours ? parseInt(vals.numberOfLabours, 10) : 0,
+      have_adequate_storage_facility: toBool(vals.adequateStorage),
+      is_not_used: null,
+      examination_category: null
 
 
     };
+
+    console.log(payload);
 
     try {
       await saveForm({ variables: { payload } });

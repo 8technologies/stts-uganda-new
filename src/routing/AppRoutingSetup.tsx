@@ -89,11 +89,13 @@ import { PermissionGuard } from '@/auth/PermissionGuard';
 import { RolesListPage } from '@/pages/roles/RolesListPage';
 import { SR6ListPage } from '@/pages/forms/SR6 forms/SR6ListPage';
 import { UsersListPage } from '@/pages/users/UsersListPage';
-import { QDSListPage } from '@/pages/forms/QDS forms/QDsListPage';
 import CropsListPage from '@/pages/crops/CropsListPage';
 import CropDetailsPage from '@/pages/crops/CropDetailsPage';
 import ImportPermitsListPage from '@/pages/import-permits/ImportPermitsListPage';
 import ExportPermitsListPage from '@/pages/export-permits/ExportPermitsListPage';
+import { QDSListPage } from '@/pages/forms/QDS forms/QDSListPage';
+import { PlantingReturnsListPage } from '@/pages/QA/plantingReturns/PlantingReturnsListPage';
+import SubgrowersListPage from '@/pages/QA/Subgrowers/SubgrowersListPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -116,6 +118,10 @@ const AppRoutingSetup = (): ReactElement => {
           />
           <Route path="/qa/import_permits" element={<ImportPermitsListPage />} />
           <Route path="/qa/export_permits" element={<ExportPermitsListPage />} />
+
+          <Route path="/qa/planting-returns" element={<PlantingReturnsListPage />} />
+          <Route path="/qa/subgrowers" element={<SubgrowersListPage />} />
+
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />

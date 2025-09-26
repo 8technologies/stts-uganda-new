@@ -271,14 +271,17 @@ const SR6s = () => {
                 <DropdownMenuContent align="end" className="w-[190px]">
                   <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedForm((info.row.original as any).raw);
-                      setEditOpen(true);
-                    }}
-                  >
-                    <KeenIcon icon="note" /> Edit
-                  </DropdownMenuItem>
+                  
+                  {info.row.original.status.label === 'pending' && (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedForm((info.row.original as any).raw);
+                        setEditOpen(true);
+                      }}
+                    >
+                      <KeenIcon icon="note" /> Edit
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem
                     onClick={() => {
                       setSelectedForm((info.row.original as any).raw);
@@ -287,11 +290,12 @@ const SR6s = () => {
                   >
                     <KeenIcon icon="eye" /> Details
                   </DropdownMenuItem>
-                  <DropdownMenuItem
+                  
+                  {/* <DropdownMenuItem
                     onClick={() => console.log('Print Certificate', info.row.original)}
                   >
                     <KeenIcon icon="printer" /> Print Certificate
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             </>

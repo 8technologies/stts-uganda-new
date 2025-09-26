@@ -279,7 +279,7 @@ const LOAD_SR6_FORMS = gql`
       aware_of_minimum_standards
       signature_of_applicant
       grower_number
-      registration_number
+      # registration_number
       valid_from
       valid_until
       status
@@ -316,6 +316,8 @@ const LOAD_QDS_FORMS = gql`
       farm_location
       recommendation
       certification
+      receipt_id
+      recommendation_id
       years_of_experience
       dealers_in
       previous_grower_number
@@ -325,7 +327,7 @@ const LOAD_QDS_FORMS = gql`
       aware_of_minimum_standards
       signature_of_applicant
       grower_number
-      registration_number
+      seed_board_registration_number
       valid_from
       valid_until
       status

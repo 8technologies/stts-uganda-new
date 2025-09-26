@@ -248,6 +248,9 @@ const SAVE_QDS_FORMS = gql`
         have_adequate_storage_facility
         is_not_used
         examination_category
+        receipt
+        recommendation_id
+        form_type
       }
     }
   }
