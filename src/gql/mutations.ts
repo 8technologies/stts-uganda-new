@@ -18,6 +18,9 @@ const LOGIN = gql`
         image
         role_id
         role_name
+        is_grower
+        is_merchant
+        is_qds_producer
         created_at
         updated_at
       }
@@ -392,6 +395,79 @@ const APPROVE_PERMIT = gql`
   }
 `;
 
+// Planting Returns (SR8) -------------------------------------------
+const CREATE_PLANTING_RETURN = gql`
+  mutation CreatePlantingReturn($input: CreatePlantingReturnInput!) {
+    createPlantingReturn(input: $input) {
+      success
+      message
+      record {
+        id
+        sr8Number
+        applicantName
+        areaHa
+        status
+        createdAt
+      }
+    }
+  }
+`;
+
+const UPDATE_PLANTING_RETURN = gql`
+  mutation UpdatePlantingReturn($id: ID!, $input: UpdatePlantingReturnInput!) {
+    updatePlantingReturn(id: $id, input: $input) {
+      success
+      message
+      record { id sr8Number status updatedAt }
+    }
+  }
+`;
+
+const DELETE_PLANTING_RETURN = gql`
+  mutation DeletePlantingReturn($id: ID!) {
+    deletePlantingReturn(id: $id) {
+      success
+      message
+    }
+  }
+`;
+
+const ASSIGN_PLANTING_RETURN_INSPECTOR = gql`
+  mutation AssignPlantingReturnInspector($input: AssignPlantingReturnInspectorInput!) {
+    assignPlantingReturnInspector(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+const APPROVE_PLANTING_RETURN = gql`
+  mutation ApprovePlantingReturn($input: ApprovePlantingReturnInput!) {
+    approvePlantingReturn(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+const REJECT_PLANTING_RETURN = gql`
+  mutation RejectPlantingReturn($input: RejectPlantingReturnInput!) {
+    rejectPlantingReturn(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+const HALT_PLANTING_RETURN = gql`
+  mutation HaltPlantingReturn($input: HaltPlantingReturnInput!) {
+    haltPlantingReturn(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export {
   LOGIN,
   SIGNUP,
@@ -417,5 +493,31 @@ export {
   ASSIGN_PERMIT_INSPECTOR,
   HALT_PERMIT,
   REJECT_PERMIT,
-  APPROVE_PERMIT
+  APPROVE_PERMIT,
+  CREATE_PLANTING_RETURN,
+  UPDATE_PLANTING_RETURN,
+  DELETE_PLANTING_RETURN,
+  ASSIGN_PLANTING_RETURN_INSPECTOR,
+  APPROVE_PLANTING_RETURN,
+  REJECT_PLANTING_RETURN,
+  HALT_PLANTING_RETURN
 };
+
+// ---- Plant Inspection (SR10) placeholder mutations ----
+export const INITIALIZE_PLANTING_INSPECTION = gql`
+  mutation InitializePlantingReturnInspection($input: InitializePlantingReturnInspectionInput!) {
+    initializePlantingReturnInspection(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const SUBMIT_PLANTING_INSPECTION_STAGE = gql`
+  mutation SubmitPlantingInspectionStage($input: SubmitPlantingInspectionStageInput!) {
+    submitPlantingInspectionStage(input: $input) {
+      success
+      message
+    }
+  }
+`;

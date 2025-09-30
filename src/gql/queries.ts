@@ -16,6 +16,9 @@ const LOAD_USERS = gql`
       role_name
       created_at
       updated_at
+      is_grower
+      is_merchant
+      is_qds_producer
     }
   }
 `;
@@ -168,6 +171,9 @@ const ME = gql`
       premises_location
       phone_number
       image
+      is_grower
+      is_merchant
+      is_qds_producer
       created_at
       updated_at
     }
@@ -278,6 +284,7 @@ const LOAD_SR6_FORMS = gql`
       aware_of_minimum_standards
       signature_of_applicant
       grower_number
+      seed_board_registration_number
       # registration_number
       valid_from
       valid_until
@@ -287,6 +294,7 @@ const LOAD_SR6_FORMS = gql`
       recommendation
       have_adequate_storage
       seed_grower_in_past
+      inspector_comment
       type
       receipt_id
       created_at
@@ -371,6 +379,74 @@ const LOAD_INSPECTORS = gql`
   }
 `;
 
+// Planting Returns (SR8)
+const LOAD_PLANTING_RETURNS = gql`
+  query PlantingReturns($filter: PlantingReturnFilter, $pagination: PaginationInput) {
+    plantingReturns(filter: $filter, pagination: $pagination) {
+      total
+      items {
+        id
+        sr8Number
+        applicantName
+        growerNumber
+        contactPhone
+        gardenNumber
+        fieldName
+        location { district subcounty parish village gpsLat gpsLng }
+        crop { id name }
+        variety { id name }
+        seedClass
+        areaHa
+        dateSown
+        expectedHarvest
+        seedSource
+        seedLotCode
+        intendedMerchant
+        seedRatePerHa
+        status
+        statusComment
+        scheduledVisitDate
+        inspector { id name email image }
+        createdBy { id name email image }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const LOAD_PLANTING_RETURN = gql`
+  query PlantingReturn($id: ID!) {
+    plantingReturn(id: $id) {
+      id
+      sr8Number
+      applicantName
+      growerNumber
+      contactPhone
+      gardenNumber
+      fieldName
+      location { district subcounty parish village gpsLat gpsLng }
+      crop { id name }
+      variety { id name }
+      seedClass
+      areaHa
+      dateSown
+      expectedHarvest
+      seedSource
+      seedLotCode
+      intendedMerchant
+      seedRatePerHa
+      status
+      statusComment
+      scheduledVisitDate
+      inspector { id name email image }
+      createdBy { id name email image }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export {
   LOAD_USERS,
   ME,
@@ -383,5 +459,31 @@ export {
   LOAD_CROPS,
   LOAD_CROP,
   LOAD_IMPORT_PERMITS,
-  LOAD_IMPORT_PERMIT
+  LOAD_IMPORT_PERMIT,
+  LOAD_PLANTING_RETURNS,
+  LOAD_PLANTING_RETURN
 };
+
+// ---- Plant Inspection (SR10) placeholder queries ----
+// Single inspection timeline for a planting return
+export const LOAD_PLANTING_INSPECTION = gql`
+  query PlantingReturnInspection($id: ID!) {
+    plantingReturnInspection(id: $id) {
+      id
+      plantingReturnId
+      stages {
+        id
+        inspectionTypeId
+        stageName
+        order
+        required
+        status
+        dueDate
+        submittedAt
+        reportUrl
+        comment
+        inputs
+      }
+    }
+  }
+`;

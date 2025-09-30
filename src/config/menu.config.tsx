@@ -66,6 +66,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: 'Quality Assurance',
     icon: 'folder-added',
+    // requiredPermissions: [getPerm('application_forms', 'can_manage_all_forms')],
     children: [
       {
         title: 'Import Permits',
@@ -80,12 +81,15 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Planting Returns',
         path: '/qa/planting-returns',
-        requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+        requiredPermissions: [
+          getPerm('quality_assurance', 'can_manage_planting_returns'),
+          getPerm('quality_assurance', 'can_view_planting_returns')
+        ]
       },
       {
         title: 'Subgrowers',
         path: '/qa/subgrowers',
-        requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+        requiredPermissions: [getPerm('quality_assurance', 'can_view_planting_returns')]
       },
       {
         title: 'Field inspections',
