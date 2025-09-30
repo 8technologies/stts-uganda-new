@@ -65,26 +65,84 @@ const useDemo1Layout = () => useContext(Demo1LayoutContext);
 const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
   const { pathname } = useLocation(); // Gets the current path
   const { setMenuConfig } = useMenus(); // Accesses menu configuration methods
-  const { auth } = useAuthContext();
+  const { auth, currentUser } = useAuthContext();
 
-  // Filter menu using JWT permissions
-  const filterMenuByPermissions = (items: any[], perms: Record<string, boolean>): any[] => {
+  // Filter menu using JWT permissions and user flags
+  const filterMenuWithVisibilityRules = (
+    items: any[],
+    perms: Record<string, boolean>,
+    user: any,
+    underMyApps = false,
+    underQA = false
+  ): any[] => {
     const result: any[] = [];
-    for (const item of items) {
-      // If item has children, filter them recursively
-      let keep = true;
-      let filteredChildren = undefined as any[] | undefined;
-      if (Array.isArray(item.children)) {
-        filteredChildren = filterMenuByPermissions(item.children, perms);
-        keep = (filteredChildren?.length ?? 0) > 0;
+    const hasManageAllForms = !!perms['can_manage_all_forms'];
+
+    for (const rawItem of items) {
+      const item = { ...rawItem };
+
+      const isMyAppsParent = item?.title === 'My Application Forms';
+      const isQAParent = item?.title === 'Quality Assurance';
+
+      // Check requiredPermissions on the item itself, but when inside QA and user is not QA admin,
+      // we ignore permissions and rely on attribute-based rules.
+      const req: string[] | undefined = (item as any).requiredPermissions;
+      let keepSelf = true;
+      if (req && req.length > 0) {
+        // Only ignore perms inside QA section for non-QA admins
+        if (!(underQA && !hasManageAllForms)) {
+          const ok = req.every((key) => !!perms[key]);
+          keepSelf = keepSelf && ok;
+        }
       }
 
-      // Check requiredPermissions on the item itself
-      const req: string[] | undefined = (item as any).requiredPermissions;
-      if (req && req.length > 0) {
-        const ok = req.every((key) => !!perms[key]);
-        keep = keep && ok;
+      // Recurse into children
+      let filteredChildren: any[] | undefined = undefined;
+      if (Array.isArray(item.children)) {
+        const nextUnderMyApps = underMyApps || isMyAppsParent;
+        const nextUnderQA = underQA || isQAParent;
+        let children = filterMenuWithVisibilityRules(
+          item.children,
+          perms,
+          user,
+          nextUnderMyApps,
+          nextUnderQA
+        );
+
+        // My Application Forms: do NOT apply attribute-based control.
+        // Visibility remains governed by requiredPermissions.
+
+        // Quality Assurance: attribute-based control if not QA admin
+        if (nextUnderQA && !hasManageAllForms) {
+          const isGrower = !!user?.is_grower;
+          const isMerchant = !!user?.is_merchant;
+          const isQds = !!user?.is_qds_producer;
+
+          children = children.filter((c: any) => {
+            const p: string | undefined = c?.path;
+            if (!p) return false;
+
+            // Merchant: Import & Export Permits
+            if (p === '/qa/import_permits' || p === '/qa/export_permits') return isMerchant;
+
+            // Grower: Planting Returns, Field/Plant Inspections
+            if (p === '/qa/planting-returns') return isGrower;
+            if (p === '/qa/inspections') return isGrower || isQds; // Shared inspections
+
+            // QDS Producer: Crop Declarations (not yet present) & Crop Inspection handled above
+            // When a declarations route exists, add it to menu.config and include it here.
+
+            // Hide everything else for non-QA admin unless explicit perms desired
+            return false;
+          });
+        }
+
+        filteredChildren = children;
       }
+
+      // Keep parent if it passes self check and either has no children or children remain
+      const keepChildren = filteredChildren ? filteredChildren.length > 0 : true;
+      const keep = keepSelf && keepChildren;
 
       if (keep) {
         result.push({ ...item, ...(filteredChildren && { children: filteredChildren }) });
@@ -94,7 +152,7 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
   };
 
   const perms = getPermissionsFromToken(auth?.access_token);
-  const filteredPrimary = filterMenuByPermissions(MENU_SIDEBAR, perms);
+  const filteredPrimary = filterMenuWithVisibilityRules(MENU_SIDEBAR, perms, currentUser);
   const secondaryMenu = useMenuChildren(pathname, filteredPrimary, 0); // Retrieves the secondary menu from filtered
 
   // Sets the primary and secondary menu configurations

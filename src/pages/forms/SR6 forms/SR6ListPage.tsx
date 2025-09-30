@@ -31,7 +31,6 @@ const SR6ListPage = () => {
   const handleSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
     const payload: any = {
-
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
       previous_grower_number: vals.previousGrowerNumber,
@@ -41,17 +40,15 @@ const SR6ListPage = () => {
       aware_of_minimum_standards: toBool(vals.standardSeed),
       signature_of_applicant: null,
       grower_number: null,
-      status: null,
       inspector_id: null,
       status_comment: null,
       recommendation: null,
       have_adequate_storage: toBool(vals.adequateStorage),
       seed_grower_in_past: toBool(vals.BeenSeedGrower),
       type: vals.applicationCategory,
-      id: null,
+      id: vals?.id || null,
       receipt: vals.receipt,
       other_documents: vals.otherDocuments
-
     };
 
     try {
@@ -105,7 +102,7 @@ const SR6ListPage = () => {
   //   </>
   // );
 
-   return (
+  return (
     <>
       <Fragment>
         {currentLayout?.name === 'demo1-layout' && (
@@ -163,7 +160,7 @@ const SR6ListPage = () => {
           <NetworkUserTableTeamCrewContent />
         </Container>
       </Fragment>
-      
+
       <SR6CreateDialog
         open={createOpen}
         onOpenChange={setCreateOpen}

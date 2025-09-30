@@ -36,6 +36,10 @@ export interface UserModel {
   image?: string;
   created_at?: string;
   updated_at?: string;
+  // Domain flags for determining accessible modules
+  is_grower?: boolean;
+  is_merchant?: boolean;
+  is_qds_producer?: boolean;
   // roles?: number[];
   // language?: TLanguageCode;
   // auth?: AuthModel;

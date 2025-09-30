@@ -15,7 +15,7 @@ import { useAuthContext } from '@/auth';
 import { toast } from 'sonner';
 import { getPermissionsFromToken } from '@/utils/permissions';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { LOAD_INSPECTORS, LOAD_SR6_FORMS } from '@/gql/queries';
+import { LOAD_INSPECTORS, LOAD_SR4_FORMS } from '@/gql/queries';
 import { ASSIGN_INSPECTOR, HALT_FORM, REJECT_FORM, APPROVE_FORM, RECOMMEND } from '@/gql/mutations';
 import { _formatDate } from '@/utils/Date';
 
@@ -66,7 +66,7 @@ const formatDate = (iso?: string | null) => {
   }
 };
 
-const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<any>) => {
+const UserDetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<any>) => {
   const d = data || {};
   const [action, setAction] = useState<'assign_inspector' | 'halt' | 'reject' | 'recommend' | ''>(
     ''
@@ -76,7 +76,7 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
   const [assignError, setAssignError] = useState<string | null>(null);
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  console.log('perms', perms);
+  // console.log('perms', perms);
   const canApprove = !!perms['can_approve'];
   const canAssignInspector = !!perms['can_assign_inspector'];
   const canReject = !!perms['can_reject'];
@@ -122,23 +122,23 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
   }, [open, d]);
 
   const [assignInspector, { loading: assigning }] = useMutation(ASSIGN_INSPECTOR, {
-    refetchQueries: [{ query: LOAD_SR6_FORMS }],
+    refetchQueries: [{ query: LOAD_SR4_FORMS }],
     awaitRefetchQueries: true
   });
   const [approveForm, { loading: approving }] = useMutation(APPROVE_FORM, {
-    refetchQueries: [{ query: LOAD_SR6_FORMS }],
+    refetchQueries: [{ query: LOAD_SR4_FORMS }],
     awaitRefetchQueries: true
   });
   const [haltForm, { loading: halting }] = useMutation(HALT_FORM, {
-    refetchQueries: [{ query: LOAD_SR6_FORMS }],
+    refetchQueries: [{ query: LOAD_SR4_FORMS }],
     awaitRefetchQueries: true
   });
   const [rejectForm, { loading: rejecting }] = useMutation(REJECT_FORM, {
-    refetchQueries: [{ query: LOAD_SR6_FORMS }],
+    refetchQueries: [{ query: LOAD_SR4_FORMS }],
     awaitRefetchQueries: true
   });
   const [recommendForm, { loading: recommending }] = useMutation(RECOMMEND, {
-    refetchQueries: [{ query: LOAD_SR6_FORMS }],
+    refetchQueries: [{ query: LOAD_SR4_FORMS }],
     awaitRefetchQueries: true
   });
   const handleConfirm = async () => {
@@ -167,7 +167,7 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
     if (action === 'approve') {
       try {
         const res = await approveForm({
-          variables: { payload: { form_id: String(d?.id ?? ''), form_type: 'sr6' } }
+          variables: { payload: { form_id: String(d?.id ?? ''), form_type: 'sr4' } }
         });
         const ok = res?.data?.approveForm?.success;
         if (!ok) {
@@ -260,7 +260,6 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
   const handlePrint = (formDetails: any) => {
     const serialNo = String(Math.floor(1000 + Math.random() * 9000));
     const registrationNumber = formDetails.seed_board_registration_number;
-    const growerNumber = formDetails.grower_number;
     const validFrom = _formatDate(formDetails.valid_from);
     const validUntil = _formatDate(formDetails.valid_until);
     const applicantName = formDetails.user?.name || formDetails.user?.company_initials || '';
@@ -268,9 +267,9 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
     const address = formDetails.user?.address || formDetails.user?.premises_location || '';
     const premisesLocation = formDetails.user?.premises_location || '';
     const phoneNumber = formDetails.user?.phone_number || '';
-    const category = formDetails.type === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer';
+    const category = formDetails.marketing_of || '';
     const issueDate = _formatDate(new Date());
-    const verifyUrl = `${URL_2}/certificates/sr6/${String(formDetails?.id ?? '')}`;
+    const verifyUrl = `${URL_2}/certificates/sr4/${String(formDetails?.id ?? '')}`;
 
     const formHTML = `<!DOCTYPE html>
 <html lang="en">
@@ -394,12 +393,10 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
       <div class="details">
         <div class="field"><div class="label">Registration Number</div><div class="value">${registrationNumber}</div></div>
         <div class="field"><div class="label">Applicant</div><div class="value">${applicantName}</div></div>
-
         <div class="field"><div class="label">Valid From</div><div class="value">${validFrom}</div></div>
         <div class="field"><div class="label">Valid Until</div><div class="value">${validUntil}</div></div>
         <div class="field"><div class="label">Company</div><div class="value">${companyInitials}</div></div>
         <div class="field"><div class="label">Category</div><div class="value">${category}</div></div>
-         <div class="field"><div class="label">Grower Number</div><div class="value">${growerNumber}</div></div>
         <div class="field"><div class="label">Address</div><div class="value">${address}</div></div>
         <div class="field"><div class="label">Premises</div><div class="value">${premisesLocation}</div></div>
         <div class="field"><div class="label">Telephone</div><div class="value">${phoneNumber}</div></div>
@@ -477,25 +474,33 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
             <LabeledRow label="Seed board registration number">
               {d.seed_board_registration_number || '-'}
             </LabeledRow>
-            <LabeledRow label="Grower number">{d.grower_number || '-'}</LabeledRow>
-            {/* <LabeledRow label="Experience in">{d.experienced_in || '-'}</LabeledRow> */}
+
+            <LabeledRow label="Experience in">{d.experienced_in || '-'}</LabeledRow>
             <LabeledRow label="Years of experience">{d.years_of_experience || '-'}</LabeledRow>
-            {/* <LabeledRow label="Dealers in">{d.dealers_in || '-'}</LabeledRow>
-            <LabeledRow label="Marketing of">{d.marketing_of || '-'}</LabeledRow> */}
-            <LabeledRow label="Have been Seed Grower">{yesno(d.seed_grower_in_past)}</LabeledRow>
-            {d.seed_grower_in_past == true && (
-              <LabeledRow label="Previous Grower Number">{d.previous_grower_number}</LabeledRow>
-            )}
-            <LabeledRow label="Have adequate storage?">{yesno(d.have_adequate_storage)}</LabeledRow>
-
-            <LabeledRow label="Have adequate isolation?">
-              {yesno(d.have_adequate_isolation)}
+            <LabeledRow label="Dealers in">{d.dealers_in || '-'}</LabeledRow>
+            <LabeledRow label="Marketing of">{d.marketing_of || '-'}</LabeledRow>
+            <LabeledRow label="Have adequate land">{yesno(d.have_adequate_land)}</LabeledRow>
+            <LabeledRow label="Have adequate storage">{yesno(d.have_adequate_storage)}</LabeledRow>
+            <LabeledRow label="Land size (In Acres)">{d.land_size || '-'}</LabeledRow>
+            <LabeledRow label="Have adequate equipment">
+              {yesno(d.have_adequate_equipment)}
             </LabeledRow>
-            <LabeledRow label="Have adequate labor?">{yesno(d.have_adequate_labor)}</LabeledRow>
-            <LabeledRow label="Are you aware of minimum standards">
-              {yesno(d.aware_of_minimum_standards)}
+            <LabeledRow label="Have contractual agreement">
+              {yesno(d.have_contractual_agreement)}
             </LabeledRow>
-
+            <LabeledRow label="Have adequate field officers">
+              {yesno(d.have_adequate_field_officers)}
+            </LabeledRow>
+            <LabeledRow label="Have conversant seed matters">
+              {yesno(d.have_conversant_seed_matters)}
+            </LabeledRow>
+            <LabeledRow label="Source of seed">{d.source_of_seed || '-'}</LabeledRow>
+            <LabeledRow label="Have adequate land for production">
+              {yesno(d.have_adequate_land_for_production)}
+            </LabeledRow>
+            <LabeledRow label="Have internal quality program">
+              {yesno(d.have_internal_quality_program)}
+            </LabeledRow>
             <LabeledRow label="Receipt">
               {d.receipt_id ? (
                 <a
@@ -505,20 +510,6 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
                   className="text-primary-600 hover:underline"
                 >
                   View receipt
-                </a>
-              ) : (
-                '-'
-              )}
-            </LabeledRow>
-            <LabeledRow label="Supportive Documents">
-              {d.other_documents ? (
-                <a
-                  href={`${URL_2}/form_attachments/${d.other_documents}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-primary-600 hover:underline"
-                >
-                  View Supportive document
                 </a>
               ) : (
                 '-'
@@ -570,7 +561,7 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
                     >
                       <input
                         type="radio"
-                        name="sr6-action"
+                        name="sr4-action"
                         value={opt.value}
                         checked={action === opt.value}
                         onChange={() => setAction(opt.value)}
@@ -712,4 +703,4 @@ const SR6DetailsDialog = ({ open, onOpenChange, data }: IUserDetailsDialogProps<
   );
 };
 
-export { SR6DetailsDialog };
+export { UserDetailsDialog };

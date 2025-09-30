@@ -33,6 +33,7 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: 'can_halt', label: 'Can Halt' },
       { id: 'can_recommend', label: 'Can Recommend' },
       { id: 'can_view_specific_assigned_forms', label: 'Can view specific assigned forms' },
+      { id: 'can_view_only_own_created_forms', label: 'Can View Only Own Created Forms' },
       { id: 'can_view_sr4_forms', label: 'Can View SR4 Forms' },
       { id: 'can_create_sr4_forms', label: 'Can Create SR4 Forms' },
       { id: 'can_edit_sr4_forms', label: 'Can Edit SR4 Forms' },
@@ -52,12 +53,26 @@ export const MODULES_CONFIG: ModuleConfig[] = [
     name: 'Quality Assurance',
     icon: ShieldCheck,
     permissions: [
-      { id: 'can_manage_import_permits', label: 'Can Manage Import Permits' },
-      { id: 'can_view_only_assigned_permits', label: 'Can View Only assigned Import Permits' },
-      { id: 'can_view_import_permits', label: 'Can View Import Permits' },
-      { id: 'can_create_permits', label: 'Can Create Import Permits' },
-      { id: 'can_edit_import_permits', label: 'Can Edit Import Permits' },
-      { id: 'can_delete_import_permits', label: 'Can Delete Import Permits' },
+      { id: 'can_manage_import_permits', label: 'Can Manage Permits' },
+      { id: 'can_view_only_assigned_permits', label: 'Can View Only assigned Permits' },
+      { id: 'can_view_import_permits', label: 'Can View Permits' },
+      { id: 'can_create_permits', label: 'Can Create Permits' },
+      { id: 'can_edit_import_permits', label: 'Can Edit Permits' },
+      { id: 'can_delete_import_permits', label: 'Can Delete Permits' },
+      { id: 'can_manage_planting_returns', label: 'Can Manage Planting Returns' },
+      {
+        id: 'can_view_only_assigned_planting_returns',
+        label: 'Can View Only assigned Planting Returns'
+      },
+      {
+        id: 'can_initialise_inspections',
+        label: 'Can Initialise Inspections'
+      },
+      { id: 'can_create_planting_returns', label: 'Can Create Planting Returns' },
+      { id: 'can_view_planting_returns', label: 'Can View Planting Returns' },
+      { id: 'can_edit_planting_returns', label: 'Can Edit Planting Returns' },
+      { id: 'can_delete_planting_returns', label: 'Can Delete Planting Returns' },
+
       { id: 'can_manage_all_qa_tasks', label: 'Can Manage ALL QA Tasks' },
       { id: 'qa_can_assign_inspector', label: 'Can Assign Inspector' },
       { id: 'qa_can_halt', label: 'Can Halt' },

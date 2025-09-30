@@ -94,8 +94,12 @@ import CropDetailsPage from '@/pages/crops/CropDetailsPage';
 import ImportPermitsListPage from '@/pages/import-permits/ImportPermitsListPage';
 import ExportPermitsListPage from '@/pages/export-permits/ExportPermitsListPage';
 import { QDSListPage } from '@/pages/forms/QDS forms/QDSListPage';
-import { PlantingReturnsListPage } from '@/pages/QA/plantingReturns/PlantingReturnsListPage';
 import SubgrowersListPage from '@/pages/QA/Subgrowers/SubgrowersListPage';
+import MySr4ApplicationForms from '@/pages/forms/my_application_forms/MySr4ApplicationForms';
+import MySr6ApplicationForms from '@/pages/forms/my_application_forms/MySr6ApplicationForms';
+import MyQdsApplicationForms from '@/pages/forms/my_application_forms/MyQdsApplicationForms';
+import PlantingReturnsListPage from '@/pages/QA/planting-returns/PlantingReturnsListPage';
+import { PlantingInspectionPage } from '@/pages/QA/planting-returns/inspection/PlantingInspectionPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -116,10 +120,37 @@ const AppRoutingSetup = (): ReactElement => {
               </PermissionGuard>
             }
           />
+
+          <Route
+            path="/my-apps/sr4"
+            element={
+              <PermissionGuard required={['can_view_only_own_created_forms']}>
+                <MySr4ApplicationForms />
+              </PermissionGuard>
+            }
+          />
+          <Route
+            path="/my-apps/sr6"
+            element={
+              <PermissionGuard required={['can_view_only_own_created_forms']}>
+                <MySr6ApplicationForms />
+              </PermissionGuard>
+            }
+          />
+
+          <Route
+            path="/my-apps/qds"
+            element={
+              <PermissionGuard required={['can_view_only_own_created_forms']}>
+                <MyQdsApplicationForms />
+              </PermissionGuard>
+            }
+          />
           <Route path="/qa/import_permits" element={<ImportPermitsListPage />} />
           <Route path="/qa/export_permits" element={<ExportPermitsListPage />} />
 
           <Route path="/qa/planting-returns" element={<PlantingReturnsListPage />} />
+          <Route path="/qa/planting-returns/:id/inspection" element={<PlantingInspectionPage />} />
           <Route path="/qa/subgrowers" element={<SubgrowersListPage />} />
 
           <Route path="/admin/roles" element={<RolesListPage />} />

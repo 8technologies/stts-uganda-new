@@ -96,7 +96,6 @@ const Users = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canManageAllForms = !!perms['can_manage_all_forms'];
-  const canEditSr4Forms = !!perms['can_edit_sr4_forms'];
 
   const formatDateTime = (iso?: string) => {
     if (!iso) return '-';
@@ -201,18 +200,20 @@ const Users = () => {
         ),
         meta: { headerClassName: 'min-w-[120px]' }
       },
-      // {
-      //   accessorFn: (row) => row.location,
-      //   id: 'location',
-      //   header: ({ column }) => <DataGridColumnHeader title="Location" column={column} />,
-      //   enableSorting: true,
-      //   cell: (info) => (
-      //     <div className="flex items-center text-gray-800 font-normal gap-1.5">
-      //       {info.row.original.location}
-      //     </div>
-      //   ),
-      //   meta: { headerClassName: 'min-w-[120px]' }
-      // },
+      {
+        accessorFn: (row) => row.location,
+        id: 'location',
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Quantity of seed (kgs)" column={column} />
+        ),
+        enableSorting: true,
+        cell: (info) => (
+          <div className="flex items-center text-gray-800 font-normal gap-1.5">
+            {info.row.original.location}
+          </div>
+        ),
+        meta: { headerClassName: 'min-w-[120px]' }
+      },
       {
         accessorFn: (row) => row.activity,
         id: 'activity',
@@ -241,14 +242,7 @@ const Users = () => {
       //   cell: (info) => info.row.original.created_user,
       //   meta: { headerClassName: 'min-w-[160px]', cellClassName: 'text-gray-800 font-normal' }
       // },
-      {
-        accessorFn: (row) => row.activity,
-        id: 'expires_on',
-        header: ({ column }) => <DataGridColumnHeader title="Expires On" column={column} />,
-        enableSorting: true,
-        cell: (info) => info.row.original?.valid_until,
-        meta: { headerClassName: 'min-w-[170px]', cellClassName: 'text-gray-800 font-normal' }
-      },
+
       {
         id: 'edit',
         header: () => '',
@@ -264,7 +258,7 @@ const Users = () => {
               <DropdownMenuContent align="end" className="w-[190px]">
                 <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {info.row.original.status.label === 'pending' && canEditSr4Forms && (
+                {info.row.original.status.label === 'pending' && (
                   <DropdownMenuItem
                     onClick={() => {
                       setSelectedForm((info.row.original as any).raw);
