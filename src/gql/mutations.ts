@@ -238,7 +238,7 @@ const SAVE_QDS_FORMS = gql`
         aware_of_minimum_standards
         signature_of_applicant
         grower_number
-        registration_number
+        # registration_number
         valid_from
         valid_until
         status
@@ -251,7 +251,7 @@ const SAVE_QDS_FORMS = gql`
         have_adequate_storage_facility
         is_not_used
         examination_category
-        receipt
+        receipt_id
         recommendation_id
         form_type
       }
@@ -394,6 +394,26 @@ const APPROVE_PERMIT = gql`
     }
   }
 `;
+// planting-returns uploads  ----------------------------------
+
+const UPLOAD_PLANTING_RETURNS = gql`
+  mutation CreatePlantingReturnUpload($input: PlantingReturnUploadInput!) {
+  createPlantingReturnUpload(input: $input) {
+    success
+    message
+    record {
+      id
+      sr8Number
+      applicantName
+      areaHa
+      status
+      createdAt
+    }
+  }
+}
+`;
+
+//----------------------------------------------------------
 
 // Planting Returns (SR8) -------------------------------------------
 const CREATE_PLANTING_RETURN = gql`
@@ -468,6 +488,38 @@ const HALT_PLANTING_RETURN = gql`
   }
 `;
 
+// qds crop declarations -------------------------------------------
+
+const CREATE_CROP_DECLARATION = gql`
+  mutation SaveCropDeclaration($payload: CropDeclarationInput!) {
+  saveCropDeclaration(payload: $payload) {
+    success
+    message
+    data {
+      id
+      application_id
+      source_of_seed
+      user_id
+      field_size
+      seed_rate
+      amount
+      receipt_id
+    }
+  }
+}
+`;
+
+const DELETE_CROP_DECLARATION = gql`
+  mutation DeleteCropDeclaration($cropDeclarationId: ID!) {
+  deleteCropDeclaration(crop_declaration_id: $cropDeclarationId) {
+    success
+    message
+  }
+}
+`;
+
+//----------------------------------------------------------
+
 export {
   LOGIN,
   SIGNUP,
@@ -500,7 +552,12 @@ export {
   ASSIGN_PLANTING_RETURN_INSPECTOR,
   APPROVE_PLANTING_RETURN,
   REJECT_PLANTING_RETURN,
-  HALT_PLANTING_RETURN
+  HALT_PLANTING_RETURN,
+  CREATE_CROP_DECLARATION,
+  DELETE_CROP_DECLARATION,
+
+  //-----
+  UPLOAD_PLANTING_RETURNS
 };
 
 // ---- Plant Inspection (SR10) placeholder mutations ----

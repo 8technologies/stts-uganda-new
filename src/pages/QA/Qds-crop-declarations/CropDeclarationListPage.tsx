@@ -10,8 +10,8 @@ import {
   ToolbarPageTitle
 } from '@/partials/toolbar';
 import { useLayout } from '@/providers';
-import { PlantingReturnCreateDialog } from './blocks/PlantingReturnCreateDialog';
-import { PlantingReturnDetailsDialog } from './blocks/PlantingReturnDetailsDialog';
+import { CropDeclarationDialog } from './blocks/CropDeclarationDialog';
+import { CropDeclarationDetailsDialog} from './blocks/CropDeclarationDetailsDialog';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -46,49 +46,54 @@ import {
   DropdownMenuItem
 } from '@/components/ui/dropdown-menu';
 import { URL_2 } from '@/config/urls';
-import { LOAD_PLANTING_RETURNS, LOAD_PLANTING_RETURN, LOAD_INSPECTORS } from '@/gql/queries';
+import { LOAD_CROP_DECLARATIONS, LOAD_CROP_DECLARATION, LOAD_INSPECTORS } from '@/gql/queries';
 import {
   CREATE_PLANTING_RETURN,
   UPDATE_PLANTING_RETURN,
   DELETE_PLANTING_RETURN,
   ASSIGN_PLANTING_RETURN_INSPECTOR,
-  UPLOAD_PLANTING_RETURNS
+  UPLOAD_PLANTING_RETURNS,
+  CREATE_CROP_DECLARATION,
+  DELETE_CROP_DECLARATION
 } from '@/gql/mutations';
-import { PlantingReturnsUploadDialog} from './blocks/PlantingReturnUploadDialog';
 
-type PlantingReturn = {
-  id: string;
-  sr8Number: string;
-  applicantName: string;
-  growerNumber?: string;
-  contactPhone?: string;
-  gardenNumber?: string;
-  fieldName?: string;
-  receipt_id?: string;
-  location: {
-    district?: string;
-    subcounty?: string;
-    parish?: string;
-    village?: string;
-    gpsLat?: string;
-    gpsLng?: string;
-  };
-  crop: string;
-  variety: string;
-  seedClass?: string;
-  areaHa: number;
-  dateSown: string;
-  expectedHarvest: string;
-  seedSource?: string;
-  seedLotCode?: string;
-  intendedMerchant?: string;
-  seedRatePerHa?: string;
-  status?: string;
-  inspector?: { id: string; name?: string; email?: string; image?: string } | null;
-  createdAt?: string;
-};
+type CropDeclaration = {
+    id: string;
+    user_id: string;
+    application_id: string;
+    source_of_seed: string;
+    field_size: string;
+    seed_rate: string;
+    amount: string;
+    receipt_id: string;
+    inspector_id: string;
+    status: string;
+    status_comment: string;
+    valid_from: string;
+    valid_until: string;
+    created_at: string;
+    updated_at: string;
+    crops: {
+      id: string;
+      crop_declaration_id: string;
+      crop_id: string;
+      variety_id: string;
+    }
+    inspector: {
+      id: string;
+      username: string;
+      name: string;
+    }
+    createdBy: {
+      id: string;
+      username: string;
+      name: string;
+      email: string;
+    }
+  }
 
-const PlantingReturnsListPage = () => {
+
+const CropDeclarationListPage = () => {
   const { currentLayout } = useLayout();
   const [createOpen, setCreateOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -103,7 +108,7 @@ const PlantingReturnsListPage = () => {
 
   // Data
   const LIST_VARS = { filter: {}, pagination: { page: 1, size: 200 } } as const;
-  const { data, loading, error, refetch } = useQuery(LOAD_PLANTING_RETURNS, {
+  const { data, loading, error, refetch } = useQuery(LOAD_CROP_DECLARATIONS, {
     variables: LIST_VARS
   });
 
@@ -114,84 +119,45 @@ const PlantingReturnsListPage = () => {
     setFormOpen(false);
   };
 
-  const handleSubmit = async (values: Record<string, any>) => {
-    setLoading(true);
-    const input = {
-      amount_enclosed: parseInt(values.amountEnclosed) || null,
-      payment_receipt: values.paymentReceipt || null,
-      sub_grower_file: values.subGrowersFile || null,
-      registered_dealer: values.registeredSeedMerchant || ''
-    }
+  const rows = useMemo(() => (data?.cropDeclarations?.items ?? []) as any[], [data]);
+  const total = Number(data?.cropDeclarations?.total || 0);
 
-    try {
-      // Submit logic here (e.g., API call)
-      console.log('Submitted values:', values);
-      console.log('Submitted input:', input);
-
-      await uploadReturns({ variables: { input } });
-      toast('Planting return updated');
-    } catch (e: any) {
-      toast('Failed to upload:', { description: e?.message || 'Unknown error' });
-    } finally {
-      setLoading(false);
-      setFormOpen(false);
-    }
-  };
-
-  const rows = useMemo(() => (data?.plantingReturns?.items ?? []) as any[], [data]);
-  const total = Number(data?.plantingReturns?.total || 0);
-
-  const [createReturn] = useMutation(CREATE_PLANTING_RETURN, {
-    refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
+  const [createDeclaration] = useMutation(CREATE_CROP_DECLARATION, {
+    refetchQueries: [{ query: LOAD_CROP_DECLARATIONS, variables: LIST_VARS }],
     awaitRefetchQueries: true
   });
-  const [uploadReturns] = useMutation(UPLOAD_PLANTING_RETURNS, {
-    refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
+  
+  const [deleteDeclaration] = useMutation(DELETE_CROP_DECLARATION, {
+    refetchQueries: [{ query: LOAD_CROP_DECLARATIONS, variables: LIST_VARS }],
     awaitRefetchQueries: true
   });
-  const [updateReturn] = useMutation(UPDATE_PLANTING_RETURN, {
-    refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
-    awaitRefetchQueries: true
-  });
-  const [deleteReturn] = useMutation(DELETE_PLANTING_RETURN, {
-    refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
-    awaitRefetchQueries: true
-  });
-  const [loadDetail] = useLazyQuery(LOAD_PLANTING_RETURN);
+  const [loadDetail] = useLazyQuery(LOAD_CROP_DECLARATION);
 
   const handleSave = async (vals: any, id?: string) => {
     setSaving(true);
-    const input: any = {
-      applicantName: vals.growerName,
-      growerNumber: vals.growerNumber,
-      contactPhone: vals.contactPhone,
-      fieldName: vals.fieldName,
-      location: {
-        district: vals.district,
-        subcounty: vals.subcounty,
-        parish: vals.parish,
-        village: vals.village,
-        gpsLat: vals.gpsLat ? Number(vals.gpsLat) : null,
-        gpsLng: vals.gpsLng ? Number(vals.gpsLng) : null
-      },
-      cropId: vals.crop || null,
-      varietyId: vals.variety || null,
-      seedClass: vals.seedClass || null,
-      areaHa: vals.areaHa ? Number(vals.areaHa) : null,
-      dateSown: vals.dateSown || null,
-      expectedHarvest: vals.expectedHarvest || null,
-      seedSource: vals.seedSource || null,
-      seedLotCode: vals.seedLotCode || null,
-      intendedMerchant: vals.intendedMerchant || null,
-      seedRatePerHa: vals.seedRatePerHa || null
+    console.log('values', vals)
+    const payload: any = {
+      id : id ? id: null,
+      source_of_seed: vals.source_of_seed,
+      field_size: vals.field_size ? Number(vals.field_size) : null,
+      seed_rate: vals.seed_rate,
+      amount: vals.amount ? Number(vals.amount) : null,
+      receipt_id: vals.receipt_id ? vals.receipt_id : null,
+      crops: (vals.crops || []).map(({ id, crop_id, variety_id }) => ({ 
+        id, 
+        crop_declaration_id: id ? id : null,
+        crop_id, 
+        variety_id }))
+    
     };
+
     try {
       if (id) {
-        await updateReturn({ variables: { id, input } });
-        toast('Planting return updated');
+        await createDeclaration({ variables: { payload } });
+        toast('Crop Declaration updated');
       } else {
-        await createReturn({ variables: { input } });
-        toast('Planting return created');
+        await createDeclaration({ variables: { payload } });
+        toast('Crop Declaration created');
       }
       setCreateOpen(false);
       setEditing(null);
@@ -207,9 +173,9 @@ const PlantingReturnsListPage = () => {
     setCreateOpen(true);
   };
 
-  const handleUpload = () => {
-    setFormOpen(true);
-  };
+  // const handleUpload = () => {
+  //   setFormOpen(true);
+  // };
 
   const handleEdit = (row: any) => {
     
@@ -219,8 +185,8 @@ const PlantingReturnsListPage = () => {
 
   const handlePreview = async (row: any) => {
     try {
-      const res = await loadDetail({ variables: { id: row.id } });
-      const rec = res.data?.plantingReturn;
+      const res = await loadDetail({ variables: { cropDeclarationId: row.id } });
+      const rec = res.data?.cropDeclaration;
       if (!rec) throw new Error('Not found');
       setPreview(rec);
     } catch (e: any) {
@@ -231,8 +197,8 @@ const PlantingReturnsListPage = () => {
   const handleDelete = async (row: any) => {
     try {
       setDeletingId(String(row.id));
-      await deleteReturn({ variables: { id: row.id } });
-      toast('Planting return deleted');
+      await deleteDeclaration({ variables: { cropDeclarationId: row.id } });
+      toast('Crop Declaration deleted');
     } catch (e: any) {
       toast('Failed to delete return', { description: e?.message || 'Unknown error' });
     } finally {
@@ -269,13 +235,13 @@ const PlantingReturnsListPage = () => {
               </ToolbarHeading>
               {canCreatePlantingReturns && (
                 <ToolbarActions>
-                  <a href="#" 
+                  {/* <a href="#" 
                     onClick={() => {
                       handleUpload();
                     }} 
                     className="btn btn-sm btn-light">
                     {'Import CSV'}
-                  </a>
+                  </a> */}
                   <a
                     href="#"
                     onClick={() => {
@@ -322,7 +288,7 @@ const PlantingReturnsListPage = () => {
           )}
         </Container>
       </Fragment>
-      <PlantingReturnCreateDialog
+      <CropDeclarationDialog
         open={createOpen}
         onOpenChange={(o) => {
           if (!o) setEditing(null);
@@ -333,46 +299,18 @@ const PlantingReturnsListPage = () => {
         initialValues={
           editing
             ? {
-                growerName: editing.applicantName,
-                growerNumber: editing.growerNumber,
-                contactPhone: editing.contactPhone,
-                fieldName: editing.fieldName,
-                district: editing.location?.district,
-                subcounty: editing.location?.subcounty,
-                parish: editing.location?.parish,
-                village: editing.location?.village,
-                gpsLat: editing.location?.gpsLat?.toString?.() || '',
-                gpsLng: editing.location?.gpsLng?.toString?.() || '',
-                crop: editing.crop?.id || '',
-                variety: editing.variety?.id || '',
-                seedClass: editing.seedClass,
-                areaHa: editing.areaHa != null ? String(editing.areaHa) : '',
-                dateSown: editing.dateSown,
-                expectedHarvest: editing.expectedHarvest,
-                seedSource: editing.seedSource,
-                seedLotCode: editing.seedLotCode,
-                intendedMerchant: editing.intendedMerchant,
-                seedRatePerHa: editing.seedRatePerHa,
+                source_of_seed: editing.source_of_seed,
+                field_size: editing.field_size,
+                seed_rate: editing.seed_rate,
+                amount: editing.amount,
                 receipt_id: editing.receipt_id,
-                notes: ''
+                crops: editing.crops || [],
               }
             : null
         }
       />
       
-      <PlantingReturnsUploadDialog
-      isOpen={isFormOpen}
-      onClose={handleClose}
-      onSubmit={handleSubmit}
-      loading={loading1}
-      resetForm={false}
-      initialValues={null}
-      title="Edit Planting Return"
-      submitLabel="Save Changes"
-    />
-
-
-      <PlantingReturnDetailsDialog
+      <CropDeclarationDetailsDialog
         open={!!preview}
         onOpenChange={(o) => {
           if (!o) setPreview(null);
@@ -383,7 +321,7 @@ const PlantingReturnsListPage = () => {
   );
 };
 
-export default PlantingReturnsListPage;
+export default CropDeclarationListPage;
 
 const PlantingReturnsGrid = ({
   rows,
@@ -435,7 +373,7 @@ const PlantingReturnsGrid = ({
         ),
         cell: ({ row }) => (
           <span className="text-gray-800 font-medium">
-            {formatDateTime(row.original.createdAt)}
+            {formatDateTime(row.original.created_at)}
           </span>
         ),
         meta: { headerClassName: 'min-w-[190px]' }
@@ -477,22 +415,36 @@ const PlantingReturnsGrid = ({
     }
 
     cols.push(
-      {
+      /* {
         accessorKey: 'sr8Number',
         id: 'sr8Number',
         header: ({ column }) => <DataGridColumnHeader title="SR8 Number" column={column} />,
         cell: ({ row }) => <span className="text-gray-800">{row.original.sr8Number}</span>,
         meta: { headerClassName: 'min-w-[160px]' }
-      },
+      }, */
       {
-        accessorKey: 'fieldName',
-        id: 'fieldName',
-        header: ({ column }) => <DataGridColumnHeader title="Field/Garden" column={column} />,
+        accessorKey: 'fieldSize',
+        id: 'fieldSize',
+        header: ({ column }) => <DataGridColumnHeader title="Field size" column={column} />,
         cell: ({ row }) => (
           <span className="text-gray-800">
-            {row.original.fieldName || row.original.gardenNumber}
+            {row.original.field_size} Acres
           </span>
         ),
+        meta: { headerClassName: 'min-w-[160px]' }
+      },
+      {
+        accessorKey: 'seedRate',
+        id: 'seedRate',
+        header: ({ column }) => <DataGridColumnHeader title="Seed Rate" column={column} />,
+        cell: ({ row }) => <span className="text-gray-800">{row.original.seed_rate}</span>,
+        meta: { headerClassName: 'min-w-[160px]' }
+      },
+      {
+        accessorKey: 'amount',
+        id: 'amount',
+        header: ({ column }) => <DataGridColumnHeader title="Amount" column={column} />,
+        cell: ({ row }) => <span className="text-gray-800">{row.original.amount}</span>,
         meta: { headerClassName: 'min-w-[160px]' }
       },
       {
@@ -553,36 +505,14 @@ const PlantingReturnsGrid = ({
         meta: { headerClassName: 'min-w-[140px]' }
       },
       {
-        accessorKey: 'crop',
-        id: 'crop',
-        header: ({ column }) => <DataGridColumnHeader title="Crop" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row?.original?.crop?.name}</span>,
-        meta: { headerClassName: 'min-w-[180px]' }
+        accessorKey: 'validUntil',
+        id: 'validUntil',
+        header: ({ column }) => <DataGridColumnHeader title="Valid Until" column={column} />,
+        cell: ({ row }) => <span className="text-gray-800">{row.original.valid_until}</span>,
+        meta: { headerClassName: 'min-w-[160px]' }
       },
-      {
-        accessorKey: 'variety',
-        id: 'variety',
-        header: ({ column }) => <DataGridColumnHeader title="Variety" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row?.original?.variety?.name}</span>,
-        meta: { headerClassName: 'min-w-[180px]' }
-      },
-      // {
-      //   accessorKey: 'areaHa',
-      //   id: 'areaHa',
-      //   header: ({ column }) => <DataGridColumnHeader title="Area (ha)" column={column} />,
-      //   cell: ({ row }) => <span className="text-gray-800">{row.original.areaHa}</span>,
-      //   meta: { headerClassName: 'min-w-[120px]' }
-      // },
-      // {
-      //   accessorKey: 'dateSown',
-      //   id: 'dateSown',
-      //   header: ({ column }) => <DataGridColumnHeader title="Sowing Date" column={column} />,
-      //   cell: ({ row }) => (
-      //     <span className="text-gray-800">{formatIsoDate(row.original.dateSown)}</span>
-      //   ),
-      //   meta: { headerClassName: 'min-w-[140px]' }
-      // },
-
+      
+      
       {
         id: 'edit',
         header: () => '',
@@ -649,7 +579,7 @@ const PlantingReturnsGrid = ({
       {
         refetchQueries: [
           {
-            query: LOAD_PLANTING_RETURNS,
+            query: LOAD_CROP_DECLARATIONS,
             variables: { filter: {}, pagination: { page: 1, size: 200 } }
           }
         ],

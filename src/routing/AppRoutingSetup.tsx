@@ -100,6 +100,7 @@ import MySr6ApplicationForms from '@/pages/forms/my_application_forms/MySr6Appli
 import MyQdsApplicationForms from '@/pages/forms/my_application_forms/MyQdsApplicationForms';
 import PlantingReturnsListPage from '@/pages/QA/planting-returns/PlantingReturnsListPage';
 import { PlantingInspectionPage } from '@/pages/QA/planting-returns/inspection/PlantingInspectionPage';
+import CropDeclarationListPage from '@/pages/QA/Qds-crop-declarations/CropDeclarationListPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -151,7 +152,7 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route path="/qa/planting-returns" element={<PlantingReturnsListPage />} />
           <Route path="/qa/planting-returns/:id/inspection" element={<PlantingInspectionPage />} />
-          <Route path="/qa/subgrowers" element={<SubgrowersListPage />} />
+          <Route path="/qa/crop-declarations" element={<CropDeclarationListPage />} />
 
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />

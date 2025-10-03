@@ -113,29 +113,29 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
         // Visibility remains governed by requiredPermissions.
 
         // Quality Assurance: attribute-based control if not QA admin
-        if (nextUnderQA && !hasManageAllForms) {
-          const isGrower = !!user?.is_grower;
-          const isMerchant = !!user?.is_merchant;
-          const isQds = !!user?.is_qds_producer;
+        // if (nextUnderQA && !hasManageAllForms) {
+        //   const isGrower = !!user?.is_grower;
+        //   const isMerchant = !!user?.is_merchant;
+        //   const isQds = !!user?.is_qds_producer;
 
-          children = children.filter((c: any) => {
-            const p: string | undefined = c?.path;
-            if (!p) return false;
+        //   children = children.filter((c: any) => {
+        //     const p: string | undefined = c?.path;
+        //     if (!p) return false;
 
-            // Merchant: Import & Export Permits
-            if (p === '/qa/import_permits' || p === '/qa/export_permits') return isMerchant;
+        //     // Merchant: Import & Export Permits
+        //     if (p === '/qa/import_permits' || p === '/qa/export_permits') return isMerchant;
 
-            // Grower: Planting Returns, Field/Plant Inspections
-            if (p === '/qa/planting-returns') return isGrower;
-            if (p === '/qa/inspections') return isGrower || isQds; // Shared inspections
+        //     // Grower: Planting Returns, Field/Plant Inspections
+        //     if (p === '/qa/planting-returns') return isGrower;
+        //     if (p === '/qa/inspections') return isGrower || isQds; // Shared inspections
 
-            // QDS Producer: Crop Declarations (not yet present) & Crop Inspection handled above
-            // When a declarations route exists, add it to menu.config and include it here.
+        //     // QDS Producer: Crop Declarations (not yet present) & Crop Inspection handled above
+        //     // When a declarations route exists, add it to menu.config and include it here.
 
-            // Hide everything else for non-QA admin unless explicit perms desired
-            return false;
-          });
-        }
+        //     // Hide everything else for non-QA admin unless explicit perms desired
+        //     return false;
+        //   });
+        // }
 
         filteredChildren = children;
       }

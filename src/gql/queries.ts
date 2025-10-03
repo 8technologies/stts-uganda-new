@@ -349,6 +349,8 @@ const LOAD_QDS_FORMS = gql`
       have_adequate_storage_facility
       is_not_used
       examination_category
+      created_at
+      updated_at
       user {
         username
         name
@@ -391,10 +393,24 @@ const LOAD_PLANTING_RETURNS = gql`
         growerNumber
         contactPhone
         gardenNumber
+        receipt_id
         fieldName
-        location { district subcounty parish village gpsLat gpsLng }
-        crop { id name }
-        variety { id name }
+        location {
+          district
+          subcounty
+          parish
+          village
+          gpsLat
+          gpsLng
+        }
+        crop {
+          id
+          name
+        }
+        variety {
+          id
+          name
+        }
         seedClass
         areaHa
         dateSown
@@ -406,8 +422,18 @@ const LOAD_PLANTING_RETURNS = gql`
         status
         statusComment
         scheduledVisitDate
-        inspector { id name email image }
-        createdBy { id name email image }
+        inspector {
+          id
+          name
+          email
+          image
+        }
+        createdBy {
+          id
+          name
+          email
+          image
+        }
         createdAt
         updatedAt
       }
@@ -425,9 +451,22 @@ const LOAD_PLANTING_RETURN = gql`
       contactPhone
       gardenNumber
       fieldName
-      location { district subcounty parish village gpsLat gpsLng }
-      crop { id name }
-      variety { id name }
+      location {
+        district
+        subcounty
+        parish
+        village
+        gpsLat
+        gpsLng
+      }
+      crop {
+        id
+        name
+      }
+      variety {
+        id
+        name
+      }
       seedClass
       areaHa
       dateSown
@@ -439,12 +478,92 @@ const LOAD_PLANTING_RETURN = gql`
       status
       statusComment
       scheduledVisitDate
-      inspector { id name email image }
-      createdBy { id name email image }
+      inspector {
+        id
+        name
+        email
+        image
+      }
+      createdBy {
+        id
+        name
+        email
+        image
+      }
       createdAt
       updatedAt
     }
   }
+`;
+
+const LOAD_CROP_DECLARATIONS = gql`
+  query CropDeclarations($filter: CropDeclarationFilter, $pagination: PaginationInput) {
+  cropDeclarations(filter: $filter, pagination: $pagination) {
+    items {
+      id
+      application_id
+      source_of_seed
+      field_size
+      seed_rate
+      amount
+      receipt_id
+      inspector_id
+      status
+      status_comment
+      valid_from
+      valid_until
+      created_at
+      updated_at
+      crops {
+        id
+        crop_id
+        variety_id
+      }
+      inspector {
+        id
+      }
+      createdBy {
+        id
+      }
+    }
+    total
+  }
+}
+`;
+
+const LOAD_CROP_DECLARATION = gql`
+query CropDeclaration($cropDeclarationId: ID!) {
+  cropDeclaration(id: $cropDeclarationId) {
+    id
+    application_id
+    source_of_seed
+    field_size
+    seed_rate
+    amount
+    receipt_id
+    inspector_id
+    status
+    status_comment
+    valid_from
+    valid_until
+    created_at
+    updated_at
+    inspector {
+      id
+      username
+    }
+    crops {
+      id
+      crop_declaration_id
+      crop_id
+      variety_id
+    }
+    createdBy {
+      id
+      username
+    }
+  }
+}
 `;
 
 export {
@@ -461,7 +580,9 @@ export {
   LOAD_IMPORT_PERMITS,
   LOAD_IMPORT_PERMIT,
   LOAD_PLANTING_RETURNS,
-  LOAD_PLANTING_RETURN
+  LOAD_PLANTING_RETURN,
+  LOAD_CROP_DECLARATIONS,
+  LOAD_CROP_DECLARATION,
 };
 
 // ---- Plant Inspection (SR10) placeholder queries ----

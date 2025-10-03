@@ -21,6 +21,7 @@ import { KeenIcon } from '@/components';
 import { useAuthContext } from '@/auth';
 import { useLazyQuery, useQuery } from '@apollo/client/react';
 import { LOAD_CROPS, LOAD_CROP } from '@/gql/queries';
+import { Upload } from 'lucide-react';
 
 export type PlantingReturnFormValues = {
   growerName: string;
@@ -45,6 +46,7 @@ export type PlantingReturnFormValues = {
   intendedMerchant?: string;
   seedRatePerHa?: string;
   notes?: string;
+  receipt_id?: string | null;
 };
 
 interface Props {
@@ -77,6 +79,7 @@ const DEFAULT_VALUES: PlantingReturnFormValues = {
   seedLotCode: '',
   intendedMerchant: '',
   seedRatePerHa: '',
+  receipt_id: '',
   notes: ''
 };
 
@@ -171,6 +174,11 @@ const PlantingReturnCreateDialog = ({
       delete (n as any)[key];
       return n;
     });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    setValues(prev => ({ ...prev, [name]: files?.[0] || null }));
   };
 
   const handleGeo = () => {
@@ -459,6 +467,39 @@ const PlantingReturnCreateDialog = ({
                 onChange={(e) => handleChange('notes', e.target.value)}
                 placeholder="Any additional info"
               />
+            </div>
+
+             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Payment receipt *
+              </label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="file"
+                  name="paymentReceipt"
+                  onChange={handleFileChange}
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  className="hidden"
+                  id="paymentReceipt"
+                  // disabled={loading}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  // disabled={loading}
+                >
+                  <label htmlFor="paymentReceipt" className="cursor-pointer">
+                    <Upload size={16} className="mr-2" />
+                    Browse
+                  </label>
+                </Button>
+                
+                <span className="text-sm text-gray-500 truncate">
+                  {values.receipt_id ? values.receipt_id : initialValues?.receipt_id || 'Select file'}
+                </span>
+              </div>
             </div>
           </div>
         </DialogBody>

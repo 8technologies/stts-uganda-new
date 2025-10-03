@@ -81,21 +81,17 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Planting Returns',
         path: '/qa/planting-returns',
-        requiredPermissions: [
-          getPerm('quality_assurance', 'can_manage_planting_returns'),
-          getPerm('quality_assurance', 'can_view_planting_returns')
-        ]
+        // requiredPermissions: [
+        //   getPerm('quality_assurance', 'can_manage_planting_returns'),
+        //   getPerm('quality_assurance', 'can_view_planting_returns')
+        // ]
       },
       {
-        title: 'Subgrowers',
-        path: '/qa/subgrowers',
-        requiredPermissions: [getPerm('quality_assurance', 'can_view_planting_returns')]
+        title: 'QDS - Crop Declarations',
+        path: '/qa/crop-declarations',
+        
       },
-      {
-        title: 'Field inspections',
-        path: '/qa/inspections',
-        requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
-      },
+      
       {
         title: 'Lab tests',
         path: '/qa/labs',

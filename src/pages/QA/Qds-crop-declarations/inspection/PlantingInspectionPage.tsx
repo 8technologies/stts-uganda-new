@@ -89,7 +89,6 @@ const PlantingInspectionPage = () => {
       const existing = stageStatusMap[String(s.id)];
       const status = String(existing?.status || 'pending').toLowerCase();
       console.log('Stage', s.order, status);
-      console.log('existing', existing);
       if (!existing || status === 'pending' || status === 'provisional') return s.order;
     }
     return Infinity;
@@ -169,8 +168,6 @@ const PlantingInspectionPage = () => {
                   const enabled = !canInitialize && s.order <= firstPendingOrder;
                   const status = existing?.status || 'pending';
                   const due = existing?.dueDate ? formatIsoDate(existing.dueDate) : '—';
-                  const edit = status === 'submitted' ;
-                  console.log('edit', status , edit );
                   return (
                     <AccordionItem
                       key={s.id}
@@ -197,7 +194,7 @@ const PlantingInspectionPage = () => {
                       }
                     >
                       <StageForm
-                        enabled={edit}
+                        enabled={!!enabled}
                         isLast={isLast}
                         planting={planting}
                         crop={crop}
