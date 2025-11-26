@@ -30,7 +30,8 @@ import {
   Clock,
   XCircle,
   AlertCircle,
-  Package
+  Package,
+  Printer
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/auth";
@@ -42,6 +43,9 @@ const SeedLabelManagementPage = () => {
   const perms = getPermissionsFromToken(auth?.access_token);
   const canManageSeedLabels = !!perms['can_manage_seed_labels'];
   const canPrintLabels = !!perms['can_print_seed_labels'];
+  const canDeleteLabels = !!perms['can_edit_seed_labels'];
+
+  const userEditPermissions = canDeleteLabels;
   
   const { data, loading, error } = useQuery(LOAD_SEED_LABELS, {
     fetchPolicy: "cache-and-network",
@@ -124,6 +128,12 @@ const SeedLabelManagementPage = () => {
         bg: "bg-red-100",
         text: "text-red-700",
         label: "Rejected"
+      },
+      printed: {
+        icon: <Printer className="w-3.5 h-3.5" />,
+        bg: "bg-blue-100",
+        text: "text-blue-700",
+        label: "Printed"
       }
     };
 
@@ -388,7 +398,10 @@ const SeedLabelManagementPage = () => {
                                 <Eye className="mr-2 h-4 w-4 text-gray-600" />
                                 <span>View Details</span>
                               </DropdownMenuItem>
-                              <DropdownMenuItem
+                              {canDeleteLabels && label.status ==='pending' && (
+                                <>
+                                {console.log('userEditPermissions', label.status ==='pending')}
+                                <DropdownMenuItem
                                 onClick={() => handleEdit(label.id)}
                                 className="cursor-pointer"
                               >
@@ -402,6 +415,9 @@ const SeedLabelManagementPage = () => {
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 <span>Delete</span>
                               </DropdownMenuItem>
+                                </>
+                              )}
+                              
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </td>

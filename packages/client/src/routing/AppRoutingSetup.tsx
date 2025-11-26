@@ -110,6 +110,9 @@ import MySeedLabInspections from '@/pages/QA/seedLabs/MySeedLabsForms';
 import SeedLabInspectionPage from '@/pages/QA/seedLabs/blocks/seedLabInspection';
 import StockLabTestForm from '@/pages/QA/seedLabs/blocks/SeedLabTest';
 import SeedLabelManagementPage from '@/pages/QA/seed_Labels/SeedLabels';
+import MarketplacePage from '@/pages/marketplace/products/MarketplacePage';
+import OrdersPage from '@/pages/marketplace/orders/OrdersPage';
+
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -176,13 +179,16 @@ const AppRoutingSetup = (): ReactElement => {
             }
           />
 
-          <Route path="/qa/seed-labels" element={<SeedLabelManagementPage />} />
+          <Route path="/qa/seed-labels" element={<PermissionGuard required={['can_view_seed_labels']}><SeedLabelManagementPage /></PermissionGuard> } />
 
           <Route path="/stock/examination" element={<StockExamination />} />
           <Route path="/stock/inspection/:stockId" element={<StockRecordsPage />} />
           <Route path="/stock/mystock" element={<StockRecordsPage />} />
 
-          
+          <Route path="/market/products" element={<MarketplacePage />} />
+          <Route path="/market/orders" element={<OrdersPage />} />
+
+
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />

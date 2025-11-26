@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+// import { toast } from "@/components/ui/use-toast"; // optional - replace with your toast util or remove
 import { Button } from "@/components/ui/button";
+import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { APPROVE_SEED_LABEL, PRINT_SEED_LABEL } from "@/gql/mutations";
@@ -32,7 +34,17 @@ const SeedLabelDetailSheet: React.FC<Props> = ({ open, onOpenChange, data }) => 
       refetchQueries: [{ query: LOAD_SEED_LABELS }],
       awaitRefetchQueries: true
     });
-  const [printSeedLabel] = useMutation(PRINT_SEED_LABEL);
+  // track printing state and whether already printed once
+  const [printSeedLabel, { loading: printing }] = useMutation(PRINT_SEED_LABEL, {
+      refetchQueries: [{ query: LOAD_SEED_LABELS }],
+      awaitRefetchQueries: true
+    });
+  const [printedOnce, setPrintedOnce] = useState<boolean>(() => {
+    // initialize from server data if available (adapt field to your API)
+    if (!data) return false;
+    return Boolean((data as any).printed || (data as any).printed_count > 0);
+  });
+
   const [status, setStatus] = useState("pending");
 
   console.log("Seed Label Details data:", d);
@@ -52,19 +64,33 @@ const SeedLabelDetailSheet: React.FC<Props> = ({ open, onOpenChange, data }) => 
     }
   };
 
-  const handlePrint = async () => {
-    try {
-      await printSeedLabel({ variables: { id: d.id } });
-      alert("Printing label...");
-    } catch (error) {
-      console.error("Error printing label:", error);
+  const handlePrint1 = async (formDetails: any) => {
+    if (printedOnce) {
+      // already printed once - block further printing
+      alert("This label has already been printed once and cannot be printed again.");
+      return;
     }
-  };
+    
+    try {
+      // call server mutation to record a print attempt (server should enforce one-time print)
+      const res = await printSeedLabel({ variables: { printSeedLabelRequestId: formDetails.id } });
+      // read mutation payload robustly (first field)
+      const payload = res?.data && Object.values(res.data)[0];
+      const ok = payload?.success ?? true; // default to true if your API returns raw data
+      if (!ok) {
+        const msg = payload?.message || "Failed to record printing.";
+        alert(msg);
+        return;
+      }
 
-   const handlePrint1 = (formDetails: any) => {
-    console.log("Printing Seed Label:", formDetails);
-    const verifyUrl = `${URL_2}/certificates/sr4/${String(formDetails?.id ?? '')}`;
+      // mark locally to prevent double printing in UI; server should also enforce
+      setPrintedOnce(true);
+      // optional toast
+      // try { toast?.success({ title: "Print recorded", description: payload?.message || "Proceeding to print…" }); } catch {}
+      try { toast?.success( "Proceeding to print…" ); } catch {}
 
+      const verifyUrl = `${URL_2}/certificates/sr4/${String(formDetails?.id ?? '')}`;
+  
     const crop = formDetails?.Crop?.name || '';
     const variety = formDetails?.CropVariety?.name || '';
     const lot_number = formDetails?.SeedLab?.lot_number || '';
@@ -267,7 +293,11 @@ const SeedLabelDetailSheet: React.FC<Props> = ({ open, onOpenChange, data }) => 
       popup.document.write(formHTML);
       popup.document.close();
     }
-  }; 
+  } catch (err) {
+    console.error("Print failed", err);
+    alert("Failed to record print. Try again or contact admin.");
+  }
+   }; 
 
   
   const getStatusConfig = (status: string) => {
@@ -461,10 +491,12 @@ const SeedLabelDetailSheet: React.FC<Props> = ({ open, onOpenChange, data }) => 
             <Button 
               onClick={() => handlePrint1(d)} 
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-11 font-medium shadow-sm transition-all duration-200"
+              disabled={!canPrintLabels || printing || printedOnce}
+              title={!canPrintLabels ? "You don't have permission to print" : printedOnce ? "Already printed" : undefined}
             >
-              <Printer className="w-4 h-4 mr-2" />
-              Print Label
-            </Button>
+               <Printer className="w-4 h-4 mr-2" />
+               Print Label
+             </Button>
             {/* )} */}
           </div>
 
