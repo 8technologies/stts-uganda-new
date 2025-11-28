@@ -1,4 +1,4 @@
-import { TimelinesWrapper } from '@/partials/timelines/default/item';
+import { TimelinesWrapper } from "@/partials/timelines/default/item";
 
 const ActivitiesProjectStatus = () => {
   return (

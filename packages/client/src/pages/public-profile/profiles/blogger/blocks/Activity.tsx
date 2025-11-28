@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
 import {
   ActivitiesAnniversary,
@@ -9,8 +9,8 @@ import {
   ActivitiesFollowersMilestone,
   ActivitiesInterview,
   ActivitiesNewArticle,
-  ActivitiesUpcomingContent
-} from '@/partials/activities/items';
+  ActivitiesUpcomingContent,
+} from "@/partials/activities/items";
 
 const Activity = () => {
   return (
@@ -25,7 +25,13 @@ const Activity = () => {
               <span className="switch-on:hidden">Off</span>
               <span className="hidden switch-on:inline">On</span>
             </span>
-            <input type="checkbox" value="1" name="check" defaultChecked readOnly />
+            <input
+              type="checkbox"
+              value="1"
+              name="check"
+              defaultChecked
+              readOnly
+            />
           </label>
         </div>
       </div>

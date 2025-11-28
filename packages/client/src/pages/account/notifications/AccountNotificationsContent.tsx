@@ -1,33 +1,38 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { MiscEngage, MiscFaq, MiscHighlightedPosts, IHighlightedPostsItems } from '@/partials/misc';
-import { toAbsoluteUrl } from '@/utils';
+import {
+  MiscEngage,
+  MiscFaq,
+  MiscHighlightedPosts,
+  IHighlightedPostsItems,
+} from "@/partials/misc";
+import { toAbsoluteUrl } from "@/utils";
 
-import { Channels, DoNotDistrub, OtherNotifications } from './blocks';
+import { Channels, DoNotDistrub, OtherNotifications } from "./blocks";
 
 const AccountNotificationsContent = () => {
   const posts: IHighlightedPostsItems = [
     {
-      icon: 'notification-on',
-      title: 'Streamlined Alerts Setup: Custom Notification Preferences',
+      icon: "notification-on",
+      title: "Streamlined Alerts Setup: Custom Notification Preferences",
       summary:
-        'Tailor your alert preferences with our streamlined setup. Stay informed with notifications that matter to you most.',
-      path: '#'
+        "Tailor your alert preferences with our streamlined setup. Stay informed with notifications that matter to you most.",
+      path: "#",
     },
     {
-      icon: 'message-notify',
-      title: 'Effective Communication: Instant Notification Tools',
+      icon: "message-notify",
+      title: "Effective Communication: Instant Notification Tools",
       summary:
-        'Ensure timely communication with our instant notification tools. Customize alerts to stay ahead in real-time collaboration.',
-      path: '#'
+        "Ensure timely communication with our instant notification tools. Customize alerts to stay ahead in real-time collaboration.",
+      path: "#",
     },
     {
-      icon: 'notification-status',
-      title: 'Personalized Updates: Smart Alert System',
+      icon: "notification-status",
+      title: "Personalized Updates: Smart Alert System",
       summary:
-        'Control how you receive updates with our smart alert system. Personalize notifications for a more efficient workflow.',
-      path: '#'
-    }
+        "Control how you receive updates with our smart alert system. Personalize notifications for a more efficient workflow.",
+      path: "#",
+    },
   ];
 
   return (
@@ -46,20 +51,20 @@ const AccountNotificationsContent = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/31.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/31.svg")}
                   className="dark:hidden max-h-[150px]"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/31-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/31-dark.svg")}
                   className="light:hidden max-h-[150px]"
                   alt=""
                 />
               </Fragment>
             }
             more={{
-              title: 'Contact Support',
-              url: ''
+              title: "Contact Support",
+              url: "",
             }}
           />
         </div>

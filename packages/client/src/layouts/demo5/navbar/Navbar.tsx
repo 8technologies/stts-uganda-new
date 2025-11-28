@@ -1,4 +1,4 @@
-import { NavbarMenu } from '../';
+import { NavbarMenu } from "../";
 
 const Navbar = () => {
   return (

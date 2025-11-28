@@ -1,11 +1,11 @@
-import { IStatisticsItems, Statistics, Summary } from '../creator';
-import { CommunityBadges, Tags, UnlockPartnerships } from '../default';
-import { Activity, Collaborate, Posts, Replies } from './blocks';
+import { IStatisticsItems, Statistics, Summary } from "../creator";
+import { CommunityBadges, Tags, UnlockPartnerships } from "../default";
+import { Activity, Collaborate, Posts, Replies } from "./blocks";
 
 const ProfileBloggerContent = () => {
   const data: IStatisticsItems = [
-    { title: 'Topics', value: '397' },
-    { title: 'Upvotes', value: '8.2k' }
+    { title: "Topics", value: "397" },
+    { title: "Upvotes", value: "8.2k" },
   ];
 
   return (

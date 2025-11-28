@@ -1,11 +1,11 @@
-import { useRef } from 'react';
-import { KeenIcon } from '@/components/keenicons';
-import { toAbsoluteUrl } from '@/utils';
-import { Menu, MenuItem, MenuToggle } from '@/components';
-import { DropdownUser } from '@/partials/dropdowns/user';
-import { DropdownNotifications } from '@/partials/dropdowns/notifications';
-import { DropdownChat } from '@/partials/dropdowns/chat';
-import { useLanguage } from '@/i18n';
+import { useRef } from "react";
+import { KeenIcon } from "@/components/keenicons";
+import { toAbsoluteUrl } from "@/utils";
+import { Menu, MenuItem, MenuToggle } from "@/components";
+import { DropdownUser } from "@/partials/dropdowns/user";
+import { DropdownNotifications } from "@/partials/dropdowns/notifications";
+import { DropdownChat } from "@/partials/dropdowns/chat";
+import { useLanguage } from "@/i18n";
 
 const HeaderTopbar = () => {
   const itemChatRef = useRef<any>(null);
@@ -14,7 +14,7 @@ const HeaderTopbar = () => {
   const { isRTL } = useLanguage();
 
   const handleDropdownChatShow = () => {
-    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event("resize"));
   };
 
   return (
@@ -26,15 +26,15 @@ const HeaderTopbar = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [115, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [115, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-icon btn-icon-lg size-9 rounded-full hover:bg-gray-200 dropdown-open:bg-gray-200 text-gray-600">
@@ -51,15 +51,15 @@ const HeaderTopbar = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [75, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [75, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-icon btn-icon-lg size-9 rounded-full hover:bg-gray-200 dropdown-open:bg-gray-200 text-gray-600">
@@ -77,21 +77,21 @@ const HeaderTopbar = () => {
           toggle="dropdown"
           trigger="click"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [20, 10] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [20, 10], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="btn btn-icon rounded-full">
             <img
               className="size-9 rounded-full justify-center border border-gray-500 shrink-0"
-              src={toAbsoluteUrl('/media/avatars/gray/5.png')}
+              src={toAbsoluteUrl("/media/avatars/gray/5.png")}
               alt=""
             />
           </MenuToggle>

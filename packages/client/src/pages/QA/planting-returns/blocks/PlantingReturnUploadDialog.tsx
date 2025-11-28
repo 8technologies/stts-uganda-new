@@ -1,11 +1,16 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Textarea } from '@/components/ui/textarea';
-import { useMutation } from '@apollo/client/react';
-import { Download, Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation } from "@apollo/client/react";
+import { Download, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type PlantingReturns = {
   id: string | number;
@@ -22,7 +27,7 @@ type PlantingReturns = {
     name: string;
     phone_number: string;
   };
-  status: 'Pending';
+  status: "Pending";
 };
 
 interface IPlantingReturnsFormProps {
@@ -44,13 +49,13 @@ const PlantingReturnsUploadDialog = ({
   resetForm,
   initialValues,
   title,
-  submitLabel
+  submitLabel,
 }: IPlantingReturnsFormProps) => {
   const [formData, setFormData] = useState({
-    amountEnclosed: '',
-    registeredSeedMerchant: '',
+    amountEnclosed: "",
+    registeredSeedMerchant: "",
     paymentReceipt: null as File | null,
-    subGrowersFile: null as File | null
+    subGrowersFile: null as File | null,
   });
 
   const handleSubmit = (e?: React.FormEvent) => {
@@ -58,49 +63,49 @@ const PlantingReturnsUploadDialog = ({
 
     // Basic validation
     if (!formData.amountEnclosed.trim()) {
-      toast('Amount enclosed is required');
+      toast("Amount enclosed is required");
       return;
     }
-    
+
     onSubmit?.(formData); // Pass the FormData to the backend for processing
     setFormData({
-      amountEnclosed: '',
-      registeredSeedMerchant: '',
+      amountEnclosed: "",
+      registeredSeedMerchant: "",
       paymentReceipt: null,
-      subGrowersFile: null
+      subGrowersFile: null,
     });
   };
 
   const handleClose = () => {
     setFormData({
-      amountEnclosed: '',
-      registeredSeedMerchant: '',
+      amountEnclosed: "",
+      registeredSeedMerchant: "",
       paymentReceipt: null,
-      subGrowersFile: null
+      subGrowersFile: null,
     });
     onClose?.(false);
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
-    setFormData(prev => ({ ...prev, [name]: files?.[0] || null }));
+    setFormData((prev) => ({ ...prev, [name]: files?.[0] || null }));
   };
 
   const downloadTemplate = () => {
-    toast('Template downloaded successfully!');
+    toast("Template downloaded successfully!");
   };
 
   useEffect(() => {
     if (resetForm) {
       setFormData({
-        amountEnclosed: '',
-        registeredSeedMerchant: '',
+        amountEnclosed: "",
+        registeredSeedMerchant: "",
         paymentReceipt: null,
-        subGrowersFile: null
+        subGrowersFile: null,
       });
     }
   }, [resetForm]);
@@ -108,19 +113,27 @@ const PlantingReturnsUploadDialog = ({
   useEffect(() => {
     if (isOpen && initialValues) {
       setFormData({
-        amountEnclosed: initialValues.amount_enclosed ?? '',
-        registeredSeedMerchant: initialValues.registerd_dealer ?? '',
+        amountEnclosed: initialValues.amount_enclosed ?? "",
+        registeredSeedMerchant: initialValues.registerd_dealer ?? "",
         paymentReceipt: null,
-        subGrowersFile: null
+        subGrowersFile: null,
       });
     }
   }, [isOpen, initialValues]);
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => (!open ? handleClose() : undefined)}>
-      <SheetContent side="right" className="w-full sm:max-w-[840px] lg:max-w-[650px]">
+    <Sheet
+      open={isOpen}
+      onOpenChange={(open) => (!open ? handleClose() : undefined)}
+    >
+      <SheetContent
+        side="right"
+        className="w-full sm:max-w-[840px] lg:max-w-[650px]"
+      >
         <SheetHeader className="mb-4">
-          <SheetTitle>{title ? 'Create New Application' : 'Edit Application'}</SheetTitle>
+          <SheetTitle>
+            {title ? "Create New Application" : "Edit Application"}
+          </SheetTitle>
         </SheetHeader>
         <div>
           <div className="space-y-6">
@@ -131,7 +144,9 @@ const PlantingReturnsUploadDialog = ({
               <Input
                 type="number"
                 value={formData.amountEnclosed}
-                onChange={(e) => handleInputChange('amountEnclosed', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("amountEnclosed", e.target.value)
+                }
                 placeholder="Input Amount enclosed for application"
                 required
                 disabled={loading}
@@ -164,9 +179,11 @@ const PlantingReturnsUploadDialog = ({
                     Browse
                   </label>
                 </Button>
-                
+
                 <span className="text-sm text-gray-500 truncate">
-                  {formData.paymentReceipt ? formData.paymentReceipt.name : initialValues?.payment_receipt || 'Select file'}
+                  {formData.paymentReceipt
+                    ? formData.paymentReceipt.name
+                    : initialValues?.payment_receipt || "Select file"}
                 </span>
               </div>
             </div>
@@ -177,7 +194,9 @@ const PlantingReturnsUploadDialog = ({
               </label>
               <Input
                 value={formData.registeredSeedMerchant}
-                onChange={(e) => handleInputChange('registeredSeedMerchant', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("registeredSeedMerchant", e.target.value)
+                }
                 placeholder="Input Registered seed merchant/dealer to whom the entire seed stock will be sold"
                 disabled={loading}
               />
@@ -227,34 +246,42 @@ const PlantingReturnsUploadDialog = ({
                     </label>
                   </Button>
                   <span className="text-sm text-gray-500 truncate">
-                    {formData.subGrowersFile ? formData.subGrowersFile.name : initialValues?.sub_growers_file || 'Select file'}
+                    {formData.subGrowersFile
+                      ? formData.subGrowersFile.name
+                      : initialValues?.sub_growers_file || "Select file"}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
-                  To upload many planting_returns, attach an Excel file of multiple Sub-growers here.
+                  To upload many planting_returns, attach an Excel file of
+                  multiple Sub-growers here.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="mt-6 flex gap-3">
-            <Button 
-              type="button" 
-              variant="outline" 
-              className="flex-1" 
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1"
               onClick={handleClose}
               disabled={loading}
             >
               Cancel
             </Button>
-            <Button 
-              type="button" 
-              variant="default" 
-              className="flex-1" 
+            <Button
+              type="button"
+              variant="default"
+              className="flex-1"
               onClick={handleSubmit}
               disabled={loading}
             >
-              {loading ? 'Please wait...' : (submitLabel ?? (initialValues ? 'Update Application' : 'Create Application'))}
+              {loading
+                ? "Please wait..."
+                : (submitLabel ??
+                  (initialValues
+                    ? "Update Application"
+                    : "Create Application"))}
             </Button>
           </div>
         </div>

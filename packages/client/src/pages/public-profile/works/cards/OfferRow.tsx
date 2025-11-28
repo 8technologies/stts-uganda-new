@@ -1,23 +1,29 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonHexagonBadge } from '@/partials/common';
+import { CommonHexagonBadge } from "@/partials/common";
 
-import { IOfferRowProps } from './Offer';
+import { IOfferRowProps } from "./Offer";
 
-const OfferRow = ({ path, size, iconSize, title, subTitle }: IOfferRowProps) => {
+const OfferRow = ({
+  path,
+  size,
+  iconSize,
+  title,
+  subTitle,
+}: IOfferRowProps) => {
   return (
     <Fragment>
       <style>
         {`
           .offer-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-4.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-4.png")}');
           }
           .dark .offer-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-4-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-4-dark.png")}');
           }
         `}
       </style>
@@ -31,7 +37,12 @@ const OfferRow = ({ path, size, iconSize, title, subTitle }: IOfferRowProps) => 
             <div className="flex justify-center">
               <CommonHexagonBadge
                 size={size}
-                badge={<KeenIcon icon="rocket" className={`${iconSize} text-brand`} />}
+                badge={
+                  <KeenIcon
+                    icon="rocket"
+                    className={`${iconSize} text-brand`}
+                  />
+                }
                 stroke="stroke-brand-clarity"
                 fill="fill-light"
               />
@@ -41,7 +52,9 @@ const OfferRow = ({ path, size, iconSize, title, subTitle }: IOfferRowProps) => 
               <span className="text-xl font-semibold text-gray-900 hover:text-primary-active mb-px">
                 {title}
               </span>
-              <span className="text-sm font-medium text-gray-600">{subTitle}</span>
+              <span className="text-sm font-medium text-gray-600">
+                {subTitle}
+              </span>
             </div>
           </div>
         </div>

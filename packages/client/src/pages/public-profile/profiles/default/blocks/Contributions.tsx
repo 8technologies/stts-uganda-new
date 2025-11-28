@@ -1,9 +1,9 @@
-import ApexChart from 'react-apexcharts';
-import { ApexOptions } from 'apexcharts';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
+import ApexChart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
 
-import { DropdownCard2 } from '@/partials/dropdowns/general';
+import { DropdownCard2 } from "@/partials/dropdowns/general";
 
 interface IContributionsProps {
   title: string;
@@ -12,13 +12,13 @@ interface IContributionsProps {
 const Contributions = ({ title }: IContributionsProps) => {
   const { isRTL } = useLanguage();
   const data: number[] = [44, 55, 41, 17, 15];
-  const labels: string[] = ['ERP', 'HRM', 'DMS', 'CRM', 'DAM'];
+  const labels: string[] = ["ERP", "HRM", "DMS", "CRM", "DAM"];
   const colors: string[] = [
-    'var(--tw-primary)',
-    'var(--tw-brand)',
-    'var(--tw-success)',
-    'var(--tw-info)',
-    'var(--tw-warning)'
+    "var(--tw-primary)",
+    "var(--tw-brand)",
+    "var(--tw-success)",
+    "var(--tw-info)",
+    "var(--tw-warning)",
   ];
 
   const options: ApexOptions = {
@@ -26,49 +26,49 @@ const Contributions = ({ title }: IContributionsProps) => {
     labels: labels,
     colors: colors,
     fill: {
-      colors: colors
+      colors: colors,
     },
     chart: {
-      type: 'donut'
+      type: "donut",
     },
     stroke: {
       show: true,
-      width: 2
+      width: 2,
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     plotOptions: {
       pie: {
-        expandOnClick: false
-      }
+        expandOnClick: false,
+      },
     },
     legend: {
       offsetY: -10,
       offsetX: -10,
-      fontSize: '13px',
-      fontWeight: '500',
+      fontSize: "13px",
+      fontWeight: "500",
       itemMargin: {
-        vertical: 1
+        vertical: 1,
       },
       labels: {
-        colors: 'var(--tw-gray-700)',
-        useSeriesColors: false
-      }
+        colors: "var(--tw-gray-700)",
+        useSeriesColors: false,
+      },
     },
     responsive: [
       {
         breakpoint: 480,
         options: {
           chart: {
-            width: 200
+            width: 200,
           },
           legend: {
-            position: 'bottom'
-          }
-        }
-      }
-    ]
+            position: "bottom",
+          },
+        },
+      },
+    ],
   };
 
   return (
@@ -81,15 +81,15 @@ const Contributions = ({ title }: IContributionsProps) => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

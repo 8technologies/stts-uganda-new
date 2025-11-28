@@ -1,9 +1,9 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-import { IMenuSeparatorProps } from './';
+import { IMenuSeparatorProps } from "./";
 
 const MenuSeparator = ({ className }: IMenuSeparatorProps) => {
-  return <div className={clsx('menu-separator', className && className)}></div>;
+  return <div className={clsx("menu-separator", className && className)}></div>;
 };
 
 export { MenuSeparator };

@@ -1,6 +1,6 @@
-import { MiscFaq, MiscHelp } from '@/partials/misc';
+import { MiscFaq, MiscHelp } from "@/partials/misc";
 
-import { Plans } from './blocks';
+import { Plans } from "./blocks";
 
 const AccountPlansContent = () => {
   return (

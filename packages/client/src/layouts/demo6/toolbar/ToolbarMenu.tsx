@@ -1,21 +1,21 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { KeenIcon, Menu, MenuItem, MenuToggle, MenuSub } from '@/components';
+import React from "react";
+import { Link } from "react-router-dom";
+import { KeenIcon, Menu, MenuItem, MenuToggle, MenuSub } from "@/components";
 
 const ToolbarMenu = () => {
   const months = [
-    { title: 'January, 2024' },
-    { title: 'February, 2024' },
-    { title: 'March, 2024', active: true },
-    { title: 'April, 2024' },
-    { title: 'May, 2024' },
-    { title: 'June, 2024' },
-    { title: 'July, 2024' },
-    { title: 'August, 2024' },
-    { title: 'September, 2024' },
-    { title: 'October, 2024' },
-    { title: 'November, 2024' },
-    { title: 'December, 2024' }
+    { title: "January, 2024" },
+    { title: "February, 2024" },
+    { title: "March, 2024", active: true },
+    { title: "April, 2024" },
+    { title: "May, 2024" },
+    { title: "June, 2024" },
+    { title: "July, 2024" },
+    { title: "August, 2024" },
+    { title: "September, 2024" },
+    { title: "October, 2024" },
+    { title: "November, 2024" },
+    { title: "December, 2024" },
   ];
 
   return (
@@ -24,15 +24,15 @@ const ToolbarMenu = () => {
         toggle="dropdown"
         trigger="hover"
         dropdownProps={{
-          placement: 'bottom-end',
+          placement: "bottom-end",
           modifiers: [
             {
-              name: 'offset',
+              name: "offset",
               options: {
-                offset: [0, 1] // [skid, distance]
-              }
-            }
-          ]
+                offset: [0, 1], // [skid, distance]
+              },
+            },
+          ],
         }}
       >
         <MenuToggle className="btn btn-light btn-sm flex-nowrap">
@@ -48,7 +48,10 @@ const ToolbarMenu = () => {
 
         <MenuSub className="menu-default w-48 scrollable-y max-h-[250px]">
           {months.map((item, index) => (
-            <div className={`menu-item ${item.active ? 'active' : ''}`} key={index}>
+            <div
+              className={`menu-item ${item.active ? "active" : ""}`}
+              key={index}
+            >
               <Link to="/" className="menu-link">
                 <span className="menu-title">{item.title}</span>
               </Link>

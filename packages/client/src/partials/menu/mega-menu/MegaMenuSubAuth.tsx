@@ -1,5 +1,9 @@
-import { IMenuItemConfig, TMenuConfig, MenuSub } from '@/components/menu';
-import { MegaMenuFooter, MegaMenuSubDefault, MegaMenuSubHighlighted } from './components';
+import { IMenuItemConfig, TMenuConfig, MenuSub } from "@/components/menu";
+import {
+  MegaMenuFooter,
+  MegaMenuSubDefault,
+  MegaMenuSubHighlighted,
+} from "./components";
 
 const MegaMenuSubAuth = (items: TMenuConfig) => {
   const authItem = items[4];
@@ -35,7 +39,8 @@ const MegaMenuSubAuth = (items: TMenuConfig) => {
             {authItemOthers.title}
           </h3>
           <div className="menu menu-default menu-fit flex-col">
-            {authItemOthers.children && MegaMenuSubHighlighted(authItemOthers.children)}
+            {authItemOthers.children &&
+              MegaMenuSubHighlighted(authItemOthers.children)}
           </div>
         </div>
       </div>

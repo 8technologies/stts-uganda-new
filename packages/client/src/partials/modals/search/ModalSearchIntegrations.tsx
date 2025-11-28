@@ -1,7 +1,7 @@
-import React from 'react';
-import { toAbsoluteUrl } from '@/utils';
-import { CommonAvatars } from '@/partials/common';
-import { IModalSearchIntegrationsItem } from './types';
+import React from "react";
+import { toAbsoluteUrl } from "@/utils";
+import { CommonAvatars } from "@/partials/common";
+import { IModalSearchIntegrationsItem } from "./types";
 
 // Define the props interface
 interface IModalSearchIntegrationsProps {
@@ -32,7 +32,9 @@ const ModalSearchIntegrations = ({ items }: IModalSearchIntegrationsProps) => {
                 >
                   {item.name}
                 </a>
-                <span className="text-2xs font-medium text-gray-600">{item.description}</span>
+                <span className="text-2xs font-medium text-gray-600">
+                  {item.description}
+                </span>
               </div>
             </div>
 

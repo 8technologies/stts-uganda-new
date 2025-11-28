@@ -1,2 +1,2 @@
-export * from './ProfileNetworkPage';
-export * from './blocks';
+export * from "./ProfileNetworkPage";
+export * from "./blocks";

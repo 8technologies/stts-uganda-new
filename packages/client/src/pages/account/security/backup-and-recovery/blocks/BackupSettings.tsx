@@ -1,12 +1,12 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode } from "react";
 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 
 interface IBackupSettingsItem {
   title: string;
@@ -18,8 +18,8 @@ interface IBackupSettingsItems extends Array<IBackupSettingsItem> {}
 const BackupSettings = () => {
   const items: IBackupSettingsItems = [
     {
-      title: 'Automatic Backup',
-      description: 'Scheduled Data Protection',
+      title: "Automatic Backup",
+      description: "Scheduled Data Protection",
       control: (
         <Fragment>
           <label className="switch switch-sm">
@@ -33,11 +33,11 @@ const BackupSettings = () => {
             />
           </label>
         </Fragment>
-      )
+      ),
     },
     {
-      title: 'Backup Frequency',
-      description: 'Select Preferred Backup',
+      title: "Backup Frequency",
+      description: "Select Preferred Backup",
       control: (
         <Fragment>
           <Select defaultValue="1">
@@ -47,29 +47,34 @@ const BackupSettings = () => {
             <SelectContent className="w-24">
               <SelectItem value="1">Daily</SelectItem>
               <SelectItem value="2">Weekly</SelectItem>
-              <SelectItem value="3">Monthly</SelectItem> 
-              <SelectItem value="4">Yearly</SelectItem> 
+              <SelectItem value="3">Monthly</SelectItem>
+              <SelectItem value="4">Yearly</SelectItem>
             </SelectContent>
-          </Select>  
+          </Select>
         </Fragment>
-      )
+      ),
     },
     {
-      title: 'Manual Backup',
-      description: 'Backup When Needed',
+      title: "Manual Backup",
+      description: "Backup When Needed",
       control: (
         <a href="#" className="btn btn-sm btn-light btn-outline">
           Start
         </a>
-      )
-    }
+      ),
+    },
   ];
 
   const renderItem = (item: IBackupSettingsItem, index: number) => {
     return (
-      <div key={index} className="card-group flex items-center justify-between py-4 gap-2.5">
+      <div
+        key={index}
+        className="card-group flex items-center justify-between py-4 gap-2.5"
+      >
         <div className="flex flex-col justify-center gap-1.5">
-          <span className="leading-none font-medium text-sm text-gray-900">{item.title}</span>
+          <span className="leading-none font-medium text-sm text-gray-900">
+            {item.title}
+          </span>
           <span className="text-2sm text-gray-700">{item.description}</span>
         </div>
 

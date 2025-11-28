@@ -1,6 +1,6 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { useLanguage } from '@/i18n';
-import { DropdownCard2, DropdownCardItem2 } from '@/partials/dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { useLanguage } from "@/i18n";
+import { DropdownCard2, DropdownCardItem2 } from "@/partials/dropdowns/general";
 
 interface IRecentInvoicesItem {
   icon: string;
@@ -15,35 +15,35 @@ const RecentInvoices = () => {
 
   const items: IRecentInvoicesItems = [
     {
-      icon: 'cheque',
-      number: 'INV-2023-001',
-      date: '15 Nov, 2023',
-      ammount: '500.00'
+      icon: "cheque",
+      number: "INV-2023-001",
+      date: "15 Nov, 2023",
+      ammount: "500.00",
     },
     {
-      icon: 'tag',
-      number: 'INV-2023-002',
-      date: '30 Nov, 2023',
-      ammount: '750.00'
+      icon: "tag",
+      number: "INV-2023-002",
+      date: "30 Nov, 2023",
+      ammount: "750.00",
     },
     {
-      icon: 'discount',
-      number: 'INV-2023-003',
-      date: '10 Dec, 2023',
-      ammount: '1,200.00'
+      icon: "discount",
+      number: "INV-2023-003",
+      date: "10 Dec, 2023",
+      ammount: "1,200.00",
     },
     {
-      icon: 'purchase',
-      number: 'INV-2023-004',
-      date: '05 Dec, 2023',
-      ammount: '300.00'
+      icon: "purchase",
+      number: "INV-2023-004",
+      date: "05 Dec, 2023",
+      ammount: "300.00",
     },
     {
-      icon: 'shop',
-      number: 'INV-2023-005',
-      date: '20 Nov, 2023',
-      ammount: '950.00'
-    }
+      icon: "shop",
+      number: "INV-2023-005",
+      date: "20 Nov, 2023",
+      ammount: "950.00",
+    },
   ];
 
   const renderItem = (item: IRecentInvoicesItem, index: number) => {
@@ -70,15 +70,15 @@ const RecentInvoices = () => {
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -102,15 +102,15 @@ const RecentInvoices = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

@@ -1,8 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, type PropsWithChildren, useContext, useState } from 'react';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useState,
+} from "react";
 
-import { ProgressBarLoader, ScreenLoader } from '@/components/loaders';
+import { ProgressBarLoader, ScreenLoader } from "@/components/loaders";
 
 export interface ILoadersProvider {
   contentLoader: boolean;
@@ -19,7 +24,7 @@ const initialProps: ILoadersProvider = {
   progressBarLoader: false,
   setProgressBarLoader: (state: boolean) => {},
   screenLoader: false,
-  setScreenLoader: (state: boolean) => {}
+  setScreenLoader: (state: boolean) => {},
 };
 
 const LoadersContext = createContext<ILoadersProvider>(initialProps);
@@ -38,7 +43,7 @@ const LoadersProvider = ({ children }: PropsWithChildren) => {
         progressBarLoader,
         setProgressBarLoader,
         screenLoader,
-        setScreenLoader
+        setScreenLoader,
       }}
     >
       {children}

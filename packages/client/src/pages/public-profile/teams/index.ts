@@ -1,2 +1,2 @@
-export * from './ProfileTeamsPage';
-export * from './blocks';
+export * from "./ProfileTeamsPage";
+export * from "./blocks";

@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from 'react';
-import { useResponsive, useViewport } from '@/hooks';
-import { useDemo1Layout } from '../';
-import { SidebarContent, SidebarHeader } from './';
-import clsx from 'clsx';
-import { getHeight } from '@/utils';
-import { usePathname } from '@/providers';
+import { useEffect, useRef, useState } from "react";
+import { useResponsive, useViewport } from "@/hooks";
+import { useDemo1Layout } from "../";
+import { SidebarContent, SidebarHeader } from "./";
+import clsx from "clsx";
+import { getHeight } from "@/utils";
+import { usePathname } from "@/providers";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet';
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 export const Sidebar = () => {
   const selfRef = useRef<HTMLDivElement>(null);
@@ -32,13 +32,14 @@ export const Sidebar = () => {
     }
   }, [viewportHeight]);
 
-  const desktopMode = useResponsive('up', 'lg');
-  const { mobileSidebarOpen, setSidebarMouseLeave, setMobileSidebarOpen } = useDemo1Layout();
+  const desktopMode = useResponsive("up", "lg");
+  const { mobileSidebarOpen, setSidebarMouseLeave, setMobileSidebarOpen } =
+    useDemo1Layout();
   const { layout } = useDemo1Layout();
   const themeClass: string =
-    layout.options.sidebar.theme === 'dark' || pathname === '/dark-sidebar'
-      ? 'dark [&.dark]:bg-coal-600'
-      : 'dark:bg-coal-600';
+    layout.options.sidebar.theme === "dark" || pathname === "/dark-sidebar"
+      ? "dark [&.dark]:bg-coal-600"
+      : "dark:bg-coal-600";
 
   const handleMobileSidebarClose = () => {
     setMobileSidebarOpen(false);
@@ -59,8 +60,8 @@ export const Sidebar = () => {
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
         className={clsx(
-          'sidebar bg-light lg:border-e lg:border-e-gray-200 dark:border-e-coal-100 lg:fixed lg:top-0 lg:bottom-0 lg:z-20 lg:flex flex-col items-stretch shrink-0',
-          themeClass
+          "sidebar bg-light lg:border-e lg:border-e-gray-200 dark:border-e-coal-100 lg:fixed lg:top-0 lg:bottom-0 lg:z-20 lg:flex flex-col items-stretch shrink-0",
+          themeClass,
         )}
       >
         {desktopMode && <SidebarHeader ref={headerRef} />}

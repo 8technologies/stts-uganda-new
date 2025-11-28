@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { KeenIcon } from '@/components';
-import { CommonHexagonBadge } from '../common';
+import React from "react";
+import { Link } from "react-router-dom";
+import { KeenIcon } from "@/components";
+import { CommonHexagonBadge } from "../common";
 
 interface IHighlightedPostsItem {
   icon: string;
@@ -25,7 +25,12 @@ const MiscHighlightedPosts = ({ posts }: IHighlightedPostsProps) => {
               stroke="stroke-brand-clarity"
               fill="fill-brand-light"
               size="size-[50px]"
-              badge={<KeenIcon icon={post.icon} className="text-1.5xl ps-px text-brand" />}
+              badge={
+                <KeenIcon
+                  icon={post.icon}
+                  className="text-1.5xl ps-px text-brand"
+                />
+              }
             />
           </div>
 
@@ -63,5 +68,5 @@ export {
   MiscHighlightedPosts,
   type IHighlightedPostsItem,
   type IHighlightedPostsItems,
-  type IHighlightedPostsProps
+  type IHighlightedPostsProps,
 };

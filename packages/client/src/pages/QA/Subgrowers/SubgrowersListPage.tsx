@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Download, Edit, Eye, Plus, Search, Trash2, Upload } from "lucide-react";
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Download,
+  Edit,
+  Eye,
+  Plus,
+  Search,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Skeleton } from '@/components/ui/skeleton';
-import { SubgrowersForm } from './components/SubgrowersForm';
-import { SubgrowerDetails } from './components/SubgrowerDetails';
+import { Skeleton } from "@/components/ui/skeleton";
+import { SubgrowersForm } from "./components/SubgrowersForm";
+import { SubgrowerDetails } from "./components/SubgrowerDetails";
 
 type Subgrowers = {
   id: string | number;
@@ -38,11 +46,11 @@ type Subgrowers = {
   details?: string;
   createdAt: string;
   plantingReturnId?: string | number;
-  plantingReturn:{
+  plantingReturn: {
     id: string | number;
     companyName: string;
-  }
-  status: 'Pending' | 'Approved' | 'Rejected';
+  };
+  status: "Pending" | "Approved" | "Rejected";
 };
 
 // Application List Component
@@ -54,7 +62,7 @@ const SubgrowersList = ({
   onViewApplication,
   searchTerm,
   onSearchChange,
-  deletingApplicationId
+  deletingApplicationId,
 }: {
   applications: Subgrowers[];
   onAddApplication: () => void;
@@ -65,8 +73,11 @@ const SubgrowersList = ({
   onSearchChange: (term: string) => void;
   deletingApplicationId: string | null;
 }) => {
-  const filteredApplications = applications.filter(app =>
-    app.plantingReturn.companyName.toLowerCase().includes(searchTerm.toLowerCase()) 
+  const filteredApplications = applications.filter(
+    (app) =>
+      app.plantingReturn.companyName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
     // app.registeredSeedMerchant.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -81,7 +92,10 @@ const SubgrowersList = ({
           </Button> */}
         </div>
         <div className="mt-4 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
           <input
             type="text"
             placeholder="Search subgrowers..."
@@ -133,7 +147,9 @@ const SubgrowersList = ({
               <tr key={application.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-gray-900">{application.plantingReturn.companyName}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {application.plantingReturn.companyName}
+                    </div>
                     {/* <div className="text-sm text-gray-500">{application.companyTelephone}</div> */}
                   </div>
                 </td>
@@ -142,8 +158,12 @@ const SubgrowersList = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-gray-900">{application.responsiblePerson}</div>
-                    <div className="text-sm text-gray-500">{application.phoneNumber}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {application.responsiblePerson}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {application.phoneNumber}
+                    </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -159,20 +179,22 @@ const SubgrowersList = ({
                   {application.seedClass}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {application.inspector || 'N/A'}
+                  {application.inspector || "N/A"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    application.status === 'Approved' 
-                      ? 'bg-green-100 text-green-800' 
-                      : application.status === 'Rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span
+                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      application.status === "Approved"
+                        ? "bg-green-100 text-green-800"
+                        : application.status === "Rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
                     {application.status}
                   </span>
                 </td>
-                
+
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end gap-1">
                     <Button
@@ -195,11 +217,15 @@ const SubgrowersList = ({
                       variant="outline"
                       size="sm"
                       onClick={() => onDeleteApplication(application)}
-                      disabled={String(deletingApplicationId) === String(application.id)}
+                      disabled={
+                        String(deletingApplicationId) === String(application.id)
+                      }
                       className="text-red-600 hover:text-red-700"
                     >
                       <Trash2 size={14} className="mr-1" />
-                      {String(deletingApplicationId) === String(application.id) ? 'Deleting…' : 'Delete'}
+                      {String(deletingApplicationId) === String(application.id)
+                        ? "Deleting…"
+                        : "Delete"}
                     </Button>
                   </div>
                 </td>
@@ -249,107 +275,108 @@ const SubgrowersListSkeleton = () => (
   </div>
 );
 
-
-
 // Main Component with static list and dialog-based editing
 const SubgrowersListPage = () => {
   const [applications, setApplications] = useState<Subgrowers[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [deletingApplicationId, setDeletingApplicationId] = useState<string | null>(null);
+  const [deletingApplicationId, setDeletingApplicationId] = useState<
+    string | null
+  >(null);
 
   // Dialog states
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsOpen, setIsDetailOpen] = useState(false);
   const [resetForm, setResetForm] = useState(false);
-  const [editingApplication, setEditingApplication] = useState<Subgrowers | null>(null);
+  const [editingApplication, setEditingApplication] =
+    useState<Subgrowers | null>(null);
 
   // Sample data
   useEffect(() => {
     setApplications([
       {
-        id: '1',
-        responsiblePerson: 'John Doe',
-        fieldName: 'Field A',
-        phoneNumber: '+256-700-123-456',
-        gardenSize: '2 acres',
-        crop: 'Maize',
-        cropVariety: 'Hybrid',
-        seedClass: 'Foundation',
-        motherlotNumber: 'ML123',
-        foundationSeedSource: 'AgriCorp Ltd',
-        district: 'Kampala',
-        subcounty: 'Nakawa',
-        village: 'Buziga',
-        plantingDate: '2024-03-01',
-        quantity: '200kg',
-        expectedYield: '1000kg',
-        latitude: '0.3191',
-        longitude: '32.5692',
-        details: 'Good condition',
-        createdAt: '2024-01-01',
-        plantingReturnId: '101',
+        id: "1",
+        responsiblePerson: "John Doe",
+        fieldName: "Field A",
+        phoneNumber: "+256-700-123-456",
+        gardenSize: "2 acres",
+        crop: "Maize",
+        cropVariety: "Hybrid",
+        seedClass: "Foundation",
+        motherlotNumber: "ML123",
+        foundationSeedSource: "AgriCorp Ltd",
+        district: "Kampala",
+        subcounty: "Nakawa",
+        village: "Buziga",
+        plantingDate: "2024-03-01",
+        quantity: "200kg",
+        expectedYield: "1000kg",
+        latitude: "0.3191",
+        longitude: "32.5692",
+        details: "Good condition",
+        createdAt: "2024-01-01",
+        plantingReturnId: "101",
         plantingReturn: {
-          id: '101',
-          companyName: 'Green Valley Seeds Ltd',
+          id: "101",
+          companyName: "Green Valley Seeds Ltd",
         },
-        status: 'Pending',
+        status: "Pending",
       },
       {
-        id: '2',
-        responsiblePerson: 'Jane Smith',
-        fieldName: 'Field B',
-        phoneNumber: '+256-700-987-654',
-        gardenSize: '3 acres',
-        crop: 'Coffee',
-        cropVariety: 'Arabica',
-        seedClass: 'Certified',
-        motherlotNumber: 'ML124',
-        foundationSeedSource: 'SeedCo',
-        district: 'Mbarara',
-        subcounty: 'Nyamitanga',
-        village: 'Kabuyanda',
-        plantingDate: '2024-02-15',
-        quantity: '300kg',
-        expectedYield: '1500kg',
-        latitude: '0.6047',
-        longitude: '30.6772',
-        details: 'Good condition',
-        createdAt: '2024-01-15',
-        plantingReturnId: '102',
+        id: "2",
+        responsiblePerson: "Jane Smith",
+        fieldName: "Field B",
+        phoneNumber: "+256-700-987-654",
+        gardenSize: "3 acres",
+        crop: "Coffee",
+        cropVariety: "Arabica",
+        seedClass: "Certified",
+        motherlotNumber: "ML124",
+        foundationSeedSource: "SeedCo",
+        district: "Mbarara",
+        subcounty: "Nyamitanga",
+        village: "Kabuyanda",
+        plantingDate: "2024-02-15",
+        quantity: "300kg",
+        expectedYield: "1500kg",
+        latitude: "0.6047",
+        longitude: "30.6772",
+        details: "Good condition",
+        createdAt: "2024-01-15",
+        plantingReturnId: "102",
         plantingReturn: {
-          id: '102',
-          companyName: 'Sunrise Agriculture',
+          id: "102",
+          companyName: "Sunrise Agriculture",
         },
-        status: 'Approved',
+        status: "Approved",
       },
       {
-        id: '3',
-        responsiblePerson: 'Samuel K',
-        fieldName: 'Field C',
-        phoneNumber: '+256-700-321-765',
-        gardenSize: '1.5 acres',
-        crop: 'Beans',
-        cropVariety: 'Red Kidney',
-        seedClass: 'Certified',
-        motherlotNumber: 'ML125',
-        foundationSeedSource: 'AgroSeed Ltd',
-        district: 'Gulu',
-        subcounty: 'Bardege',
-        village: 'Palaro',
-        plantingDate: '2024-04-10',
-        quantity: '150kg',
-        expectedYield: '700kg',
-        latitude: '2.7766',
-        longitude: '32.3053',
-        details: 'Normal growth',
-        createdAt: '2024-02-05',
-        plantingReturnId: '103',
+        id: "3",
+        responsiblePerson: "Samuel K",
+        fieldName: "Field C",
+        phoneNumber: "+256-700-321-765",
+        gardenSize: "1.5 acres",
+        crop: "Beans",
+        cropVariety: "Red Kidney",
+        seedClass: "Certified",
+        motherlotNumber: "ML125",
+        foundationSeedSource: "AgroSeed Ltd",
+        district: "Gulu",
+        subcounty: "Bardege",
+        village: "Palaro",
+        plantingDate: "2024-04-10",
+        quantity: "150kg",
+        expectedYield: "700kg",
+        latitude: "2.7766",
+        longitude: "32.3053",
+        details: "Normal growth",
+        createdAt: "2024-02-05",
+        plantingReturnId: "103",
         plantingReturn: {
-          id: '103',
-          companyName: 'AgroSeeds Uganda',
+          id: "103",
+          companyName: "AgroSeeds Uganda",
         },
-        status: 'Rejected',
+        status: "Rejected",
       },
     ]);
   }, []);
@@ -372,15 +399,22 @@ const SubgrowersListPage = () => {
   };
 
   const handleDeleteApplication = async (application: Subgrowers) => {
-    if (!window.confirm(`Delete application from "${application.plantingReturn.companyName}"?`)) return;
-    
+    if (
+      !window.confirm(
+        `Delete application from "${application.plantingReturn.companyName}"?`,
+      )
+    )
+      return;
+
     try {
       setDeletingApplicationId(String(application.id));
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setApplications(apps => apps.filter(app => app.id !== application.id));
-      toast('Application deleted successfully');
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setApplications((apps) =>
+        apps.filter((app) => app.id !== application.id),
+      );
+      toast("Application deleted successfully");
     } catch (error) {
-      toast('Failed to delete application');
+      toast("Failed to delete application");
     } finally {
       setDeletingApplicationId(null);
     }
@@ -389,15 +423,17 @@ const SubgrowersListPage = () => {
   const handleSubmit = async (data: Record<string, any>) => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       if (editingApplication) {
         // Update existing application
         const updatedApplication = { ...editingApplication, ...data };
-        setApplications(prev => prev.map(app => 
-          app.id === editingApplication.id ? updatedApplication : app
-        ));
-        toast('Application updated successfully');
+        setApplications((prev) =>
+          prev.map((app) =>
+            app.id === editingApplication.id ? updatedApplication : app,
+          ),
+        );
+        toast("Application updated successfully");
       } else {
         // Create new application
         const newApplication: Subgrowers = {
@@ -420,23 +456,23 @@ const SubgrowersListPage = () => {
           latitude: data.latitude, // Add this field (optional)
           longitude: data.longitude, // Add this field (optional)
           details: data.details, // Add this field (optional)
-          createdAt: new Date().toISOString().split('T')[0],
+          createdAt: new Date().toISOString().split("T")[0],
           plantingReturnId: data.plantingReturnId, // Add this field (optional)
           plantingReturn: {
             id: data.plantingReturn.id, // Add this field
             companyName: data.plantingReturn.companyName, // Add this field
           },
-          status: 'Pending', // default value
+          status: "Pending", // default value
         };
 
-        setApplications(prev => [...prev, newApplication]);
-        toast('Application created successfully');
+        setApplications((prev) => [...prev, newApplication]);
+        toast("Application created successfully");
       }
-      
+
       setIsDialogOpen(false);
       setEditingApplication(null);
     } catch (error) {
-      toast('Failed to save application');
+      toast("Failed to save application");
     } finally {
       setLoading(false);
     }
@@ -472,10 +508,10 @@ const SubgrowersListPage = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
-           <h1 className="text-2xl font-bold text-gray-900">Subgrowers</h1>
-            <p className="text-gray-600">Manage subgrower fields</p>
+          <h1 className="text-2xl font-bold text-gray-900">Subgrowers</h1>
+          <p className="text-gray-600">Manage subgrower fields</p>
         </div>
-        
+
         <SubgrowersList
           applications={applications}
           onAddApplication={handleAddApplication}
@@ -494,15 +530,18 @@ const SubgrowersListPage = () => {
           loading={loading}
           resetForm={resetForm}
           initialValues={editingApplication}
-          title={editingApplication ? 'Edit Application' : 'Create New Application'}
-          submitLabel={editingApplication ? 'Update Application' : 'Create Application'}
+          title={
+            editingApplication ? "Edit Application" : "Create New Application"
+          }
+          submitLabel={
+            editingApplication ? "Update Application" : "Create Application"
+          }
         />
 
         <SubgrowerDetails
           application={editingApplication!}
           open={isDetailsOpen}
           onClose={handleDetailsClose}
-          
         />
       </div>
     </div>

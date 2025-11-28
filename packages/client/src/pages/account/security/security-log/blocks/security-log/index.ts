@@ -1,2 +1,2 @@
-export * from './SecurityLog';
-export * from './SecurityLogData';
+export * from "./SecurityLog";
+export * from "./SecurityLogData";

@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
-import clsx from 'clsx';
+import { KeenIcon } from "@/components";
+import clsx from "clsx";
 
-import { CommonAvatar } from '@/partials/common';
+import { CommonAvatar } from "@/partials/common";
 
 interface IBlockListItem {
   avatar: string;
@@ -21,25 +21,25 @@ interface IBlockListProps {
 const BlockList = ({ text, limit, className }: IBlockListProps) => {
   const items: IBlockListItems = [
     {
-      avatar: 'gray/1.png',
-      name: 'Esther Howard',
-      commits: 6
+      avatar: "gray/1.png",
+      name: "Esther Howard",
+      commits: 6,
     },
     {
-      avatar: 'gray/2.png',
-      name: 'Tyler Hero',
-      commits: 29
+      avatar: "gray/2.png",
+      name: "Tyler Hero",
+      commits: 29,
     },
     {
-      avatar: 'gray/3.png',
-      name: 'Arlene McCoy',
-      commits: 34
+      avatar: "gray/3.png",
+      name: "Arlene McCoy",
+      commits: 34,
     },
     {
-      avatar: 'gray/4.png',
-      name: 'Cody Fisher',
-      commits: 1
-    }
+      avatar: "gray/4.png",
+      name: "Cody Fisher",
+      commits: 1,
+    },
   ];
 
   const renderItem = (item: IBlockListItem, index: number) => {
@@ -56,7 +56,7 @@ const BlockList = ({ text, limit, className }: IBlockListProps) => {
               {item.name}
             </Link>
             <span className="text-2sm text-gray-700">
-              {item.commits} commit{item.commits > 1 ? 's' : ''}
+              {item.commits} commit{item.commits > 1 ? "s" : ""}
             </span>
           </div>
         </div>
@@ -71,7 +71,7 @@ const BlockList = ({ text, limit, className }: IBlockListProps) => {
   };
 
   return (
-    <div className={clsx('card', className && className)}>
+    <div className={clsx("card", className && className)}>
       <div className="card-header">
         <h3 className="card-title">Block List</h3>
       </div>
@@ -96,4 +96,9 @@ const BlockList = ({ text, limit, className }: IBlockListProps) => {
   );
 };
 
-export { BlockList, type IBlockListItem, type IBlockListItems, type IBlockListProps };
+export {
+  BlockList,
+  type IBlockListItem,
+  type IBlockListItems,
+  type IBlockListProps,
+};

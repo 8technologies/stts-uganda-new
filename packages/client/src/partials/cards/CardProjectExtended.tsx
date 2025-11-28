@@ -1,8 +1,8 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { useLanguage } from '@/i18n';
-import { DropdownCard2 } from '../dropdowns/general';
-import { CommonAvatars } from '../common';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { useLanguage } from "@/i18n";
+import { DropdownCard2 } from "../dropdowns/general";
+import { CommonAvatars } from "../common";
 
 interface IProjectExtendedItem {
   total: string;
@@ -38,7 +38,7 @@ const CardProjectExtended = ({
   team,
   statistics,
   progress,
-  url
+  url,
 }: IProjectExtendedProps) => {
   const { isRTL } = useLanguage();
 
@@ -48,7 +48,9 @@ const CardProjectExtended = ({
         key={index}
         className="grid grid-cols-1 content-between gap-1.5 border border-dashed border-gray-300 shrink-0 rounded-md px-2.5 py-2 min-w-24 max-w-auto"
       >
-        <span className="text-gray-900 text-sm leading-none font-medium">{statistic.total}</span>
+        <span className="text-gray-900 text-sm leading-none font-medium">
+          {statistic.total}
+        </span>
         <span className="text-gray-700 text-xs">{statistic.description}</span>
       </div>
     );
@@ -58,22 +60,24 @@ const CardProjectExtended = ({
     <div className="card overflow-hidden grow justify-between">
       <div className="p-5 mb-5">
         <div className="flex items-center justify-between mb-5">
-          <span className={`badge ${status.variant} badge-outline`}>{status.label}</span>
+          <span className={`badge ${status.variant} badge-outline`}>
+            {status.label}
+          </span>
 
           <Menu className="items-stretch">
             <MenuItem
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -93,7 +97,10 @@ const CardProjectExtended = ({
         </div>
 
         <div className="text-center mb-7">
-          <a href={url} className="text-lg font-medium text-gray-900 hover:text-primary">
+          <a
+            href={url}
+            className="text-lg font-medium text-gray-900 hover:text-primary"
+          >
             {title}
           </a>
 
@@ -101,7 +108,9 @@ const CardProjectExtended = ({
         </div>
 
         <div className="grid justify-center gap-1.5 mb-7.5">
-          <span className="text-2xs uppercase text-gray-600 text-center">team</span>
+          <span className="text-2xs uppercase text-gray-600 text-center">
+            team
+          </span>
           <CommonAvatars group={team.group} size={team.size} />
         </div>
 
@@ -113,7 +122,10 @@ const CardProjectExtended = ({
       </div>
 
       <div className={`progress ${progress?.variant}`}>
-        <div className="progress-bar" style={{ width: `${progress?.value}%` }}></div>
+        <div
+          className="progress-bar"
+          style={{ width: `${progress?.value}%` }}
+        ></div>
       </div>
     </div>
   );
@@ -123,5 +135,5 @@ export {
   CardProjectExtended,
   type IProjectExtendedItem,
   type IProjectExtendedItems,
-  type IProjectExtendedProps
+  type IProjectExtendedProps,
 };

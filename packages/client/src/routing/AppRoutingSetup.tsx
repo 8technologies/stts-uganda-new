@@ -1,8 +1,8 @@
-import { ReactElement } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
-import { DefaultPage, Demo1DarkSidebarPage } from '@/pages/dashboards';
-import { SttsDashboardPage } from '@/pages/stts/SttsDashboardPage';
-import { TrackTracePage } from '@/pages/stts/TrackTracePage';
+import { ReactElement } from "react";
+import { Navigate, Route, Routes } from "react-router";
+import { DefaultPage, Demo1DarkSidebarPage } from "@/pages/dashboards";
+import { SttsDashboardPage } from "@/pages/stts/SttsDashboardPage";
+import { TrackTracePage } from "@/pages/stts/TrackTracePage";
 import {
   ProfileActivityPage,
   ProfileBloggerPage,
@@ -22,8 +22,8 @@ import {
   ProfileNFTPage,
   ProfilePlainPage,
   ProfileTeamsPage,
-  ProfileWorksPage
-} from '@/pages/public-profile';
+  ProfileWorksPage,
+} from "@/pages/public-profile";
 import {
   AccountActivityPage,
   AccountAllowedIPAddressesPage,
@@ -58,8 +58,8 @@ import {
   AccountTeamMembersPage,
   AccountTeamsPage,
   AccountTeamsStarterPage,
-  AccountUserProfilePage
-} from '@/pages/account';
+  AccountUserProfilePage,
+} from "@/pages/account";
 import {
   NetworkAppRosterPage,
   NetworkMarketAuthorsPage,
@@ -72,44 +72,44 @@ import {
   NetworkSaasUsersPage,
   NetworkStoreClientsPage,
   NetworkUserTableTeamCrewPage,
-  NetworkVisitorsPage
-} from '@/pages/network';
+  NetworkVisitorsPage,
+} from "@/pages/network";
 
-import { AuthPage } from '@/auth';
-import { RequireAuth } from '@/auth/RequireAuth';
-import { Demo1Layout } from '@/layouts/demo1';
-import { ErrorsRouting } from '@/errors';
+import { AuthPage } from "@/auth";
+import { RequireAuth } from "@/auth/RequireAuth";
+import { Demo1Layout } from "@/layouts/demo1";
+import { ErrorsRouting } from "@/errors";
 import {
   AuthenticationWelcomeMessagePage,
   AuthenticationAccountDeactivatedPage,
-  AuthenticationGetStartedPage
-} from '@/pages/authentication';
-import { SR4ListPage } from '@/pages/forms/SR4ListPage';
-import { PermissionGuard } from '@/auth/PermissionGuard';
-import { RolesListPage } from '@/pages/roles/RolesListPage';
-import { SR6ListPage } from '@/pages/forms/SR6 forms/SR6ListPage';
-import { UsersListPage } from '@/pages/users/UsersListPage';
-import CropsListPage from '@/pages/crops/CropsListPage';
-import CropDetailsPage from '@/pages/crops/CropDetailsPage';
-import ImportPermitsListPage from '@/pages/import-permits/ImportPermitsListPage';
-import ExportPermitsListPage from '@/pages/export-permits/ExportPermitsListPage';
-import { QDSListPage } from '@/pages/forms/QDS forms/QDSListPage';
-import SubgrowersListPage from '@/pages/QA/Subgrowers/SubgrowersListPage';
-import MySr4ApplicationForms from '@/pages/forms/my_application_forms/MySr4ApplicationForms';
-import MySr6ApplicationForms from '@/pages/forms/my_application_forms/MySr6ApplicationForms';
-import MyQdsApplicationForms from '@/pages/forms/my_application_forms/MyQdsApplicationForms';
-import PlantingReturnsListPage from '@/pages/QA/planting-returns/PlantingReturnsListPage';
-import { PlantingInspectionPage } from '@/pages/QA/planting-returns/inspection/PlantingInspectionPage';
-import CropDeclarationListPage from '@/pages/QA/Qds-crop-declarations/CropDeclarationListPage';
-import { QdsCropInspectionPage } from '@/pages/QA/Qds-crop-declarations/inspection/QdsCropInspectionPage';
-import StockExamination from '@/pages/seed-stock/stock-examination/StockExamination';
-import StockInspectionPage from '@/pages/seed-stock/stock-examination/StockExamInspection';
-import StockRecordsPage from '@/pages/seed-stock/My-stock/StockRecord';
-import { SeedLabListPage } from '@/pages/QA/seedLabs/SeedLabListPage';
-import MySeedLabInspections from '@/pages/QA/seedLabs/MySeedLabsForms';
-import SeedLabInspectionPage from '@/pages/QA/seedLabs/blocks/seedLabInspection';
-import StockLabTestForm from '@/pages/QA/seedLabs/blocks/SeedLabTest';
-import SeedLabelManagementPage from '@/pages/QA/seed_Labels/SeedLabels';
+  AuthenticationGetStartedPage,
+} from "@/pages/authentication";
+import { SR4ListPage } from "@/pages/forms/SR4ListPage";
+import { PermissionGuard } from "@/auth/PermissionGuard";
+import { RolesListPage } from "@/pages/roles/RolesListPage";
+import { SR6ListPage } from "@/pages/forms/SR6 forms/SR6ListPage";
+import { UsersListPage } from "@/pages/users/UsersListPage";
+import CropsListPage from "@/pages/crops/CropsListPage";
+import CropDetailsPage from "@/pages/crops/CropDetailsPage";
+import ImportPermitsListPage from "@/pages/import-permits/ImportPermitsListPage";
+import ExportPermitsListPage from "@/pages/export-permits/ExportPermitsListPage";
+import { QDSListPage } from "@/pages/forms/QDS forms/QDSListPage";
+import SubgrowersListPage from "@/pages/QA/Subgrowers/SubgrowersListPage";
+import MySr4ApplicationForms from "@/pages/forms/my_application_forms/MySr4ApplicationForms";
+import MySr6ApplicationForms from "@/pages/forms/my_application_forms/MySr6ApplicationForms";
+import MyQdsApplicationForms from "@/pages/forms/my_application_forms/MyQdsApplicationForms";
+import PlantingReturnsListPage from "@/pages/QA/planting-returns/PlantingReturnsListPage";
+import { PlantingInspectionPage } from "@/pages/QA/planting-returns/inspection/PlantingInspectionPage";
+import CropDeclarationListPage from "@/pages/QA/Qds-crop-declarations/CropDeclarationListPage";
+import { QdsCropInspectionPage } from "@/pages/QA/Qds-crop-declarations/inspection/QdsCropInspectionPage";
+import StockExamination from "@/pages/seed-stock/stock-examination/StockExamination";
+import StockInspectionPage from "@/pages/seed-stock/stock-examination/StockExamInspection";
+import StockRecordsPage from "@/pages/seed-stock/My-stock/StockRecord";
+import { SeedLabListPage } from "@/pages/QA/seedLabs/SeedLabListPage";
+import MySeedLabInspections from "@/pages/QA/seedLabs/MySeedLabsForms";
+import SeedLabInspectionPage from "@/pages/QA/seedLabs/blocks/seedLabInspection";
+import StockLabTestForm from "@/pages/QA/seedLabs/blocks/SeedLabTest";
+import SeedLabelManagementPage from "@/pages/QA/seed_Labels/SeedLabels";
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -125,7 +125,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route
             path="/apps/sr4"
             element={
-              <PermissionGuard required={['can_view_sr4_forms']}>
+              <PermissionGuard required={["can_view_sr4_forms"]}>
                 <SR4ListPage />
               </PermissionGuard>
             }
@@ -134,7 +134,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route
             path="/my-apps/sr4"
             element={
-              <PermissionGuard required={['can_view_only_own_created_forms']}>
+              <PermissionGuard required={["can_view_only_own_created_forms"]}>
                 <MySr4ApplicationForms />
               </PermissionGuard>
             }
@@ -142,7 +142,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route
             path="/my-apps/sr6"
             element={
-              <PermissionGuard required={['can_view_only_own_created_forms']}>
+              <PermissionGuard required={["can_view_only_own_created_forms"]}>
                 <MySr6ApplicationForms />
               </PermissionGuard>
             }
@@ -151,26 +151,47 @@ const AppRoutingSetup = (): ReactElement => {
           <Route
             path="/my-apps/qds"
             element={
-              <PermissionGuard required={['can_view_only_own_created_forms']}>
+              <PermissionGuard required={["can_view_only_own_created_forms"]}>
                 <MyQdsApplicationForms />
               </PermissionGuard>
             }
           />
-          <Route path="/qa/import_permits" element={<ImportPermitsListPage />} />
-          <Route path="/qa/export_permits" element={<ExportPermitsListPage />} />
+          <Route
+            path="/qa/import_permits"
+            element={<ImportPermitsListPage />}
+          />
+          <Route
+            path="/qa/export_permits"
+            element={<ExportPermitsListPage />}
+          />
 
-          <Route path="/qa/planting-returns" element={<PlantingReturnsListPage />} />
-          <Route path="/qa/planting-returns/:id/inspection" element={<PlantingInspectionPage />} />
-          <Route path="/qa/crop-declarations/:id/:crop_id/inspection" element={<QdsCropInspectionPage />} />
-          <Route path="/qa/crop-declarations" element={<CropDeclarationListPage />} />
+          <Route
+            path="/qa/planting-returns"
+            element={<PlantingReturnsListPage />}
+          />
+          <Route
+            path="/qa/planting-returns/:id/inspection"
+            element={<PlantingInspectionPage />}
+          />
+          <Route
+            path="/qa/crop-declarations/:id/:crop_id/inspection"
+            element={<QdsCropInspectionPage />}
+          />
+          <Route
+            path="/qa/crop-declarations"
+            element={<CropDeclarationListPage />}
+          />
 
           <Route path="/qa/labs" element={<SeedLabListPage />} />
-          <Route path="/qa/labs/:id/inspection" element={<SeedLabInspectionPage />} />
+          <Route
+            path="/qa/labs/:id/inspection"
+            element={<SeedLabInspectionPage />}
+          />
           <Route path="/qa/labs/:id/test" element={<StockLabTestForm />} />
           <Route
             path="/qa/my-labs"
             element={
-              <PermissionGuard required={['can_view_only_own_created_forms']}>
+              <PermissionGuard required={["can_view_only_own_created_forms"]}>
                 <MySeedLabInspections />
               </PermissionGuard>
             }
@@ -179,49 +200,129 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/qa/seed-labels" element={<SeedLabelManagementPage />} />
 
           <Route path="/stock/examination" element={<StockExamination />} />
-          <Route path="/stock/inspection/:stockId" element={<StockRecordsPage />} />
+          <Route
+            path="/stock/inspection/:stockId"
+            element={<StockRecordsPage />}
+          />
           <Route path="/stock/mystock" element={<StockRecordsPage />} />
 
-          
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />
           <Route path="/admin/users" element={<UsersListPage />} />
-          <Route path="/public-profile/profiles/default" element={<ProfileDefaultPage />} />
-          <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
-          <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
-          <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
-          <Route path="/public-profile/profiles/blogger" element={<ProfileBloggerPage />} />
-          <Route path="/public-profile/profiles/crm" element={<ProfileCRMPage />} />
-          <Route path="/public-profile/profiles/gamer" element={<ProfileGamerPage />} />
-          <Route path="/public-profile/profiles/feeds" element={<ProfileFeedsPage />} />
-          <Route path="/public-profile/profiles/plain" element={<ProfilePlainPage />} />
-          <Route path="/public-profile/profiles/modal" element={<ProfileModalPage />} />
-          <Route path="/public-profile/projects/3-columns" element={<ProjectColumn3Page />} />
-          <Route path="/public-profile/projects/2-columns" element={<ProjectColumn2Page />} />
+          <Route
+            path="/public-profile/profiles/default"
+            element={<ProfileDefaultPage />}
+          />
+          <Route
+            path="/public-profile/profiles/creator"
+            element={<ProfileCreatorPage />}
+          />
+          <Route
+            path="/public-profile/profiles/company"
+            element={<ProfileCompanyPage />}
+          />
+          <Route
+            path="/public-profile/profiles/nft"
+            element={<ProfileNFTPage />}
+          />
+          <Route
+            path="/public-profile/profiles/blogger"
+            element={<ProfileBloggerPage />}
+          />
+          <Route
+            path="/public-profile/profiles/crm"
+            element={<ProfileCRMPage />}
+          />
+          <Route
+            path="/public-profile/profiles/gamer"
+            element={<ProfileGamerPage />}
+          />
+          <Route
+            path="/public-profile/profiles/feeds"
+            element={<ProfileFeedsPage />}
+          />
+          <Route
+            path="/public-profile/profiles/plain"
+            element={<ProfilePlainPage />}
+          />
+          <Route
+            path="/public-profile/profiles/modal"
+            element={<ProfileModalPage />}
+          />
+          <Route
+            path="/public-profile/projects/3-columns"
+            element={<ProjectColumn3Page />}
+          />
+          <Route
+            path="/public-profile/projects/2-columns"
+            element={<ProjectColumn2Page />}
+          />
           <Route path="/public-profile/works" element={<ProfileWorksPage />} />
           <Route path="/public-profile/teams" element={<ProfileTeamsPage />} />
-          <Route path="/public-profile/network" element={<ProfileNetworkPage />} />
-          <Route path="/public-profile/activity" element={<ProfileActivityPage />} />
-          <Route path="/public-profile/campaigns/card" element={<CampaignsCardPage />} />
-          <Route path="/public-profile/campaigns/list" element={<CampaignsListPage />} />
+          <Route
+            path="/public-profile/network"
+            element={<ProfileNetworkPage />}
+          />
+          <Route
+            path="/public-profile/activity"
+            element={<ProfileActivityPage />}
+          />
+          <Route
+            path="/public-profile/campaigns/card"
+            element={<CampaignsCardPage />}
+          />
+          <Route
+            path="/public-profile/campaigns/list"
+            element={<CampaignsListPage />}
+          />
           <Route path="/public-profile/empty" element={<ProfileEmptyPage />} />
-          <Route path="/account/home/get-started" element={<AccountGetStartedPage />} />
-          <Route path="/account/home/user-profile" element={<AccountUserProfilePage />} />
-          <Route path="/account/home/company-profile" element={<AccountCompanyProfilePage />} />
-          <Route path="/account/home/settings-sidebar" element={<AccountSettingsSidebarPage />} />
+          <Route
+            path="/account/home/get-started"
+            element={<AccountGetStartedPage />}
+          />
+          <Route
+            path="/account/home/user-profile"
+            element={<AccountUserProfilePage />}
+          />
+          <Route
+            path="/account/home/company-profile"
+            element={<AccountCompanyProfilePage />}
+          />
+          <Route
+            path="/account/home/settings-sidebar"
+            element={<AccountSettingsSidebarPage />}
+          />
           <Route
             path="/account/home/settings-enterprise"
             element={<AccountSettingsEnterprisePage />}
           />
-          <Route path="/account/home/settings-plain" element={<AccountSettingsPlainPage />} />
-          <Route path="/account/home/settings-modal" element={<AccountSettingsModalPage />} />
+          <Route
+            path="/account/home/settings-plain"
+            element={<AccountSettingsPlainPage />}
+          />
+          <Route
+            path="/account/home/settings-modal"
+            element={<AccountSettingsModalPage />}
+          />
           <Route path="/account/billing/basic" element={<AccountBasicPage />} />
-          <Route path="/account/billing/enterprise" element={<AccountEnterprisePage />} />
+          <Route
+            path="/account/billing/enterprise"
+            element={<AccountEnterprisePage />}
+          />
           <Route path="/account/billing/plans" element={<AccountPlansPage />} />
-          <Route path="/account/billing/history" element={<AccountHistoryPage />} />
-          <Route path="/account/security/get-started" element={<AccountSecurityGetStartedPage />} />
-          <Route path="/account/security/overview" element={<AccountOverviewPage />} />
+          <Route
+            path="/account/billing/history"
+            element={<AccountHistoryPage />}
+          />
+          <Route
+            path="/account/security/get-started"
+            element={<AccountSecurityGetStartedPage />}
+          />
+          <Route
+            path="/account/security/overview"
+            element={<AccountOverviewPage />}
+          />
           <Route
             path="/account/security/allowed-ip-addresses"
             element={<AccountAllowedIPAddressesPage />}
@@ -242,13 +343,31 @@ const AppRoutingSetup = (): ReactElement => {
             path="/account/security/current-sessions"
             element={<AccountCurrentSessionsPage />}
           />
-          <Route path="/account/security/security-log" element={<AccountSecurityLogPage />} />
-          <Route path="/account/members/team-starter" element={<AccountTeamsStarterPage />} />
+          <Route
+            path="/account/security/security-log"
+            element={<AccountSecurityLogPage />}
+          />
+          <Route
+            path="/account/members/team-starter"
+            element={<AccountTeamsStarterPage />}
+          />
           <Route path="/account/members/teams" element={<AccountTeamsPage />} />
-          <Route path="/account/members/team-info" element={<AccountTeamInfoPage />} />
-          <Route path="/account/members/members-starter" element={<AccountMembersStarterPage />} />
-          <Route path="/account/members/team-members" element={<AccountTeamMembersPage />} />
-          <Route path="/account/members/import-members" element={<AccountImportMembersPage />} />
+          <Route
+            path="/account/members/team-info"
+            element={<AccountTeamInfoPage />}
+          />
+          <Route
+            path="/account/members/members-starter"
+            element={<AccountMembersStarterPage />}
+          />
+          <Route
+            path="/account/members/team-members"
+            element={<AccountTeamMembersPage />}
+          />
+          <Route
+            path="/account/members/import-members"
+            element={<AccountImportMembersPage />}
+          />
           <Route path="/account/members/roles" element={<AccountRolesPage />} />
           <Route
             path="/account/members/permissions-toggle"
@@ -258,30 +377,81 @@ const AppRoutingSetup = (): ReactElement => {
             path="/account/members/permissions-check"
             element={<AccountPermissionsCheckPage />}
           />
-          <Route path="/account/integrations" element={<AccountIntegrationsPage />} />
-          <Route path="/account/notifications" element={<AccountNotificationsPage />} />
+          <Route
+            path="/account/integrations"
+            element={<AccountIntegrationsPage />}
+          />
+          <Route
+            path="/account/notifications"
+            element={<AccountNotificationsPage />}
+          />
           <Route path="/account/api-keys" element={<AccountApiKeysPage />} />
-          <Route path="/account/appearance" element={<AccountAppearancePage />} />
-          <Route path="/account/invite-a-friend" element={<AccountInviteAFriendPage />} />
+          <Route
+            path="/account/appearance"
+            element={<AccountAppearancePage />}
+          />
+          <Route
+            path="/account/invite-a-friend"
+            element={<AccountInviteAFriendPage />}
+          />
           <Route path="/account/activity" element={<AccountActivityPage />} />
-          <Route path="/network/get-started" element={<NetworkGetStartedPage />} />
-          <Route path="/network/user-cards/mini-cards" element={<NetworkMiniCardsPage />} />
-          <Route path="/network/user-cards/team-crew" element={<NetworkUserCardsTeamCrewPage />} />
-          <Route path="/network/user-cards/author" element={<NetworkAuthorPage />} />
+          <Route
+            path="/network/get-started"
+            element={<NetworkGetStartedPage />}
+          />
+          <Route
+            path="/network/user-cards/mini-cards"
+            element={<NetworkMiniCardsPage />}
+          />
+          <Route
+            path="/network/user-cards/team-crew"
+            element={<NetworkUserCardsTeamCrewPage />}
+          />
+          <Route
+            path="/network/user-cards/author"
+            element={<NetworkAuthorPage />}
+          />
           <Route path="/network/user-cards/nft" element={<NetworkNFTPage />} />
-          <Route path="/network/user-cards/social" element={<NetworkSocialPage />} />
-          <Route path="/network/user-table/team-crew" element={<NetworkUserTableTeamCrewPage />} />
-          <Route path="/network/user-table/app-roster" element={<NetworkAppRosterPage />} />
-          <Route path="/network/user-table/market-authors" element={<NetworkMarketAuthorsPage />} />
-          <Route path="/network/user-table/saas-users" element={<NetworkSaasUsersPage />} />
-          <Route path="/network/user-table/store-clients" element={<NetworkStoreClientsPage />} />
-          <Route path="/network/user-table/visitors" element={<NetworkVisitorsPage />} />
-          <Route path="/auth/welcome-message" element={<AuthenticationWelcomeMessagePage />} />
+          <Route
+            path="/network/user-cards/social"
+            element={<NetworkSocialPage />}
+          />
+          <Route
+            path="/network/user-table/team-crew"
+            element={<NetworkUserTableTeamCrewPage />}
+          />
+          <Route
+            path="/network/user-table/app-roster"
+            element={<NetworkAppRosterPage />}
+          />
+          <Route
+            path="/network/user-table/market-authors"
+            element={<NetworkMarketAuthorsPage />}
+          />
+          <Route
+            path="/network/user-table/saas-users"
+            element={<NetworkSaasUsersPage />}
+          />
+          <Route
+            path="/network/user-table/store-clients"
+            element={<NetworkStoreClientsPage />}
+          />
+          <Route
+            path="/network/user-table/visitors"
+            element={<NetworkVisitorsPage />}
+          />
+          <Route
+            path="/auth/welcome-message"
+            element={<AuthenticationWelcomeMessagePage />}
+          />
           <Route
             path="/auth/account-deactivated"
             element={<AuthenticationAccountDeactivatedPage />}
           />
-          <Route path="/authentication/get-started" element={<AuthenticationGetStartedPage />} />
+          <Route
+            path="/authentication/get-started"
+            element={<AuthenticationGetStartedPage />}
+          />
         </Route>
       </Route>
       <Route path="error/*" element={<ErrorsRouting />} />

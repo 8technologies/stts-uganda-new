@@ -15,394 +15,394 @@ interface IVisitorsData {
 const VisitorsData: IVisitorsData[] = [
   {
     user: {
-      avatar: '300-3.png',
-      name: 'Tyler Hero'
+      avatar: "300-3.png",
+      name: "Tyler Hero",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '234.0.155.191',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "234.0.155.191",
     location: {
-      name: 'Estonia',
-      flag: 'estonia.svg'
+      name: "Estonia",
+      flag: "estonia.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-23.png',
-      name: 'Jane Smith'
+      avatar: "300-23.png",
+      name: "Jane Smith",
     },
-    browser: 'Chrome on Windows 7',
-    ipAddress: '70.218.212.162',
+    browser: "Chrome on Windows 7",
+    ipAddress: "70.218.212.162",
     location: {
-      name: 'Malaysia',
-      flag: 'malaysia.svg'
+      name: "Malaysia",
+      flag: "malaysia.svg",
     },
-    activity: 'Week ago'
+    activity: "Week ago",
   },
   {
     user: {
-      avatar: '300-1.png',
-      name: 'Emma Johnson'
+      avatar: "300-1.png",
+      name: "Emma Johnson",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '140.92.152.213',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "140.92.152.213",
     location: {
-      name: 'Ukraine',
-      flag: 'ukraine.svg'
+      name: "Ukraine",
+      flag: "ukraine.svg",
     },
-    activity: 'Today, 9:53 am'
+    activity: "Today, 9:53 am",
   },
   {
     user: {
-      avatar: '300-14.png',
-      name: 'Michael Brown'
+      avatar: "300-14.png",
+      name: "Michael Brown",
     },
-    browser: 'Chrome on Windows 10',
-    ipAddress: '214.219.147.46',
+    browser: "Chrome on Windows 10",
+    ipAddress: "214.219.147.46",
     location: {
-      name: 'Canada',
-      flag: 'canada.svg'
+      name: "Canada",
+      flag: "canada.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-19.png',
-      name: 'Chloe Davis'
+      avatar: "300-19.png",
+      name: "Chloe Davis",
     },
-    browser: 'Chrome on iOS 14',
-    ipAddress: '246.44.68.100',
+    browser: "Chrome on iOS 14",
+    ipAddress: "246.44.68.100",
     location: {
-      name: 'India',
-      flag: 'india.svg'
+      name: "India",
+      flag: "india.svg",
     },
-    activity: 'Month ago'
+    activity: "Month ago",
   },
   {
     user: {
-      avatar: '300-6.png',
-      name: 'William Wilson'
+      avatar: "300-6.png",
+      name: "William Wilson",
     },
-    browser: 'Chrome on Windows 11',
-    ipAddress: '233.182.185.28',
+    browser: "Chrome on Windows 11",
+    ipAddress: "233.182.185.28",
     location: {
-      name: 'USA',
-      flag: 'united-states.svg'
+      name: "USA",
+      flag: "united-states.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-34.png',
-      name: 'Olivia Martin'
+      avatar: "300-34.png",
+      name: "Olivia Martin",
     },
-    browser: 'Chrome on Android 16',
-    ipAddress: '76.216.214.248',
+    browser: "Chrome on Android 16",
+    ipAddress: "76.216.214.248",
     location: {
-      name: 'Turkey',
-      flag: 'turkey.svg'
+      name: "Turkey",
+      flag: "turkey.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-4.png',
-      name: 'Ethan Garcia'
+      avatar: "300-4.png",
+      name: "Ethan Garcia",
     },
-    browser: 'Safari on Mac OS X',
-    ipAddress: '102.150.137.255',
+    browser: "Safari on Mac OS X",
+    ipAddress: "102.150.137.255",
     location: {
-      name: 'Brasil',
-      flag: 'brazil.svg'
+      name: "Brasil",
+      flag: "brazil.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-13.png',
-      name: 'Ava Rodriguez'
+      avatar: "300-13.png",
+      name: "Ava Rodriguez",
     },
-    browser: 'Safari on Mac OS X',
-    ipAddress: '75.243.106.80',
+    browser: "Safari on Mac OS X",
+    ipAddress: "75.243.106.80",
     location: {
-      name: 'Latvia',
-      flag: 'latvia.svg'
+      name: "Latvia",
+      flag: "latvia.svg",
     },
-    activity: 'Week ago'
+    activity: "Week ago",
   },
   {
     user: {
-      avatar: '300-31.png',
-      name: 'Matthew Martinez'
+      avatar: "300-31.png",
+      name: "Matthew Martinez",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '214.219.147.46',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "214.219.147.46",
     location: {
-      name: 'Uruguay',
-      flag: 'uruguay.svg'
+      name: "Uruguay",
+      flag: "uruguay.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-15.png',
-      name: 'Henry Clark'
+      avatar: "300-15.png",
+      name: "Henry Clark",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.2',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.2",
     location: {
-      name: 'Italy',
-      flag: 'italy.svg'
+      name: "Italy",
+      flag: "italy.svg",
     },
-    activity: 'Yesterday'
+    activity: "Yesterday",
   },
   {
     user: {
-      avatar: '300-16.png',
-      name: 'Amelia Lewis'
+      avatar: "300-16.png",
+      name: "Amelia Lewis",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.3',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.3",
     location: {
-      name: 'Spain',
-      flag: 'spain.svg'
+      name: "Spain",
+      flag: "spain.svg",
     },
-    activity: '2 days ago'
+    activity: "2 days ago",
   },
   {
     user: {
-      avatar: '300-17.png',
-      name: 'Lucas Walker'
+      avatar: "300-17.png",
+      name: "Lucas Walker",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.4',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.4",
     location: {
-      name: 'France',
-      flag: 'france.svg'
+      name: "France",
+      flag: "france.svg",
     },
-    activity: 'Today, 8:45 am'
+    activity: "Today, 8:45 am",
   },
   {
     user: {
-      avatar: '300-18.png',
-      name: 'Grace Allens'
+      avatar: "300-18.png",
+      name: "Grace Allens",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.5',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.5",
     location: {
-      name: 'Germany',
-      flag: 'germany.svg'
+      name: "Germany",
+      flag: "germany.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-19.png',
-      name: 'Jack Harris'
+      avatar: "300-19.png",
+      name: "Jack Harris",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.6',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.6",
     location: {
-      name: 'Netherlands',
-      flag: 'netherlands.svg'
+      name: "Netherlands",
+      flag: "netherlands.svg",
     },
-    activity: 'Week ago'
+    activity: "Week ago",
   },
   {
     user: {
-      avatar: '300-20.png',
-      name: 'Charlotte Young'
+      avatar: "300-20.png",
+      name: "Charlotte Young",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.7',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.7",
     location: {
-      name: 'Sweden',
-      flag: 'sweden.svg'
+      name: "Sweden",
+      flag: "sweden.svg",
     },
-    activity: 'Month ago'
+    activity: "Month ago",
   },
   {
     user: {
-      avatar: '300-21.png',
-      name: 'Benjamin Harris'
+      avatar: "300-21.png",
+      name: "Benjamin Harris",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.8',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.8",
     location: {
-      name: 'Switzerland',
-      flag: 'switzerland.svg'
+      name: "Switzerland",
+      flag: "switzerland.svg",
     },
-    activity: 'Today, 14:10'
+    activity: "Today, 14:10",
   },
   {
     user: {
-      avatar: '300-22.png',
-      name: 'James Martinez'
+      avatar: "300-22.png",
+      name: "James Martinez",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.9',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.9",
     location: {
-      name: 'Portugal',
-      flag: 'portugal.svg'
+      name: "Portugal",
+      flag: "portugal.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-24.png',
-      name: 'SAiden King'
+      avatar: "300-24.png",
+      name: "SAiden King",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.10',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.10",
     location: {
-      name: 'Norway',
-      flag: 'norway.svg'
+      name: "Norway",
+      flag: "norway.svg",
     },
-    activity: '2 days ago'
+    activity: "2 days ago",
   },
   {
     user: {
-      avatar: '300-25.png',
-      name: 'Avery Green'
+      avatar: "300-25.png",
+      name: "Avery Green",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.11',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.11",
     location: {
-      name: 'Denmark',
-      flag: 'denmark.svg'
+      name: "Denmark",
+      flag: "denmark.svg",
     },
-    activity: 'Today, 11:53 am'
+    activity: "Today, 11:53 am",
   },
   {
     user: {
-      avatar: '300-26.png',
-      name: 'Ella White'
+      avatar: "300-26.png",
+      name: "Ella White",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '92.168.1.12',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "92.168.1.12",
     location: {
-      name: 'Belgium',
-      flag: 'belgium.svg'
+      name: "Belgium",
+      flag: "belgium.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-27.png',
-      name: 'Henry King'
+      avatar: "300-27.png",
+      name: "Henry King",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.13',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.13",
     location: {
-      name: 'Austria',
-      flag: 'austria.svg'
+      name: "Austria",
+      flag: "austria.svg",
     },
-    activity: 'Month ago'
+    activity: "Month ago",
   },
   {
     user: {
-      avatar: '300-28.png',
-      name: 'Olivia Green'
+      avatar: "300-28.png",
+      name: "Olivia Green",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.14',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.14",
     location: {
-      name: 'Poland',
-      flag: 'poland.svg'
+      name: "Poland",
+      flag: "poland.svg",
     },
-    activity: 'Today, 15:02'
+    activity: "Today, 15:02",
   },
   {
     user: {
-      avatar: '300-29.png',
-      name: 'Mason Lewis'
+      avatar: "300-29.png",
+      name: "Mason Lewis",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.15',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.15",
     location: {
-      name: 'Finland',
-      flag: 'finland.svg'
+      name: "Finland",
+      flag: "finland.svg",
     },
-    activity: 'Current session'
+    activity: "Current session",
   },
   {
     user: {
-      avatar: '300-30.png',
-      name: 'Sophia Lee'
+      avatar: "300-30.png",
+      name: "Sophia Lee",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.16',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.16",
     location: {
-      name: 'Ireland',
-      flag: 'ireland.svg'
+      name: "Ireland",
+      flag: "ireland.svg",
     },
-    activity: 'Week agon'
+    activity: "Week agon",
   },
   {
     user: {
-      avatar: '300-31.png',
-      name: 'Matthew Martinez'
+      avatar: "300-31.png",
+      name: "Matthew Martinez",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '2192.168.1.17',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "2192.168.1.17",
     location: {
-      name: 'Italy',
-      flag: 'italy.svg'
+      name: "Italy",
+      flag: "italy.svg",
     },
-    activity: 'Month ago'
+    activity: "Month ago",
   },
   {
     user: {
-      avatar: '300-32.png',
-      name: 'Noah Wilson'
+      avatar: "300-32.png",
+      name: "Noah Wilson",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.18',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.18",
     location: {
-      name: 'Sweden',
-      flag: 'sweden.svg'
+      name: "Sweden",
+      flag: "sweden.svg",
     },
-    activity: 'Today, 14:10'
+    activity: "Today, 14:10",
   },
   {
     user: {
-      avatar: '300-33.png',
-      name: 'Mia Brown'
+      avatar: "300-33.png",
+      name: "Mia Brown",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.19',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.19",
     location: {
-      name: 'Switzerland',
-      flag: 'switzerland.svg'
+      name: "Switzerland",
+      flag: "switzerland.svg",
     },
-    activity: 'Yesterday'
+    activity: "Yesterday",
   },
   {
     user: {
-      avatar: '300-34.png',
-      name: 'Oliver Taylor'
+      avatar: "300-34.png",
+      name: "Oliver Taylor",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '192.168.1.20',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "192.168.1.20",
     location: {
-      name: 'Portugal',
-      flag: 'portugal.svg'
+      name: "Portugal",
+      flag: "portugal.svg",
     },
-    activity: '2 days ago'
+    activity: "2 days ago",
   },
   {
     user: {
-      avatar: '300-1.png',
-      name: 'Ella White'
+      avatar: "300-1.png",
+      name: "Ella White",
     },
-    browser: 'Chrome on Mac OS X',
-    ipAddress: '92.168.1.21',
+    browser: "Chrome on Mac OS X",
+    ipAddress: "92.168.1.21",
     location: {
-      name: 'Norway',
-      flag: 'norway.svg'
+      name: "Norway",
+      flag: "norway.svg",
     },
-    activity: 'Current session'
-  }
+    activity: "Current session",
+  },
 ];
 
 export { VisitorsData, type IVisitorsData };

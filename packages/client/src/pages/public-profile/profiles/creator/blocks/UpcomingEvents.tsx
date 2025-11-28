@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IUpcomingEventsItem {
   month: string;
@@ -16,29 +16,29 @@ interface IUpcomingEventsItems extends Array<IUpcomingEventsItem> {}
 const UpcomingEvents = () => {
   const items: IUpcomingEventsItems = [
     {
-      month: 'Feb',
-      date: '21',
-      image: '7.jpg',
-      label: 'Webinar Series',
-      title: 'Digital Marketing Mastery Series',
-      desc: 'Join our comprehensive webinars to master the art of digital marketing strategies.'
+      month: "Feb",
+      date: "21",
+      image: "7.jpg",
+      label: "Webinar Series",
+      title: "Digital Marketing Mastery Series",
+      desc: "Join our comprehensive webinars to master the art of digital marketing strategies.",
     },
     {
-      month: 'Apr',
-      date: '02',
-      image: '8.jpg',
-      label: 'Photo Workshop',
-      title: 'Nature Photography Immersion',
-      desc: 'Enhance your nature photography skills in a hands-on workshop guided by experienced photographers.'
+      month: "Apr",
+      date: "02",
+      image: "8.jpg",
+      label: "Photo Workshop",
+      title: "Nature Photography Immersion",
+      desc: "Enhance your nature photography skills in a hands-on workshop guided by experienced photographers.",
     },
     {
-      month: 'Aug',
-      date: '29',
-      image: '9.jpg',
-      label: 'Tech Conference',
-      title: 'Future Tech Exploration',
-      desc: 'Delve into tech innovations and emerging trends at this influential conference for tech enthusiasts.'
-    }
+      month: "Aug",
+      date: "29",
+      image: "9.jpg",
+      label: "Tech Conference",
+      title: "Future Tech Exploration",
+      desc: "Delve into tech innovations and emerging trends at this influential conference for tech enthusiasts.",
+    },
   ];
 
   const renderItem = (item: IUpcomingEventsItem, index: number) => {
@@ -48,7 +48,9 @@ const UpcomingEvents = () => {
           <div className="flex items-center gap-5 shrink-0">
             <div className="border border-brand-clarity rounded-lg">
               <div className="flex items-center justify-center border-b border-b-brand-clarity bg-brand-light rounded-t-lg">
-                <span className="text-2sm text-brand fw-medium p-2">{item.month}</span>
+                <span className="text-2sm text-brand fw-medium p-2">
+                  {item.month}
+                </span>
               </div>
               <div className="flex items-center justify-center size-12">
                 <span className="font-medium text-gray-800 text-1.5xl tracking-tight">

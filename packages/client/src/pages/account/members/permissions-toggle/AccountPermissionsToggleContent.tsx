@@ -1,6 +1,6 @@
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
 
-import { Members, PermissionsToggle } from './blocks';
+import { Members, PermissionsToggle } from "./blocks";
 
 const AccountPermissionsToggleContent = () => {
   return (

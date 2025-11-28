@@ -1,10 +1,16 @@
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { MENU_SIDEBAR } from '@/config';
-import { useScrollPosition } from '@/hooks/useScrollPosition';
-import { useMenus } from '@/providers';
-import { ILayoutConfig, useLayout } from '@/providers';
-import { deepMerge } from '@/utils';
-import { Demo2LayoutConfig } from './';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { MENU_SIDEBAR } from "@/config";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useMenus } from "@/providers";
+import { ILayoutConfig, useLayout } from "@/providers";
+import { deepMerge } from "@/utils";
+import { Demo2LayoutConfig } from "./";
 
 // Interface defining the properties of the layout provider context
 export interface IDemo2LayoutProviderProps {
@@ -21,11 +27,12 @@ const initalLayoutProps: IDemo2LayoutProviderProps = {
   mobileSidebarOpen: false, // Mobile sidebar is closed by default
   setMobileSidebarOpen: (open: boolean) => {
     console.log(`${open}`);
-  }
+  },
 };
 
 // Create a context to manage the layout-related state and logic for Demo2 layout
-const Demo2LayoutContext = createContext<IDemo2LayoutProviderProps>(initalLayoutProps);
+const Demo2LayoutContext =
+  createContext<IDemo2LayoutProviderProps>(initalLayoutProps);
 
 // Custom hook to access the layout context in other components
 const useDemo2Layout = () => useContext(Demo2LayoutContext);
@@ -36,7 +43,10 @@ const Demo2LayoutProvider = ({ children }: PropsWithChildren) => {
   const { getLayout, setCurrentLayout } = useLayout(); // Hook to get and set layout configuration
 
   // Merge the Demo2 layout configuration with the current layout configuration fetched via getLayout
-  const layoutConfig = deepMerge(Demo2LayoutConfig, getLayout(Demo2LayoutConfig.name));
+  const layoutConfig = deepMerge(
+    Demo2LayoutConfig,
+    getLayout(Demo2LayoutConfig.name),
+  );
 
   // Set the initial state for layout and mobile sidebar
   const [layout] = useState(layoutConfig); // Layout configuration is stored in state
@@ -46,10 +56,11 @@ const Demo2LayoutProvider = ({ children }: PropsWithChildren) => {
   const scrollPosition = useScrollPosition();
 
   // Calculate whether the header should be sticky based on the scroll position and the layout's sticky offset
-  const headerSticky: boolean = scrollPosition > layout.options.header.stickyOffset;
+  const headerSticky: boolean =
+    scrollPosition > layout.options.header.stickyOffset;
 
   // Set the menu configuration for the primary menu using the provided MENU_SIDEBAR configuration
-  setMenuConfig('primary', MENU_SIDEBAR);
+  setMenuConfig("primary", MENU_SIDEBAR);
 
   // When the layout state changes, set the current layout configuration in the layout provider
   useEffect(() => {
@@ -63,7 +74,7 @@ const Demo2LayoutProvider = ({ children }: PropsWithChildren) => {
         layout, // The current layout configuration
         headerSticky, // Whether the header should be sticky based on the scroll position
         mobileSidebarOpen, // Whether the mobile sidebar is currently open
-        setMobileSidebarOpen // Function to toggle the mobile sidebar state
+        setMobileSidebarOpen, // Function to toggle the mobile sidebar state
       }}
     >
       {children} {/* Render child components that consume this context */}

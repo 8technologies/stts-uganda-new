@@ -1,9 +1,15 @@
-import { TMenuConfig, IMenuItemConfig, MenuSub } from '@/components/menu';
-import { MegaMenuSubDefault, MegaMenuSubHighlighted, MegaMenuFooter } from './components';
+import { TMenuConfig, IMenuItemConfig, MenuSub } from "@/components/menu";
+import {
+  MegaMenuSubDefault,
+  MegaMenuSubHighlighted,
+  MegaMenuFooter,
+} from "./components";
 
 const MegaMenuSubNetwork = (items: TMenuConfig) => {
   const networkItem = items[3];
-  const networkItemGeneral = networkItem.children ? networkItem.children[0] : {};
+  const networkItemGeneral = networkItem.children
+    ? networkItem.children[0]
+    : {};
   const networkItemOthers = networkItem.children ? networkItem.children[1] : {};
 
   return (
@@ -14,7 +20,8 @@ const MegaMenuSubNetwork = (items: TMenuConfig) => {
             {networkItemGeneral.title}
           </h3>
           <div className="menu menu-default menu-fit flex-col">
-            {networkItemGeneral.children && MegaMenuSubHighlighted(networkItemGeneral.children)}
+            {networkItemGeneral.children &&
+              MegaMenuSubHighlighted(networkItemGeneral.children)}
           </div>
         </div>
         <div className="pt-4 pb-2 lg:p-7.5 lg:pb-5 grow">

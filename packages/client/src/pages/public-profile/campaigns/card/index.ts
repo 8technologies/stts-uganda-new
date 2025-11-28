@@ -1,2 +1,2 @@
-export * from './CampaignsContent';
-export * from './CampaignsCardPage';
+export * from "./CampaignsContent";
+export * from "./CampaignsCardPage";

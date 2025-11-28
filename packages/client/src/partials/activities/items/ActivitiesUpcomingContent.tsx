@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { TimelinesWrapper } from '@/partials/timelines/default/item';
+import { TimelinesWrapper } from "@/partials/timelines/default/item";
 
 const ActivitiesUpcomingContent = () => {
   return (

@@ -1,5 +1,12 @@
-import { CommunityBadges } from '../default';
-import { About, Assets, Network, Tokens3dArt, TokensCollected, TokensCreated } from './blocks';
+import { CommunityBadges } from "../default";
+import {
+  About,
+  Assets,
+  Network,
+  Tokens3dArt,
+  TokensCollected,
+  TokensCreated,
+} from "./blocks";
 
 const ProfileNFTContent = () => {
   return (

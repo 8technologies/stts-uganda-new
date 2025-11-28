@@ -1,19 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { KeenIcon } from '@/components';
-import { useLazyQuery, useQuery } from '@apollo/client/react';
-import { LOAD_CROPS, LOAD_CROP } from '@/gql/queries';
-import { URL_2 } from '@/config/urls';
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { KeenIcon } from "@/components";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { LOAD_CROPS, LOAD_CROP } from "@/gql/queries";
+import { URL_2 } from "@/config/urls";
 
 export type CropDeclarationInput = {
   id?: string;
@@ -34,16 +40,24 @@ interface Props {
 }
 
 const DEFAULT_VALUES: CropDeclarationInput = {
-  source_of_seed: '',
+  source_of_seed: "",
   field_size: undefined,
-  seed_rate: '',
+  seed_rate: "",
   amount: undefined,
   receipt_id: null,
-  crops: []
+  crops: [],
 };
 
-const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValues }: Props) => {
-  const [values, setValues] = useState<CropDeclarationInput>({ ...DEFAULT_VALUES });
+const CropDeclarationDialog = ({
+  open,
+  onOpenChange,
+  onSave,
+  saving,
+  initialValues,
+}: Props) => {
+  const [values, setValues] = useState<CropDeclarationInput>({
+    ...DEFAULT_VALUES,
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Crops + varieties
@@ -51,10 +65,12 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
   const { data: cropsData } = useQuery(LOAD_CROPS, { variables: LIST_VARS });
   const cropOptions = (cropsData?.crops?.items || []).map((c: any) => ({
     id: String(c.id),
-    name: c.name
+    name: c.name,
   }));
   const [loadCropVarieties] = useLazyQuery(LOAD_CROP);
-  const [varietyStore, setVarietyStore] = useState<Record<string, { id: string; name: string }[]>>({});
+  const [varietyStore, setVarietyStore] = useState<
+    Record<string, { id: string; name: string }[]>
+  >({});
 
   const fetchVarieties = async (cropId: string) => {
     if (!cropId) return;
@@ -62,14 +78,18 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
     const res = await loadCropVarieties({ variables: { id: cropId } });
     const items = (res.data?.crop?.varieties || []).map((v: any) => ({
       id: String(v.id),
-      name: v.name
+      name: v.name,
     }));
     setVarietyStore((prev) => ({ ...prev, [cropId]: items }));
   };
 
   useEffect(() => {
     if (open) {
-      setValues(initialValues ? { ...DEFAULT_VALUES, ...initialValues } : { ...DEFAULT_VALUES });
+      setValues(
+        initialValues
+          ? { ...DEFAULT_VALUES, ...initialValues }
+          : { ...DEFAULT_VALUES },
+      );
       setErrors({});
     }
   }, [open, initialValues]);
@@ -83,15 +103,22 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
     });
   };
 
-  const handleCropChange = (index: number, key: 'crop_id' | 'variety_id', value: string) => {
+  const handleCropChange = (
+    index: number,
+    key: "crop_id" | "variety_id",
+    value: string,
+  ) => {
     const crops = [...values.crops];
     crops[index] = { ...crops[index], [key]: value };
     setValues((v) => ({ ...v, crops }));
-    if (key === 'crop_id') fetchVarieties(value);
+    if (key === "crop_id") fetchVarieties(value);
   };
 
   const addCropRow = () => {
-    setValues((v) => ({ ...v, crops: [...v.crops, { crop_id: '', variety_id: '' }] }));
+    setValues((v) => ({
+      ...v,
+      crops: [...v.crops, { crop_id: "", variety_id: "" }],
+    }));
   };
 
   const removeCropRow = (index: number) => {
@@ -100,11 +127,12 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
 
   const validate = (): boolean => {
     const er: Record<string, string> = {};
-    if (!values.source_of_seed) er.source_of_seed = 'Source of seed required';
-    if (!values.field_size || values.field_size <= 0) er.field_size = 'Field size required';
-    if (!values.seed_rate) er.seed_rate = 'Seed rate required';
-    if (!values.amount || values.amount <= 0) er.amount = 'Amount required';
-    if (!values.crops.length) er.crops = 'At least one crop is required';
+    if (!values.source_of_seed) er.source_of_seed = "Source of seed required";
+    if (!values.field_size || values.field_size <= 0)
+      er.field_size = "Field size required";
+    if (!values.seed_rate) er.seed_rate = "Seed rate required";
+    if (!values.amount || values.amount <= 0) er.amount = "Amount required";
+    if (!values.crops.length) er.crops = "At least one crop is required";
     setErrors(er);
     return Object.keys(er).length === 0;
   };
@@ -127,57 +155,71 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
             <div>
               <label className="form-label">Source of Seed</label>
               <Input
-                value={values.source_of_seed || ''}
-                onChange={(e) => handleChange('source_of_seed', e.target.value)}
+                value={values.source_of_seed || ""}
+                onChange={(e) => handleChange("source_of_seed", e.target.value)}
               />
-              {errors.source_of_seed && <div className="text-xs text-danger">{errors.source_of_seed}</div>}
+              {errors.source_of_seed && (
+                <div className="text-xs text-danger">
+                  {errors.source_of_seed}
+                </div>
+              )}
             </div>
             <div>
               <label className="form-label">Field Size (ha)</label>
               <Input
                 type="number"
-                value={values.field_size || ''}
-                onChange={(e) => handleChange('field_size', Number(e.target.value))}
+                value={values.field_size || ""}
+                onChange={(e) =>
+                  handleChange("field_size", Number(e.target.value))
+                }
               />
-              {errors.field_size && <div className="text-xs text-danger">{errors.field_size}</div>}
+              {errors.field_size && (
+                <div className="text-xs text-danger">{errors.field_size}</div>
+              )}
             </div>
             <div>
               <label className="form-label">Seed Rate</label>
               <Input
-                value={values.seed_rate || ''}
-                onChange={(e) => handleChange('seed_rate', e.target.value)}
+                value={values.seed_rate || ""}
+                onChange={(e) => handleChange("seed_rate", e.target.value)}
               />
-              {errors.seed_rate && <div className="text-xs text-danger">{errors.seed_rate}</div>}
+              {errors.seed_rate && (
+                <div className="text-xs text-danger">{errors.seed_rate}</div>
+              )}
             </div>
             <div>
               <label className="form-label">Amount</label>
               <Input
                 type="number"
-                value={values.amount || ''}
-                onChange={(e) => handleChange('amount', Number(e.target.value))}
+                value={values.amount || ""}
+                onChange={(e) => handleChange("amount", Number(e.target.value))}
               />
-              {errors.amount && <div className="text-xs text-danger">{errors.amount}</div>}
+              {errors.amount && (
+                <div className="text-xs text-danger">{errors.amount}</div>
+              )}
             </div>
             <div className="md:col-span-2">
               <label className="form-label">Receipt Upload</label>
               <Input
                 type="file"
-                onChange={(e) => handleChange('receipt_id', e.target.files?.[0] || null)}
+                onChange={(e) =>
+                  handleChange("receipt_id", e.target.files?.[0] || null)
+                }
               />
               {/* {console.log(values?.receipt_id)} */}
-              {values?.receipt_id ? (
-                console.log(values?.receipt_id),
-                <a
-                  href={`${URL_2}/form_attachments/${values?.receipt_id}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-primary-600 hover:underline"
-                >
-                  View receipt
-                </a>
-              ) : (
-                '-'
-              )}
+              {values?.receipt_id
+                ? (console.log(values?.receipt_id),
+                  (
+                    <a
+                      href={`${URL_2}/form_attachments/${values?.receipt_id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary-600 hover:underline"
+                    >
+                      View receipt
+                    </a>
+                  ))
+                : "-"}
             </div>
           </div>
 
@@ -189,12 +231,15 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
               </Button>
             </h3>
             {values.crops.map((crop, idx) => (
-              <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div
+                key={idx}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
+              >
                 <div>
                   <label className="form-label">Crop</label>
                   <Select
                     value={crop.crop_id}
-                    onValueChange={(v) => handleCropChange(idx, 'crop_id', v)}
+                    onValueChange={(v) => handleCropChange(idx, "crop_id", v)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select crop" />
@@ -212,10 +257,16 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
                   <label className="form-label">Variety</label>
                   <Select
                     value={crop.variety_id}
-                    onValueChange={(v) => handleCropChange(idx, 'variety_id', v)}
+                    onValueChange={(v) =>
+                      handleCropChange(idx, "variety_id", v)
+                    }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={crop.crop_id ? 'Select variety' : 'Select crop first'} />
+                      <SelectValue
+                        placeholder={
+                          crop.crop_id ? "Select variety" : "Select crop first"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {(varietyStore[crop.crop_id] || []).map((v) => (
@@ -227,13 +278,19 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
                   </Select>
                 </div>
                 <div>
-                  <Button variant="destructive" size="sm" onClick={() => removeCropRow(idx)}>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeCropRow(idx)}
+                  >
                     Remove
                   </Button>
                 </div>
               </div>
             ))}
-            {errors.crops && <div className="text-xs text-danger">{errors.crops}</div>}
+            {errors.crops && (
+              <div className="text-xs text-danger">{errors.crops}</div>
+            )}
           </div>
         </DialogBody>
         <DialogFooter>
@@ -241,7 +298,8 @@ const CropDeclarationDialog = ({ open, onOpenChange, onSave, saving, initialValu
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={!!saving}>
-            <KeenIcon icon="tick-square" /> {saving ? 'Saving…' : 'Submit Declaration'}
+            <KeenIcon icon="tick-square" />{" "}
+            {saving ? "Saving…" : "Submit Declaration"}
           </Button>
         </DialogFooter>
       </DialogContent>

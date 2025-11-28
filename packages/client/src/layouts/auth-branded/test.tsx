@@ -1,12 +1,12 @@
-import { Link, Outlet } from 'react-router-dom';
-import { Fragment } from 'react';
-import { toAbsoluteUrl } from '@/utils';
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { AuthBrandedLayoutProvider } from './AuthBrandedLayoutProvider';
+import { Link, Outlet } from "react-router-dom";
+import { Fragment } from "react";
+import { toAbsoluteUrl } from "@/utils";
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { AuthBrandedLayoutProvider } from "./AuthBrandedLayoutProvider";
 
 const Layout = () => {
   // Applying body classes to manage the background color in dark mode
-  useBodyClasses('dark:bg-coal-500');
+  useBodyClasses("dark:bg-coal-500");
 
   return (
     <Fragment>
@@ -41,9 +41,12 @@ const Layout = () => {
             </Link>
 
             <div className="flex flex-col gap-3">
-              <h3 className="text-2xl font-semibold text-white">Seed Tracking & Tracing System</h3>
+              <h3 className="text-2xl font-semibold text-white">
+                Seed Tracking & Tracing System
+              </h3>
               <div className="text-base font-medium text-white/90">
-                Ensure authenticity, quality, and transparency across the seed value chain.
+                Ensure authenticity, quality, and transparency across the seed
+                value chain.
               </div>
             </div>
           </div>

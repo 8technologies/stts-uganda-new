@@ -1,3 +1,3 @@
-export * from './AccountBackupAndRecoveryContent';
-export * from './AccountBackupAndRecoveryPage';
-export * from './blocks';
+export * from "./AccountBackupAndRecoveryContent";
+export * from "./AccountBackupAndRecoveryPage";
+export * from "./blocks";

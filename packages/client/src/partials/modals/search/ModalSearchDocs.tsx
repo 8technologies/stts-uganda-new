@@ -1,7 +1,7 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
-import React from 'react';
-import { IModalSearchDocsItem } from './types';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils";
+import React from "react";
+import { IModalSearchDocsItem } from "./types";
 
 // Define the interface for the items
 interface IModalSearchDocsProps {
@@ -17,12 +17,17 @@ const ModalSearchDocs = ({ items }: IModalSearchDocsProps) => {
           <div className="menu-item" key={index}>
             <div className="menu-link flex items-center">
               <div className="flex items-center grow gap-2.5">
-                <img src={toAbsoluteUrl(`/media/file-types/${item.image}`)} alt={item.desc} />
+                <img
+                  src={toAbsoluteUrl(`/media/file-types/${item.image}`)}
+                  alt={item.desc}
+                />
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold text-gray-900 cursor-pointer hover:text-primary mb-px">
                     {item.desc}
                   </span>
-                  <span className="text-xs font-medium text-gray-500">{item.date}</span>
+                  <span className="text-xs font-medium text-gray-500">
+                    {item.date}
+                  </span>
                 </div>
               </div>
               <button className="btn btn-icon btn-light btn-clear btn-sm">

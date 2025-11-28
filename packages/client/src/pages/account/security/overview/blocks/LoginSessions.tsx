@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { useLanguage } from '@/i18n';
-import { DropdownCardItem1, DropdownCrud1 } from '@/partials/dropdowns/general';
-import { CommonAvatar } from '@/partials/common';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { useLanguage } from "@/i18n";
+import { DropdownCardItem1, DropdownCrud1 } from "@/partials/dropdowns/general";
+import { CommonAvatar } from "@/partials/common";
 
 interface ILoginSessionsItem {
   avatar: string;
@@ -17,40 +17,40 @@ const LoginSessions = () => {
 
   const rows: ILoginSessionsItems = [
     {
-      avatar: '300-3.png',
-      name: 'Tyler Hero',
+      avatar: "300-3.png",
+      name: "Tyler Hero",
       connections: 26,
-      location: 'New Zealand',
-      recent: 'Current session'
+      location: "New Zealand",
+      recent: "Current session",
     },
     {
-      avatar: '300-1.png',
-      name: 'Esther Howard',
+      avatar: "300-1.png",
+      name: "Esther Howard",
       connections: 639,
-      location: 'Canada',
-      recent: 'Week ago'
+      location: "Canada",
+      recent: "Week ago",
     },
     {
-      avatar: '300-11.png',
-      name: 'Jacob Jones',
+      avatar: "300-11.png",
+      name: "Jacob Jones",
       connections: 125,
-      location: 'Malaysia',
-      recent: 'Today, 9:53 am'
+      location: "Malaysia",
+      recent: "Today, 9:53 am",
     },
     {
-      avatar: '300-2.png',
-      name: 'Cody Fisher',
+      avatar: "300-2.png",
+      name: "Cody Fisher",
       connections: 81,
-      location: 'Turkey',
-      recent: 'Current session'
+      location: "Turkey",
+      recent: "Current session",
     },
     {
-      avatar: '300-5.png',
-      name: 'Leslie Alexander',
+      avatar: "300-5.png",
+      name: "Leslie Alexander",
       connections: 1203,
-      location: 'United States',
-      recent: 'Month ago'
-    }
+      location: "United States",
+      recent: "Month ago",
+    },
   ];
 
   const renderItem = (row: ILoginSessionsItem, index: number) => {
@@ -58,10 +58,16 @@ const LoginSessions = () => {
       <tr key={index}>
         <td>
           <div className="flex items-center grow gap-2.5">
-            <CommonAvatar image={row.avatar} imageClass="rounded-full size-9 shrink-0" />
+            <CommonAvatar
+              image={row.avatar}
+              imageClass="rounded-full size-9 shrink-0"
+            />
 
             <div className="flex flex-col gap-0.5">
-              <a href="#" className="text-sm font-medium text-gray-900 hover:text-primary-actives">
+              <a
+                href="#"
+                className="text-sm font-medium text-gray-900 hover:text-primary-actives"
+              >
                 {row.name}
               </a>
               <span className="text-xs font-normal text-gray-700">
@@ -81,15 +87,15 @@ const LoginSessions = () => {
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, 10] : [0, -10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, 10] : [0, -10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -113,15 +119,15 @@ const LoginSessions = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, 10] : [0, -10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, 10] : [0, -10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

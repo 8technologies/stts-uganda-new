@@ -1,17 +1,27 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useLocation } from "react-router-dom";
 
 interface IPathnameContextProps {
   pathname: string;
   prevPathname: string | undefined;
 }
 
-const PathnameContext = createContext<IPathnameContextProps | undefined>(undefined);
+const PathnameContext = createContext<IPathnameContextProps | undefined>(
+  undefined,
+);
 
 const PathnameProvider = ({ children }: { children: ReactNode }) => {
   const { pathname } = useLocation();
-  const [prevPathname, setPrevPathname] = useState<string | undefined>(undefined);
+  const [prevPathname, setPrevPathname] = useState<string | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     setPrevPathname(() => {
@@ -29,7 +39,7 @@ const PathnameProvider = ({ children }: { children: ReactNode }) => {
 const usePathname = (): IPathnameContextProps => {
   const context = useContext(PathnameContext);
   if (!context) {
-    throw new Error('usePathname must be used within a PathnameProvider');
+    throw new Error("usePathname must be used within a PathnameProvider");
   }
   return context;
 };

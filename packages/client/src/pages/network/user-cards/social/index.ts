@@ -1,2 +1,2 @@
-export * from './NetworkSocialContent';
-export * from './NetworkSocialPage';
+export * from "./NetworkSocialContent";
+export * from "./NetworkSocialPage";

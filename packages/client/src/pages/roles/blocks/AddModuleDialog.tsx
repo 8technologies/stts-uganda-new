@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from "react";
+import { X } from "lucide-react";
 
 interface IAddRoleDialogProps<T = any> {
   isOpen: boolean;
@@ -7,21 +7,25 @@ interface IAddRoleDialogProps<T = any> {
   onSubmit?: (values: Record<string, any>) => void;
 }
 
-const AddModuleDialog = ({ isOpen, onClose, onSubmit }: IAddRoleDialogProps) => {
+const AddModuleDialog = ({
+  isOpen,
+  onClose,
+  onSubmit,
+}: IAddRoleDialogProps) => {
   const [formData, setFormData] = useState({
-    name: '',
-    description: ''
+    name: "",
+    description: "",
   });
 
   const handleSubmit = () => {
     if (formData.name.trim() && formData.description.trim()) {
       onSubmit?.(formData);
-      setFormData({ name: '', description: '' });
+      setFormData({ name: "", description: "" });
     }
   };
 
   const handleClose = () => {
-    setFormData({ name: '', description: '' });
+    setFormData({ name: "", description: "" });
     onClose?.(false);
   };
 
@@ -39,7 +43,7 @@ const AddModuleDialog = ({ isOpen, onClose, onSubmit }: IAddRoleDialogProps) => 
             <X size={20} />
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
             <div>
@@ -49,20 +53,27 @@ const AddModuleDialog = ({ isOpen, onClose, onSubmit }: IAddRoleDialogProps) => 
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 placeholder="Enter role name"
                 required
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description
               </label>
               <textarea
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 placeholder="Enter role description"
@@ -70,7 +81,7 @@ const AddModuleDialog = ({ isOpen, onClose, onSubmit }: IAddRoleDialogProps) => 
               />
             </div>
           </div>
-          
+
           <div className="flex gap-3 mt-6">
             <button
               type="button"

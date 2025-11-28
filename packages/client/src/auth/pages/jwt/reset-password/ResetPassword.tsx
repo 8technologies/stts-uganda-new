@@ -1,25 +1,25 @@
-import clsx from 'clsx';
-import { useFormik } from 'formik';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import clsx from "clsx";
+import { useFormik } from "formik";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
-import { useAuthContext } from '@/auth/useAuthContext';
-import { Alert, KeenIcon } from '@/components';
-import { useLayout } from '@/providers';
-import { AxiosError } from 'axios';
+import { useAuthContext } from "@/auth/useAuthContext";
+import { Alert, KeenIcon } from "@/components";
+import { useLayout } from "@/providers";
+import { AxiosError } from "axios";
 
 const initialValues = {
-  email: ''
+  email: "",
 };
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
-    .email('Wrong email format')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Email is required')
+    .email("Wrong email format")
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Email is required"),
 });
 
 const ResetPassword = () => {
@@ -37,31 +37,31 @@ const ResetPassword = () => {
       setHasErrors(undefined);
       try {
         if (!requestPasswordResetLink) {
-          throw new Error('JWTProvider is required for this form.');
+          throw new Error("JWTProvider is required for this form.");
         }
         await requestPasswordResetLink(values.email);
         setHasErrors(false);
         setLoading(false);
         const params = new URLSearchParams();
-        params.append('email', values.email);
+        params.append("email", values.email);
         navigate({
           pathname:
-            currentLayout?.name === 'auth-branded'
-              ? '/auth/reset-password/check-email'
-              : '/auth/classic/reset-password/check-email',
-          search: params.toString()
+            currentLayout?.name === "auth-branded"
+              ? "/auth/reset-password/check-email"
+              : "/auth/classic/reset-password/check-email",
+          search: params.toString(),
         });
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
           setStatus(error.response.data.message);
         } else {
-          setStatus('Password reset failed. Please try again.');
+          setStatus("Password reset failed. Please try again.");
         }
         setHasErrors(true);
         setLoading(false);
         setSubmitting(false);
       }
-    }
+    },
   });
   return (
     <div className="card max-w-[370px] w-full">
@@ -92,13 +92,13 @@ const ResetPassword = () => {
               type="email"
               placeholder="email@email.com"
               autoComplete="off"
-              {...formik.getFieldProps('email')}
+              {...formik.getFieldProps("email")}
               className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.email && formik.errors.email },
+                "form-control bg-transparent",
+                { "is-invalid": formik.touched.email && formik.errors.email },
                 {
-                  'is-valid': formik.touched.email && !formik.errors.email
-                }
+                  "is-valid": formik.touched.email && !formik.errors.email,
+                },
               )}
             />
           </label>
@@ -115,11 +115,15 @@ const ResetPassword = () => {
             className="btn btn-primary flex justify-center grow"
             disabled={loading || formik.isSubmitting}
           >
-            {loading ? 'Please wait...' : 'Continue'}
+            {loading ? "Please wait..." : "Continue"}
           </button>
 
           <Link
-            to={currentLayout?.name === 'auth-branded' ? '/auth/login' : '/auth/classic/login'}
+            to={
+              currentLayout?.name === "auth-branded"
+                ? "/auth/login"
+                : "/auth/classic/login"
+            }
             className="flex items-center justify-center text-sm gap-2 text-gray-700 hover:text-primary"
           >
             <KeenIcon icon="black-left" />

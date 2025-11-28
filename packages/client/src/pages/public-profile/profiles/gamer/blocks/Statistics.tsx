@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IStatisticsItem {
   image: string;
@@ -52,4 +52,9 @@ const Statistics = ({ details }: IStatisticsProps) => {
   );
 };
 
-export { Statistics, type IStatisticsItem, type IStatisticsItems, type IStatisticsProps };
+export {
+  Statistics,
+  type IStatisticsItem,
+  type IStatisticsItems,
+  type IStatisticsProps,
+};

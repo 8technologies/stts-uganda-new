@@ -1,6 +1,6 @@
-import { MiscHelp } from '@/partials/misc';
+import { MiscHelp } from "@/partials/misc";
 
-import { Device } from './blocks';
+import { Device } from "./blocks";
 
 const AccountDeviceManagementContent = () => {
   return (

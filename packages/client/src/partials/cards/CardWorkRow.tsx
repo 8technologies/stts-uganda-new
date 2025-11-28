@@ -1,8 +1,8 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { useLanguage } from '@/i18n';
-import { DropdownCard2 } from '../dropdowns/general';
-import { IWorkProps } from './CardWork';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { useLanguage } from "@/i18n";
+import { DropdownCard2 } from "../dropdowns/general";
+import { IWorkProps } from "./CardWork";
 
 const CardWorkRow = ({
   image,
@@ -11,7 +11,7 @@ const CardWorkRow = ({
   authorAvatar,
   authorName,
   likes,
-  comments
+  comments,
 }: IWorkProps) => {
   const { isRTL } = useLanguage();
 
@@ -32,7 +32,9 @@ const CardWorkRow = ({
             >
               {title}
             </a>
-            <span className="text-sm font-medium text-gray-600">{description}</span>
+            <span className="text-sm font-medium text-gray-600">
+              {description}
+            </span>
           </div>
         </div>
 
@@ -54,13 +56,17 @@ const CardWorkRow = ({
 
           <div className="flex gap-1 items-center w-20 justify-end">
             <KeenIcon icon="heart" className="text-base text-gray-500" />
-            <span className="text-2sm font-medium text-gray-700 py-2">{likes}</span>
+            <span className="text-2sm font-medium text-gray-700 py-2">
+              {likes}
+            </span>
             <span className="text-2sm font-medium text-gray-700">Likes</span>
           </div>
 
           <div className="flex gap-1 items-center w-28 justify-end">
             <KeenIcon icon="messages" className="text-base text-gray-500" />
-            <span className="text-2sm font-medium text-gray-700 py-2">{comments}</span>
+            <span className="text-2sm font-medium text-gray-700 py-2">
+              {comments}
+            </span>
             <span className="text-2sm font-medium text-gray-700">Comments</span>
           </div>
 
@@ -69,15 +75,15 @@ const CardWorkRow = ({
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

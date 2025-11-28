@@ -1,10 +1,10 @@
-import { matchPath } from 'react-router';
-import { TMenuConfig } from '../types.d';
+import { matchPath } from "react-router";
+import { TMenuConfig } from "../types.d";
 
 const useMenuChildren = (
   pathname: string,
   items: TMenuConfig,
-  level: number
+  level: number,
 ): TMenuConfig | null => {
   const hasActiveChild = (items: TMenuConfig): boolean => {
     for (let i = 0; i < items.length; i++) {
@@ -25,7 +25,7 @@ const useMenuChildren = (
   const getChildren = (
     items: TMenuConfig,
     level: number = 0,
-    currentLevel: number = 0
+    currentLevel: number = 0,
   ): TMenuConfig | null => {
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
@@ -43,7 +43,11 @@ const useMenuChildren = (
         if (children) {
           return children;
         }
-      } else if (level === currentLevel && item.path && matchPath(pathname, item.path)) {
+      } else if (
+        level === currentLevel &&
+        item.path &&
+        matchPath(pathname, item.path)
+      ) {
         // If it's a leaf node and matches the path, return the current items
         return items;
       }

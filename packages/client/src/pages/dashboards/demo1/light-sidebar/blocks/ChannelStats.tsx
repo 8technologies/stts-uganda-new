@@ -1,6 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IChannelStatsItem {
   logo: string;
@@ -13,16 +13,21 @@ interface IChannelStatsItems extends Array<IChannelStatsItem> {}
 
 const ChannelStats = () => {
   const items: IChannelStatsItems = [
-    { logo: 'linkedin-2.svg', info: '9.3k', desc: 'Amazing mates', path: '' },
-    { logo: 'youtube-2.svg', info: '24k', desc: 'Lessons Views', path: '' },
-    { logo: 'instagram-03.svg', info: '608', desc: 'New subscribers', path: '' },
+    { logo: "linkedin-2.svg", info: "9.3k", desc: "Amazing mates", path: "" },
+    { logo: "youtube-2.svg", info: "24k", desc: "Lessons Views", path: "" },
     {
-      logo: 'tiktok.svg',
-      logoDark: 'tiktok-dark.svg',
-      info: '2.5k',
-      desc: 'Stream audience',
-      path: ''
-    }
+      logo: "instagram-03.svg",
+      info: "608",
+      desc: "New subscribers",
+      path: "",
+    },
+    {
+      logo: "tiktok.svg",
+      logoDark: "tiktok-dark.svg",
+      info: "2.5k",
+      desc: "Stream audience",
+      path: "",
+    },
   ];
 
   const renderItem = (item: IChannelStatsItem, index: number) => {
@@ -53,8 +58,12 @@ const ChannelStats = () => {
         )}
 
         <div className="flex flex-col gap-1 pb-4 px-5">
-          <span className="text-3xl font-semibold text-gray-900">{item.info}</span>
-          <span className="text-2sm font-normal text-gray-700">{item.desc}</span>
+          <span className="text-3xl font-semibold text-gray-900">
+            {item.info}
+          </span>
+          <span className="text-2sm font-normal text-gray-700">
+            {item.desc}
+          </span>
         </div>
       </div>
     );
@@ -65,10 +74,10 @@ const ChannelStats = () => {
       <style>
         {`
           .channel-stats-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/bg-3.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1600/bg-3.png")}');
           }
           .dark .channel-stats-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/bg-3-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1600/bg-3-dark.png")}');
           }
         `}
       </style>

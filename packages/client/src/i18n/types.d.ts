@@ -1,8 +1,8 @@
-import { type MessageFormatElement } from 'react-intl';
+import { type MessageFormatElement } from "react-intl";
 
-export type TLanguageCode = 'en' | 'fr' | 'ar' | 'zh';
+export type TLanguageCode = "en" | "fr" | "ar" | "zh";
 
-export type TLanguageDirection = 'ltr' | 'rtl';
+export type TLanguageDirection = "ltr" | "rtl";
 
 export interface TLanguage {
   label: string;

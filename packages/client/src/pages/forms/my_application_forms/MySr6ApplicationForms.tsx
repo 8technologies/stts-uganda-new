@@ -1,32 +1,40 @@
-import { Fragment, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { Fragment, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
 
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { KeenIcon } from '@/components';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { KeenIcon } from "@/components";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { useLayout } from '@/providers';
-import { useAuthContext } from '@/auth';
+import { useLayout } from "@/providers";
+import { useAuthContext } from "@/auth";
 
-import { LOAD_SR6_FORMS } from '@/gql/queries';
-import { SAVE_SR6_FORMS } from '@/gql/mutations';
+import { LOAD_SR6_FORMS } from "@/gql/queries";
+import { SAVE_SR6_FORMS } from "@/gql/mutations";
 
-import { SR6CreateDialog } from '../SR6 forms/blocks/SR6CreateDialog';
-import { SR6EditDialog } from '../SR6 forms/blocks/SR6EditDialog';
-import { SR6DetailsDialog } from '../SR6 forms/blocks/SR6DetailsDialog';
-import { _formatDate, formatDateTime } from '@/utils/Date';
-import { toast } from 'sonner';
+import { SR6CreateDialog } from "../SR6 forms/blocks/SR6CreateDialog";
+import { SR6EditDialog } from "../SR6 forms/blocks/SR6EditDialog";
+import { SR6DetailsDialog } from "../SR6 forms/blocks/SR6DetailsDialog";
+import { _formatDate, formatDateTime } from "@/utils/Date";
+import { toast } from "sonner";
 
 // antd timeline + card with ribbon badge
-import { Badge, Card, ConfigProvider, Descriptions, Row, Col, Timeline } from 'antd';
+import {
+  Badge,
+  Card,
+  ConfigProvider,
+  Descriptions,
+  Row,
+  Col,
+  Timeline,
+} from "antd";
 
 type Sr6Application = {
   id: string;
@@ -34,7 +42,7 @@ type Sr6Application = {
   created_at?: string;
   valid_from?: string | null;
   valid_until?: string | null;
-  type: 'seed_breeder' | 'seed_producer';
+  type: "seed_breeder" | "seed_producer";
   status?: string | null;
   previous_grower_number?: string | null;
   years_of_experience?: string | null;
@@ -50,21 +58,22 @@ type Sr6Application = {
   };
 };
 
-const typeLabel = (t?: string) => (t === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer');
+const typeLabel = (t?: string) =>
+  t === "seed_breeder" ? "Seed Breeder" : "Seed Producer";
 
 const statusToColor = (status?: string | null) => {
   switch (status) {
-    case 'accepted':
-    case 'approved':
-    case 'recommended':
-      return 'success';
-    case 'rejected':
-    case 'halted':
-      return 'danger';
-    case 'assigned_inspector':
-    case 'pending':
+    case "accepted":
+    case "approved":
+    case "recommended":
+      return "success";
+    case "rejected":
+    case "halted":
+      return "danger";
+    case "assigned_inspector":
+    case "pending":
     default:
-      return 'primary';
+      return "primary";
   }
 };
 
@@ -80,7 +89,7 @@ const MySr6ApplicationForms = () => {
   const { data, loading, error, refetch } = useQuery(LOAD_SR6_FORMS);
   const [saveForm, { loading: saving }] = useMutation(SAVE_SR6_FORMS, {
     refetchQueries: [{ query: LOAD_SR6_FORMS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const myForms = useMemo(() => {
@@ -90,12 +99,12 @@ const MySr6ApplicationForms = () => {
   }, [data?.sr6_applications, currentUser?.id]);
 
   const breedersCount = useMemo(
-    () => myForms.filter((f) => f.type === 'seed_breeder').length,
-    [myForms]
+    () => myForms.filter((f) => f.type === "seed_breeder").length,
+    [myForms],
   );
 
   const handleCreateSave = async (vals: Record<string, any>) => {
-    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const payload: any = {
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
@@ -114,21 +123,23 @@ const MySr6ApplicationForms = () => {
       type: vals.applicationCategory,
       id: vals?.id || null,
       receipt: vals.receipt,
-      other_documents: vals.otherDocuments
+      other_documents: vals.otherDocuments,
     };
 
     try {
       await saveForm({ variables: { payload } });
-      toast('SR6 application saved');
+      toast("SR6 application saved");
       setCreateOpen(false);
     } catch (e: any) {
-      toast('Failed to save application', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to save application", {
+        description: e?.message ?? "Unknown error",
+      });
     }
   };
 
   const handleEditSave = async (vals: Record<string, any>) => {
     if (!selectedForm?.id) return;
-    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const payload: any = {
       id: selectedForm.id,
       years_of_experience: vals.yearsOfExperience,
@@ -146,22 +157,24 @@ const MySr6ApplicationForms = () => {
       recommendation: null,
       have_adequate_storage: toBool(vals.adequateStorage),
       seed_grower_in_past: toBool(vals.BeenSeedGrower),
-      type: vals.applicationCategory
+      type: vals.applicationCategory,
     };
 
     try {
       await saveForm({ variables: { payload } });
-      toast('SR6 application updated');
+      toast("SR6 application updated");
       setEditOpen(false);
     } catch (e: any) {
-      toast('Failed to update application', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to update application", {
+        description: e?.message ?? "Unknown error",
+      });
     }
   };
 
   return (
     <>
       <Fragment>
-        {currentLayout?.name === 'demo1-layout' && (
+        {currentLayout?.name === "demo1-layout" && (
           <Container>
             <Toolbar>
               <ToolbarHeading>
@@ -177,12 +190,18 @@ const MySr6ApplicationForms = () => {
                       </>
                     ) : (
                       <>
-                        <span className="text-md text-gray-700">Applications:</span>
+                        <span className="text-md text-gray-700">
+                          Applications:
+                        </span>
                         <span className="text-md text-gray-800 font-medium me-2">
                           {myForms.length}
                         </span>
-                        <span className="text-md text-gray-700">Seed Breeders</span>
-                        <span className="text-md text-gray-800 font-medium">{breedersCount}</span>
+                        <span className="text-md text-gray-700">
+                          Seed Breeders
+                        </span>
+                        <span className="text-md text-gray-800 font-medium">
+                          {breedersCount}
+                        </span>
                       </>
                     )}
                   </div>
@@ -197,7 +216,7 @@ const MySr6ApplicationForms = () => {
                   }}
                   className="btn btn-sm btn-primary"
                 >
-                  {saving ? 'Saving…' : 'Create Application'}
+                  {saving ? "Saving…" : "Create Application"}
                 </a>
               </ToolbarActions>
             </Toolbar>
@@ -215,7 +234,7 @@ const MySr6ApplicationForms = () => {
                 </button>
               </div>
               <div className="text-xs text-gray-600">
-                {String(error.message || 'Unknown error')}
+                {String(error.message || "Unknown error")}
               </div>
             </div>
           )}
@@ -223,7 +242,9 @@ const MySr6ApplicationForms = () => {
           {/* Empty state */}
           {!loading && !error && myForms.length === 0 && (
             <div className="card p-8 flex flex-col items-center gap-4">
-              <div className="text-gray-800 font-medium">No SR6 applications yet</div>
+              <div className="text-gray-800 font-medium">
+                No SR6 applications yet
+              </div>
               <Button onClick={() => setCreateOpen(true)} size="sm">
                 <KeenIcon icon="plus" /> Create Application
               </Button>
@@ -236,13 +257,13 @@ const MySr6ApplicationForms = () => {
             theme={{
               components: {
                 Timeline: {
-                  tailColor: '#E5E7EB' // gray-200
+                  tailColor: "#E5E7EB", // gray-200
                 },
                 Card: {
-                  headerBg: '#F8FAFC',
-                  headerHeightSM: 40
-                }
-              }
+                  headerBg: "#F8FAFC",
+                  headerHeightSM: 40,
+                },
+              },
             }}
           >
             {loading ? (
@@ -260,25 +281,25 @@ const MySr6ApplicationForms = () => {
             ) : (
               <Timeline
                 items={myForms.map((f) => {
-                  console.log('f', f);
+                  console.log("f", f);
                   const color =
-                    f.status === 'approved'
-                      ? 'green'
-                    : f.status === 'recommended' || f.status === 'accepted'
-                      ? 'blue'
-                      : f.status === 'rejected' || f.status === 'halted'
-                        ? 'red'
-                        : 'orange';
+                    f.status === "approved"
+                      ? "green"
+                      : f.status === "recommended" || f.status === "accepted"
+                        ? "blue"
+                        : f.status === "rejected" || f.status === "halted"
+                          ? "red"
+                          : "orange";
                   const ribbonColor = color as any;
                   const inspector = f.inspector
-                    ? `${f.inspector?.name ?? ''}${f.inspector?.district ? ` - ${f.inspector.district}` : ''}`
-                    : '-';
+                    ? `${f.inspector?.name ?? ""}${f.inspector?.district ? ` - ${f.inspector.district}` : ""}`
+                    : "-";
                   //   const title = `${typeLabel(f.type)}`;
                   const title = `${typeLabel(f.type)} — ${formatDateTime(f.created_at)}`;
-                  const niceStatus = (f.status || 'pending')
-                    .split('_')
+                  const niceStatus = (f.status || "pending")
+                    .split("_")
                     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-                    .join(' ');
+                    .join(" ");
                   return {
                     color,
                     children: (
@@ -288,8 +309,8 @@ const MySr6ApplicationForms = () => {
                           title={title}
                           styles={{ body: { paddingTop: 12 } }}
                           style={{
-                            borderColor: '#CBD5E1',
-                            borderWidth: 1
+                            borderColor: "#CBD5E1",
+                            borderWidth: 1,
                             // borderStyle: 'solid',
                             // borderRadius: 12
                           }}
@@ -302,49 +323,51 @@ const MySr6ApplicationForms = () => {
                                 column={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}
                                 items={[
                                   {
-                                    key: 'cat',
-                                    label: 'Application Category',
+                                    key: "cat",
+                                    label: "Application Category",
                                     children: typeLabel(f.type),
-                                    span: 2
+                                    span: 2,
                                   },
                                   {
-                                    key: 'created',
-                                    label: 'Created On',
+                                    key: "created",
+                                    label: "Created On",
                                     children: formatDateTime(f.created_at),
-                                    span: 2
+                                    span: 2,
                                   },
                                   {
-                                    key: 'valid',
-                                    label: 'Valid Until',
-                                    children: f.valid_until ? _formatDate(f.valid_until) : '-',
-                                    span: 2
+                                    key: "valid",
+                                    label: "Valid Until",
+                                    children: f.valid_until
+                                      ? _formatDate(f.valid_until)
+                                      : "-",
+                                    span: 2,
                                   },
                                   // { key: 'ins', label: 'Inspector', children: inspector, span: 2 },
                                   {
-                                    key: 'prev',
-                                    label: 'Previous Grower No.',
-                                    children: f.previous_grower_number || '-',
-                                    span: 2
+                                    key: "prev",
+                                    label: "Previous Grower No.",
+                                    children: f.previous_grower_number || "-",
+                                    span: 2,
                                   },
                                   {
-                                    key: 'yoe',
-                                    label: 'Years of Experience',
-                                    children: f.years_of_experience || '-',
-                                    span: 2
-                                  }
+                                    key: "yoe",
+                                    label: "Years of Experience",
+                                    children: f.years_of_experience || "-",
+                                    span: 2,
+                                  },
                                 ]}
                                 style={{
-                                  borderColor: '#CBD5E1'
+                                  borderColor: "#CBD5E1",
                                   //   borderWidth: 1,
                                   //   borderRadius: 10
                                 }}
                                 labelStyle={{
-                                  backgroundColor: '#E2E8F0',
-                                  color: '#0F172A',
+                                  backgroundColor: "#E2E8F0",
+                                  color: "#0F172A",
                                   fontWeight: 600,
-                                  width: 200
+                                  width: 200,
                                 }}
-                                contentStyle={{ textAlign: 'left' }}
+                                contentStyle={{ textAlign: "left" }}
                               />
                             </Col>
                             <Col xs={24} md={8}>
@@ -359,7 +382,7 @@ const MySr6ApplicationForms = () => {
                                 >
                                   <KeenIcon icon="eye" /> View Details
                                 </Button>
-                                {(f.status || 'pending') === 'pending' && (
+                                {(f.status || "pending") === "pending" && (
                                   <Button
                                     variant="outline"
                                     className="w-full"
@@ -371,7 +394,7 @@ const MySr6ApplicationForms = () => {
                                     <KeenIcon icon="note" /> Edit Application
                                   </Button>
                                 )}
-                                {f.status === 'approved' && (
+                                {f.status === "approved" && (
                                   <Button
                                     variant="outline"
                                     // className="w-full text-success-700 border-success-300"
@@ -380,7 +403,8 @@ const MySr6ApplicationForms = () => {
                                       setDetailsOpen(true);
                                     }}
                                   >
-                                    <KeenIcon icon="printer" /> Print Certificate
+                                    <KeenIcon icon="printer" /> Print
+                                    Certificate
                                   </Button>
                                 )}
                               </div>
@@ -388,7 +412,7 @@ const MySr6ApplicationForms = () => {
                           </Row>
                         </Card>
                       </Badge.Ribbon>
-                    )
+                    ),
                   };
                 })}
               />

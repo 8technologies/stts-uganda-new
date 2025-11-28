@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components/keenicons';
+import { KeenIcon } from "@/components/keenicons";
 import {
   Menu,
   MenuIcon,
@@ -6,9 +6,9 @@ import {
   MenuLink,
   MenuSub,
   MenuTitle,
-  MenuToggle
-} from '@/components/menu';
-import { useLanguage } from '@/i18n';
+  MenuToggle,
+} from "@/components/menu";
+import { useLanguage } from "@/i18n";
 
 interface IDropdownItem {
   title: string;
@@ -27,107 +27,107 @@ interface IMenuItem {
 const SidebarMenuDashboard = () => {
   const dropdownItems: IDropdownItem[] = [
     {
-      title: 'Client API',
-      path: '/account/home/user-profile',
-      icon: 'calendar',
-      active: true
+      title: "Client API",
+      path: "/account/home/user-profile",
+      icon: "calendar",
+      active: true,
     },
     {
-      title: 'Profile',
-      path: '/public-profile/profiles/company',
-      icon: 'profile-circle'
+      title: "Profile",
+      path: "/public-profile/profiles/company",
+      icon: "profile-circle",
     },
     {
-      title: 'My Account',
-      path: '/account/integrations',
-      icon: 'setting-2'
+      title: "My Account",
+      path: "/account/integrations",
+      icon: "setting-2",
     },
     {
-      title: 'Projects',
-      path: '/public-profile/projects/3-columns',
-      icon: 'questionnaire-tablet'
+      title: "Projects",
+      path: "/public-profile/projects/3-columns",
+      icon: "questionnaire-tablet",
     },
     {
-      title: 'Personal info',
-      path: '/public-profile/profiles/creator',
-      icon: 'badge'
-    }
+      title: "Personal info",
+      path: "/public-profile/profiles/creator",
+      icon: "badge",
+    },
   ];
   const { isRTL } = useLanguage();
 
   const menuItems: IMenuItem[] = [
     {
-      title: 'Configuration',
+      title: "Configuration",
       children: [
         {
-          title: 'API Setup',
-          path: '/account/api-keys'
+          title: "API Setup",
+          path: "/account/api-keys",
         },
         {
-          title: 'Team Settings',
-          path: '',
-          active: true
+          title: "Team Settings",
+          path: "",
+          active: true,
         },
         {
-          title: 'Authentication',
-          path: '/authentication/classic/sign-in'
+          title: "Authentication",
+          path: "/authentication/classic/sign-in",
         },
         {
-          title: 'Endpoints Configs',
-          path: '/account/appearance'
+          title: "Endpoints Configs",
+          path: "/account/appearance",
         },
         {
-          title: 'Rate Limiting',
-          path: '/public-profile/network'
-        }
-      ]
+          title: "Rate Limiting",
+          path: "/public-profile/network",
+        },
+      ],
     },
     {
-      title: 'SECURITY',
+      title: "SECURITY",
       children: [
         {
-          title: 'Data Encryption',
-          path: '/account/billing/enterprise'
+          title: "Data Encryption",
+          path: "/account/billing/enterprise",
         },
         {
-          title: 'Text',
-          path: '/account/security/overview'
+          title: "Text",
+          path: "/account/security/overview",
         },
         {
-          title: 'Access Control',
-          path: '/account/security/privacy-settings'
+          title: "Access Control",
+          path: "/account/security/privacy-settings",
         },
         {
-          title: 'Incident Response',
-          path: '/account/security/current-sessions'
-        }
-      ]
+          title: "Incident Response",
+          path: "/account/security/current-sessions",
+        },
+      ],
     },
     {
-      title: 'ANALYTICS',
+      title: "ANALYTICS",
       children: [
         {
-          title: 'Fetching Data',
-          path: '/account/members/team-info'
+          title: "Fetching Data",
+          path: "/account/members/team-info",
         },
         {
-          title: 'Custom Reports',
-          path: '/account/home/user-profile'
+          title: "Custom Reports",
+          path: "/account/home/user-profile",
         },
         {
-          title: 'Real Time Analytics',
-          path: '/account/home/settings-enterprise'
+          title: "Real Time Analytics",
+          path: "/account/home/settings-enterprise",
         },
         {
-          title: 'Exportin Data',
-          path: '/account/members/import-members'
+          title: "Exportin Data",
+          path: "/account/members/import-members",
         },
         {
-          title: 'Dashboard Integration',
-          path: '/account/members/team-info'
-        }
-      ]
-    }
+          title: "Dashboard Integration",
+          path: "/account/members/team-info",
+        },
+      ],
+    },
   ];
 
   const buildDropdown = () => {
@@ -138,15 +138,15 @@ const SidebarMenuDashboard = () => {
           toggle="dropdown"
           trigger="hover"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: isRTL() ? [4, 0] : [-4, 0] // [skid, distance]
-                }
-              }
-            ]
+                  offset: isRTL() ? [4, 0] : [-4, 0], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="w-full btn btn-light btn-sm justify-between flex-nowrap">
@@ -161,7 +161,7 @@ const SidebarMenuDashboard = () => {
 
           <MenuSub className="menu-default w-[170px] py-2">
             {dropdownItems.map((item, index) => (
-              <MenuItem key={index} className={item.active ? 'active' : ''}>
+              <MenuItem key={index} className={item.active ? "active" : ""}>
                 <MenuLink path={item.path}>
                   <MenuIcon>
                     <KeenIcon icon={item.icon} />
@@ -189,7 +189,7 @@ const SidebarMenuDashboard = () => {
               </MenuItem>
               {heading.children?.map((item, index) => {
                 return (
-                  <MenuItem key={index} className={item.active ? 'active' : ''}>
+                  <MenuItem key={index} className={item.active ? "active" : ""}>
                     <MenuLink
                       path={item.title}
                       className="py-2 px-2.5 rounded-md border border-transparent menu-item-active:border-gray-200 menu-item-active:bg-light menu-link-hover:bg-light menu-link-hover:border-gray-200 "

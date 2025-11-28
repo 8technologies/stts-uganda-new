@@ -1,4 +1,4 @@
-import { X } from "lucide-react"
+import { X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -6,29 +6,29 @@ import {
   SheetTitle,
   SheetFooter,
   SheetClose,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 
 type PlantingReturns = {
-  id: string | number
-  companyName: string
-  companyAddress: string
-  companyTelephone: string
-  amountEnclosed: string
-  paymentReceipt?: string
-  registeredSeedMerchant: string
-  subGrowersFile?: string
-  createdAt: string
-  status: "Pending" | "Approved" | "Rejected"
-}
+  id: string | number;
+  companyName: string;
+  companyAddress: string;
+  companyTelephone: string;
+  amountEnclosed: string;
+  paymentReceipt?: string;
+  registeredSeedMerchant: string;
+  subGrowersFile?: string;
+  createdAt: string;
+  status: "Pending" | "Approved" | "Rejected";
+};
 
 const PlantingReturnDetails = ({
   application,
   open,
   onClose,
 }: {
-  application: PlantingReturns
-  open: boolean
-  onClose: (open: boolean) => void
+  application: PlantingReturns;
+  open: boolean;
+  onClose: (open: boolean) => void;
 }) => {
   return (
     <Sheet open={open} onOpenChange={onClose}>
@@ -78,8 +78,8 @@ const PlantingReturnDetails = ({
                     application?.status === "Approved"
                       ? "bg-success-light text-success"
                       : application?.status === "Rejected"
-                      ? "bg-danger-light text-danger"
-                      : "bg-warning-light text-warning"
+                        ? "bg-danger-light text-danger"
+                        : "bg-warning-light text-warning"
                   }`}
                 >
                   {application?.status}
@@ -137,7 +137,7 @@ const PlantingReturnDetails = ({
         <SheetFooter />
       </SheetContent>
     </Sheet>
-  )
-}
+  );
+};
 
-export { PlantingReturnDetails }
+export { PlantingReturnDetails };

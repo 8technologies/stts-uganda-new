@@ -8,8 +8,8 @@ import {
   RecentUploads,
   Tags,
   UnlockPartnerships,
-  WorkExperience
-} from './blocks';
+  WorkExperience,
+} from "./blocks";
 
 const ProfileDefaultContent = () => {
   return (

@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { Demo3LayoutProvider, Main } from '.';
-import { useSettings } from '@/providers';
+import { useEffect } from "react";
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { Demo3LayoutProvider, Main } from ".";
+import { useSettings } from "@/providers";
 
 const Demo3Layout = () => {
   const { updateSettings } = useSettings();
@@ -23,7 +23,7 @@ const Demo3Layout = () => {
 
   useEffect(() => {
     updateSettings({
-      container: 'fluid'
+      container: "fluid",
     });
   }, []);
 

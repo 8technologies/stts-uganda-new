@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
 
-import { DropdownCardItem1 } from '../dropdowns/general';
-import { CommonHexagonBadge } from '../common';
-import { ReactNode } from 'react';
+import { DropdownCardItem1 } from "../dropdowns/general";
+import { CommonHexagonBadge } from "../common";
+import { ReactNode } from "react";
 
 interface Badge {
   size: string;
@@ -22,7 +22,14 @@ interface IRoleProps {
   path: string;
 }
 
-const CardRole = ({ path, title, subTitle, description, team, badge }: IRoleProps) => {
+const CardRole = ({
+  path,
+  title,
+  subTitle,
+  description,
+  team,
+  badge,
+}: IRoleProps) => {
   const { isRTL } = useLanguage();
 
   return (
@@ -47,15 +54,15 @@ const CardRole = ({ path, title, subTitle, description, team, badge }: IRoleProp
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

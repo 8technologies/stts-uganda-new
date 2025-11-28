@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CardProjectExtended, CardProjectExtendedRow } from '@/partials/cards';
+import { CardProjectExtended, CardProjectExtendedRow } from "@/partials/cards";
 
 interface IProjectsItem {
   status: {
@@ -26,226 +26,230 @@ interface IProjectsItem {
 interface IProjectsItems extends Array<IProjectsItem> {}
 
 const Projects = () => {
-  const [activeView, setActiveView] = useState('cards');
+  const [activeView, setActiveView] = useState("cards");
 
   const projects: IProjectsItems = [
     {
       status: {
-        variant: 'badge-primary',
-        label: 'In Progress'
+        variant: "badge-primary",
+        label: "In Progress",
       },
-      logo: 'office.svg',
-      title: 'Phoenix SaaS',
-      description: 'Cloud storage and file sharing',
+      logo: "office.svg",
+      title: "Phoenix SaaS",
+      description: "Cloud storage and file sharing",
       team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-4.png' },
-          { filename: '300-1.png' },
-          { filename: '300-2.png' },
+          { filename: "300-4.png" },
+          { filename: "300-1.png" },
+          { filename: "300-2.png" },
           {
-            fallback: 'S',
-            variant: 'text-primary-inverse ring-primary-light bg-primary'
-          }
-        ]
+            fallback: "S",
+            variant: "text-primary-inverse ring-primary-light bg-primary",
+          },
+        ],
       },
       statistics: [
         {
-          total: '1-3 months',
-          description: 'Duration'
+          total: "1-3 months",
+          description: "Duration",
         },
         {
-          total: 'Flexible',
-          description: 'Location'
+          total: "Flexible",
+          description: "Location",
         },
         {
-          total: '$65 hour',
-          description: 'Rate'
-        }
+          total: "$65 hour",
+          description: "Rate",
+        },
       ],
       progress: {
-        variant: 'progress-primary',
-        value: 60
-      }
+        variant: "progress-primary",
+        value: 60,
+      },
     },
     {
       status: {
-        variant: '',
-        label: 'Upcoming'
+        variant: "",
+        label: "Upcoming",
       },
-      logo: 'btcchina.svg',
-      title: 'Golden Gate Analytics',
-      description: 'Team communication and collaboration tool',
+      logo: "btcchina.svg",
+      title: "Golden Gate Analytics",
+      description: "Team communication and collaboration tool",
       team: {
-        size: 'size-7',
-        group: [{ filename: '300-5.png' }, { filename: '300-17.png' }, { filename: '300-16.png' }]
-      },
-      statistics: [
-        {
-          total: '2-4 months',
-          description: 'Duration'
-        },
-        {
-          total: 'Global',
-          description: 'Location'
-        },
-        {
-          total: '$25 hour',
-          description: 'Rate'
-        }
-      ],
-      progress: {
-        variant: 'progress-primary',
-        value: 20
-      }
-    },
-    {
-      status: {
-        variant: '',
-        label: 'Upcoming'
-      },
-      logo: 'jira.svg',
-      title: 'SparkleTech',
-      description: 'Short-term accommodation marketplace',
-      team: {
-        size: 'size-7',
-        group: [{ filename: '300-19.png' }, { filename: '300-9.png' }]
-      },
-      statistics: [
-        {
-          total: '3-5 months',
-          description: 'Duration'
-        },
-        {
-          total: 'Remote',
-          description: 'Location'
-        },
-        {
-          total: '$16 hour',
-          description: 'Rate'
-        }
-      ],
-      progress: {
-        variant: 'progress-primary',
-        value: 25
-      }
-    },
-    {
-      status: {
-        variant: 'badge-success',
-        label: 'Completed'
-      },
-      logo: 'equacoin.svg',
-      title: 'Nexus Design System',
-      description: 'Visual discovery and inspiration',
-      team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-5.png' },
-          { filename: '300-11.png' },
-          {
-            fallback: 'W',
-            variant: 'text-warning-inverse ring-warning-light bg-warning'
-          }
-        ]
+          { filename: "300-5.png" },
+          { filename: "300-17.png" },
+          { filename: "300-16.png" },
+        ],
       },
       statistics: [
         {
-          total: '2-6 months',
-          description: 'Duration'
+          total: "2-4 months",
+          description: "Duration",
         },
         {
-          total: 'Onsite',
-          description: 'Location'
+          total: "Global",
+          description: "Location",
         },
         {
-          total: '$45 hour',
-          description: 'Rate'
-        }
+          total: "$25 hour",
+          description: "Rate",
+        },
       ],
       progress: {
-        variant: 'progress-success',
-        value: 100
-      }
+        variant: "progress-primary",
+        value: 20,
+      },
     },
     {
       status: {
-        variant: 'badge-success',
-        label: 'Completed'
+        variant: "",
+        label: "Upcoming",
       },
-      logo: 'slack.svg',
-      title: 'Neptune App',
-      description: 'Peer-to-peer mobile payment service',
+      logo: "jira.svg",
+      title: "SparkleTech",
+      description: "Short-term accommodation marketplace",
       team: {
-        size: 'size-7',
-        group: [
-          { filename: '300-17.png' },
-          { filename: '300-1.png' },
-          { filename: '300-19.png' },
-          {
-            fallback: 'P',
-            variant: 'text-info-inverse ring-info-light bg-info'
-          }
-        ]
+        size: "size-7",
+        group: [{ filename: "300-19.png" }, { filename: "300-9.png" }],
       },
       statistics: [
         {
-          total: '3-8 months',
-          description: 'Duration'
+          total: "3-5 months",
+          description: "Duration",
         },
         {
-          total: 'Flexible',
-          description: 'Location'
+          total: "Remote",
+          description: "Location",
         },
         {
-          total: '$34 hour',
-          description: 'Rate'
-        }
+          total: "$16 hour",
+          description: "Rate",
+        },
       ],
       progress: {
-        variant: 'progress-success',
-        value: 100
-      }
+        variant: "progress-primary",
+        value: 25,
+      },
     },
     {
       status: {
-        variant: 'badge-primary',
-        label: 'In Progress'
+        variant: "badge-success",
+        label: "Completed",
       },
-      logo: 'grab.svg',
-      title: 'Radiant Wave',
-      description: 'Team communication and collaboration',
+      logo: "equacoin.svg",
+      title: "Nexus Design System",
+      description: "Visual discovery and inspiration",
       team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-24.png' },
-          { filename: '300-7.png' },
-          { filename: '300-9.png' },
+          { filename: "300-5.png" },
+          { filename: "300-11.png" },
           {
-            fallback: 'S',
-            variant: 'text-primary-inverse ring-primary-light bg-primary'
-          }
-        ]
+            fallback: "W",
+            variant: "text-warning-inverse ring-warning-light bg-warning",
+          },
+        ],
       },
       statistics: [
         {
-          total: '2-5 months',
-          description: 'Duration'
+          total: "2-6 months",
+          description: "Duration",
         },
         {
-          total: 'Remote',
-          description: 'Location'
+          total: "Onsite",
+          description: "Location",
         },
         {
-          total: '$33 hour',
-          description: 'Rate'
-        }
+          total: "$45 hour",
+          description: "Rate",
+        },
       ],
       progress: {
-        variant: 'progress-primary',
-        value: 20
-      }
-    }
+        variant: "progress-success",
+        value: 100,
+      },
+    },
+    {
+      status: {
+        variant: "badge-success",
+        label: "Completed",
+      },
+      logo: "slack.svg",
+      title: "Neptune App",
+      description: "Peer-to-peer mobile payment service",
+      team: {
+        size: "size-7",
+        group: [
+          { filename: "300-17.png" },
+          { filename: "300-1.png" },
+          { filename: "300-19.png" },
+          {
+            fallback: "P",
+            variant: "text-info-inverse ring-info-light bg-info",
+          },
+        ],
+      },
+      statistics: [
+        {
+          total: "3-8 months",
+          description: "Duration",
+        },
+        {
+          total: "Flexible",
+          description: "Location",
+        },
+        {
+          total: "$34 hour",
+          description: "Rate",
+        },
+      ],
+      progress: {
+        variant: "progress-success",
+        value: 100,
+      },
+    },
+    {
+      status: {
+        variant: "badge-primary",
+        label: "In Progress",
+      },
+      logo: "grab.svg",
+      title: "Radiant Wave",
+      description: "Team communication and collaboration",
+      team: {
+        size: "size-7",
+        group: [
+          { filename: "300-24.png" },
+          { filename: "300-7.png" },
+          { filename: "300-9.png" },
+          {
+            fallback: "S",
+            variant: "text-primary-inverse ring-primary-light bg-primary",
+          },
+        ],
+      },
+      statistics: [
+        {
+          total: "2-5 months",
+          description: "Duration",
+        },
+        {
+          total: "Remote",
+          description: "Location",
+        },
+        {
+          total: "$33 hour",
+          description: "Rate",
+        },
+      ],
+      progress: {
+        variant: "progress-primary",
+        value: 20,
+      },
+    },
   ];
 
   const renderProject = (project: IProjectsItem, index: number) => {
@@ -282,25 +286,27 @@ const Projects = () => {
   return (
     <div className="flex flex-col items-stretch gap-5 lg:gap-7.5">
       <div className="flex flex-wrap items-center gap-5 justify-between">
-        <h3 className="text-lg text-gray-900 font-semibold">{projects.length} Projects</h3>
+        <h3 className="text-lg text-gray-900 font-semibold">
+          {projects.length} Projects
+        </h3>
 
         <div className="btn-tabs" data-tabs="true">
           <a
             href="#"
-            className={`btn btn-icon ${activeView === 'cards' ? 'active' : ''}`}
+            className={`btn btn-icon ${activeView === "cards" ? "active" : ""}`}
             data-tab-toggle="#projects_cards"
             onClick={() => {
-              setActiveView('cards');
+              setActiveView("cards");
             }}
           >
             <KeenIcon icon="category" />
           </a>
           <a
             href="#"
-            className={`btn btn-icon ${activeView === 'list' ? 'active' : ''}`}
+            className={`btn btn-icon ${activeView === "list" ? "active" : ""}`}
             data-tab-toggle="#projects_list"
             onClick={() => {
-              setActiveView('list');
+              setActiveView("list");
             }}
           >
             <KeenIcon icon="row-horizontal" />
@@ -308,7 +314,7 @@ const Projects = () => {
         </div>
       </div>
 
-      {activeView === 'cards' && (
+      {activeView === "cards" && (
         <div id="projects_cards">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-7.5">
             {projects.map((project, index) => {
@@ -324,7 +330,7 @@ const Projects = () => {
         </div>
       )}
 
-      {activeView === 'list' && (
+      {activeView === "list" && (
         <div id="projects_list">
           <div className="flex flex-col gap-5 lg:gap-7.5">
             {projects.map((item, index) => {

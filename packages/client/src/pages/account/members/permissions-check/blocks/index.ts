@@ -1,1 +1,1 @@
-export * from './PermissionsCheck';
+export * from "./PermissionsCheck";

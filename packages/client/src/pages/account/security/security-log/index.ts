@@ -1,3 +1,3 @@
-export * from './AccountSecurityLogContent';
-export * from './AccountSecurityLogPage';
-export * from './blocks';
+export * from "./AccountSecurityLogContent";
+export * from "./AccountSecurityLogPage";
+export * from "./blocks";

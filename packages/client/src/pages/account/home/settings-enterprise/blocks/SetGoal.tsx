@@ -1,8 +1,8 @@
-import { ChangeEvent, useState } from 'react';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
+import { ChangeEvent, useState } from "react";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
 
-import { DropdownCard2 } from '@/partials/dropdowns/general';
+import { DropdownCard2 } from "@/partials/dropdowns/general";
 
 const SetGoal = () => {
   const [value, setValue] = useState(1);
@@ -22,15 +22,15 @@ const SetGoal = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -42,7 +42,8 @@ const SetGoal = () => {
       </div>
       <div className="card-body lg:p-7.5 p-5">
         <p className="text-2sm text-gray-800 leading-5 mb-3.5">
-          Define aspirations, outline the path. Set a goal to transform dreams into <br />
+          Define aspirations, outline the path. Set a goal to transform dreams
+          into <br />
           measurable achievements.
         </p>
         <div className="card shadow-none p-3.5">
@@ -50,7 +51,8 @@ const SetGoal = () => {
             <div className="flex items-center gap-3.5 pt-1">
               <span className="text-2.5xl font-semibold text-gray-800">$0</span>
               <span className="text-2sm text-gray-700">
-                Pursuing opportunities, earning zero. Growth <br /> beyond monetary measures.
+                Pursuing opportunities, earning zero. Growth <br /> beyond
+                monetary measures.
               </span>
             </div>
 

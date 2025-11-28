@@ -1,2 +1,2 @@
-export * from './BackupSettings';
-export * from './backups';
+export * from "./BackupSettings";
+export * from "./backups";

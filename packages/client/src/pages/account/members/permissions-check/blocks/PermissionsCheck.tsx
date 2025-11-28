@@ -10,68 +10,68 @@ interface IPermissionsCheckItems extends Array<IPermissionsCheckItem> {}
 const PermissionsCheck = () => {
   const data: IPermissionsCheckItems = [
     {
-      module: 'Workspace Settings',
+      module: "Workspace Settings",
       view: true,
       modify: true,
       publish: true,
-      configure: true
+      configure: true,
     },
     {
-      module: 'Billing Management',
+      module: "Billing Management",
       view: true,
       modify: false,
       publish: false,
-      configure: false
+      configure: false,
     },
     {
-      module: 'Integration Setup',
+      module: "Integration Setup",
       view: true,
       modify: true,
       publish: false,
-      configure: false
+      configure: false,
     },
     {
-      module: 'Map Creation',
+      module: "Map Creation",
       view: true,
       modify: true,
       publish: true,
-      configure: true
+      configure: true,
     },
     {
-      module: 'Data Export',
+      module: "Data Export",
       view: true,
       modify: false,
       publish: false,
-      configure: false
+      configure: false,
     },
     {
-      module: 'User Roles',
+      module: "User Roles",
       view: true,
       modify: false,
       publish: false,
-      configure: false
+      configure: false,
     },
     {
-      module: 'Security Settings',
+      module: "Security Settings",
       view: true,
       modify: false,
       publish: false,
-      configure: false
+      configure: false,
     },
     {
-      module: 'Insights Access',
+      module: "Insights Access",
       view: false,
       modify: false,
       publish: false,
-      configure: false
+      configure: false,
     },
     {
-      module: 'Merchant List',
+      module: "Merchant List",
       view: true,
       modify: true,
       publish: false,
-      configure: false
-    }
+      configure: false,
+    },
   ];
 
   const renderItem = (each: IPermissionsCheckItem, index: number) => {
@@ -138,11 +138,21 @@ const PermissionsCheck = () => {
         <table className="table">
           <thead>
             <tr>
-              <th className="text-start text-gray-300 font-normal min-w-[300px]">Module</th>
-              <th className="min-w-24 text-gray-700 font-normal text-center">View</th>
-              <th className="min-w-24 text-gray-700 font-normal text-center">Modify</th>
-              <th className="min-w-24 text-gray-700 font-normal text-center">Publish</th>
-              <th className="min-w-24 text-gray-700 font-normal text-center">Configure</th>
+              <th className="text-start text-gray-300 font-normal min-w-[300px]">
+                Module
+              </th>
+              <th className="min-w-24 text-gray-700 font-normal text-center">
+                View
+              </th>
+              <th className="min-w-24 text-gray-700 font-normal text-center">
+                Modify
+              </th>
+              <th className="min-w-24 text-gray-700 font-normal text-center">
+                Publish
+              </th>
+              <th className="min-w-24 text-gray-700 font-normal text-center">
+                Configure
+              </th>
             </tr>
           </thead>
           <tbody className="text-gray-900 font-medium">
@@ -164,4 +174,8 @@ const PermissionsCheck = () => {
   );
 };
 
-export { PermissionsCheck, type IPermissionsCheckItem, type IPermissionsCheckItems };
+export {
+  PermissionsCheck,
+  type IPermissionsCheckItem,
+  type IPermissionsCheckItems,
+};

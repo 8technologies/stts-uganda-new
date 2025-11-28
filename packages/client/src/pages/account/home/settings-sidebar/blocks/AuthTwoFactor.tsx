@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { useLanguage } from '@/i18n';
-import { DropdownCard2 } from '@/partials/dropdowns/general';
-import { CommonHexagonBadge } from '@/partials/common';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { useLanguage } from "@/i18n";
+import { DropdownCard2 } from "@/partials/dropdowns/general";
+import { CommonHexagonBadge } from "@/partials/common";
 
 interface IAuthTwoFactorItem {
   icon: string;
@@ -16,17 +16,18 @@ const AuthTwoFactor = () => {
 
   const items: IAuthTwoFactorItems = [
     {
-      icon: 'message-text-2',
-      title: 'Text Message (SMS)',
-      description: 'Instant codes for secure account verification.',
-      checkbox: true
+      icon: "message-text-2",
+      title: "Text Message (SMS)",
+      description: "Instant codes for secure account verification.",
+      checkbox: true,
     },
     {
-      icon: 'shield-tick',
-      title: 'Authenticator App (TOTP)',
-      description: 'Elevate protection with an authenticator app for two-factor authentication.',
-      checkbox: false
-    }
+      icon: "shield-tick",
+      title: "Authenticator App (TOTP)",
+      description:
+        "Elevate protection with an authenticator app for two-factor authentication.",
+      checkbox: false,
+    },
   ];
 
   const renderItem = (item: IAuthTwoFactorItem, index: number) => {
@@ -41,15 +42,22 @@ const AuthTwoFactor = () => {
               stroke="stroke-gray-300"
               fill="fill-gray-100"
               size="size-[50px]"
-              badge={<KeenIcon icon={item.icon} className="text-xl text-gray-500" />}
+              badge={
+                <KeenIcon icon={item.icon} className="text-xl text-gray-500" />
+              }
             />
           </div>
 
           <div className="flex flex-col gap-px">
-            <a href="#" className="text-sm font-medium text-gray-900 hover:text-primary-active">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-900 hover:text-primary-active"
+            >
               {item.title}
             </a>
-            <span className="text-2sm font-medium text-gray-700">{item.description}</span>
+            <span className="text-2sm font-medium text-gray-700">
+              {item.description}
+            </span>
           </div>
         </div>
 
@@ -58,7 +66,7 @@ const AuthTwoFactor = () => {
             <input
               type="checkbox"
               defaultChecked={item.checkbox}
-              value={item.checkbox ? '1' : '2'} 
+              value={item.checkbox ? "1" : "2"}
             />
           </label>
         </div>
@@ -76,15 +84,15 @@ const AuthTwoFactor = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -107,7 +115,11 @@ const AuthTwoFactor = () => {
             <label className="form-label max-w-56">Password</label>
 
             <div className="flex flex-col tems-start grow gap-3 w-full">
-              <input className="input" type="text" placeholder="Enter password" />
+              <input
+                className="input"
+                type="text"
+                placeholder="Enter password"
+              />
               <span className="form-info gray-800 font-normal">
                 Enter your password to setup Two-Factor authentication
               </span>

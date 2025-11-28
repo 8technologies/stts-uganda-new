@@ -1,14 +1,14 @@
-import { ReactNode } from 'react';
-import { DataGridInner, DataGridProvider } from '.';
+import { ReactNode } from "react";
+import { DataGridInner, DataGridProvider } from ".";
 import {
   ColumnFiltersState,
   RowSelectionState,
   SortingState,
   Table,
-  TableOptions
-} from '@tanstack/react-table';
+  TableOptions,
+} from "@tanstack/react-table";
 
-export type TDataGridLayoutCellSpacing = 'xs' | 'md' | 'sm' | 'lg';
+export type TDataGridLayoutCellSpacing = "xs" | "md" | "sm" | "lg";
 
 export type TDataGridSelectedRowIds = Set<string>;
 
@@ -23,8 +23,11 @@ export interface TDataGridProps<TData extends object> {
   columns: any[];
   data?: TData[];
   rowSelection?: boolean;
-  getRowId?: TableOptions<TData>['getRowId'];
-  onRowSelectionChange?: (state: RowSelectionState, table?: Table<TData>) => void;
+  getRowId?: TableOptions<TData>["getRowId"];
+  onRowSelectionChange?: (
+    state: RowSelectionState,
+    table?: Table<TData>,
+  ) => void;
   messages?: {
     loading?: ReactNode | string;
     empty?: ReactNode | string;
@@ -34,9 +37,9 @@ export interface TDataGridProps<TData extends object> {
     cellBorder?: boolean;
     card?: boolean;
     classes?: {
-      table?: '';
-      container?: '';
-      root?: '';
+      table?: "";
+      container?: "";
+      root?: "";
     };
   };
   pagination?: {
@@ -58,7 +61,9 @@ export interface TDataGridProps<TData extends object> {
   children?: ReactNode;
 }
 
-export const DataGrid = <TData extends object>(props: TDataGridProps<TData>) => {
+export const DataGrid = <TData extends object>(
+  props: TDataGridProps<TData>,
+) => {
   return (
     <DataGridProvider {...props}>
       <DataGridInner />

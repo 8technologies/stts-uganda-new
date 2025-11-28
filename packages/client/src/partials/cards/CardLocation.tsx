@@ -1,4 +1,4 @@
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface ILocationProps {
   image: string;
@@ -15,7 +15,10 @@ const CardLocation = ({ image, title, description }: ILocationProps) => {
         alt=""
       />
       <div className="card-border card-rounded-b px-3.5 h-full pt-3 pb-3.5">
-        <a href="#" className="font-medium block text-gray-900 hover:text-primary text-md mb-2">
+        <a
+          href="#"
+          className="font-medium block text-gray-900 hover:text-primary text-md mb-2"
+        >
           {title}
         </a>
         <p className="text-2sm text-gray-700">{description}</p>

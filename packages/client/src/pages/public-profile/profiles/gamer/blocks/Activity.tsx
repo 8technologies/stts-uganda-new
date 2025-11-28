@@ -1,15 +1,15 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
 import {
   ActivitiesBloggingConference,
   ActivitiesLogin,
   ActivitiesNewProduct,
   ActivitiesProductSpecific,
-  ActivitiesProductWebinar
-} from '@/partials/activities/items';
+  ActivitiesProductWebinar,
+} from "@/partials/activities/items";
 
 const Activity = () => {
   return (

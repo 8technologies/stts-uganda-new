@@ -1,1 +1,1 @@
-export * from './AuthenticationWelcomeMessagePage';
+export * from "./AuthenticationWelcomeMessagePage";

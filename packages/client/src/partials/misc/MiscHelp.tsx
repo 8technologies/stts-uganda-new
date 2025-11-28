@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { MiscEngage } from '.';
+import { MiscEngage } from ".";
 
 const MiscHelp = () => {
   return (
@@ -13,18 +13,18 @@ const MiscHelp = () => {
         image={
           <Fragment>
             <img
-              src={toAbsoluteUrl('/media/illustrations/2.svg')}
+              src={toAbsoluteUrl("/media/illustrations/2.svg")}
               className="dark:hidden max-h-[150px]"
               alt=""
             />
             <img
-              src={toAbsoluteUrl('/media/illustrations/2-dark.svg')}
+              src={toAbsoluteUrl("/media/illustrations/2-dark.svg")}
               className="light:hidden max-h-[150px]"
               alt=""
             />
           </Fragment>
         }
-        more={{ title: 'Go to Help Center', url: '#' }}
+        more={{ title: "Go to Help Center", url: "#" }}
       />
 
       <MiscEngage
@@ -33,18 +33,21 @@ const MiscHelp = () => {
         image={
           <Fragment>
             <img
-              src={toAbsoluteUrl('/media/illustrations/4.svg')}
+              src={toAbsoluteUrl("/media/illustrations/4.svg")}
               className="dark:hidden max-h-[150px]"
               alt=""
             />
             <img
-              src={toAbsoluteUrl('/media/illustrations/4-dark.svg')}
+              src={toAbsoluteUrl("/media/illustrations/4-dark.svg")}
               className="light:hidden max-h-[150px]"
               alt=""
             />
           </Fragment>
         }
-        more={{ title: 'Contact Support', url: 'https://devs.keenthemes.com/unresolved' }}
+        more={{
+          title: "Contact Support",
+          url: "https://devs.keenthemes.com/unresolved",
+        }}
       />
     </div>
   );

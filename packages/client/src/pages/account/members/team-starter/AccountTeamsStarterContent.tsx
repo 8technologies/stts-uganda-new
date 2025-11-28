@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { MiscFaq, MiscHelp2, MiscStarter } from '@/partials/misc';
+import { MiscFaq, MiscHelp2, MiscStarter } from "@/partials/misc";
 
 const AccountTeamsStarterContent = () => {
   return (
@@ -11,12 +11,12 @@ const AccountTeamsStarterContent = () => {
         image={
           <Fragment>
             <img
-              src={toAbsoluteUrl('/media/illustrations/32.svg')}
+              src={toAbsoluteUrl("/media/illustrations/32.svg")}
               className="dark:hidden max-h-[230px]"
               alt=""
             />
             <img
-              src={toAbsoluteUrl('/media/illustrations/32-dark.svg')}
+              src={toAbsoluteUrl("/media/illustrations/32-dark.svg")}
               className="light:hidden max-h-[230px]"
               alt=""
             />
@@ -25,15 +25,16 @@ const AccountTeamsStarterContent = () => {
         title="Swift Setup for New Teams"
         subTitle={
           <Fragment>
-            Enhance team formation and management with easy-to-use tools for communication,
+            Enhance team formation and management with easy-to-use tools for
+            communication,
             <br />
             task organization, and progress tracking, all in one place.
           </Fragment>
         }
         engage={{
-          path: '/public-profile/teams',
-          label: 'Create New Team',
-          btnColor: 'btn-primary'
+          path: "/public-profile/teams",
+          label: "Create New Team",
+          btnColor: "btn-primary",
         }}
       />
 

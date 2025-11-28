@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { useLanguage } from '@/i18n';
-import { CommonAvatar } from '@/partials/common';
-import { DropdownCard1 } from '@/partials/dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { useLanguage } from "@/i18n";
+import { CommonAvatar } from "@/partials/common";
+import { DropdownCard1 } from "@/partials/dropdowns/general";
 
 interface IHeadingProps {
   author: string;
@@ -32,7 +32,10 @@ const Heading = ({ author, avatar, date }: IHeadingProps) => {
         />
 
         <div className="flex flex-col">
-          <a href="#" className="text-md font-medium text-gray-900 hover:text-primary-active mb-1">
+          <a
+            href="#"
+            className="text-md font-medium text-gray-900 hover:text-primary-active mb-1"
+          >
             {author}
           </a>
           <time className="text-sm text-gray-600">{date}</time>
@@ -44,15 +47,15 @@ const Heading = ({ author, avatar, date }: IHeadingProps) => {
           toggle="dropdown"
           trigger="click"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                }
-              }
-            ]
+                  offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

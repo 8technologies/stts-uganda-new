@@ -1,60 +1,64 @@
-import { Fragment, useMemo, useState } from 'react';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
+import { Fragment, useMemo, useState } from "react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { useLayout } from '@/providers';
-import { UserCreateDialog } from './blocks/PermitCreateDialog';
-import { ImportPermitDetailsDialog } from './blocks/ImportPermitDetailsDialog';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { useLayout } from "@/providers";
+import { UserCreateDialog } from "./blocks/PermitCreateDialog";
+import { ImportPermitDetailsDialog } from "./blocks/ImportPermitDetailsDialog";
 
-import { LOAD_IMPORT_PERMITS, LOAD_IMPORT_PERMIT } from '@/gql/queries';
-import { toast } from 'sonner';
-import { Skeleton } from '@/components/ui/skeleton';
-import { CREATE_IMPORT_PERMIT, UPDATE_IMPORT_PERMIT, DELETE_IMPORT_PERMIT } from '@/gql/mutations';
+import { LOAD_IMPORT_PERMITS, LOAD_IMPORT_PERMIT } from "@/gql/queries";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  CREATE_IMPORT_PERMIT,
+  UPDATE_IMPORT_PERMIT,
+  DELETE_IMPORT_PERMIT,
+} from "@/gql/mutations";
 import {
   DataGrid,
   DataGridColumnHeader,
   DataGridRowSelect,
   DataGridRowSelectAll,
   KeenIcon,
-  useDataGrid
-} from '@/components';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import type { ColumnDef, Column } from '@tanstack/react-table';
-import { _formatDate, formatDateTime } from '@/utils/Date';
-import { useAuthContext } from '@/auth';
-import { getPermissionsFromToken } from '@/utils/permissions';
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+  useDataGrid,
+} from "@/components";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import type { ColumnDef, Column } from "@tanstack/react-table";
+import { _formatDate, formatDateTime } from "@/utils/Date";
+import { useAuthContext } from "@/auth";
+import { getPermissionsFromToken } from "@/utils/permissions";
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuSeparator,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-  DropdownMenuItem
-} from '@/components/ui/dropdown-menu';
-import { URL_2 } from '@/config/urls';
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { URL_2 } from "@/config/urls";
 
 const ExportPermitsListPage = () => {
   const { currentLayout } = useLayout();
   const [createOpen, setCreateOpen] = useState(false);
   const LIST_VARS = {
-    filter: { type: 'export' as const },
-    pagination: { page: 1, size: 200 }
+    filter: { type: "export" as const },
+    pagination: { page: 1, size: 200 },
   } as const;
   const {
     data: listData,
     loading: listLoading,
     error: listError,
-    refetch
+    refetch,
   } = useQuery(LOAD_IMPORT_PERMITS, { variables: LIST_VARS });
 
   type Permit = {
@@ -66,29 +70,41 @@ const ExportPermitsListPage = () => {
     supplierAddress?: string;
     status?: string;
     statusComment?: string | null;
-    inspector?: { id: string; name?: string; email?: string; image?: string } | null;
+    inspector?: {
+      id: string;
+      name?: string;
+      email?: string;
+      image?: string;
+    } | null;
     createdAt?: string;
   };
 
   const permits: Permit[] = useMemo(
     () => (listData?.importPermits?.items ?? []) as Permit[],
-    [listData]
+    [listData],
   );
 
-  const [createPermit, { loading: creating }] = useMutation(CREATE_IMPORT_PERMIT, {
-    refetchQueries: [{ query: LOAD_IMPORT_PERMITS, variables: LIST_VARS }],
-    awaitRefetchQueries: true
-  });
-  const [updatePermit, { loading: updating }] = useMutation(UPDATE_IMPORT_PERMIT, {
-    refetchQueries: [{ query: LOAD_IMPORT_PERMITS, variables: LIST_VARS }],
-    awaitRefetchQueries: true
-  });
+  const [createPermit, { loading: creating }] = useMutation(
+    CREATE_IMPORT_PERMIT,
+    {
+      refetchQueries: [{ query: LOAD_IMPORT_PERMITS, variables: LIST_VARS }],
+      awaitRefetchQueries: true,
+    },
+  );
+  const [updatePermit, { loading: updating }] = useMutation(
+    UPDATE_IMPORT_PERMIT,
+    {
+      refetchQueries: [{ query: LOAD_IMPORT_PERMITS, variables: LIST_VARS }],
+      awaitRefetchQueries: true,
+    },
+  );
   const [deletePermit] = useMutation(DELETE_IMPORT_PERMIT, {
     refetchQueries: [{ query: LOAD_IMPORT_PERMITS, variables: LIST_VARS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
-  const [loadPermitDetail, { loading: loadingDetail }] = useLazyQuery(LOAD_IMPORT_PERMIT);
+  const [loadPermitDetail, { loading: loadingDetail }] =
+    useLazyQuery(LOAD_IMPORT_PERMIT);
   const [editing, setEditing] = useState<any | null>(null);
   const [preview, setPreview] = useState<any | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -96,33 +112,49 @@ const ExportPermitsListPage = () => {
   const toEnumCategory = (v: string) =>
     (
       ({
-        seed_merchant: 'SEED_MERCHANT',
-        seed_dealer: 'SEED_DEALER',
-        seed_producer: 'SEED_PRODUCER',
-        researcher: 'RESEARCHER'
+        seed_merchant: "SEED_MERCHANT",
+        seed_dealer: "SEED_DEALER",
+        seed_producer: "SEED_PRODUCER",
+        researcher: "RESEARCHER",
       }) as any
-    )[v] || 'SEED_MERCHANT';
+    )[v] || "SEED_MERCHANT";
   const fromEnumCategory = (v: string) =>
     (
       ({
-        SEED_MERCHANT: 'seed_merchant',
-        SEED_DEALER: 'seed_dealer',
-        SEED_PRODUCER: 'seed_producer',
-        RESEARCHER: 'researcher'
+        SEED_MERCHANT: "seed_merchant",
+        SEED_DEALER: "seed_dealer",
+        SEED_PRODUCER: "seed_producer",
+        RESEARCHER: "researcher",
       }) as any
-    )[v] || 'seed_merchant';
+    )[v] || "seed_merchant";
   const toEnumSeedCategory = (v: string) =>
-    (({ commercial: 'COMMERCIAL', research: 'RESEARCH', own_use: 'OWN_USE' }) as any)[v] ||
-    'COMMERCIAL';
+    (
+      ({
+        commercial: "COMMERCIAL",
+        research: "RESEARCH",
+        own_use: "OWN_USE",
+      }) as any
+    )[v] || "COMMERCIAL";
   const fromEnumSeedCategory = (v: string) =>
-    (({ COMMERCIAL: 'commercial', RESEARCH: 'research', OWN_USE: 'own_use' }) as any)[v] ||
-    'commercial';
+    (
+      ({
+        COMMERCIAL: "commercial",
+        RESEARCH: "research",
+        OWN_USE: "own_use",
+      }) as any
+    )[v] || "commercial";
   const toEnumMeasure = (v: string) =>
-    (({ Kgs: 'KGS', Tubes: 'TUBES', Bags: 'BAGS', Suckers: 'SUCKERS' }) as any)[v] || 'KGS';
+    (({ Kgs: "KGS", Tubes: "TUBES", Bags: "BAGS", Suckers: "SUCKERS" }) as any)[
+      v
+    ] || "KGS";
   const fromEnumMeasure = (v: string) =>
-    (({ KGS: 'Kgs', TUBES: 'Tubes', BAGS: 'Bags', SUCKERS: 'Suckers' }) as any)[v] || 'Kgs';
+    (({ KGS: "Kgs", TUBES: "Tubes", BAGS: "Bags", SUCKERS: "Suckers" }) as any)[
+      v
+    ] || "Kgs";
   const toEnumDoc = (label: string) =>
-    label === 'ISTA Certificate' ? 'ISTA_CERTIFICATE' : 'PHYTOSANITARY_CERTIFICATE';
+    label === "ISTA Certificate"
+      ? "ISTA_CERTIFICATE"
+      : "PHYTOSANITARY_CERTIFICATE";
 
   const handleSave = async (vals: Record<string, any>, id?: string) => {
     const input: any = {
@@ -131,31 +163,35 @@ const ExportPermitsListPage = () => {
       countryOfOrigin: vals.countryOfOrigin,
       supplierName: vals.supplierName,
       supplierAddress: vals.supplierAddress,
-      consignment: (vals.consignmentAccompaniedBy || []).map((d: string) => toEnumDoc(d)),
+      consignment: (vals.consignmentAccompaniedBy || []).map((d: string) =>
+        toEnumDoc(d),
+      ),
       items: (vals.crops || []).map((it: any) => ({
         cropId: String(it.cropId),
         varietyId: String(it.varietyId),
         category: toEnumSeedCategory(it.category),
         weight: Number(it.weight),
-        measure: toEnumMeasure(it.measure)
+        measure: toEnumMeasure(it.measure),
       })),
       attachments: vals.attachments || [],
-      type: 'export'
+      type: "export",
     };
     try {
       if (id) {
         const uinput: any = { ...input, replaceChildren: true };
         delete uinput.attachments; // use attachmentsAdd separately if needed
         await updatePermit({ variables: { id, input: uinput } });
-        toast('Export permit updated');
+        toast("Export permit updated");
       } else {
         await createPermit({ variables: { input } });
-        toast('Export permit created');
+        toast("Export permit created");
       }
       setCreateOpen(false);
       setEditing(null);
     } catch (e: any) {
-      toast('Failed to save permit', { description: e?.message || 'Unknown error' });
+      toast("Failed to save permit", {
+        description: e?.message || "Unknown error",
+      });
     }
   };
 
@@ -168,7 +204,7 @@ const ExportPermitsListPage = () => {
     try {
       const res = await loadPermitDetail({ variables: { id: row.id } });
       const d = res.data?.importPermit;
-      if (!d) throw new Error('Not found');
+      if (!d) throw new Error("Not found");
       const initialValues = {
         applicantCategory: fromEnumCategory(d.applicantCategory),
         stockQuantity: String(d.stockQuantity),
@@ -176,22 +212,26 @@ const ExportPermitsListPage = () => {
         supplierName: d.supplierName,
         supplierAddress: d.supplierAddress,
         consignmentAccompaniedBy: (d.consignment || []).map((c: string) =>
-          c === 'ISTA_CERTIFICATE' ? 'ISTA Certificate' : 'Phytosanitary certificate'
+          c === "ISTA_CERTIFICATE"
+            ? "ISTA Certificate"
+            : "Phytosanitary certificate",
         ),
-        type: 'export',
+        type: "export",
         attachments: [],
         crops: (d.items || []).map((it: any) => ({
           cropId: String(it.cropId),
           varietyId: String(it.varietyId),
           category: fromEnumSeedCategory(it.category),
           weight: String(it.weight),
-          measure: fromEnumMeasure(it.measure)
-        }))
+          measure: fromEnumMeasure(it.measure),
+        })),
       };
       setEditing({ id: d.id, initialValues });
       setCreateOpen(true);
     } catch (e: any) {
-      toast('Failed to load permit', { description: e?.message || 'Unknown error' });
+      toast("Failed to load permit", {
+        description: e?.message || "Unknown error",
+      });
     }
   };
 
@@ -199,10 +239,12 @@ const ExportPermitsListPage = () => {
     try {
       const res = await loadPermitDetail({ variables: { id: row.id } });
       const d = res.data?.importPermit;
-      if (!d) throw new Error('Not found');
+      if (!d) throw new Error("Not found");
       setPreview(d);
     } catch (e: any) {
-      toast('Failed to load permit', { description: e?.message || 'Unknown error' });
+      toast("Failed to load permit", {
+        description: e?.message || "Unknown error",
+      });
     }
   };
 
@@ -210,9 +252,11 @@ const ExportPermitsListPage = () => {
     try {
       setDeletingId(String(row.id));
       await deletePermit({ variables: { id: row.id } });
-      toast('Permit deleted');
+      toast("Permit deleted");
     } catch (e: any) {
-      toast('Failed to delete permit', { description: e?.message || 'Unknown error' });
+      toast("Failed to delete permit", {
+        description: e?.message || "Unknown error",
+      });
     } finally {
       setDeletingId(null);
     }
@@ -221,7 +265,7 @@ const ExportPermitsListPage = () => {
   return (
     <>
       <Fragment>
-        {currentLayout?.name === 'demo1-layout' && (
+        {currentLayout?.name === "demo1-layout" && (
           <Container>
             <Toolbar>
               <ToolbarHeading>
@@ -241,7 +285,9 @@ const ExportPermitsListPage = () => {
                         <span className="text-md text-gray-800 font-medium me-2">
                           {(listData?.importPermits?.total ?? 0) as number}
                         </span>
-                        <span className="text-md text-gray-700">Showing latest</span>
+                        <span className="text-md text-gray-700">
+                          Showing latest
+                        </span>
                       </>
                     )}
                   </div>
@@ -258,7 +304,7 @@ const ExportPermitsListPage = () => {
                   }}
                   className="btn btn-sm btn-primary"
                 >
-                  {'Apply For An Export Permit'}
+                  {"Apply For An Export Permit"}
                 </a>
               </ToolbarActions>
             </Toolbar>
@@ -325,7 +371,7 @@ const PermitsDataGrid = ({
   onEdit,
   onDelete,
   deletingId,
-  onPreview
+  onPreview,
 }: {
   permits: any[];
   onEdit: (p: any) => void;
@@ -335,16 +381,20 @@ const PermitsDataGrid = ({
 }) => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  const canManageImportPermits = !!perms['can_manage_import_permits'];
-  const canEditImportPermits = !!perms['can_edit_import_permits'];
-  const canDeleteImportPermits = !!perms['can_delete_import_permits'];
+  const canManageImportPermits = !!perms["can_manage_import_permits"];
+  const canEditImportPermits = !!perms["can_edit_import_permits"];
+  const canDeleteImportPermits = !!perms["can_delete_import_permits"];
   const [loadDetail] = useLazyQuery(LOAD_IMPORT_PERMIT, {
-    fetchPolicy: 'network-only'
+    fetchPolicy: "network-only",
   });
-  const ColumnInputFilter = <TData, TValue>({ column }: { column: Column<TData, TValue> }) => (
+  const ColumnInputFilter = <TData, TValue>({
+    column,
+  }: {
+    column: Column<TData, TValue>;
+  }) => (
     <Input
       placeholder="Filter..."
-      value={(column.getFilterValue() as string) ?? ''}
+      value={(column.getFilterValue() as string) ?? ""}
       onChange={(event) => column.setFilterValue(event.target.value)}
       className="h-9 w-full max-w-40"
     />
@@ -352,27 +402,29 @@ const PermitsDataGrid = ({
 
   const handlePrint = (d: any) => {
     try {
-      const win = window.open('', '_blank');
+      const win = window.open("", "_blank");
       if (!win) {
-        console.error('Popup blocked. Please allow popups for this site.');
+        console.error("Popup blocked. Please allow popups for this site.");
         return;
       }
 
       // Data validation and fallbacks
-      const number = d.permitNumber || '—';
-      const validFrom = d.validFrom ? _formatDate(d.validFrom) : '—';
-      const validUntil = d.validUntil ? _formatDate(d.validUntil) : '—';
-      const applicant = d.createdBy?.name || d.createdBy?.username || '—';
-      const applicantAddress = d.applicantAddress || '—';
-      const inspectorName = d.inspector?.name || '—';
+      const number = d.permitNumber || "—";
+      const validFrom = d.validFrom ? _formatDate(d.validFrom) : "—";
+      const validUntil = d.validUntil ? _formatDate(d.validUntil) : "—";
+      const applicant = d.createdBy?.name || d.createdBy?.username || "—";
+      const applicantAddress = d.applicantAddress || "—";
+      const inspectorName = d.inspector?.name || "—";
       const today = _formatDate(new Date().toISOString());
-      const supplierName = d.supplierName || '—';
-      const supplierAddress = d.supplierAddress || '—';
-      const countryOfOrigin = d.countryOfOrigin || '—';
-      const additionalConditions = d.additionalConditions || 'None';
+      const supplierName = d.supplierName || "—";
+      const supplierAddress = d.supplierAddress || "—";
+      const countryOfOrigin = d.countryOfOrigin || "—";
+      const additionalConditions = d.additionalConditions || "None";
 
       const consignmentList = (d?.consignment || []).map((c: any) =>
-        c === 'ISTA_CERTIFICATE' ? 'ISTA Certificate' : 'Phytosanitary certificate'
+        c === "ISTA_CERTIFICATE"
+          ? "ISTA Certificate"
+          : "Phytosanitary certificate",
       );
 
       // Safely handle items data
@@ -380,15 +432,17 @@ const PermitsDataGrid = ({
         .map(
           (it, index: number) => `
           <tr>
-            <td style="padding:8px;border:1px solid #000;">${it.crop?.name || it.crop?.id || it.cropId || '—'}</td>
-            <td style="padding:8px;border:1px solid #000;">${it.variety?.name || it.variety?.id || it.varietyId || '—'}</td>
-            <td style="padding:8px;border:1px solid #000;">${it.category || '—'}</td>
-            <td style="padding:8px;border:1px solid #000;">${it.weight || '—'} ${it.measure || ''}</td>
-          </tr>`
+            <td style="padding:8px;border:1px solid #000;">${it.crop?.name || it.crop?.id || it.cropId || "—"}</td>
+            <td style="padding:8px;border:1px solid #000;">${it.variety?.name || it.variety?.id || it.varietyId || "—"}</td>
+            <td style="padding:8px;border:1px solid #000;">${it.category || "—"}</td>
+            <td style="padding:8px;border:1px solid #000;">${it.weight || "—"} ${it.measure || ""}</td>
+          </tr>`,
         )
-        .join('');
+        .join("");
 
-      const consignmentItems = (consignmentList || []).map((item) => `<li>${item}</li>`).join('');
+      const consignmentItems = (consignmentList || [])
+        .map((item) => `<li>${item}</li>`)
+        .join("");
 
       const logo = `${URL_2}/imgs/coat.png`;
 
@@ -538,7 +592,7 @@ const PermitsDataGrid = ({
               <li>
                 The consignment of seed shall be accompanied by:
                 <ul>
-                  ${consignmentItems || '<li>No specific requirements</li>'}
+                  ${consignmentItems || "<li>No specific requirements</li>"}
                 </ul>
               </li>
               <li>
@@ -610,24 +664,24 @@ const PermitsDataGrid = ({
       win.document.write(html);
       win.document.close();
     } catch (error) {
-      console.error('Error generating print document:', error);
-      alert('Error generating print document. Please try again.');
+      console.error("Error generating print document:", error);
+      alert("Error generating print document. Please try again.");
     }
   };
 
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const cols: ColumnDef<any>[] = [
       {
-        id: 'select',
+        id: "select",
         header: () => <DataGridRowSelectAll />,
         cell: ({ row }) => <DataGridRowSelect row={row} />,
         enableSorting: false,
         enableHiding: false,
-        meta: { headerClassName: 'w-0' }
+        meta: { headerClassName: "w-0" },
       },
       {
-        accessorKey: 'createdOn',
-        id: 'createdOn',
+        accessorKey: "createdOn",
+        id: "createdOn",
         header: ({ column }) => (
           <DataGridColumnHeader
             title="Created On"
@@ -640,14 +694,14 @@ const PermitsDataGrid = ({
             {formatDateTime(row.original.createdAt)}
           </span>
         ),
-        meta: { headerClassName: 'min-w-[180px]' }
-      }
+        meta: { headerClassName: "min-w-[180px]" },
+      },
     ];
 
     if (canManageImportPermits) {
       cols.push({
-        accessorKey: 'applicant_name',
-        id: 'applicant_name',
+        accessorKey: "applicant_name",
+        id: "applicant_name",
         header: ({ column }) => (
           <DataGridColumnHeader
             title="Applicant Name"
@@ -674,14 +728,14 @@ const PermitsDataGrid = ({
             </div>
           );
         },
-        meta: { headerClassName: 'min-w-[280px]' }
+        meta: { headerClassName: "min-w-[280px]" },
       });
     }
 
     cols.push(
       {
-        accessorFn: (row: any) => row?.inspector?.name || '',
-        id: 'inspector',
+        accessorFn: (row: any) => row?.inspector?.name || "",
+        id: "inspector",
         header: ({ column }) => (
           <DataGridColumnHeader
             title="Inspector"
@@ -693,74 +747,98 @@ const PermitsDataGrid = ({
           const ins = row.original?.inspector || ({} as any);
           const img = ins?.image
             ? `${URL_2}/imgs/${ins.image}`
-            : toAbsoluteUrl('/media/avatars/blank.png');
+            : toAbsoluteUrl("/media/avatars/blank.png");
           return (
             <div className="flex items-center gap-2.5">
               {ins?.name && (
                 <img
                   src={img}
                   className="rounded-full size-8 shrink-0 object-cover"
-                  alt={ins?.name || 'Inspector'}
+                  alt={ins?.name || "Inspector"}
                 />
               )}
               <div className="leading-tight">
-                <div className="text-sm font-medium text-gray-800">{ins?.name || '—'}</div>
-                <div className="text-[11px] text-gray-600">{ins?.email || ''}</div>
+                <div className="text-sm font-medium text-gray-800">
+                  {ins?.name || "—"}
+                </div>
+                <div className="text-[11px] text-gray-600">
+                  {ins?.email || ""}
+                </div>
               </div>
             </div>
           );
         },
-        meta: { headerClassName: 'min-w-[220px]' }
+        meta: { headerClassName: "min-w-[220px]" },
       },
       {
-        accessorKey: 'status',
-        id: 'status',
-        header: ({ column }) => <DataGridColumnHeader title="Status" column={column} />,
+        accessorKey: "status",
+        id: "status",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Status" column={column} />
+        ),
         enableSorting: true,
         cell: ({ row }) => {
-          const s = String(row.original.status || 'pending');
+          const s = String(row.original.status || "pending");
           const color =
-            s === 'approved' || s === 'recommended'
-              ? 'success'
-              : s === 'rejected' || s === 'halted'
-                ? 'danger'
-                : s === 'assigned_inspector'
-                  ? 'orange'
-                  : 'primary';
+            s === "approved" || s === "recommended"
+              ? "success"
+              : s === "rejected" || s === "halted"
+                ? "danger"
+                : s === "assigned_inspector"
+                  ? "orange"
+                  : "primary";
           return (
-            <span className={`badge badge-${color} shrink-0 badge-outline rounded-[30px]`}>
-              <span className={`size-1.5 rounded-full bg-${color} me-1.5`}></span>
+            <span
+              className={`badge badge-${color} shrink-0 badge-outline rounded-[30px]`}
+            >
+              <span
+                className={`size-1.5 rounded-full bg-${color} me-1.5`}
+              ></span>
               {s}
             </span>
           );
         },
-        meta: { headerClassName: 'min-w-[140px]' }
+        meta: { headerClassName: "min-w-[140px]" },
       },
       {
-        accessorKey: 'applicantCategory',
-        id: 'category',
-        header: ({ column }) => <DataGridColumnHeader title="Applicant Category" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row.original.applicantCategory}</span>,
-        meta: { className: 'min-w-[180px]' }
+        accessorKey: "applicantCategory",
+        id: "category",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Applicant Category" column={column} />
+        ),
+        cell: ({ row }) => (
+          <span className="text-gray-800">
+            {row.original.applicantCategory}
+          </span>
+        ),
+        meta: { className: "min-w-[180px]" },
       },
       {
-        accessorKey: 'stockQuantity',
-        id: 'stock',
-        header: ({ column }) => <DataGridColumnHeader title="Stock Quantity" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row.original.stockQuantity}</span>,
-        meta: { className: 'min-w-[140px]' }
+        accessorKey: "stockQuantity",
+        id: "stock",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Stock Quantity" column={column} />
+        ),
+        cell: ({ row }) => (
+          <span className="text-gray-800">{row.original.stockQuantity}</span>
+        ),
+        meta: { className: "min-w-[140px]" },
       },
       {
-        accessorKey: 'countryOfOrigin',
-        id: 'country',
-        header: ({ column }) => <DataGridColumnHeader title="Country" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row.original.countryOfOrigin}</span>,
-        meta: { headerClassName: 'min-w-[140px]' }
+        accessorKey: "countryOfOrigin",
+        id: "country",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Country" column={column} />
+        ),
+        cell: ({ row }) => (
+          <span className="text-gray-800">{row.original.countryOfOrigin}</span>
+        ),
+        meta: { headerClassName: "min-w-[140px]" },
       },
 
       {
-        id: 'edit',
-        header: () => '',
+        id: "edit",
+        header: () => "",
         enableSorting: false,
         cell: (info) => (
           <>
@@ -771,39 +849,45 @@ const PermitsDataGrid = ({
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[190px]">
-                <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
+                <DropdownMenuLabel className="font-medium">
+                  Actions
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                {canEditImportPermits && info?.row?.original?.status === 'pending' && (
-                  <DropdownMenuItem onClick={() => onEdit(info.row.original)}>
-                    <KeenIcon icon="note" /> Edit
-                  </DropdownMenuItem>
-                )}
+                {canEditImportPermits &&
+                  info?.row?.original?.status === "pending" && (
+                    <DropdownMenuItem onClick={() => onEdit(info.row.original)}>
+                      <KeenIcon icon="note" /> Edit
+                    </DropdownMenuItem>
+                  )}
 
-                {canDeleteImportPermits && info.row.original.status === 'pending' && (
-                  <DropdownMenuItem
-                    onClick={() => onDelete(info.row.original)}
-                    disabled={String(deletingId) === String(info.row.original.id)}
-                  >
-                    <KeenIcon icon="trash" /> Delete
-                  </DropdownMenuItem>
-                )}
+                {canDeleteImportPermits &&
+                  info.row.original.status === "pending" && (
+                    <DropdownMenuItem
+                      onClick={() => onDelete(info.row.original)}
+                      disabled={
+                        String(deletingId) === String(info.row.original.id)
+                      }
+                    >
+                      <KeenIcon icon="trash" /> Delete
+                    </DropdownMenuItem>
+                  )}
 
                 <DropdownMenuItem onClick={() => onPreview(info.row.original)}>
                   <KeenIcon icon="eye" /> Details
                 </DropdownMenuItem>
-                {String(info.row.original?.status || '') === 'approved' && (
+                {String(info.row.original?.status || "") === "approved" && (
                   <DropdownMenuItem
                     onClick={async () => {
                       try {
                         const res = await loadDetail({
-                          variables: { id: String(info.row.original.id) }
+                          variables: { id: String(info.row.original.id) },
                         });
                         const d = res.data?.importPermit;
-                        if (!d) throw new Error('Permit not found');
+                        if (!d) throw new Error("Permit not found");
                         handlePrint(d);
                       } catch (e: any) {
-                        alert(e?.message || 'Failed to generate certificate');
+                        alert(e?.message || "Failed to generate certificate");
                       }
                     }}
                   >
@@ -814,8 +898,8 @@ const PermitsDataGrid = ({
             </DropdownMenu>
           </>
         ),
-        meta: { headerClassName: 'w-[60px]' }
-      }
+        meta: { headerClassName: "w-[60px]" },
+      },
     );
 
     return cols;
@@ -853,10 +937,12 @@ const PermitsDataGrid = ({
 
   const HeaderToolbar = () => {
     const { table } = useDataGrid();
-    const [searchInput, setSearchInput] = useState('');
+    const [searchInput, setSearchInput] = useState("");
     return (
       <div className="card-header flex-wrap gap-2 border-b-0 px-5">
-        <h3 className="card-title font-medium text-sm">Showing {permits.length} permits</h3>
+        <h3 className="card-title font-medium text-sm">
+          Showing {permits.length} permits
+        </h3>
         <div className="flex flex-wrap gap-2 lg:gap-5">
           <div className="flex">
             <label className="input input-sm">
@@ -868,7 +954,7 @@ const PermitsDataGrid = ({
                 onChange={(e) => {
                   const val = e.target.value;
                   setSearchInput(val);
-                  table.getColumn('supplierName')?.setFilterValue(val);
+                  table.getColumn("supplierName")?.setFilterValue(val);
                 }}
               />
             </label>
@@ -883,9 +969,9 @@ const PermitsDataGrid = ({
       columns={columns}
       data={permits}
       rowSelection={true}
-      layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
+      layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
       toolbar={<HeaderToolbar />}
-      messages={{ loading: 'Loading...', empty: 'No permits found' }}
+      messages={{ loading: "Loading...", empty: "No permits found" }}
     />
   );
 };

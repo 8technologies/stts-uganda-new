@@ -1,5 +1,5 @@
-import { QDs } from './blocks/QDS';
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
+import { QDs } from "./blocks/QDS";
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
 
 const NetworkUserTableTeamCrewContent = () => {
   return (

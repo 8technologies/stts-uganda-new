@@ -1,4 +1,4 @@
-import { type TLanguageCode } from '@/i18n';
+import { type TLanguageCode } from "@/i18n";
 
 export interface AuthModel {
   access_token: string;

@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { getHeight } from '@/utils';
-import { useViewport } from '@/hooks';
+import { useEffect, useRef, useState } from "react";
+import { getHeight } from "@/utils";
+import { useViewport } from "@/hooks";
 import {
   DropdownNotificationsItem9,
   DropdownNotificationsItem15,
   DropdownNotificationsItem16,
   DropdownNotificationsItem5,
   DropdownNotificationsItem17,
-  DropdownNotificationsItem3
-} from './items';
+  DropdownNotificationsItem3,
+} from "./items";
 
 const DropdownNotificationsFollowing = () => {
   const footerRef = useRef<HTMLDivElement>(null);
@@ -75,8 +75,12 @@ const DropdownNotificationsFollowing = () => {
       <>
         <div className="border-b border-b-gray-200"></div>
         <div className="grid grid-cols-2 p-5 gap-2.5">
-          <button className="btn btn-sm btn-light justify-center">Archive all</button>
-          <button className="btn btn-sm btn-light justify-center">Mark all as read</button>
+          <button className="btn btn-sm btn-light justify-center">
+            Archive all
+          </button>
+          <button className="btn btn-sm btn-light justify-center">
+            Mark all as read
+          </button>
         </div>
       </>
     );
@@ -84,7 +88,10 @@ const DropdownNotificationsFollowing = () => {
 
   return (
     <div className="grow">
-      <div className="scrollable-y-auto" style={{ maxHeight: `${listHeight}px` }}>
+      <div
+        className="scrollable-y-auto"
+        style={{ maxHeight: `${listHeight}px` }}
+      >
         {buildList()}
       </div>
       <div ref={footerRef}>{buildFooter()}</div>

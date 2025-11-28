@@ -1,42 +1,42 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { MiscHighlightedPosts, IHighlightedPostsItems } from '@/partials/misc';
+import { MiscHighlightedPosts, IHighlightedPostsItems } from "@/partials/misc";
 
-import { FeaturesHighlight } from '@/pages/public-profile/profiles/creator';
+import { FeaturesHighlight } from "@/pages/public-profile/profiles/creator";
 import {
   Authentification,
   GeneralSettings,
   LoginSessions,
   ProductInsight,
   QuickSettings,
-  TrustedDevices
-} from './blocks';
+  TrustedDevices,
+} from "./blocks";
 
 const AccountOverviewContent = () => {
   const posts: IHighlightedPostsItems = [
     {
-      icon: 'shield-slash',
-      title: 'Enhancing Security Knowledge: Guides, Tips, and Documentation',
+      icon: "shield-slash",
+      title: "Enhancing Security Knowledge: Guides, Tips, and Documentation",
       summary:
-        'Explore comprehensive resources to strengthen security understanding through detailed guides, expert tips, and documentation.',
-      path: '#'
+        "Explore comprehensive resources to strengthen security understanding through detailed guides, expert tips, and documentation.",
+      path: "#",
     },
     {
-      icon: 'ensure',
-      title: 'Mastering Security Protocols: Learning Through Expert Guidance',
+      icon: "ensure",
+      title: "Mastering Security Protocols: Learning Through Expert Guidance",
       summary:
-        'Delve into the realm of security with specialized learning materials, expert guidance, and practical tips for implementation.',
-      path: '#'
+        "Delve into the realm of security with specialized learning materials, expert guidance, and practical tips for implementation.",
+      path: "#",
     },
     {
-      icon: 'shield-search',
-      title: 'Navigating Digital Security: A Comprehensive Learning Journey',
+      icon: "shield-search",
+      title: "Navigating Digital Security: A Comprehensive Learning Journey",
       summary:
-        'Embark on a journey of digital security enlightenment with our extensive collection of educational guides and practical advice..',
-      path: '#'
-    }
+        "Embark on a journey of digital security enlightenment with our extensive collection of educational guides and practical advice..",
+      path: "#",
+    },
   ];
 
   return (
@@ -47,12 +47,12 @@ const AccountOverviewContent = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/5.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/5.svg")}
                   className="dark:hidden max-h-36"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/5-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/5-dark.svg")}
                   className="light:hidden max-h-36"
                   alt=""
                 />
@@ -60,10 +60,10 @@ const AccountOverviewContent = () => {
             }
             title="Essential Personal Security Tips for Enhanced Safety"
             description="Transform your living space beautifully with our Restyle Your Space: Soft Goods Makeover Ideas tutorial"
-            more={{ title: 'Review Security Tips', url: '#' }}
+            more={{ title: "Review Security Tips", url: "#" }}
             features={[
-              ['Strong Passwords', 'Two-Factor Authentication'],
-              ['Budget-Friendly', 'Fresh Look']
+              ["Strong Passwords", "Two-Factor Authentication"],
+              ["Budget-Friendly", "Fresh Look"],
             ]}
           />
 
@@ -84,12 +84,12 @@ const AccountOverviewContent = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/brand-logos/apple-black.svg')}
+                  src={toAbsoluteUrl("/media/brand-logos/apple-black.svg")}
                   className="dark:hidden h-5"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/brand-logos/apple-white.svg')}
+                  src={toAbsoluteUrl("/media/brand-logos/apple-white.svg")}
                   className="light:hidden h-5"
                   alt=""
                 />
@@ -102,7 +102,11 @@ const AccountOverviewContent = () => {
 
           <ProductInsight
             image={
-              <img src={toAbsoluteUrl('/media/brand-logos/android.svg')} className="h-5" alt="" />
+              <img
+                src={toAbsoluteUrl("/media/brand-logos/android.svg")}
+                className="h-5"
+                alt=""
+              />
             }
             title="Android"
             description="Active Sessions"

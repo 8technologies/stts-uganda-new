@@ -1,18 +1,18 @@
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
 
 const DropdownNotificationsItem9 = () => {
   const items = [
     {
-      image: '6.jpg',
-      title: 'Geometric Patterns',
-      id: '81023'
+      image: "6.jpg",
+      title: "Geometric Patterns",
+      id: "81023",
     },
     {
-      image: '1.jpg',
-      title: 'Artistic Expressions',
-      id: '67890'
-    }
+      image: "1.jpg",
+      title: "Artistic Expressions",
+      id: "67890",
+    },
   ];
 
   return (
@@ -29,11 +29,17 @@ const DropdownNotificationsItem9 = () => {
       <div className="flex flex-col gap-2.5 grow">
         <div className="flex flex-col gap-1 mb-1">
           <div className="text-2sm font-medium mb-px">
-            <Link to="#" className="hover:text-primary-active text-primary font-semibold me-1">
+            <Link
+              to="#"
+              className="hover:text-primary-active text-primary font-semibold me-1"
+            >
               Jane Perez
             </Link>
             <span className="text-gray-700 me-1">added 2 new works to</span>
-            <Link to="#" className="hover:text-primary-active text-primary font-semibold">
+            <Link
+              to="#"
+              className="hover:text-primary-active text-primary font-semibold"
+            >
               Inspirations 2024
             </Link>
           </div>
@@ -53,7 +59,7 @@ const DropdownNotificationsItem9 = () => {
               <div
                 className="bg-cover bg-no-repeat card-rounded-t shrink-0 h-24"
                 style={{
-                  backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${item.image}`)}`
+                  backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${item.image}`)}`,
                 }}
               ></div>
 
@@ -66,7 +72,9 @@ const DropdownNotificationsItem9 = () => {
                 </Link>
                 <div className="text-2xs font-medium text-gray-500">
                   Token ID:
-                  <span className="text-2xs font-medium text-gray-700">{item.id}</span>
+                  <span className="text-2xs font-medium text-gray-700">
+                    {item.id}
+                  </span>
                 </div>
               </div>
             </div>

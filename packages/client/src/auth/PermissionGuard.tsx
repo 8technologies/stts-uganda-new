@@ -1,7 +1,7 @@
-import React from 'react';
-import { Navigate } from 'react-router';
-import { useAuthContext } from '@/auth';
-import { getPermissionsFromToken } from '@/utils/permissions';
+import React from "react";
+import { Navigate } from "react-router";
+import { useAuthContext } from "@/auth";
+import { getPermissionsFromToken } from "@/utils/permissions";
 
 interface PermissionGuardProps {
   required: string[];
@@ -17,4 +17,3 @@ const PermissionGuard = ({ required, children }: PermissionGuardProps) => {
 };
 
 export { PermissionGuard };
-

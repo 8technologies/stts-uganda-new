@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface IOptionsSubItem {
   path: string;
@@ -28,8 +28,12 @@ const Options = ({ items }: IOptionsProps) => {
           <KeenIcon icon={item.icon} className="text-2xl text-primary mb-1.5" />
 
           <div className="flex flex-col gap-3">
-            <h3 className="text-base font-medium leading-none text-gray-900">{item.title}</h3>
-            <div className="text-2sm text-gray-700 leading-5">{item.description}</div>
+            <h3 className="text-base font-medium leading-none text-gray-900">
+              {item.title}
+            </h3>
+            <div className="text-2sm text-gray-700 leading-5">
+              {item.description}
+            </div>
           </div>
 
           <div className="flex items-center flex-wrap">

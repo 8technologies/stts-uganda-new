@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { MiscFaq, MiscHelp2, MiscStarter } from '@/partials/misc';
-import { toAbsoluteUrl } from '@/utils';
+import { MiscFaq, MiscHelp2, MiscStarter } from "@/partials/misc";
+import { toAbsoluteUrl } from "@/utils";
 
 const AccountMembersStarterContent = () => {
   return (
@@ -10,12 +10,12 @@ const AccountMembersStarterContent = () => {
         image={
           <Fragment>
             <img
-              src={toAbsoluteUrl('/media/illustrations/22.svg')}
+              src={toAbsoluteUrl("/media/illustrations/22.svg")}
               className="dark:hidden max-h-[230px]"
               alt=""
             />
             <img
-              src={toAbsoluteUrl('/media/illustrations/22-dark.svg')}
+              src={toAbsoluteUrl("/media/illustrations/22-dark.svg")}
               className="light:hidden max-h-[230px]"
               alt=""
             />
@@ -24,15 +24,16 @@ const AccountMembersStarterContent = () => {
         title="New Member Onboarding and Registration"
         subTitle={
           <Fragment>
-            A streamlined process to welcome and integrate new members into the team,
+            A streamlined process to welcome and integrate new members into the
+            team,
             <br />
             ensuring a smooth and efficient start.
           </Fragment>
         }
         engage={{
-          path: '/account/home/user-profile',
-          label: 'Add New Member',
-          btnColor: 'btn-primary'
+          path: "/account/home/user-profile",
+          label: "Add New Member",
+          btnColor: "btn-primary",
         }}
       />
 

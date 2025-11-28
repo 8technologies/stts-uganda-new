@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef, ReactNode } from "react";
 
 interface IModalHeaderProps {
   className?: string;
@@ -13,7 +13,7 @@ const ModalHeader = forwardRef<HTMLDivElement, IModalHeaderProps>(
         {children}
       </div>
     );
-  }
+  },
 );
 
 export { ModalHeader };

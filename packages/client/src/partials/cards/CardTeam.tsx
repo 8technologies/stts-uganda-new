@@ -1,6 +1,6 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatars, CommonRating } from '../common';
+import { CommonAvatars, CommonRating } from "../common";
 
 interface ITeamProps {
   icon: string;
@@ -23,7 +23,15 @@ interface ITeamProps {
   };
 }
 
-const CardTeam = ({ icon, title, description, labels, rating, team, connected }: ITeamProps) => {
+const CardTeam = ({
+  icon,
+  title,
+  description,
+  labels,
+  rating,
+  team,
+  connected,
+}: ITeamProps) => {
   const renderItem = (label: string, index: number) => {
     return (
       <span key={index} className="badge badge-sm badge-outline">
@@ -47,7 +55,9 @@ const CardTeam = ({ icon, title, description, labels, rating, team, connected }:
             >
               {title}
             </a>
-            <span className="text-2sm text-gray-700 text-center">{description}</span>
+            <span className="text-2sm text-gray-700 text-center">
+              {description}
+            </span>
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-import { CardWork } from '@/partials/cards';
+import { CardWork } from "@/partials/cards";
 
 interface IWorksItem {
   title: string;
@@ -13,53 +13,53 @@ interface IWorksItems extends Array<IWorksItem> {}
 const Works = () => {
   const items: IWorksItems = [
     {
-      title: 'Urban Dreams',
-      image: '1.jpg',
-      authorName: 'Cody Fisher',
-      authorAvatar: '300-6.png',
+      title: "Urban Dreams",
+      image: "1.jpg",
+      authorName: "Cody Fisher",
+      authorAvatar: "300-6.png",
       likes: 24,
-      comments: 5
+      comments: 5,
     },
     {
-      title: 'Timeless Elegance',
-      image: '2.jpg',
-      authorName: 'Jenny Wilson',
-      authorAvatar: '300-5.png',
+      title: "Timeless Elegance",
+      image: "2.jpg",
+      authorName: "Jenny Wilson",
+      authorAvatar: "300-5.png",
       likes: 6,
-      comments: 1
+      comments: 1,
     },
     {
-      title: 'Whispered Emotions',
-      image: '3.jpg',
-      authorName: 'Wade Warren',
-      authorAvatar: '300-14.png',
+      title: "Whispered Emotions",
+      image: "3.jpg",
+      authorName: "Wade Warren",
+      authorAvatar: "300-14.png",
       likes: 187,
-      comments: 49
+      comments: 49,
     },
     {
-      title: 'Golden Serenity',
-      image: '4.jpg',
-      authorName: 'Albert Flores',
-      authorAvatar: '300-11.png',
+      title: "Golden Serenity",
+      image: "4.jpg",
+      authorName: "Albert Flores",
+      authorAvatar: "300-11.png",
       likes: 60,
-      comments: 13
+      comments: 13,
     },
     {
-      title: 'Wild Beauty',
-      image: '5.jpg',
-      authorName: 'Devon Lane',
-      authorAvatar: '300-16.png',
+      title: "Wild Beauty",
+      image: "5.jpg",
+      authorName: "Devon Lane",
+      authorAvatar: "300-16.png",
       likes: 625,
-      comments: 109
+      comments: 109,
     },
     {
-      title: 'Mystic Shadows',
-      image: '6.jpg',
-      authorName: 'Kathryn Murphy',
-      authorAvatar: '300-1.png',
+      title: "Mystic Shadows",
+      image: "6.jpg",
+      authorName: "Kathryn Murphy",
+      authorAvatar: "300-1.png",
       likes: 37,
-      comments: 16
-    }
+      comments: 16,
+    },
   ];
 
   const renderItem = (item: IWorksItem, index: number) => {

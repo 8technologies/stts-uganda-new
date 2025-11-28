@@ -1,14 +1,14 @@
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { KeenIcon } from '@/components/keenicons';
-import { toAbsoluteUrl } from '@/utils';
-import { Menu, MenuItem, MenuToggle } from '@/components';
-import { DropdownUser } from '@/partials/dropdowns/user';
-import { ModalSearch } from '@/partials/modals/search/ModalSearch';
-import { DropdownNotifications } from '@/partials/dropdowns/notifications';
-import { DropdownApps } from '@/partials/dropdowns/apps';
-import { DropdownChat } from '@/partials/dropdowns/chat';
-import { useLanguage } from '@/i18n';
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { KeenIcon } from "@/components/keenicons";
+import { toAbsoluteUrl } from "@/utils";
+import { Menu, MenuItem, MenuToggle } from "@/components";
+import { DropdownUser } from "@/partials/dropdowns/user";
+import { ModalSearch } from "@/partials/modals/search/ModalSearch";
+import { DropdownNotifications } from "@/partials/dropdowns/notifications";
+import { DropdownApps } from "@/partials/dropdowns/apps";
+import { DropdownChat } from "@/partials/dropdowns/chat";
+import { useLanguage } from "@/i18n";
 
 const HeaderTopbar = () => {
   const itemAppsRef = useRef<any>(null);
@@ -18,7 +18,7 @@ const HeaderTopbar = () => {
   const { isRTL } = useLanguage();
 
   const handleDropdownChatShow = () => {
-    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new Event("resize"));
   };
 
   const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -29,7 +29,10 @@ const HeaderTopbar = () => {
 
   return (
     <div className="flex items-center lg:gap-3.5">
-      <Link to={'/account/home/get-started'} className="btn btn-xs btn-primary me-1 sm:me-0">
+      <Link
+        to={"/account/home/get-started"}
+        className="btn btn-xs btn-primary me-1 sm:me-0"
+      >
         Get Started
       </Link>
 
@@ -40,7 +43,10 @@ const HeaderTopbar = () => {
         >
           <KeenIcon icon="magnifier" />
         </button>
-        <ModalSearch open={searchModalOpen} onOpenChange={handleSearchModalClose} />
+        <ModalSearch
+          open={searchModalOpen}
+          onOpenChange={handleSearchModalClose}
+        />
 
         <Menu>
           <MenuItem
@@ -48,15 +54,15 @@ const HeaderTopbar = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [10, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [10, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-icon btn-icon-lg size-8 text-gray-600 hover:text-primary [dropdown-open:text-primary">
@@ -73,15 +79,15 @@ const HeaderTopbar = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [10, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [10, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-icon btn-icon-lg size-8 text-gray-600 hover:text-primary [dropdown-open:text-primary">
@@ -98,15 +104,15 @@ const HeaderTopbar = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [10, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [10, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-icon btn-icon-lg size-8 text-gray-600 hover:text-primary [dropdown-open:text-primary">
@@ -124,21 +130,21 @@ const HeaderTopbar = () => {
           toggle="dropdown"
           trigger="click"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [0, 9] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [0, 9], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="btn btn-icon rounded-full">
             <img
               className="size-8 rounded-full justify-center border border-gray-500 shrink-0"
-              src={toAbsoluteUrl('/media/avatars/gray/5.png')}
+              src={toAbsoluteUrl("/media/avatars/gray/5.png")}
               alt=""
             />
           </MenuToggle>

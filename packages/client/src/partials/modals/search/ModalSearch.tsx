@@ -302,19 +302,111 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                 style={{ maxHeight: `${scrollableHeight}px` }}
               >
                 <TabPanel value={1}>
-                  <ModalSearchMixed
-                    settings={mixedSettingsItems}
-                    integrations={mixedIntegrationsItems}
-                    users={mixedUsersItems}
-                  />
+                  <div className="menu-item" style={{ padding: "12px 25px" }}>
+                    <div className="menu-link flex items-center justify-between gap-10 py-1">
+                      <div className="flex items-center grow gap-2 ">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Crop
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          Soybeans
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </TabPanel>
                 <TabPanel value={2}>
-                  <ModalSearchSettings items={settingsItems} />
+                  {/* <ModalSearchSettings items={settingsItems} /> */}
+                  <div className="menu-item" style={{ padding: "12px 25px" }}>
+                    <div className="menu-link flex items-center justify-between gap-10 py-1">
+                      <div className="flex items-center grow gap-2 ">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Lab Test Number
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          lab_test/2025/58937871
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Germination capacity
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          80
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </TabPanel>
                 <TabPanel value={3}>
-                  <ModalSearchIntegrations items={integrationsItems} />
+                  {/* <ModalSearchIntegrations items={integrationsItems} /> */}
+                  <div className="menu-item" style={{ padding: "12px 25px" }}>
+                    <div className="menu-link flex items-center justify-between gap-2">
+                      <div className="flex items-center grow gap-2">
+                        {/* Logo */}
+
+                        {/* Name and description */}
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Mother Lot
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm font-semibold text-gray-900 hover:text-primary-active">
+                          Quamar/2023-07-03/32
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </TabPanel>
-                <TabPanel value={4}>
+                {/* <TabPanel value={4}>
                   <ModalSearchUsers items={usersItems} />
                 </TabPanel>
                 <TabPanel value={5}>
@@ -325,7 +417,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                 </TabPanel>
                 <TabPanel value={7}>
                   <ModalSearchNoResults />
-                </TabPanel>
+                </TabPanel> */}
               </div>
             </Tabs>
           </DialogBody>
@@ -356,64 +448,19 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
               <TabsList className="justify-between px-5 mb-2.5">
                 <div className="flex items-center gap-5">
                   <Tab value={1}>Seed Details</Tab>
-                  {/* <Tab value={2}>Seed Lab Details</Tab>
-                  <Tab value={3}>Mother Lot</Tab> */}
-                  {/* <Tab value={4}>Users</Tab>
-                  <Tab value={5}>Docs</Tab>
-                  <Tab value={6}>Empty</Tab>
-                  <Tab value={7}>No Results</Tab> */}
                 </div>
-                {/* <Menu className="items-stretch">
-                  <MenuItem
-                    toggle="dropdown"
-                    trigger="click"
-                    dropdownProps={{
-                      placement: isRTL() ? "bottom-start" : "bottom-end",
-                      modifiers: [
-                        {
-                          name: "offset",
-                          options: {
-                            offset: [0, 0], // [skid, distance]
-                          },
-                        },
-                      ],
-                    }}
-                  >
-                    <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
-                      <KeenIcon icon="setting-2" />
-                    </MenuToggle>
-                    {DropdownCrud2()}
-                  </MenuItem>
-                </Menu> */}
               </TabsList>
               <div
                 className="scrollable-y-auto"
                 style={{ maxHeight: `${scrollableHeight}px` }}
               >
                 <TabPanel value={1}>
-                  <ModalSearchMixed
-                    settings={mixedSettingsItems}
-                    integrations={mixedIntegrationsItems}
-                    users={mixedUsersItems}
-                  />
-                </TabPanel>
-                <TabPanel value={2}>
-                  <ModalSearchSettings items={settingsItems} />
-                </TabPanel>
-                <TabPanel value={3}>
-                  <ModalSearchIntegrations items={integrationsItems} />
-                </TabPanel>
-                <TabPanel value={4}>
-                  <ModalSearchUsers items={usersItems} />
-                </TabPanel>
-                <TabPanel value={5}>
-                  <ModalSearchDocs items={docsItems} />
-                </TabPanel>
-                <TabPanel value={6}>
-                  <ModalSearchEmpty />
-                </TabPanel>
-                <TabPanel value={7}>
-                  <ModalSearchNoResults />
+                  <table>
+                    <thead>
+                      <th>Mother Lot</th>
+                      <th>Child Lot</th>
+                    </thead>
+                  </table>
                 </TabPanel>
               </div>
             </Tabs>
@@ -421,7 +468,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
         </DialogContent>
       </Dialog>
     );
-  },
+  }
 );
 
 export { ModalSearch };

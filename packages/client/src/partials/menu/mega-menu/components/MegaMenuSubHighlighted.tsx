@@ -1,7 +1,14 @@
-import { KeenIcon } from '@/components';
-import { TMenuConfig, MenuItem, MenuLink, MenuTitle, MenuIcon, MenuBadge } from '@/components/menu';
-import clsx from 'clsx';
-import { ReactNode } from 'react';
+import { KeenIcon } from "@/components";
+import {
+  TMenuConfig,
+  MenuItem,
+  MenuLink,
+  MenuTitle,
+  MenuIcon,
+  MenuBadge,
+} from "@/components/menu";
+import clsx from "clsx";
+import { ReactNode } from "react";
 
 const MegaMenuSubHighlighted = (items: TMenuConfig) => {
   const buildItems = (items: TMenuConfig): ReactNode => {
@@ -24,7 +31,7 @@ const MegaMenuSubHighlighted = (items: TMenuConfig) => {
               </MenuIcon>
             )}
 
-            <MenuTitle className={clsx('grow-0')}>{item.title}</MenuTitle>
+            <MenuTitle className={clsx("grow-0")}>{item.title}</MenuTitle>
 
             {item.disabled && (
               <MenuBadge>
@@ -34,7 +41,9 @@ const MegaMenuSubHighlighted = (items: TMenuConfig) => {
 
             {item.badge && (
               <MenuBadge>
-                <span className="badge badge-primary badge-outline badge-xs">{item.badge}</span>
+                <span className="badge badge-primary badge-outline badge-xs">
+                  {item.badge}
+                </span>
               </MenuBadge>
             )}
           </MenuLink>

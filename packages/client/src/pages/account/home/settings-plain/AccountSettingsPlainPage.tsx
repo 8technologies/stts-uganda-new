@@ -1,17 +1,17 @@
-import { Fragment } from 'react';
-import { Container } from '@/components/container';
+import { Fragment } from "react";
+import { Container } from "@/components/container";
 
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { PageNavbar } from '@/pages/account';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { PageNavbar } from "@/pages/account";
 
-import { AccountSettingsPlainContent } from '.';
-import { useLayout } from '@/providers';
+import { AccountSettingsPlainContent } from ".";
+import { useLayout } from "@/providers";
 
 const AccountSettingsPlainPage = () => {
   const { currentLayout } = useLayout();
@@ -20,12 +20,14 @@ const AccountSettingsPlainPage = () => {
     <Fragment>
       <PageNavbar />
 
-      {currentLayout?.name === 'demo1-layout' && (
+      {currentLayout?.name === "demo1-layout" && (
         <Container>
           <Toolbar>
             <ToolbarHeading>
               <ToolbarPageTitle />
-              <ToolbarDescription>Clean, Efficient User Experience</ToolbarDescription>
+              <ToolbarDescription>
+                Clean, Efficient User Experience
+              </ToolbarDescription>
             </ToolbarHeading>
             <ToolbarActions>
               <a href="#" className="btn btn-sm btn-light">

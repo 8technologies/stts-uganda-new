@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components/keenicons';
+import { KeenIcon } from "@/components/keenicons";
 import {
   Menu,
   MenuArrow,
@@ -6,25 +6,25 @@ import {
   MenuItem,
   MenuLink,
   MenuSub,
-  MenuTitle
-} from '@/components/menu';
-import { useMenus } from '@/providers';
-import { useLocation } from 'react-router';
-import { useLanguage } from '@/i18n';
+  MenuTitle,
+} from "@/components/menu";
+import { useMenus } from "@/providers";
+import { useLocation } from "react-router";
+import { useLanguage } from "@/i18n";
 
 const NavbarMenu = () => {
   const { pathname } = useLocation();
   const { getMenuConfig } = useMenus();
-  const primaryMenu = getMenuConfig('primary');
+  const primaryMenu = getMenuConfig("primary");
   const { isRTL } = useLanguage();
 
   let navbarMenu;
 
-  if (pathname.includes('/public-profile/')) {
+  if (pathname.includes("/public-profile/")) {
     navbarMenu = primaryMenu?.[2];
-  } else if (pathname.includes('/network/')) {
+  } else if (pathname.includes("/network/")) {
     navbarMenu = primaryMenu?.[4];
-  } else if (pathname.includes('/authentication/')) {
+  } else if (pathname.includes("/authentication/")) {
     navbarMenu = primaryMenu?.[5];
   } else {
     navbarMenu = primaryMenu?.[3];
@@ -40,7 +40,7 @@ const NavbarMenu = () => {
             trigger="hover"
             toggle="dropdown"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-end' : 'bottom-start'
+              placement: isRTL() ? "bottom-end" : "bottom-start",
             }}
           >
             <MenuLink className="gap-1.5">
@@ -51,7 +51,10 @@ const NavbarMenu = () => {
                 <KeenIcon icon="down" className="text-2xs text-gray-500" />
               </MenuArrow>
             </MenuLink>
-            <MenuSub className="menu-default py-2" rootClassName="min-w-[200px]">
+            <MenuSub
+              className="menu-default py-2"
+              rootClassName="min-w-[200px]"
+            >
               {buildMenuChildren(item.children)}
             </MenuSub>
           </MenuItem>
@@ -82,21 +85,24 @@ const NavbarMenu = () => {
             trigger="hover"
             toggle="dropdown"
             dropdownProps={{
-              placement: isRTL() ? 'left-start' : 'right-start',
+              placement: isRTL() ? "left-start" : "right-start",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [10, 0] : [-10, 0] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [10, 0] : [-10, 0], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuLink>
               <MenuTitle>{item.title}</MenuTitle>
               <MenuArrow>
-                <KeenIcon icon="down" className="text-2xs [.menu-dropdown_&]:-rotate-90" />
+                <KeenIcon
+                  icon="down"
+                  className="text-2xs [.menu-dropdown_&]:-rotate-90"
+                />
               </MenuArrow>
             </MenuLink>
             <MenuSub className="menu-default py" rootClassName="min-w-[200px]">

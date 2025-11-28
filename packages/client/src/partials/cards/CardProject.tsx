@@ -1,6 +1,6 @@
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonAvatars } from '../common';
+import { CommonAvatars } from "../common";
 
 interface IProjectProps {
   logo: string;
@@ -34,15 +34,21 @@ const CardProject = ({
   endDate,
   status,
   progress,
-  team
+  team,
 }: IProjectProps) => {
   return (
     <div className="card p-7.5">
       <div className="flex items-center justify-between mb-3 lg:mb-6">
         <div className="flex items-center justify-center size-[50px] rounded-lg bg-gray-100">
-          <img src={toAbsoluteUrl(`/media/brand-logos/${logo}`)} className="" alt="" />
+          <img
+            src={toAbsoluteUrl(`/media/brand-logos/${logo}`)}
+            className=""
+            alt=""
+          />
         </div>
-        <span className={`badge badge-md ${status.variant} badge-outline`}>{status.label}</span>
+        <span className={`badge badge-md ${status.variant} badge-outline`}>
+          {status.label}
+        </span>
       </div>
 
       <div className="flex flex-col mb-3 lg:mb-6">
@@ -67,7 +73,10 @@ const CardProject = ({
       </div>
 
       <div className={`progress h-1.5 ${progress.variant} mb-4 lg:mb-8`}>
-        <div className="progress-bar" style={{ width: `${progress.value}%` }}></div>
+        <div
+          className="progress-bar"
+          style={{ width: `${progress.value}%` }}
+        ></div>
       </div>
 
       <CommonAvatars group={team.group} size={team.size} more={team.more} />

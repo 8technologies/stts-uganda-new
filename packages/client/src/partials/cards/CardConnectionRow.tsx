@@ -1,7 +1,7 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatar, CommonAvatars } from '../common';
-import { IConnectionItem, IConnectionProps } from './CardConnection';
+import { CommonAvatar, CommonAvatars } from "../common";
+import { IConnectionItem, IConnectionProps } from "./CardConnection";
 
 const CardConnectionRow = ({
   name,
@@ -10,7 +10,7 @@ const CardConnectionRow = ({
   email,
   team,
   statistics,
-  connected
+  connected,
 }: IConnectionProps) => {
   const renderItem = (statistic: IConnectionItem, index: number) => {
     return (
@@ -18,7 +18,9 @@ const CardConnectionRow = ({
         key={index}
         className="grid grid-cols-1 gap-1.5 border-[0.5px] border-dashed border-gray-400 shrink-0 rounded-md px-2.5 py-2"
       >
-        <span className="text-gray-900 text-sm leading-none font-medium">{statistic.total}</span>
+        <span className="text-gray-900 text-sm leading-none font-medium">
+          {statistic.total}
+        </span>
         <span className="text-gray-700 text-xs">{statistic.description}</span>
       </div>
     );
@@ -88,7 +90,11 @@ const CardConnectionRow = ({
           </div>
 
           <div className="">
-            <CommonAvatars group={team.group} more={team.more} size={team.size} />
+            <CommonAvatars
+              group={team.group}
+              more={team.more}
+              size={team.size}
+            />
           </div>
 
           <div className="text-end w-28">

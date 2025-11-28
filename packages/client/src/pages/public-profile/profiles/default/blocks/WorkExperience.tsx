@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IWorkExperienceItem {
   image?: string;
@@ -14,35 +14,41 @@ interface IWorkExperienceItems extends Array<IWorkExperienceItem> {}
 const WorkExperience = () => {
   const items: IWorkExperienceItems = [
     {
-      image: 'jira.svg',
-      title: 'Esprito Studios',
-      desc: 'Senior Project Manager',
-      date: '2019 - Present'
+      image: "jira.svg",
+      title: "Esprito Studios",
+      desc: "Senior Project Manager",
+      date: "2019 - Present",
     },
-    { heading: 'Previous Jobs' },
+    { heading: "Previous Jobs" },
     {
-      image: 'paccion.svg',
-      title: 'Pesto Plus',
-      desc: 'CRM Product Lead ',
-      date: '2012 - 2019'
+      image: "paccion.svg",
+      title: "Pesto Plus",
+      desc: "CRM Product Lead ",
+      date: "2012 - 2019",
     },
     {
-      image: 'perrier.svg',
-      title: 'Perrier Technologies',
-      desc: 'UX Research',
-      date: '2010 - 2012'
-    }
+      image: "perrier.svg",
+      title: "Perrier Technologies",
+      desc: "UX Research",
+      date: "2010 - 2012",
+    },
   ];
 
   const renderItem = (item: IWorkExperienceItem, index: number) => {
     return (
       <div key={index}>
         {item.heading ? (
-          <div className="text-gray-600 font-semibold text-sm leading-none">{item.heading}</div>
+          <div className="text-gray-600 font-semibold text-sm leading-none">
+            {item.heading}
+          </div>
         ) : (
           <div className="flex align-start gap-3.5">
             {item.image && (
-              <img src={toAbsoluteUrl(`/media/brand-logos/${item.image}`)} className="h-9" alt="" />
+              <img
+                src={toAbsoluteUrl(`/media/brand-logos/${item.image}`)}
+                className="h-9"
+                alt=""
+              />
             )}
 
             <div className="flex flex-col gap-1">
@@ -54,8 +60,16 @@ const WorkExperience = () => {
                   {item.title}
                 </a>
               )}
-              {item.desc && <span className="text-sm font-medium text-gray-900">{item.desc}</span>}
-              {item.date && <span className="text-xs text-gray-700 leading-none">{item.date}</span>}
+              {item.desc && (
+                <span className="text-sm font-medium text-gray-900">
+                  {item.desc}
+                </span>
+              )}
+              {item.date && (
+                <span className="text-xs text-gray-700 leading-none">
+                  {item.date}
+                </span>
+              )}
             </div>
           </div>
         )}

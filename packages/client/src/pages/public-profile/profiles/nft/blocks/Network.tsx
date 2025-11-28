@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface INetworkItem {
   logo: string;
@@ -8,17 +8,20 @@ interface INetworkItems extends Array<INetworkItem> {}
 
 const Network = () => {
   const items: INetworkItems = [
-    { logo: 'dribbble', info: 'jennynft' },
-    { logo: 'facebook', info: 'nftmania' },
-    { logo: 'twitter', info: 'jennynft' },
-    { logo: 'youtube', info: 'jennyklabber' }
+    { logo: "dribbble", info: "jennynft" },
+    { logo: "facebook", info: "nftmania" },
+    { logo: "twitter", info: "jennynft" },
+    { logo: "youtube", info: "jennyklabber" },
   ];
 
   const renderItems = (item: INetworkItem, index: number) => {
     return (
       <div key={index} className="flex items-center gap-2.5">
         <KeenIcon icon={item.logo} className="text-base text-gray-500" />
-        <a href="#" className="text-sm leading-none text-gray-900 hover:text-primary-active">
+        <a
+          href="#"
+          className="text-sm leading-none text-gray-900 hover:text-primary-active"
+        >
           {item.info}
         </a>
       </div>

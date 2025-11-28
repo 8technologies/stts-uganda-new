@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { DropdownCard1, DropdownCardItem1 } from '@/partials/dropdowns/general';
+import { DropdownCard1, DropdownCardItem1 } from "@/partials/dropdowns/general";
 
 interface IRecentUploadsItem {
   image: string;
@@ -21,25 +21,25 @@ const RecentUploads = ({ title }: IRecentUploadsProps) => {
 
   const items: IRecentUploadsItems = [
     {
-      image: 'pdf.svg',
-      desc: 'Project-pitch.pdf',
-      date: '4.7 MB 26 Sep 2024 3:20 PM'
+      image: "pdf.svg",
+      desc: "Project-pitch.pdf",
+      date: "4.7 MB 26 Sep 2024 3:20 PM",
     },
     {
-      image: 'doc.svg',
-      desc: 'Report-v1.docx',
-      date: '2.3 MB 1 Oct 2024 12:00 PM'
+      image: "doc.svg",
+      desc: "Report-v1.docx",
+      date: "2.3 MB 1 Oct 2024 12:00 PM",
     },
     {
-      image: 'ai.svg',
-      desc: 'Framework-App.js',
-      date: '0.8 MB 17 Oct 2024 6:46 PM'
+      image: "ai.svg",
+      desc: "Framework-App.js",
+      date: "0.8 MB 17 Oct 2024 6:46 PM",
     },
     {
-      image: 'js.svg',
-      desc: 'Mobile-logo.ai',
-      date: '0.2 MB 4 Nov 2024 11:30 AM'
-    }
+      image: "js.svg",
+      desc: "Mobile-logo.ai",
+      date: "0.2 MB 4 Nov 2024 11:30 AM",
+    },
   ];
 
   const renderItem = (item: IRecentUploadsItem, index: number) => {
@@ -61,15 +61,15 @@ const RecentUploads = ({ title }: IRecentUploadsProps) => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -92,15 +92,15 @@ const RecentUploads = ({ title }: IRecentUploadsProps) => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -132,5 +132,5 @@ export {
   RecentUploads,
   type IRecentUploadsItem,
   type IRecentUploadsItems,
-  type IRecentUploadsProps
+  type IRecentUploadsProps,
 };

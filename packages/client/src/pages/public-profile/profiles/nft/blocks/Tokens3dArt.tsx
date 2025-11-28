@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { CardNFT } from '@/partials/cards';
+import { CardNFT } from "@/partials/cards";
 
 interface ITokens3dArtItem {
   image: string;
@@ -14,40 +14,40 @@ interface ITokens3dArtItems extends Array<ITokens3dArtItem> {}
 const Tokens3dArt = () => {
   const items: ITokens3dArtItems = [
     {
-      image: '6.jpg',
-      title: 'Geometric Patterns',
+      image: "6.jpg",
+      title: "Geometric Patterns",
       id: 81023,
-      info: '3.8 XMR',
-      date: '14h 30m 49s'
+      info: "3.8 XMR",
+      date: "14h 30m 49s",
     },
     {
-      image: '7.jpg',
-      title: 'Artistic Expressions',
+      image: "7.jpg",
+      title: "Artistic Expressions",
       id: 67890,
-      info: '3.2 XMR',
-      date: '14h 30m 49s'
+      info: "3.2 XMR",
+      date: "14h 30m 49s",
     },
     {
-      image: '8.jpg',
-      title: 'Digital Harmony',
+      image: "8.jpg",
+      title: "Digital Harmony",
       id: 54321,
-      info: '4.1 XMR',
-      date: '11h 15m 00s'
+      info: "4.1 XMR",
+      date: "11h 15m 00s",
     },
     {
-      image: '10.jpg',
-      title: 'Futuristic Sculptures',
+      image: "10.jpg",
+      title: "Futuristic Sculptures",
       id: 71045,
-      info: '4.3 XMR',
-      date: '10h 30m 00s'
+      info: "4.3 XMR",
+      date: "10h 30m 00s",
     },
     {
-      image: '11.jpg',
-      title: 'Enchanted Realms',
+      image: "11.jpg",
+      title: "Enchanted Realms",
       id: 67670,
-      info: '5.3 XMR',
-      date: '15h 43m 23s'
-    }
+      info: "5.3 XMR",
+      date: "15h 43m 23s",
+    },
   ];
 
   const renderItems = (item: ITokens3dArtItem, index: number) => {

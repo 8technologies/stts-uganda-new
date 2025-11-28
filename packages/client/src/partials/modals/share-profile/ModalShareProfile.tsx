@@ -1,17 +1,17 @@
-import React from 'react';
+import React from "react";
 import {
   ModalShareProfileViaLink,
   ModalShareProfileViaEmail,
   ModalShareProfileUsers,
-  ModalShareProfileSettings
-} from './';
+  ModalShareProfileSettings,
+} from "./";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface ModalShareProfileProps {
   open: boolean;
@@ -37,7 +37,10 @@ const ModalShareProfile = ({ open, onOpenChange }: ModalShareProfileProps) => {
 
           <div className="border-b border-b-gray-200"></div>
 
-          <div className="scrollable-y-auto" style={{ maxHeight: `${scrollableHeight}px` }}>
+          <div
+            className="scrollable-y-auto"
+            style={{ maxHeight: `${scrollableHeight}px` }}
+          >
             <ModalShareProfileUsers />
           </div>
 

@@ -1,6 +1,6 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
 import {
   ActivitiesAnniversary,
@@ -14,8 +14,8 @@ import {
   ActivitiesProductWebinar,
   ActivitiesProjectStatus,
   ActivitiesUpcomingContent,
-  ActivitiesVirtualTeam
-} from '@/partials/activities/items';
+  ActivitiesVirtualTeam,
+} from "@/partials/activities/items";
 
 const ProfileActivityContent = () => {
   const [currentYear, setCurrentYear] = useState(2024);
@@ -26,14 +26,20 @@ const ProfileActivityContent = () => {
       {years.map((year, index) => (
         <div
           key={index}
-          className={`card grow ${year === currentYear ? '' : 'hidden'}`}
+          className={`card grow ${year === currentYear ? "" : "hidden"}`}
           id={`activity_${year}`}
         >
           <div className="card-header">
             <h3 className="card-title">Activity</h3>
             <div className="flex items-center gap-2">
               <label className="switch">
-                <input className="order-2" type="checkbox" value="1" name="check" defaultChecked />
+                <input
+                  className="order-2"
+                  type="checkbox"
+                  value="1"
+                  name="check"
+                  defaultChecked
+                />
                 <span className="switch-label">
                   Auto refresh:&nbsp;
                   <span className="switch-on:hidden">Off</span>
@@ -43,9 +49,13 @@ const ProfileActivityContent = () => {
             </div>
           </div>
           <div className="card-body">
-            {(year === 2024 || year === 2023 || year === 2022) && <ActivitiesNewArticle />}
+            {(year === 2024 || year === 2023 || year === 2022) && (
+              <ActivitiesNewArticle />
+            )}
             {(year === 2024 || year === 2022) && <ActivitiesInterview />}
-            {(year === 2024 || year === 2021) && <ActivitiesPhotographyWorkshop />}
+            {(year === 2024 || year === 2021) && (
+              <ActivitiesPhotographyWorkshop />
+            )}
             <ActivitiesUpcomingContent />
             {(year === 2024 || year === 2019) && <ActivitiesProductWebinar />}
             <ActivitiesFollowersMilestone />
@@ -88,7 +98,7 @@ const ProfileActivityContent = () => {
             href="#"
             data-tab-toggle={`#activity_${year}`}
             className={`btn btn-sm text-gray-600 hover:text-primary tab-active:bg-primary-light tab-active:text-primary ${
-              year === currentYear ? 'active' : ''
+              year === currentYear ? "active" : ""
             }`}
             onClick={() => {
               setCurrentYear(year);

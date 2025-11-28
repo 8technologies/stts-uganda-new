@@ -1,14 +1,14 @@
-import { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { KeenIcon } from '@/components';
-import { CardUserMini } from '@/partials/cards';
+import { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
+import { KeenIcon } from "@/components";
+import { CardUserMini } from "@/partials/cards";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 
 interface IAvatar {
   className: string;
@@ -27,189 +27,189 @@ interface IMiniCardsContentItem {
 interface IMiniCardsContentItems extends Array<IMiniCardsContentItem> {}
 
 const NetworkMiniCardsContent = () => {
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
 
   const items: IMiniCardsContentItems = [
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-1.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-1.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Jenny Klabber',
-      email: 'starlight.eth',
-      verify: true
+      name: "Jenny Klabber",
+      email: "starlight.eth",
+      verify: true,
     },
     {
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-info size-20 ring-1 ring-info-clarity bg-info-light rounded-full',
-        fallback: 'S',
+          "flex items-center justify-center relative text-2.5xl text-info size-20 ring-1 ring-info-clarity bg-info-light rounded-full",
+        fallback: "S",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Sarah Johnson',
-      email: 'sarahjohnson.eth',
-      verify: false
+      name: "Sarah Johnson",
+      email: "sarahjohnson.eth",
+      verify: false,
     },
     {
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full',
-        fallback: 'M',
+          "flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full",
+        fallback: "M",
         badgeClass:
-          'flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Megan Tayloy',
-      email: 'megantaylor.eth',
-      verify: true
+      name: "Megan Tayloy",
+      email: "megantaylor.eth",
+      verify: true,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-8.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-8.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Alex Martines',
-      email: 'amartnes.eth',
-      verify: true
+      name: "Alex Martines",
+      email: "amartnes.eth",
+      verify: true,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-9.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-9.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Brian Davis',
-      email: 'briandavis.eth',
-      verify: true
-    },
-    {
-      avatar: {
-        className:
-          'flex items-center justify-center relative text-2.5xl text-danger size-20 ring-1 ring-danger-clarity bg-danger-light rounded-full',
-        fallback: 'k',
-        badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Kevin Wong',
-      email: 'kevinwong.eth',
-      verify: true
-    },
-    {
-      avatar: {
-        className: 'size-20 relative',
-        image: '300-5.png',
-        imageClass: 'rounded-full',
-        badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Jenny Wilson',
-      email: 'jennyklabber.eth',
-      verify: false
-    },
-    {
-      avatar: {
-        className: 'size-20 relative',
-        image: '300-4.png',
-        imageClass: 'rounded-full',
-        badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Robert Fox',
-      email: 'roberfox.eth',
-      verify: false
+      name: "Brian Davis",
+      email: "briandavis.eth",
+      verify: true,
     },
     {
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-primary size-20 ring-1 ring-primary-clarity bg-primary-light rounded-full',
-        fallback: 'B',
+          "flex items-center justify-center relative text-2.5xl text-danger size-20 ring-1 ring-danger-clarity bg-danger-light rounded-full",
+        fallback: "k",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Bessie Cooper',
-      email: 'bscoop.eth',
-      verify: true
+      name: "Kevin Wong",
+      email: "kevinwong.eth",
+      verify: true,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-13.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-5.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Eleanor Pena',
-      email: 'pena_707.eth',
-      verify: false
+      name: "Jenny Wilson",
+      email: "jennyklabber.eth",
+      verify: false,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-23.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-4.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Darlene Robertson',
-      email: 'msfoxy.eth',
-      verify: true
-    },
-    {
-      avatar: {
-        className:
-          'flex items-center justify-center relative text-2.5xl text-warning size-20 ring-1 ring-warning-clarity bg-warning-light rounded-full',
-        fallback: 'J',
-        badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Jerome Bell',
-      email: 'nbatrends.eth',
-      verify: true
-    },
-    {
-      avatar: {
-        className: 'size-20 relative',
-        image: '300-3.png',
-        imageClass: 'rounded-full',
-        badgeClass:
-          'flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Devon Lane',
-      email: 'notabooker.eth',
-      verify: true
-    },
-    {
-      avatar: {
-        className: 'size-20 relative',
-        image: '300-11.png',
-        imageClass: 'rounded-full',
-        badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Ralph Edwards',
-      email: 'lorenstore.eth',
-      verify: true
+      name: "Robert Fox",
+      email: "roberfox.eth",
+      verify: false,
     },
     {
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full',
-        fallback: 'T',
+          "flex items-center justify-center relative text-2.5xl text-primary size-20 ring-1 ring-primary-clarity bg-primary-light rounded-full",
+        fallback: "B",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Theresa Webb',
-      email: 'betterthanvettel.eth',
-      verify: false
-    }
+      name: "Bessie Cooper",
+      email: "bscoop.eth",
+      verify: true,
+    },
+    {
+      avatar: {
+        className: "size-20 relative",
+        image: "300-13.png",
+        imageClass: "rounded-full",
+        badgeClass:
+          "flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Eleanor Pena",
+      email: "pena_707.eth",
+      verify: false,
+    },
+    {
+      avatar: {
+        className: "size-20 relative",
+        image: "300-23.png",
+        imageClass: "rounded-full",
+        badgeClass:
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Darlene Robertson",
+      email: "msfoxy.eth",
+      verify: true,
+    },
+    {
+      avatar: {
+        className:
+          "flex items-center justify-center relative text-2.5xl text-warning size-20 ring-1 ring-warning-clarity bg-warning-light rounded-full",
+        fallback: "J",
+        badgeClass:
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Jerome Bell",
+      email: "nbatrends.eth",
+      verify: true,
+    },
+    {
+      avatar: {
+        className: "size-20 relative",
+        image: "300-3.png",
+        imageClass: "rounded-full",
+        badgeClass:
+          "flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Devon Lane",
+      email: "notabooker.eth",
+      verify: true,
+    },
+    {
+      avatar: {
+        className: "size-20 relative",
+        image: "300-11.png",
+        imageClass: "rounded-full",
+        badgeClass:
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Ralph Edwards",
+      email: "lorenstore.eth",
+      verify: true,
+    },
+    {
+      avatar: {
+        className:
+          "flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full",
+        fallback: "T",
+        badgeClass:
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Theresa Webb",
+      email: "betterthanvettel.eth",
+      verify: false,
+    },
   ];
 
   const renderItem = (item: IMiniCardsContentItem, index: number) => (
@@ -225,7 +225,9 @@ const NetworkMiniCardsContent = () => {
   return (
     <Fragment>
       <div className="flex items-center justify-between gap-2.5 flex-wrap mb-7.5">
-        <h3 className="text-md text-gray-900 font-medium">Showing {items.length} Users</h3>
+        <h3 className="text-md text-gray-900 font-medium">
+          Showing {items.length} Users
+        </h3>
 
         <div className="flex items-center flex-wrap gap-2.5">
           <Select defaultValue="active">
@@ -283,4 +285,8 @@ const NetworkMiniCardsContent = () => {
   );
 };
 
-export { NetworkMiniCardsContent, type IMiniCardsContentItem, type IMiniCardsContentItems };
+export {
+  NetworkMiniCardsContent,
+  type IMiniCardsContentItem,
+  type IMiniCardsContentItems,
+};

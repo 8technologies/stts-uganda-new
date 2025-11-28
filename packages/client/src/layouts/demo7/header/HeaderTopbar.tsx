@@ -1,9 +1,9 @@
-import { KeenIcon } from '@/components/keenicons';
-import { Menu, MenuItem, MenuToggle } from '@/components';
-import { DropdownUser } from '@/partials/dropdowns/user';
-import { Link } from 'react-router-dom';
-import { useRef } from 'react';
-import { useLanguage } from '@/i18n';
+import { KeenIcon } from "@/components/keenicons";
+import { Menu, MenuItem, MenuToggle } from "@/components";
+import { DropdownUser } from "@/partials/dropdowns/user";
+import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { useLanguage } from "@/i18n";
 
 const HeaderTopbar = () => {
   const itemUserRef = useRef<any>(null);
@@ -22,7 +22,10 @@ const HeaderTopbar = () => {
           </span>
         </div>
 
-        <Link to="/account/security/privacy-settings" className="btn btn-sm btn-primary">
+        <Link
+          to="/account/security/privacy-settings"
+          className="btn btn-sm btn-primary"
+        >
           Upgrade
           <KeenIcon icon="arrow-up" />
         </Link>
@@ -36,15 +39,15 @@ const HeaderTopbar = () => {
           toggle="dropdown"
           trigger="click"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [0, 10] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [0, 10], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="size-[34px] rounded-full inline-flex items-center justify-center relative text-lg font-medium border border-gray-300 bg-gray-100 text-gray-800">

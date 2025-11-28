@@ -1,4 +1,4 @@
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IFavoriteGamesItem {
   image: string;
@@ -8,14 +8,14 @@ interface IFavoriteGamesItems extends Array<IFavoriteGamesItem> {}
 
 const FavoriteGames = () => {
   const items: IFavoriteGamesItems = [
-    { image: '13.jpg' },
-    { image: '14.jpg' },
-    { image: '15.jpg' },
-    { image: '16.jpg', className: 'border' },
-    { image: '17.jpg' },
-    { image: '18.jpg' },
-    { image: '19.jpg' },
-    { image: '20.jpg' }
+    { image: "13.jpg" },
+    { image: "14.jpg" },
+    { image: "15.jpg" },
+    { image: "16.jpg", className: "border" },
+    { image: "17.jpg" },
+    { image: "18.jpg" },
+    { image: "19.jpg" },
+    { image: "20.jpg" },
   ];
 
   const renderItem = (item: IFavoriteGamesItem, index: number) => {

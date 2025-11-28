@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { toAbsoluteUrl } from '@/utils';
+import { Link } from "react-router-dom";
+import { toAbsoluteUrl } from "@/utils";
 import {
   Menu,
   MenuArrow,
@@ -9,12 +9,12 @@ import {
   MenuSub,
   MenuTitle,
   MenuToggle,
-  KeenIcon
-} from '@/components';
-import { useResponsive } from '@/hooks';
+  KeenIcon,
+} from "@/components";
+import { useResponsive } from "@/hooks";
 
-import { useDemo9Layout } from '..';
-import { useLanguage } from '@/i18n';
+import { useDemo9Layout } from "..";
+import { useLanguage } from "@/i18n";
 
 interface IHeaderLogoTeam {
   title: string;
@@ -30,7 +30,7 @@ interface IHeaderLogoMonth {
 interface IHeaderLogoMonths extends Array<IHeaderLogoMonth> {}
 
 const HeaderLogo = () => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const { setMobileMegaMenuOpen } = useDemo9Layout();
   const { isRTL } = useLanguage();
 
@@ -40,23 +40,23 @@ const HeaderLogo = () => {
 
   const teams: IHeaderLogoTeams = [
     {
-      title: 'MetronicTeam',
-      icon: 'profile-circle',
-      urlPartial: '/public-profile/',
-      path: '/public-profile/profiles/default'
+      title: "MetronicTeam",
+      icon: "profile-circle",
+      urlPartial: "/public-profile/",
+      path: "/public-profile/profiles/default",
     },
     {
-      title: 'KeenTeam',
-      icon: 'setting-2',
-      urlPartial: '/account/',
-      path: '/'
-    }
+      title: "KeenTeam",
+      icon: "setting-2",
+      urlPartial: "/account/",
+      path: "/",
+    },
   ];
 
   const months: IHeaderLogoMonths = [
-    { title: 'UrbanNest' },
-    { title: 'Celestial Finds' },
-    { title: 'BohoChic Bazaar ' }
+    { title: "UrbanNest" },
+    { title: "Celestial Finds" },
+    { title: "BohoChic Bazaar " },
   ];
 
   return (
@@ -72,17 +72,19 @@ const HeaderLogo = () => {
       <div className="flex items-center gap-2">
         <Link to="/">
           <img
-            src={toAbsoluteUrl('/media/app/mini-logo-circle.svg')}
+            src={toAbsoluteUrl("/media/app/mini-logo-circle.svg")}
             className="dark:hidden min-h-[34px]"
             alt="logo"
           />
           <img
-            src={toAbsoluteUrl('/media/app/mini-logo-circle-dark.svg')}
+            src={toAbsoluteUrl("/media/app/mini-logo-circle-dark.svg")}
             className="hidden dark:inline-block min-h-[34px]"
             alt="logo"
           />
         </Link>
-        <h3 className="text-gray-900 text-lg font-medium hidden md:block">Metronic</h3>
+        <h3 className="text-gray-900 text-lg font-medium hidden md:block">
+          Metronic
+        </h3>
       </div>
 
       {desktopMode && (
@@ -94,15 +96,15 @@ const HeaderLogo = () => {
               toggle="dropdown"
               trigger="hover"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-end' : 'bottom-start',
+                placement: isRTL() ? "bottom-end" : "bottom-start",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="text-gray-900 text-sm font-medium">
@@ -135,15 +137,15 @@ const HeaderLogo = () => {
               toggle="dropdown"
               trigger="hover"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-end' : 'bottom-start',
+                placement: isRTL() ? "bottom-end" : "bottom-start",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: [0, 0] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: [0, 0], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-light btn-sm flex-nowrap">

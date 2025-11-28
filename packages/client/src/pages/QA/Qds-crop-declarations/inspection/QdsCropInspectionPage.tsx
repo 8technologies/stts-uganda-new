@@ -1,33 +1,40 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 
-import { Container } from '@/components/container';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { KeenIcon } from '@/components';
-import { Accordion, AccordionItem } from '@/components/accordion';
-import { toast } from 'sonner';
+import { Container } from "@/components/container";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { KeenIcon } from "@/components";
+import { Accordion, AccordionItem } from "@/components/accordion";
+import { toast } from "sonner";
 
-import {LOAD_CROP, LOAD_QDS_INSPECTION, LOAD_CROP_DECLARATION} from '@/gql/queries';
-import { INITIALIZE_QDS_INSPECTION, SUBMIT_QDS_INSPECTION_STAGE } from '@/gql/mutations';
-import { formatDateTime, formatIsoDate } from '@/utils/Date';
+import {
+  LOAD_CROP,
+  LOAD_QDS_INSPECTION,
+  LOAD_CROP_DECLARATION,
+} from "@/gql/queries";
+import {
+  INITIALIZE_QDS_INSPECTION,
+  SUBMIT_QDS_INSPECTION_STAGE,
+} from "@/gql/mutations";
+import { formatDateTime, formatIsoDate } from "@/utils/Date";
 
-type StageDecision = 'rejected' | 'provisional' | 'skipped' | 'accepted';
+type StageDecision = "rejected" | "provisional" | "skipped" | "accepted";
 
 const badgeClass = (s?: string) => {
-  const v = String(s || 'pending').toLowerCase();
+  const v = String(s || "pending").toLowerCase();
   const color =
-    v === 'accepted'
-      ? 'success'
-      : v === 'rejected'
-        ? 'danger'
-        : v === 'provisional'
-          ? 'info'
-          : v === 'skipped'
-            ? 'gray'
-            : 'warning';
+    v === "accepted"
+      ? "success"
+      : v === "rejected"
+        ? "danger"
+        : v === "provisional"
+          ? "info"
+          : v === "skipped"
+            ? "gray"
+            : "warning";
   return `badge badge-${color} shrink-0 badge-outline rounded-[30px]`;
 };
 
@@ -35,51 +42,68 @@ const QdsCropInspectionPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { crop_id } = useParams();
-  const pid = String(id || '');
-  const pcrop_id = String(crop_id || '');
+  const pid = String(id || "");
+  const pcrop_id = String(crop_id || "");
 
-  const { data: detail, loading: loadingDetail } = useQuery(LOAD_CROP_DECLARATION, {
-    variables: { cropDeclarationId: pid },
-    skip: !pid
-  });
+  const { data: detail, loading: loadingDetail } = useQuery(
+    LOAD_CROP_DECLARATION,
+    {
+      variables: { cropDeclarationId: pid },
+      skip: !pid,
+    },
+  );
   const planting = detail?.cropDeclaration;
-  console.log('details',planting);
+  console.log("details", planting);
 
   const cropId = planting?.crop?.id || planting?.cropId || pcrop_id;
-  console.log('cropId', planting?.crop?.id, planting?.cropId, pcrop_id);
+  console.log("cropId", planting?.crop?.id, planting?.cropId, pcrop_id);
   const { data: cropData } = useQuery(LOAD_CROP, {
-    variables: { id: String(cropId || '') },
-    skip: !cropId
+    variables: { id: String(cropId || "") },
+    skip: !cropId,
   });
   const crop = cropData?.crop;
   const stagesFromCrop = (crop?.inspectionTypes || [])
     .slice()
     .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
 
-  console.log('crops',crop,cropData, cropId, stagesFromCrop);
+  console.log("crops", crop, cropData, cropId, stagesFromCrop);
 
   const {
     data: insp,
     loading: inspLoading,
-    refetch: refetchInsp
+    refetch: refetchInsp,
   } = useQuery(LOAD_QDS_INSPECTION, {
-    variables: { cropDecalrationInspectionId: pid, cropId:pcrop_id },
-    skip: !pid
+    variables: { cropDecalrationInspectionId: pid, cropId: pcrop_id },
+    skip: !pid,
   });
   const tasks = insp?.CropDecalrationInspection?.stages || [];
 
-  const [initialize, { loading: initializing }] = useMutation(INITIALIZE_QDS_INSPECTION, {
-    refetchQueries: [
-      { query: LOAD_QDS_INSPECTION, variables: { cropDecalrationInspectionId: pid, cropId:pcrop_id  } },
-      { query: LOAD_CROP_DECLARATION, variables: { cropDeclarationId: pid } }
-    ],
-    awaitRefetchQueries: true
-  });
+  const [initialize, { loading: initializing }] = useMutation(
+    INITIALIZE_QDS_INSPECTION,
+    {
+      refetchQueries: [
+        {
+          query: LOAD_QDS_INSPECTION,
+          variables: { cropDecalrationInspectionId: pid, cropId: pcrop_id },
+        },
+        { query: LOAD_CROP_DECLARATION, variables: { cropDeclarationId: pid } },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
-  const [submitStage, { loading: submitting }] = useMutation(SUBMIT_QDS_INSPECTION_STAGE, {
-    refetchQueries: [{ query: LOAD_QDS_INSPECTION, variables: { cropDecalrationInspectionId: pid, cropId:pcrop_id } }],
-    awaitRefetchQueries: true
-  });
+  const [submitStage, { loading: submitting }] = useMutation(
+    SUBMIT_QDS_INSPECTION_STAGE,
+    {
+      refetchQueries: [
+        {
+          query: LOAD_QDS_INSPECTION,
+          variables: { cropDecalrationInspectionId: pid, cropId: pcrop_id },
+        },
+      ],
+      awaitRefetchQueries: true,
+    },
+  );
 
   const stageStatusMap = useMemo(() => {
     const m: Record<string, any> = {};
@@ -93,29 +117,37 @@ const QdsCropInspectionPage = () => {
   const firstPendingOrder = useMemo(() => {
     for (const s of stagesFromCrop) {
       const existing = stageStatusMap[String(s.id)];
-      const status = String(existing?.status || 'pending').toLowerCase();
-      console.log('Stage', s.order, status);
-      if (!existing || status === 'pending' || status === 'provisional') return s.order;
+      const status = String(existing?.status || "pending").toLowerCase();
+      console.log("Stage", s.order, status);
+      if (!existing || status === "pending" || status === "provisional")
+        return s.order;
     }
     return Infinity;
   }, [stagesFromCrop, stageStatusMap]);
 
   const handleInitialize = async () => {
     try {
-      const res = await initialize({ variables: { input: { cropDeclarationId: pid, cropDeclarationCropId: pcrop_id } } });
+      const res = await initialize({
+        variables: {
+          input: { cropDeclarationId: pid, cropDeclarationCropId: pcrop_id },
+        },
+      });
       const ok = res?.data?.initializeCropDecalrationInspection?.success;
       if (!ok)
         throw new Error(
-          res?.data?.initializeCropDecalrationInspection?.message || 'Failed to initialize'
+          res?.data?.initializeCropDecalrationInspection?.message ||
+            "Failed to initialize",
         );
-      toast('Inspection initialized');
+      toast("Inspection initialized");
     } catch (e: any) {
-      toast('Failed to initialize', { description: e?.message || 'Unknown error' });
+      toast("Failed to initialize", {
+        description: e?.message || "Unknown error",
+      });
     }
   };
 
   const canInitialize = !tasks || tasks.length === 0;
-  console.log('tasks', tasks)
+  console.log("tasks", tasks);
 
   return (
     <Container>
@@ -138,7 +170,9 @@ const QdsCropInspectionPage = () => {
               </div> */}
               <div>
                 <div className="text-gray-600">Grower</div>
-                <div className="font-medium text-gray-900">{planting?.createdBy?.username || '—'}</div>
+                <div className="font-medium text-gray-900">
+                  {planting?.createdBy?.username || "—"}
+                </div>
               </div>
               <div>
                 <div className="text-gray-600">Crop / Variety</div>
@@ -152,14 +186,15 @@ const QdsCropInspectionPage = () => {
                     ?.filter((c) => String(c.crop_id) === String(crop?.id))
                     .map((c) => (
                       <div key={c.id}>
-                        {crop?.name || '—'}
-                        {crop?.varieties
-                          ?.find((v: any) => String(v.id) === String(c.variety_id))
-                          ?.name ? ` – ${crop.varieties.find((v: any) => String(v.id) === String(c.variety_id))?.name}` : ''}
+                        {crop?.name || "—"}
+                        {crop?.varieties?.find(
+                          (v: any) => String(v.id) === String(c.variety_id),
+                        )?.name
+                          ? ` – ${crop.varieties.find((v: any) => String(v.id) === String(c.variety_id))?.name}`
+                          : ""}
                       </div>
-                    )) || '—'}
+                    )) || "—"}
                 </div>
-
               </div>
             </div>
           </div>
@@ -170,8 +205,12 @@ const QdsCropInspectionPage = () => {
               <div className="text-sm text-gray-700">
                 No inspection stages yet. Initialize to create stage checklist.
               </div>
-              <Button onClick={handleInitialize} disabled={initializing || inspLoading}>
-                <KeenIcon icon="play" /> {initializing ? 'Initializing…' : 'Initialize Inspection'}
+              <Button
+                onClick={handleInitialize}
+                disabled={initializing || inspLoading}
+              >
+                <KeenIcon icon="play" />{" "}
+                {initializing ? "Initializing…" : "Initialize Inspection"}
               </Button>
             </div>
           )}
@@ -186,11 +225,20 @@ const QdsCropInspectionPage = () => {
                 {stagesFromCrop.map((s: any, idx: number) => {
                   const existing = stageStatusMap[String(s.id)];
                   const isLast = idx === stagesFromCrop.length - 1;
-                  const enabled = !canInitialize && s.order <= firstPendingOrder;
-                  const status = existing?.status || 'pending';
-                  const due = existing?.dueDate ? formatIsoDate(existing.dueDate) : '—';
+                  const enabled =
+                    !canInitialize && s.order <= firstPendingOrder;
+                  const status = existing?.status || "pending";
+                  const due = existing?.dueDate
+                    ? formatIsoDate(existing.dueDate)
+                    : "—";
 
-                  console.log('enabled', enabled, s.order, firstPendingOrder, canInitialize )
+                  console.log(
+                    "enabled",
+                    enabled,
+                    s.order,
+                    firstPendingOrder,
+                    canInitialize,
+                  );
 
                   return (
                     <AccordionItem
@@ -199,20 +247,24 @@ const QdsCropInspectionPage = () => {
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center gap-3">
                             <span
-                              className={`size-5 rounded-full ${enabled ? 'bg-success' : 'bg-gray-300'}`}
+                              className={`size-5 rounded-full ${enabled ? "bg-success" : "bg-gray-300"}`}
                             ></span>
-                            <div className="font-medium text-gray-900">{s.stageName}</div>
+                            <div className="font-medium text-gray-900">
+                              {s.stageName}
+                            </div>
                           </div>
                           <div className="flex items-center gap-4">
                             <span
                               style={{
-                                marginLeft: 5
+                                marginLeft: 5,
                               }}
                               className={badgeClass(status)}
                             >
                               {String(status)}
                             </span>
-                            <span className="text-xs text-gray-600">Due: {due}</span>
+                            <span className="text-xs text-gray-600">
+                              Due: {due}
+                            </span>
                           </div>
                         </div>
                       }
@@ -235,21 +287,23 @@ const QdsCropInspectionPage = () => {
                                   inspectionTypeId: String(s.id),
                                   decision: payload.decision,
                                   comment: payload.comment || null,
-                                  inputs: payload.inputs
-                                }
-                              }
+                                  inputs: payload.inputs,
+                                },
+                              },
                             });
-                            const ok = res?.data?.submitCropDeclarationInspectionStage?.success;
+                            const ok =
+                              res?.data?.submitCropDeclarationInspectionStage
+                                ?.success;
                             if (!ok)
                               throw new Error(
-                                res?.data?.submitCropDeclarationInspectionStage?.message ||
-                                  'Failed to submit stage'
+                                res?.data?.submitCropDeclarationInspectionStage
+                                  ?.message || "Failed to submit stage",
                               );
-                            toast('Stage submitted');
+                            toast("Stage submitted");
                             await refetchInsp?.();
                           } catch (e: any) {
-                            toast('Failed to submit stage', {
-                              description: e?.message || 'Unknown error'
+                            toast("Failed to submit stage", {
+                              description: e?.message || "Unknown error",
                             });
                           }
                         }}
@@ -273,7 +327,7 @@ const StageForm = ({
   crop,
   stage,
   task,
-  onSubmit
+  onSubmit,
 }: {
   enabled: boolean;
   isLast: boolean;
@@ -281,33 +335,42 @@ const StageForm = ({
   crop: any;
   stage: any;
   task: any;
-  onSubmit: (payload: { decision: StageDecision; comment?: string; inputs: any }) => Promise<void>;
+  onSubmit: (payload: {
+    decision: StageDecision;
+    comment?: string;
+    inputs: any;
+  }) => Promise<void>;
 }) => {
   const [values, setValues] = useState<any>({
-    gpsLat: planting?.location?.gpsLat || '',
-    gpsLng: planting?.location?.gpsLng || '',
-    seedClass: planting?.seedClass || '',
-    fieldSize: planting?.areaHa || '',
-    offTypes: '',
-    diseases: '',
-    noxiousWeeds: '',
-    otherFeatures: '',
-    otherWeeds: '',
-    isolationMode: 'distance',
-    isolationDistance: '',
-    plantCount: '',
-    generalCondition: '',
-    estimatedYield: '',
-    remarks: ''
+    gpsLat: planting?.location?.gpsLat || "",
+    gpsLng: planting?.location?.gpsLng || "",
+    seedClass: planting?.seedClass || "",
+    fieldSize: planting?.areaHa || "",
+    offTypes: "",
+    diseases: "",
+    noxiousWeeds: "",
+    otherFeatures: "",
+    otherWeeds: "",
+    isolationMode: "distance",
+    isolationDistance: "",
+    plantCount: "",
+    generalCondition: "",
+    estimatedYield: "",
+    remarks: "",
   });
-  const [decision, setDecision] = useState<StageDecision>(isLast ? 'accepted' : 'provisional');
-  const [comment, setComment] = useState('');
+  const [decision, setDecision] = useState<StageDecision>(
+    isLast ? "accepted" : "provisional",
+  );
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     // If task has previous inputs, prefill
     if (task?.inputs) {
       try {
-        const prev = typeof task.inputs === 'string' ? JSON.parse(task.inputs) : task.inputs;
+        const prev =
+          typeof task.inputs === "string"
+            ? JSON.parse(task.inputs)
+            : task.inputs;
         setValues((v: any) => ({ ...v, ...prev }));
       } catch {}
     }
@@ -320,28 +383,29 @@ const StageForm = ({
         setValues((v: any) => ({
           ...v,
           gpsLat: String(pos.coords.latitude),
-          gpsLng: String(pos.coords.longitude)
+          gpsLng: String(pos.coords.longitude),
         }));
       },
-      () => {}
+      () => {},
     );
   };
 
-  const canPrint = String(task?.status || '').toLowerCase() !== 'pending' && !!task;
+  const canPrint =
+    String(task?.status || "").toLowerCase() !== "pending" && !!task;
 
   const handlePrint = () => {
     try {
-      const win = window.open('', '_blank');
+      const win = window.open("", "_blank");
       if (!win) return;
       const html = `<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Inspection Report</title></head><body>
-        <h2>Inspection Report – ${stage?.stageName || ''}</h2>
-        <p><strong>SR8:</strong> ${planting?.sr8Number || '—'}</p>
-        <p><strong>Grower:</strong> ${planting?.applicantName || '—'}</p>
-        <p><strong>Crop/Variety:</strong> ${(planting?.crop?.name || '—') + (planting?.variety?.name ? ' – ' + planting?.variety?.name : '')}</p>
+        <h2>Inspection Report – ${stage?.stageName || ""}</h2>
+        <p><strong>SR8:</strong> ${planting?.sr8Number || "—"}</p>
+        <p><strong>Grower:</strong> ${planting?.applicantName || "—"}</p>
+        <p><strong>Crop/Variety:</strong> ${(planting?.crop?.name || "—") + (planting?.variety?.name ? " – " + planting?.variety?.name : "")}</p>
         <hr />
         <pre style="font-family: ui-monospace; white-space: pre-wrap">${JSON.stringify(values, null, 2)}</pre>
         <p><strong>Decision:</strong> ${decision}</p>
-        <p><strong>Comment:</strong> ${comment || '—'}</p>
+        <p><strong>Comment:</strong> ${comment || "—"}</p>
         <script>window.addEventListener('load', () => setTimeout(() => { window.print(); window.close(); }, 200));</script>
       </body></html>`;
       win.document.open();
@@ -361,7 +425,12 @@ const StageForm = ({
               onChange={(e) => setValues({ ...values, gpsLat: e.target.value })}
               readOnly={!enabled}
             />
-            <Button type="button" variant="outline" onClick={handleGeo} disabled={!enabled}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleGeo}
+              disabled={!enabled}
+            >
               Get GPS
             </Button>
           </div>
@@ -378,7 +447,9 @@ const StageForm = ({
           <label className="form-label">Seed class</label>
           <Input
             value={values.seedClass}
-            onChange={(e) => setValues({ ...values, seedClass: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, seedClass: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -386,7 +457,9 @@ const StageForm = ({
           <label className="form-label">Enter size of field (ha)</label>
           <Input
             value={values.fieldSize}
-            onChange={(e) => setValues({ ...values, fieldSize: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, fieldSize: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -410,7 +483,9 @@ const StageForm = ({
           <label className="form-label">Noxious weeds</label>
           <Input
             value={values.noxiousWeeds}
-            onChange={(e) => setValues({ ...values, noxiousWeeds: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, noxiousWeeds: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -418,7 +493,9 @@ const StageForm = ({
           <label className="form-label">Other features</label>
           <Input
             value={values.otherFeatures}
-            onChange={(e) => setValues({ ...values, otherFeatures: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, otherFeatures: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -426,7 +503,9 @@ const StageForm = ({
           <label className="form-label">Other weeds</label>
           <Input
             value={values.otherWeeds}
-            onChange={(e) => setValues({ ...values, otherWeeds: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, otherWeeds: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -434,7 +513,9 @@ const StageForm = ({
           <label className="form-label">Isolation Distance (m)</label>
           <Input
             value={values.isolationDistance}
-            onChange={(e) => setValues({ ...values, isolationDistance: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, isolationDistance: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -442,7 +523,9 @@ const StageForm = ({
           <label className="form-label">Plant Count</label>
           <Input
             value={values.plantCount}
-            onChange={(e) => setValues({ ...values, plantCount: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, plantCount: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -451,7 +534,9 @@ const StageForm = ({
           <Textarea
             rows={3}
             value={values.generalCondition}
-            onChange={(e) => setValues({ ...values, generalCondition: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, generalCondition: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -459,7 +544,9 @@ const StageForm = ({
           <label className="form-label">Estimated yield (Kg)</label>
           <Input
             value={values.estimatedYield}
-            onChange={(e) => setValues({ ...values, estimatedYield: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...values, estimatedYield: e.target.value })
+            }
             readOnly={!enabled}
           />
         </div>
@@ -475,14 +562,16 @@ const StageForm = ({
       </div>
 
       <div className="flex flex-wrap items-center gap-4 mt-4">
-        <div className="text-sm font-medium text-gray-800">Inspection decision</div>
+        <div className="text-sm font-medium text-gray-800">
+          Inspection decision
+        </div>
         {!isLast && (
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
-                checked={decision === 'provisional'}
-                onChange={() => setDecision('provisional')}
+                checked={decision === "provisional"}
+                onChange={() => setDecision("provisional")}
                 disabled={!enabled}
               />
               Provisional
@@ -490,8 +579,8 @@ const StageForm = ({
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
-                checked={decision === 'skipped'}
-                onChange={() => setDecision('skipped')}
+                checked={decision === "skipped"}
+                onChange={() => setDecision("skipped")}
                 disabled={!enabled}
               />
               Skip
@@ -499,8 +588,8 @@ const StageForm = ({
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
-                checked={decision === 'rejected'}
-                onChange={() => setDecision('rejected')}
+                checked={decision === "rejected"}
+                onChange={() => setDecision("rejected")}
                 disabled={!enabled}
               />
               Reject
@@ -512,8 +601,8 @@ const StageForm = ({
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
-                checked={decision === 'accepted'}
-                onChange={() => setDecision('accepted')}
+                checked={decision === "accepted"}
+                onChange={() => setDecision("accepted")}
                 disabled={!enabled}
               />
               Accepted
@@ -521,8 +610,8 @@ const StageForm = ({
             <label className="flex items-center gap-2 text-sm">
               <input
                 type="radio"
-                checked={decision === 'rejected'}
-                onChange={() => setDecision('rejected')}
+                checked={decision === "rejected"}
+                onChange={() => setDecision("rejected")}
                 disabled={!enabled}
               />
               Rejected
@@ -543,7 +632,9 @@ const StageForm = ({
 
       <div className="flex items-center justify-between mt-4">
         <div className="text-xs text-gray-600">
-          {task?.submittedAt ? `Submitted: ${formatDateTime(task.submittedAt)}` : 'Not submitted'}
+          {task?.submittedAt
+            ? `Submitted: ${formatDateTime(task.submittedAt)}`
+            : "Not submitted"}
         </div>
         <div className="flex items-center gap-2">
           <Button variant="light" onClick={handlePrint} disabled={!canPrint}>

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const getMatches = (query: string): boolean => {
   // Prevents SSR issues
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     return window.matchMedia(query).matches;
   }
   return false;
@@ -21,10 +21,10 @@ const useMediaQuery = (query: string): boolean => {
     // Triggered at the first client-side load and if query changes
     handleChange();
 
-    matchMedia.addEventListener('change', handleChange);
+    matchMedia.addEventListener("change", handleChange);
 
     return () => {
-      matchMedia.removeEventListener('change', handleChange);
+      matchMedia.removeEventListener("change", handleChange);
     };
   }, [query]);
 

@@ -1,3 +1,3 @@
-export * from './AccountSettingsPlainContent';
-export * from './AccountSettingsPlainPage';
-export * from './blocks';
+export * from "./AccountSettingsPlainContent";
+export * from "./AccountSettingsPlainPage";
+export * from "./blocks";

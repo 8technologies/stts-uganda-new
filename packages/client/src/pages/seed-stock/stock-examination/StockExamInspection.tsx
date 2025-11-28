@@ -27,7 +27,12 @@ interface Props {
   onSaved?: (data: any) => void;
 }
 
-const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, onSaved }) => {
+const StockInspectionSheet: React.FC<Props> = ({
+  open,
+  onOpenChange,
+  stockId,
+  onSaved,
+}) => {
   const [formData, setFormData] = useState({
     decision: "",
     report: {
@@ -44,7 +49,9 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
     remarks: "",
   });
 
-  const [saveExamInspection, { loading: savingMutation }] = useMutation(SUBMIT_STOCK_EXAMINATION_INSPECTION);
+  const [saveExamInspection, { loading: savingMutation }] = useMutation(
+    SUBMIT_STOCK_EXAMINATION_INSPECTION,
+  );
 
   const handleChange = (field: string, value: string | number) => {
     setFormData((prev) => ({
@@ -74,7 +81,9 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
           yield: parseFloat(formData.report.yield as string),
           seed_class: formData.report.seed_class,
           purity: parseFloat(formData.report.purity as string),
-          moisture_content: parseFloat(formData.report.moisture_content as string),
+          moisture_content: parseFloat(
+            formData.report.moisture_content as string,
+          ),
           insect_damage: formData.report.insect_damage,
           moldiness: formData.report.moldiness,
           weeds: formData.report.weeds,
@@ -87,16 +96,21 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
     console.log("Submitting payload:", payload);
 
     const { data } = await saveExamInspection({
-        variables:payload
-        
-      });
+      variables: payload,
+    });
 
     if (data?.submitStockExaminationInspection?.success) {
-        toast.success(data.submitStockExaminationInspection.message || 'Stock examination saved successfully');
-        onSaved?.(data.submitStockExaminationInspection.data);
-        onOpenChange(false);
+      toast.success(
+        data.submitStockExaminationInspection.message ||
+          "Stock examination saved successfully",
+      );
+      onSaved?.(data.submitStockExaminationInspection.data);
+      onOpenChange(false);
     } else {
-        toast.error(data?.submitStockExaminationInspection?.message || 'Failed to save stock examination');
+      toast.error(
+        data?.submitStockExaminationInspection?.message ||
+          "Failed to save stock examination",
+      );
     }
 
     // onOpenChange(false);
@@ -115,7 +129,9 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
               <KeenIcon icon="search-check" className="text-xl" />
             </div>
             <div>
-              <div className="text-xl font-semibold text-gray-900">Stock Inspection</div>
+              <div className="text-xl font-semibold text-gray-900">
+                Stock Inspection
+              </div>
               <div className="text-sm text-gray-500">
                 Fill in the inspection details below
               </div>
@@ -124,7 +140,10 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
         </SheetHeader>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto p-6 space-y-6"
+        >
           {/* Report Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -133,7 +152,9 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
                 type="number"
                 step="0.1"
                 value={formData.report.field_size}
-                onChange={(e) => handleReportChange("field_size", e.target.value)}
+                onChange={(e) =>
+                  handleReportChange("field_size", e.target.value)
+                }
               />
             </div>
             <div>
@@ -145,10 +166,14 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Seed Class</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Seed Class
+              </label>
               <Select
                 value={formData.report.seed_class || ""}
-                onValueChange={(value) => handleReportChange("seed_class", value)}
+                onValueChange={(value) =>
+                  handleReportChange("seed_class", value)
+                }
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Seed Class" />
@@ -196,7 +221,9 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
               <Input
                 type="text"
                 value={formData.report.moldiness}
-                onChange={(e) => handleReportChange("moldiness", e.target.value)}
+                onChange={(e) =>
+                  handleReportChange("moldiness", e.target.value)
+                }
               />
             </div>
             <div>
@@ -247,7 +274,11 @@ const StockInspectionSheet: React.FC<Props> = ({ open, onOpenChange, stockId, on
 
         {/* Footer */}
         <div className="border-t bg-white px-6 py-4 flex items-center justify-between shadow-sm">
-          <Button variant="light" onClick={() => onOpenChange(false)} className="px-6">
+          <Button
+            variant="light"
+            onClick={() => onOpenChange(false)}
+            className="px-6"
+          >
             Close
           </Button>
           <Button

@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 const HeaderSearch = () => {
   const handleInputChange = () => {
@@ -15,7 +15,9 @@ const HeaderSearch = () => {
         value=""
         onChange={handleInputChange}
       />
-      <span className="text-2sm text-gray-700 text-nowrap hidden lg:inline">cmd + /</span>
+      <span className="text-2sm text-gray-700 text-nowrap hidden lg:inline">
+        cmd + /
+      </span>
     </div>
   );
 };

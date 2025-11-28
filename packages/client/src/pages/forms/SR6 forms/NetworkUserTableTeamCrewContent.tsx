@@ -1,5 +1,5 @@
-import { SR6s } from './blocks/SR6';
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
+import { SR6s } from "./blocks/SR6";
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
 
 const NetworkUserTableTeamCrewContent = () => {
   return (

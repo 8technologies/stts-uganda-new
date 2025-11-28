@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { TimelinesWrapper } from '@/partials/timelines/default/item';
+import { TimelinesWrapper } from "@/partials/timelines/default/item";
 
 const ActivitiesFollowersMilestone = () => {
   return (
@@ -8,7 +8,10 @@ const ActivitiesFollowersMilestone = () => {
       <div className="flex flex-col">
         <div className="text-sm text-gray-900">
           Reaching the milestone of
-          <Link to="/public-profile/profiles/feeds" className="text-sm font-medium link">
+          <Link
+            to="/public-profile/profiles/feeds"
+            className="text-sm font-medium link"
+          >
             &nbsp;10,000 followers&nbsp;
           </Link>
           on the blog was a dream come true

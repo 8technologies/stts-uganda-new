@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { DropdownCard1 } from '@/partials/dropdowns/general';
+import { DropdownCard1 } from "@/partials/dropdowns/general";
 
 interface IConnectionsItem {
   avatar: string;
@@ -22,29 +22,29 @@ const Connections = ({ title }: IConnectionsProps) => {
 
   const items: IConnectionsItems = [
     {
-      avatar: '300-3.png',
-      name: 'Tyler Hero',
+      avatar: "300-3.png",
+      name: "Tyler Hero",
       connections: 6,
-      connected: false
+      connected: false,
     },
     {
-      avatar: '300-1.png',
-      name: 'Esther Howard',
+      avatar: "300-1.png",
+      name: "Esther Howard",
       connections: 29,
-      connected: true
+      connected: true,
     },
     {
-      avatar: '300-14.png',
-      name: 'Cody Fisher',
+      avatar: "300-14.png",
+      name: "Cody Fisher",
       connections: 34,
-      connected: false
+      connected: false,
     },
     {
-      avatar: '300-7.png',
-      name: 'Arlene McCoy',
+      avatar: "300-7.png",
+      name: "Arlene McCoy",
       connections: 1,
-      connected: true
-    }
+      connected: true,
+    },
   ];
 
   const renderItem = (item: IConnectionsItem, index: number) => {
@@ -64,7 +64,9 @@ const Connections = ({ title }: IConnectionsProps) => {
             >
               {item.name}
             </a>
-            <span className="text-xs text-gray-700">{item.connections} connections</span>
+            <span className="text-xs text-gray-700">
+              {item.connections} connections
+            </span>
           </div>
         </div>
 
@@ -91,15 +93,15 @@ const Connections = ({ title }: IConnectionsProps) => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -127,4 +129,9 @@ const Connections = ({ title }: IConnectionsProps) => {
   );
 };
 
-export { Connections, type IConnectionsItem, type IConnectionsItems, type IConnectionsProps };
+export {
+  Connections,
+  type IConnectionsItem,
+  type IConnectionsItems,
+  type IConnectionsProps,
+};

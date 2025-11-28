@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 const UnlockPartnerships = () => {
   return (
@@ -14,19 +14,19 @@ const UnlockPartnerships = () => {
             </h2>
 
             <p className="text-sm text-gray-700 leading-5.5">
-              Explore exciting collaboration opportunities with our blog. We&apos;re open to
-              partnerships, guest posts, and more. Join us to share your insights and grow your
-              audience.
+              Explore exciting collaboration opportunities with our blog.
+              We&apos;re open to partnerships, guest posts, and more. Join us to
+              share your insights and grow your audience.
             </p>
           </div>
 
           <img
-            src={toAbsoluteUrl('/media/illustrations/1.svg')}
+            src={toAbsoluteUrl("/media/illustrations/1.svg")}
             className="dark:hidden max-h-[160px]"
             alt=""
           />
           <img
-            src={toAbsoluteUrl('/media/illustrations/1-dark.svg')}
+            src={toAbsoluteUrl("/media/illustrations/1-dark.svg")}
             className="light:hidden max-h-[160px]"
             alt=""
           />

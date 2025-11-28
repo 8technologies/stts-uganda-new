@@ -1,32 +1,32 @@
-import { type MouseEvent, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import clsx from 'clsx';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
-import { useAuthContext } from '@/auth';
-import { useLayout } from '@/providers';
-import { Alert } from '@/components';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client/react';
-import { LOGIN } from '@/gql/mutations';
+import { type MouseEvent, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import clsx from "clsx";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils";
+import { useAuthContext } from "@/auth";
+import { useLayout } from "@/providers";
+import { Alert } from "@/components";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { LOGIN } from "@/gql/mutations";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Username is required'),
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Username is required"),
   password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Password is required'),
-  remember: Yup.boolean()
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required("Password is required"),
+  remember: Yup.boolean(),
 });
 
 const initialValues = {
-  email: '',
-  password: '',
-  remember: false
+  email: "",
+  password: "",
+  remember: false,
 };
 
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
   const { login, setCurrentUser, saveAuth } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || "/";
   const signupSuccess = location.state?.signupSuccess as boolean | undefined;
   const [showPassword, setShowPassword] = useState(false);
   const { currentLayout } = useLayout();
@@ -48,27 +48,27 @@ const Login = () => {
 
       try {
         if (!login) {
-          throw new Error('JWTProvider is required for this form.');
+          throw new Error("JWTProvider is required for this form.");
         }
 
         // await login(values.email, values.password);
         const res = await loginUser({
           variables: {
             username: values.email,
-            password: values.password
-          }
+            password: values.password,
+          },
         });
 
         saveAuth({
           access_token: res.data.login.token,
-          refreshToken: null
+          refreshToken: null,
         });
         setCurrentUser(res.data.login.user);
 
         if (values.remember) {
-          localStorage.setItem('email', values.email);
+          localStorage.setItem("email", values.email);
         } else {
-          localStorage.removeItem('email');
+          localStorage.removeItem("email");
         }
 
         // if (data) {
@@ -76,18 +76,18 @@ const Login = () => {
         //   console.log(data);
         //   // navigate(from , { replace: true });
 
-        navigate(from || '', { replace: true });
+        navigate(from || "", { replace: true });
         // } else {
         //   throw new Error('Invalid login response4');
         // }
       } catch {
         // setStatus(error?.message);
-        setStatus(error?.message || 'Login failed');
+        setStatus(error?.message || "Login failed");
         setSubmitting(false);
       } finally {
         setLoading(false);
       }
-    }
+    },
   });
 
   const togglePassword = (event: MouseEvent<HTMLButtonElement>) => {
@@ -107,8 +107,13 @@ const Login = () => {
         noValidate
       >
         <div className="text-center mb-2.5 flex flex-col items-center gap-2">
-          <img src={`https://seedtracking.net/assets/images/maaif.png`} className="h-20 w-20" />
-          <h3 className="text-lg font-semibold text-gray-900 leading-none mb-1">STTS Login</h3>
+          <img
+            src={`https://seedtracking.net/assets/images/maaif.png`}
+            className="h-20 w-20"
+          />
+          <h3 className="text-lg font-semibold text-gray-900 leading-none mb-1">
+            STTS Login
+          </h3>
           {/* <div className="flex items-center justify-center font-medium">
             <span className="text-2sm text-gray-600 me-1.5">Need an account?</span>
             <Link
@@ -149,7 +154,9 @@ const Login = () => {
         </div> */}
 
         {signupSuccess && (
-          <Alert variant="success">Account created successfully. You can now sign in.</Alert>
+          <Alert variant="success">
+            Account created successfully. You can now sign in.
+          </Alert>
         )}
 
         {error?.message && <Alert variant="danger">{error?.message}</Alert>}
@@ -160,9 +167,9 @@ const Login = () => {
             <input
               placeholder="Enter username"
               autoComplete="off"
-              {...formik.getFieldProps('email')}
-              className={clsx('form-control', {
-                'is-invalid': formik.touched.email && formik.errors.email
+              {...formik.getFieldProps("email")}
+              className={clsx("form-control", {
+                "is-invalid": formik.touched.email && formik.errors.email,
               })}
             />
           </label>
@@ -178,9 +185,9 @@ const Login = () => {
             <label className="form-label text-gray-900">Password</label>
             <Link
               to={
-                currentLayout?.name === 'auth-branded'
-                  ? '/auth/reset-password'
-                  : '/auth/classic/reset-password'
+                currentLayout?.name === "auth-branded"
+                  ? "/auth/reset-password"
+                  : "/auth/classic/reset-password"
               }
               className="text-2sm link shrink-0"
             >
@@ -189,19 +196,22 @@ const Login = () => {
           </div>
           <label className="input">
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Enter Password"
               autoComplete="off"
-              {...formik.getFieldProps('password')}
-              className={clsx('form-control', {
-                'is-invalid': formik.touched.password && formik.errors.password
+              {...formik.getFieldProps("password")}
+              className={clsx("form-control", {
+                "is-invalid": formik.touched.password && formik.errors.password,
               })}
             />
             <button className="btn btn-icon" onClick={togglePassword}>
-              <KeenIcon icon="eye" className={clsx('text-gray-500', { hidden: showPassword })} />
+              <KeenIcon
+                icon="eye"
+                className={clsx("text-gray-500", { hidden: showPassword })}
+              />
               <KeenIcon
                 icon="eye-slash"
-                className={clsx('text-gray-500', { hidden: !showPassword })}
+                className={clsx("text-gray-500", { hidden: !showPassword })}
               />
             </button>
           </label>
@@ -216,7 +226,7 @@ const Login = () => {
           <input
             className="checkbox checkbox-sm"
             type="checkbox"
-            {...formik.getFieldProps('remember')}
+            {...formik.getFieldProps("remember")}
           />
           <span className="checkbox-label">Remember me</span>
         </label>
@@ -226,11 +236,15 @@ const Login = () => {
           className="btn btn-primary flex justify-center grow"
           disabled={logingIn || loading || formik.isSubmitting}
         >
-          {logingIn || loading ? 'Please wait...' : 'Login'}
+          {logingIn || loading ? "Please wait..." : "Login"}
         </button>
 
         <Link
-          to={currentLayout?.name === 'auth-branded' ? '/auth/signup' : '/auth/classic/signup'}
+          to={
+            currentLayout?.name === "auth-branded"
+              ? "/auth/signup"
+              : "/auth/classic/signup"
+          }
           className="text-3sm link shrink-0 ml-auto"
         >
           Register

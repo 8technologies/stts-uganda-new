@@ -1,3 +1,3 @@
-export * from './ProfileNFTContent';
-export * from './ProfileNFTPage';
-export * from './blocks';
+export * from "./ProfileNFTContent";
+export * from "./ProfileNFTPage";
+export * from "./blocks";

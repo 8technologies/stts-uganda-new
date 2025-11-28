@@ -1,19 +1,26 @@
-import { Fragment, useEffect, useState } from 'react';
-import { useResponsive } from '@/hooks';
-import { KeenIcon } from '@/components';
-import { TMenuConfig, MenuItem, MenuLink, MenuTitle, MenuArrow, Menu } from '@/components/menu';
+import { Fragment, useEffect, useState } from "react";
+import { useResponsive } from "@/hooks";
+import { KeenIcon } from "@/components";
+import {
+  TMenuConfig,
+  MenuItem,
+  MenuLink,
+  MenuTitle,
+  MenuArrow,
+  Menu,
+} from "@/components/menu";
 import {
   MegaMenuSubProfiles,
   MegaMenuSubAccount,
   MegaMenuSubNetwork,
   MegaMenuSubAuth,
-  MegaMenuSubHelp
-} from '@/partials/menu/mega-menu';
-import { MENU_MEGA } from '@/config';
-import { useLanguage } from '@/i18n';
+  MegaMenuSubHelp,
+} from "@/partials/menu/mega-menu";
+import { MENU_MEGA } from "@/config";
+import { useLanguage } from "@/i18n";
 
 const MegaMenuInner = () => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const build = (items: TMenuConfig) => {
     const homeItem = items[0];
     const publicProfilesItem = items[1];
@@ -24,9 +31,9 @@ const MegaMenuInner = () => {
     const { isRTL } = useLanguage();
 
     const linkClass =
-      'border-b border-b-transparent menu-item-active:border-b-gray-400 menu-item-here:border-b-gray-400';
+      "border-b border-b-transparent menu-item-active:border-b-gray-400 menu-item-here:border-b-gray-400";
     const titleClass =
-      'text-2sm text-gray-800 dark:menu-item-here:text-gray-900 dark:menu-item-active:text-gray-900 menu-item-show:text-gray-900 menu-item-here:text-gray-900 menu-item-active:font-medium menu-item-here:font-medium';
+      "text-2sm text-gray-800 dark:menu-item-here:text-gray-900 dark:menu-item-active:text-gray-900 menu-item-show:text-gray-900 menu-item-here:text-gray-900 menu-item-active:font-medium menu-item-here:font-medium";
 
     return (
       <Fragment>
@@ -38,10 +45,10 @@ const MegaMenuInner = () => {
 
         <MenuItem
           key="public-profiles"
-          toggle={desktopMode ? 'dropdown' : 'accordion'}
-          trigger={desktopMode ? 'hover' : 'click'}
+          toggle={desktopMode ? "dropdown" : "accordion"}
+          trigger={desktopMode ? "hover" : "click"}
           dropdownProps={{
-            placement: isRTL() ? 'bottom-end' : 'bottom-start'
+            placement: isRTL() ? "bottom-end" : "bottom-start",
           }}
         >
           <MenuLink className={linkClass}>
@@ -53,18 +60,18 @@ const MegaMenuInner = () => {
 
         <MenuItem
           key="my-account"
-          toggle={desktopMode ? 'dropdown' : 'accordion'}
-          trigger={desktopMode ? 'hover' : 'click'}
+          toggle={desktopMode ? "dropdown" : "accordion"}
+          trigger={desktopMode ? "hover" : "click"}
           dropdownProps={{
-            placement: isRTL() ? 'bottom-end' : 'bottom-start',
+            placement: isRTL() ? "bottom-end" : "bottom-start",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: isRTL() ? [300, 0] : [-300, 0] // [skid, distance]
-                }
-              }
-            ]
+                  offset: isRTL() ? [300, 0] : [-300, 0], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuLink className={linkClass}>
@@ -76,18 +83,18 @@ const MegaMenuInner = () => {
 
         <MenuItem
           key="network"
-          toggle={desktopMode ? 'dropdown' : 'accordion'}
-          trigger={desktopMode ? 'hover' : 'click'}
+          toggle={desktopMode ? "dropdown" : "accordion"}
+          trigger={desktopMode ? "hover" : "click"}
           dropdownProps={{
-            placement: 'bottom-start',
+            placement: "bottom-start",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [-300, 0] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [-300, 0], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuLink className={linkClass}>
@@ -99,18 +106,18 @@ const MegaMenuInner = () => {
 
         <MenuItem
           key="auth"
-          toggle={desktopMode ? 'dropdown' : 'accordion'}
-          trigger={desktopMode ? 'hover' : 'click'}
+          toggle={desktopMode ? "dropdown" : "accordion"}
+          trigger={desktopMode ? "hover" : "click"}
           dropdownProps={{
-            placement: 'bottom-start',
+            placement: "bottom-start",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [-300, 0] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [-300, 0], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuLink className={linkClass}>
@@ -122,18 +129,18 @@ const MegaMenuInner = () => {
 
         <MenuItem
           key="help"
-          toggle={desktopMode ? 'dropdown' : 'accordion'}
-          trigger={desktopMode ? 'hover' : 'click'}
+          toggle={desktopMode ? "dropdown" : "accordion"}
+          trigger={desktopMode ? "hover" : "click"}
           dropdownProps={{
-            placement: 'bottom-start',
+            placement: "bottom-start",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [-20, 0] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [-20, 0], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuLink className={linkClass}>
@@ -150,7 +157,10 @@ const MegaMenuInner = () => {
     return (
       <MenuArrow className="flex lg:hidden text-gray-400">
         <KeenIcon icon="plus" className="text-2xs menu-item-show:hidden" />
-        <KeenIcon icon="minus" className="text-2xs hidden menu-item-show:inline-flex" />
+        <KeenIcon
+          icon="minus"
+          className="text-2xs hidden menu-item-show:inline-flex"
+        />
       </MenuArrow>
     );
   };

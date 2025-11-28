@@ -1,7 +1,7 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonHexagonBadge } from '../common';
-import { ReactNode } from 'react';
+import { CommonHexagonBadge } from "../common";
+import { ReactNode } from "react";
 
 interface INotificationProps {
   icon: string;
@@ -11,7 +11,13 @@ interface INotificationProps {
   actions: ReactNode;
 }
 
-const CardNotification = ({ icon, title, description, button, actions }: INotificationProps) => {
+const CardNotification = ({
+  icon,
+  title,
+  description,
+  button,
+  actions,
+}: INotificationProps) => {
   return (
     <div className="card-group flex items-center justify-between py-4 gap-2.5">
       <div className="flex items-center gap-3.5">

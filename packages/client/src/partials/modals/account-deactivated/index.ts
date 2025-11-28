@@ -1,1 +1,1 @@
-export * from './ModalAccountDeactivated';
+export * from "./ModalAccountDeactivated";
