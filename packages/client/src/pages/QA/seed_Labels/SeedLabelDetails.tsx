@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+// import { toast } from "@/components/ui/use-toast"; // optional - replace with your toast util or remove
 import { Button } from "@/components/ui/button";
+import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { APPROVE_SEED_LABEL, PRINT_SEED_LABEL } from "@/gql/mutations";
@@ -87,14 +89,24 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
     }
   };
 
-  const handlePrint = async () => {
-    try {
-      await printSeedLabel({ variables: { id: d.id } });
-      alert("Printing label...");
-    } catch (error) {
-      console.error("Error printing label:", error);
+  const handlePrint1 = async (formDetails: any) => {
+    if (printedOnce) {
+      // already printed once - block further printing
+      alert("This label has already been printed once and cannot be printed again.");
+      return;
     }
-  };
+    
+    try {
+      // call server mutation to record a print attempt (server should enforce one-time print)
+      const res = await printSeedLabel({ variables: { printSeedLabelRequestId: formDetails.id } });
+      // read mutation payload robustly (first field)
+      const payload = res?.data && Object.values(res.data)[0];
+      const ok = payload?.success ?? true; // default to true if your API returns raw data
+      if (!ok) {
+        const msg = payload?.message || "Failed to record printing.";
+        alert(msg);
+        return;
+      }
 
   const handlePrint1 = (formDetails: any) => {
     console.log("Printing Seed Label:", formDetails);
@@ -347,7 +359,11 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       popup.document.write(formHTML);
       popup.document.close();
     }
-  };
+  } catch (err) {
+    console.error("Print failed", err);
+    alert("Failed to record print. Try again or contact admin.");
+  }
+   }; 
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -569,10 +585,12 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             <Button
               onClick={() => handlePrint1(d)}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-11 font-medium shadow-sm transition-all duration-200"
+              disabled={!canPrintLabels || printing || printedOnce}
+              title={!canPrintLabels ? "You don't have permission to print" : printedOnce ? "Already printed" : undefined}
             >
-              <Printer className="w-4 h-4 mr-2" />
-              Print Label
-            </Button>
+               <Printer className="w-4 h-4 mr-2" />
+               Print Label
+             </Button>
             {/* )} */}
           </div>
 

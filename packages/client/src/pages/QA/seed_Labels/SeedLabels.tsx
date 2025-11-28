@@ -31,6 +31,7 @@ import {
   XCircle,
   AlertCircle,
   Package,
+  Printer
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/auth";
@@ -134,8 +135,14 @@ const SeedLabelManagementPage = () => {
         icon: <XCircle className="w-3.5 h-3.5" />,
         bg: "bg-red-100",
         text: "text-red-700",
-        label: "Rejected",
+        label: "Rejected"
       },
+      printed: {
+        icon: <Printer className="w-3.5 h-3.5" />,
+        bg: "bg-blue-100",
+        text: "text-blue-700",
+        label: "Printed"
+      }
     };
 
     const config = configs[status?.toLowerCase()] || {
@@ -440,7 +447,10 @@ const SeedLabelManagementPage = () => {
                                 <Eye className="mr-2 h-4 w-4 text-gray-600" />
                                 <span>View Details</span>
                               </DropdownMenuItem>
-                              <DropdownMenuItem
+                              {canDeleteLabels && label.status ==='pending' && (
+                                <>
+                                {console.log('userEditPermissions', label.status ==='pending')}
+                                <DropdownMenuItem
                                 onClick={() => handleEdit(label.id)}
                                 className="cursor-pointer"
                               >
@@ -454,6 +464,9 @@ const SeedLabelManagementPage = () => {
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 <span>Delete</span>
                               </DropdownMenuItem>
+                                </>
+                              )}
+                              
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </td>

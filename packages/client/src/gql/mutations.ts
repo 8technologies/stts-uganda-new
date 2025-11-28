@@ -718,8 +718,8 @@ const APPROVE_SEED_LABEL = gql`
   }
 `;
 const PRINT_SEED_LABEL = gql`
-  mutation ApproveSeedLabelRequest($approveSeedLabelRequestId: ID!) {
-    approveSeedLabelRequest(id: $approveSeedLabelRequestId) {
+  mutation PrintSeedLabelRequest($printSeedLabelRequestId: ID!) {
+    printSeedLabelRequest(id: $printSeedLabelRequestId) {
       success
       message
     }
@@ -806,6 +806,20 @@ export const SUBMIT_PLANTING_INSPECTION_STAGE = gql`
     submitPlantingInspectionStage(input: $input) {
       success
       message
+    }
+  }
+`;
+
+export const CREATE_ORDER = gql`
+  mutation CreateOrder($payload: OrderInput!) {
+    createOrder(payload: $payload) {
+      success
+      message
+      data {
+        id
+        status
+        createdAt
+      }
     }
   }
 `;

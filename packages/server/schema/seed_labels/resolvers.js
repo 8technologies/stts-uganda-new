@@ -35,7 +35,8 @@ export const mapLabelsRow = (row) => {
 const fetchSeedLabels = async ({
   id = null,
   user_id = null,
-  status = null,
+//   status = null,
+  statusNotIn = null,
 } = {}) => {
   try {
     const values = [];
@@ -51,9 +52,14 @@ const fetchSeedLabels = async ({
       values.push(user_id);
     }
 
-    if (status) {
-      where.push("seed_labels.status = ?");
-      values.push(status);
+    // if (statusNotIn) {
+    //   where.push("seed_labels.status = ?");
+    //   values.push(status);        
+    // }
+    if (Array.isArray(statusNotIn) && statusNotIn.length > 0) {
+      const placeholders = statusNotIn.map(() => "?").join(",");
+      where.push(`seed_labels.status NOT IN (${placeholders})`);
+      values.push(...statusNotIn);
     }
 
     const sql = `
@@ -71,53 +77,105 @@ const fetchSeedLabels = async ({
 };
 
 const seedLabelResolvers = {
-  Query: {
-    getSeedLabels: async (_parent, _args, context) => {
-      try {
-        const user = context?.req?.user;
-        const userPermissions = user?.permissions || [];
+    Query: {
+        getSeedLabels: async (_parent, _args, context) => {
+            try {
+                const user = context?.req?.user;
+                const userPermissions = user?.permissions || [];
 
-        checkPermission(
-          userPermissions,
-          "can_view_seed_labels",
-          "You dont have permissions to view seed labels"
-        );
+                checkPermission(
+                userPermissions,
+                "can_view_seed_labels", // consider a more specific permission, e.g., "can_view_seed_labels"
+                "You dont have permissions to view seed labels"
+                );
 
-        const can_manage_all_forms = hasPermission(
-          userPermissions,
-          "can_manage_seed_labels"
-        );
+                const can_manage_all_forms = hasPermission(
+                userPermissions,
+                "can_manage_seed_labels"
+                );
 
-        const can_view_only_assigned_seed_stock = hasPermission(
-          userPermissions,
-          "can_view_only_assigned_seed_lab_inspection"
-        );
+                const can_view_only_assigned_seed_stock = hasPermission(
+                userPermissions,
+                "can_view_only_assigned_seed_lab_inspection"
+                );
 
-        const can_print_seed_labels = hasPermission(
-          userPermissions,
-          "can_print_seed_labels"
-        );
+                const can_print_seed_labels = hasPermission(
+                userPermissions,
+                "can_print_seed_labels"
+                );
 
-        const can_approve_seed_labels = hasPermission(
-          userPermissions,
-          "can_approve_seed_labels"
-        );
+                const can_approve_seed_labels = hasPermission(
+                userPermissions,
+                "can_approve_seed_labels"
+                );
 
-        const status = (() => {
-          if (can_print_seed_labels) return "approved";
-          return null;
-        })();
+                let statusNotIn = null;
+                 statusNotIn = (() => {
+                if (can_print_seed_labels) return  ["pending", "rejected"];
+                return null;
+                })();
+                
+                const labs = await fetchSeedLabels({
+                user_id: can_manage_all_forms ? null : user?.id ?? null,
+                // status: status,
+                statusNotIn: statusNotIn,
+                });
 
-        const labs = await fetchSeedLabels({
-          user_id: can_manage_all_forms ? null : (user?.id ?? null),
-          status: status,
-        });
+                return labs;
+            } catch (error) {
+                throw new Error(`Failed to fetch seed labels: ${error.message}`);
+            }
+        },
 
-        return labs;
-      } catch (error) {
-        throw new Error(`Failed to fetch seed labels: ${error.message}`);
-      }
-    },
+        getSeedLabel: async (_parent, _args, context) => {
+            try {
+                const { id } = _args;
+                const user = context?.req?.user;
+                const userPermissions = user?.permissions || [];
+                console.log("ID here:", id)
+
+                checkPermission(
+                userPermissions,
+                "can_view_seed_labels", // consider a more specific permission, e.g., "can_view_seed_labels"
+                "You dont have permissions to view seed labels"
+                );
+
+                const can_manage_all_forms = hasPermission(
+                userPermissions,
+                "can_manage_seed_labels"
+                );
+
+                const can_view_only_assigned_seed_stock = hasPermission(
+                userPermissions,
+                "can_view_only_assigned_seed_lab_inspection"
+                );
+
+                const can_print_seed_labels = hasPermission(
+                userPermissions,
+                "can_print_seed_labels"
+                );
+
+                const can_approve_seed_labels = hasPermission(
+                userPermissions,
+                "can_approve_seed_labels"
+                );
+
+                const status = (() => {
+                if (can_print_seed_labels) return "approved";
+                return null;
+                })();
+                
+                const labs = await fetchSeedLabels({
+                id,
+                // user_id: can_manage_all_forms ? null : user?.id ?? null,
+                // status: status,
+                });
+
+                return labs;
+            } catch (error) {
+                throw new Error(`Failed to fetch seed labels: ${error.message}`);
+            }
+        },
 
     getSeedLabel: async (_parent, _args, context) => {
       try {
@@ -187,242 +245,277 @@ const seedLabelResolvers = {
       try {
         const variety_id = parent.crop_variety_id;
 
-        if (!variety_id) return null;
+    Mutation: {
+        saveSeedLabelRequest: async (_parent, args, context) => {
+            const connection = await db.getConnection();
+            try {
+                await connection.beginTransaction();
+                const {
+                    id,
+                    receipt,
+                    applicant_remark,
+                    seed_lab_id,
+                    seed_label_package,
+                    quantity,
+                    available_stock,
+                    image,
+                } = args.input;
 
-        const variety = await fetchVarietyById(variety_id);
+                console.log(args.input)
+                const user = context?.req?.user;
+                const userPermissions = user?.permissions || [];
 
-        return variety;
-      } catch (error) {
-        console.error("Error fetching crop variety:", error);
-        throw new GraphQLError(error.message);
-      }
-    },
-    Crop: async (parent) => {
-      try {
-        // 1️⃣ Get the variety based on crop_variety_id
-        const [varietyRows] = await db.execute(
-          "SELECT * FROM crop_varieties WHERE id = ?",
-          [parent.crop_variety_id]
-        );
+                checkPermission(
+                  userPermissions,
+                  "can_view_seed_labels",
+                  "You dont have permissions to request seed lab inspection"
+                );
 
-        if (!varietyRows || varietyRows.length === 0) {
-          return null; // no variety found
-        }
+                let seed_lab = {};
+                
+                if (seed_lab_id) {
 
-        const variety = varietyRows[0];
+                    seed_lab = await fetchSeedLabs({
+                        id: seed_lab_id,
+                        user_id: user.id,
+                    });
+                    console.log(" seed_lab:", seed_lab[0]?.variety_id);
+                }
 
-        const [cropRows] = await db.execute(
-          "SELECT * FROM crops WHERE id = ?",
-          [variety.crop_id]
-        );
+                const data = {
+                    user_id: user.id,
+                    crop_variety_id: seed_lab[0]?.variety_id || null,
+                    seed_lab_id,
+                    label_package:seed_label_package,
+                    quantity/* : parseInt(quantity), */,
+                    available_stock,
+                    applicant_remark,
+                }
+                console.log("data.........", data)
 
-        if (!cropRows || cropRows.length === 0) {
-          return null; // no crop found
-        }
+                const save_id = await saveData({
+                table: "seed_labels",
+                data,
+                id,
+                connection
+                });
 
-        return cropRows[0];
-      } catch (error) {
-        console.error("Error fetching crop:", error);
-        throw new Error("Failed to load crop.");
-      }
-    },
+                // If a receipt was uploaded, save it and capture its public path
+                let savedReceiptInfo = null;
+                let savedImageInfo = null;
+                if (receipt && image) {
+                try {
+                    savedReceiptInfo = await saveUpload({
+                    file: receipt,
+                    subdir: "receipts",
+                    });
 
-    SeedLab: async (parent) => {
-      try {
-        const seed_lab_id = parent.seed_lab_id;
+                    savedImageInfo = await saveUpload({
+                    file: image,
+                    subdir: "imgs",
+                    });
 
-        const [seedLab] = await fetchSeedLabs({
-          id: seed_lab_id,
-        });
-        return seedLab;
-      } catch (error) {
-        throw new GraphQLError(error.message);
-      }
-    },
-  },
+                } catch (e) {
+                    // If upload fails, rollback and bubble up
+                    throw new GraphQLError(`Receipt and image upload failed: ${e.message}`);
+                }
+                }
 
-  Mutation: {
-    saveSeedLabelRequest: async (_parent, args, context) => {
-      const connection = await db.getConnection();
-      try {
-        await connection.beginTransaction();
-        const {
-          id,
-          receipt,
-          applicant_remark,
-          seed_lab_id,
-          seed_label_package,
-          quantity,
-          available_stock,
-          image,
-        } = args.input;
+                // Record attachment metadata in form_attachments if a receipt was uploaded
+                if (savedReceiptInfo && savedImageInfo) {
+                try {
+                    // Update application_forms with receipt_id
+                    await saveData({
+                    table: "seed_labels",
+                    data: { receipt_id: savedReceiptInfo.filename, image_id: savedImageInfo.filename },
+                    id: save_id,
+                    connection,
+                    });
+                } catch (e) {
+                    // Non-fatal for the core form save; log but do not block
+                    console.error(
+                    "Failed to save form_attachments record or update receipt_id:",
+                    e.message
+                    );
+                }
+                }
 
-        console.log(args.input);
-        const user = context?.req?.user;
-        const userPermissions = user?.permissions || [];
+                await connection.commit();
 
-        checkPermission(
-          userPermissions,
-          "can_view_seed_labels",
-          "You dont have permissions to request seed lab inspection"
-        );
+                return {
+                success: true,
+                message: "Seed Label Request saved successfully",
+                data: {
+                    id: save_id,
+                    status: "pending",
+                    ...data,
+                },
+                };
+                
+            } catch (error) {
+                throw new Error(`Failed to save seed lab request: ${error.message}`);
+            }
+        },
+        approveSeedLabelRequest: async (parent, args, context) => {
+            const connection = await db.getConnection();
+            try {
+                console.log("Approving Seed Label with ID:", args);
+                const form_id  = args.id;
+                console.log("Form ID to approve:", form_id);
+                const userPermissions = context.req.user.permissions;
+                await connection.beginTransaction();
 
-        let seed_lab = {};
+                // check if user has permission to assign an inspector
+                checkPermission(
+                userPermissions,
+                "can_approve_seed_labels",
+                "You don't have permissions to approve a seed label"
+                );
 
-        if (seed_lab_id) {
-          seed_lab = await fetchSeedLabs({
-            id: seed_lab_id,
-            user_id: user.id,
-          });
-          console.log(" seed_lab:", seed_lab[0]?.variety_id);
-        }
+                // fetch the form details
+                const [formDetails] = await fetchSeedLabels({
+                id: form_id,
+                });
 
-        const data = {
-          user_id: user.id,
-          crop_variety_id: seed_lab[0]?.variety_id || null,
-          seed_lab_id,
-          label_package: seed_label_package,
-          quantity /* : parseInt(quantity), */,
-          available_stock,
-          applicant_remark,
-        };
-        console.log("data.........", data);
+                if (!formDetails)
+                throw new GraphQLError("Form with the provided id is not found!");
 
-        const save_id = await saveData({
-          table: "seed_labels",
-          data,
-          id,
-          connection,
-        });
+                // get the user associated to that form
+                const [formOwner] = await getUsers({
+                id: formDetails.user_id,
+                });
 
-        // If a receipt was uploaded, save it and capture its public path
-        let savedReceiptInfo = null;
-        let savedImageInfo = null;
-        if (receipt && image) {
-          try {
-            savedReceiptInfo = await saveUpload({
-              file: receipt,
-              subdir: "receipts",
-            });
+                if (!formOwner) throw new GraphQLError("Form owner not found!");
 
-            savedImageInfo = await saveUpload({
-              file: image,
-              subdir: "imgs",
-            });
-          } catch (e) {
-            // If upload fails, rollback and bubble up
-            throw new GraphQLError(
-              `Receipt and image upload failed: ${e.message}`
-            );
-          }
-        }
+                // update the form status/validity on application_forms
+                const data = {
+                status: "approved",
+                // user_id: formDetails.user_id,
+                // seed_lab_id: formDetails.seed_lab_id,
+                // crop_variety_id: formDetails.crop_variety_id,
+                // status_comment: "Accepted",
+                };
 
-        // Record attachment metadata in form_attachments if a receipt was uploaded
-        if (savedReceiptInfo && savedImageInfo) {
-          try {
-            // Update application_forms with receipt_id
-            await saveData({
-              table: "seed_labels",
-              data: {
-                receipt_id: savedReceiptInfo.filename,
-                image_id: savedImageInfo.filename,
-              },
-              id: save_id,
-              connection,
-            });
-          } catch (e) {
-            // Non-fatal for the core form save; log but do not block
-            console.error(
-              "Failed to save form_attachments record or update receipt_id:",
-              e.message
-            );
-          }
-        }
+                await saveData({
+                table: "seed_labels",
+                data,
+                id: form_id,
+                connection,
+                });
 
-        await connection.commit();
+                
+                // send email with attachment if any
+                await sendEmail({
+                from: '"STTS MAAIF" <tredumollc@gmail.com>',
+                to: formOwner.email,
+                subject: `${formDetails.form_type} Form Approval`,
+                message: `Congragulations!!!, Dear ${formOwner.name}, Your seed label has been approved.`,
+                // attachments,
+                });
 
-        return {
-          success: true,
-          message: "Seed Label Request saved successfully",
-          data: {
-            id: save_id,
-            status: "pending",
-            ...data,
-          },
-        };
-      } catch (error) {
-        throw new Error(`Failed to save seed lab request: ${error.message}`);
-      }
-    },
-    approveSeedLabelRequest: async (parent, args, context) => {
-      const connection = await db.getConnection();
-      try {
-        console.log("Approving Seed Label with ID:", args);
-        const form_id = args.id;
-        console.log("Form ID to approve:", form_id);
-        const userPermissions = context.req.user.permissions;
-        await connection.beginTransaction();
+                await connection.commit();
 
-        // check if user has permission to assign an inspector
-        checkPermission(
-          userPermissions,
-          "can_approve",
-          "You don't have permissions to approve a seed label"
-        );
+                return {
+                success: true,
+                message: "Seed label request approved successfully",
+                };
+            } catch (error) {
+                console.error("Error approving seed label request:", error);
+                await connection.rollback();
+                throw new GraphQLError(error.message);
+            }
+        },
+        printSeedLabelRequest: async (parent, args, context) => {
+            const connection = await db.getConnection();
+            try {
+                console.log("Printing Seed Label with ID:", args);
+                const form_id  = args.id;
+                console.log("Form ID to print:", form_id);
+                const userPermissions = context.req.user.permissions;
+                await connection.beginTransaction();
 
-        // fetch the form details
-        const [formDetails] = await fetchSeedLabels({
-          id: form_id,
-        });
+                // check if user has permission to assign an inspector
+                checkPermission(
+                userPermissions,
+                "can_print_seed_labels",
+                "You don't have permissions to print a seed label"
+                );
 
-        if (!formDetails)
-          throw new GraphQLError("Form with the provided id is not found!");
+                // fetch the form details
+                const [formDetails] = await fetchSeedLabels({
+                id: form_id,
+                });
 
-        // get the user associated to that form
-        const [formOwner] = await getUsers({
-          id: formDetails.user_id,
-        });
+                if (!formDetails)
+                throw new GraphQLError("Form with the provided id is not found!");
 
-        if (!formOwner) throw new GraphQLError("Form owner not found!");
+                // get the user associated to that form
+                const [formOwner] = await getUsers({
+                 id: formDetails.user_id,
+                });
 
-        // update the form status/validity on application_forms
-        const data = {
-          status: "approved",
-          // user_id: formDetails.user_id,
-          // seed_lab_id: formDetails.seed_lab_id,
-          // crop_variety_id: formDetails.crop_variety_id,
-          // status_comment: "Accepted",
-        };
+                if (!formOwner) throw new GraphQLError("Form owner not found!");
 
-        await saveData({
-          table: "seed_labels",
-          data,
-          id: form_id,
-          connection,
-        });
+                // update the form status/validity on application_forms
+                const data = {
+                status: "printed",
+                
+                };
 
-        // send email with attachment if any
-        await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
-          to: formOwner.email,
-          subject: `${formDetails.form_type} Form Approval`,
-          message: `Congragulations!!!, Dear ${formOwner.name}, Your seed label has been approved.`,
-          // attachments,
-        });
+                await saveData({
+                table: "seed_labels",
+                data,
+                id: form_id,
+                connection,
+                });
 
-        await connection.commit();
+                // const label = await fetchSeedLabels({ id });
+                const lab_id = formDetails.seed_lab_id;
+                const marketableSeed = await fetchSeedLabs({ id:lab_id });
+                const packages = formDetails.quantity/ formDetails.label_package;
+                const product ={
+                    user_id: formDetails.user_id,
+                    crop_variety_id : formDetails.crop_variety_id,
+                    seed_lab_id : formDetails.seed_lab_id,
+                    seed_label_id : formDetails.id,
 
-        return {
-          success: true,
-          message: "Seed label request approved successfully",
-        };
-      } catch (error) {
-        console.error("Error approving seed label request:", error);
-        await connection.rollback();
-        throw new GraphQLError(error.message);
-      }
-    },
-  },
-};
+                    quantity : formDetails.label_package,
+                    available_stock : packages,
+                    lab_test_number : marketableSeed[0].lab_test_number,
+                    lot_number : marketableSeed[0].lot_number,
+                    seed_class : marketableSeed[0].lot_number,
+                    image_url : marketableSeed[0].lot_number,
+                }
+
+                await saveData({
+                table: "products",
+                data:product,
+                id: null,
+                connection,
+                });
+
+                // send email with attachment if any
+                await sendEmail({
+                from: '"STTS MAAIF" <tredumollc@gmail.com>',
+                to: formOwner.email,
+                subject: `${formDetails.form_type} Form Approval`,
+                message: `Congragulations!!!, Dear ${formOwner.name}, Your seed label has been approved.`,
+                // attachments,
+                });
+
+                await connection.commit();
+
+                return {
+                success: true,
+                message: "Seed label request printed successfully",
+                };
+            } catch (error) {
+                console.error("Error printing seed label request:", error);
+                await connection.rollback();
+                throw new GraphQLError(error.message);
+            }
+        },
+    }
+}
 
 export default seedLabelResolvers;

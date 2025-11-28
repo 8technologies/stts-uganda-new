@@ -40,6 +40,7 @@ const seedLabelTypeDefs = `#graphql
     type Mutation{
         saveSeedLabelRequest(input: SeedLabelInput!): SeedLabelResponseMessage
         approveSeedLabelRequest(id: ID!): SeedLabelResponseMessage
+        printSeedLabelRequest(id: ID!): SeedLabelResponseMessage
     } 
 
     input SeedLabelInput{

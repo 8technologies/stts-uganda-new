@@ -171,6 +171,12 @@ export const MODULES_CONFIG: ModuleConfig[] = [
     id: "market_place",
     name: "Market Place",
     icon: ShoppingCart,
+    permissions: [
+      { id: 'can_view_marketplace', label: 'Can View Marketplace' },
+      { id: 'can_order_seeds', label: 'Can Order Seeds' },
+      { id: 'can_view_only_own_orders', label: 'Can view only own orders' },
+
+    ]
     permissions: [],
   },
   {

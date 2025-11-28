@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useAuthContext } from '@/auth';
 import { getPermissionsFromToken } from '@/utils/permissions';
 import { Textarea } from '@/components/ui/textarea';
-import { ASSIGN_LAB_INSPECTOR } from '@/gql/mutations';
+import { ASSIGN_LAB_INSPECTOR, RECEIVE_SEED_LAB_INSPECTION } from '@/gql/mutations';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { LOAD_INSPECTORS, LOAD_SEED_LABS } from '@/gql/queries';
 import {
@@ -105,7 +105,30 @@ const STATUS = {
     label: 'Pending',
     icon: 'time',
     badge:
-      'text-white bg-gradient-to-r from-emerald-400 to-green-500 shadow-sm ring-1 ring-emerald-300/70',
+      'text-white bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-sm ring-1 ring-yellow-300/70',
+  },
+  RECEIVED: {
+    label: 'Received',
+    icon: 'inbox-in',
+    badge:
+      'text-white bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-sm ring-1 ring-yellow-300/70',
+  },
+  ASSIGNED_INSPECTOR: {
+    label: 'Inspector Assigned',
+    icon: 'user-tick',
+    badge:'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
+  },
+  MARKETABLE: {
+    label: 'Marketable',
+    icon: 'user-tick',
+    badge:'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
+  
+  },
+  NON_MARKETABLE: {
+    label: 'Non-Marketable',
+    icon: 'block',
+    badge:'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
+  
   },
 } as const;
 
@@ -257,7 +280,7 @@ const SeedLabDetailsDialog = ({
 }: IUserDetailsDialogProps<SeedLabInspection>) => {
   const d = data as SeedLabInspection | undefined;
 
-  const [action, setAction] = useState<'assign_inspector' | 'halt' | 'reject' | 'recommend' | ''>('');
+  const [action, setAction] = useState<'assign_inspector' | 'halt' | 'reject' | 'recommend' |'receive_sample'|'reject_sample' |''>('');
   const [inspector, setInspector] = useState('');
   const [comment, setComment] = useState('');
   const [assignError, setAssignError] = useState<string | null>(null);
@@ -265,6 +288,7 @@ const SeedLabDetailsDialog = ({
   const { auth, currentUser } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canAssignInspector = !!perms['can_assign_inspector'];
+  const canPerfomLabTest = !!perms['can_perform_seed_lab_tests'];
 
   const {
     data: inspectorsData,
@@ -274,6 +298,11 @@ const SeedLabDetailsDialog = ({
   } = useQuery(LOAD_INSPECTORS, { skip: !open });
 
   const [assignInspector, { loading: assigning }] = useMutation(ASSIGN_LAB_INSPECTOR, {
+    refetchQueries: [{ query: LOAD_SEED_LABS }],
+    awaitRefetchQueries: true,
+  });
+
+  const [receiveRequest, { loading: receiving }] = useMutation(RECEIVE_SEED_LAB_INSPECTION, {
     refetchQueries: [{ query: LOAD_SEED_LABS }],
     awaitRefetchQueries: true,
   });
@@ -290,26 +319,56 @@ const SeedLabDetailsDialog = ({
     [canAssignInspector]
   );
 
-  const isActionPermitted = permittedActions.some((a) => a.value === action);
+  // Reception actions shown when status is "accepted"
+  const receptionActions = useMemo(
+    () =>
+      (d?.status === 'accepted'
+        ? [
+            { value: 'receive_sample' as const, label: 'Receive Sample' },
+            { value: 'reject_sample' as const, label: 'Reject Reception' },
+          ]
+        : []),
+    [d?.status]
+  );
+
+  const isActionPermitted =
+    permittedActions.some((a) => a.value === action) ||
+    receptionActions.some((a) => a.value === action);
+
+  // require comment when receiving/rejecting sample
   const isConfirmDisabled =
-    !action || (action === 'assign_inspector' && !inspector) || !isActionPermitted;
+    !action ||
+    (action === 'assign_inspector' && !inspector) ||
+    ((action === 'receive_sample' || action === 'reject_sample') && !comment.trim()) ||
+    !isActionPermitted;
+
+  // show comment input for reception actions (and existing status-based flows)
+  const showCommentInput =
+    action === 'halt' ||
+    action === 'reject' ||
+    action === 'recommend' ||
+    action === 'receive_sample' ||
+    action === 'reject_sample' ||
+    d?.status === 'assigned_inspector' ||
+    d?.status === 'inspector_assigned';
 
   const handleConfirm = async () => {
     setAssignError(null);
+
+    // Assign inspector flow
     if (action === 'assign_inspector') {
       try {
         const res = await assignInspector({
           variables: { input: { form_id: String(d?.id ?? ''), inspector_id: inspector } },
         });
-        const ok = res?.data?.assignLabInspector?.success;
+        const payload = res?.data && Object.values(res.data)[0];
+        const ok = payload?.success;
         if (!ok) {
-          setAssignError(res?.data?.assignLabInspector?.message || 'Failed to assign inspector');
-          toast('Failed to assign inspector', {
-            description: res?.data?.assignLabInspector?.message || 'Unknown error',
-          });
+          setAssignError(payload?.message || 'Failed to assign inspector');
+          toast('Failed to assign inspector', { description: payload?.message || 'Unknown error' });
           return;
         }
-        toast(res?.data?.assignLabInspector?.message || 'Inspector assigned successfully');
+        toast(payload?.message || 'Inspector assigned successfully');
         onOpenChange(false);
       } catch (e: any) {
         setAssignError(e?.message || 'Failed to assign inspector');
@@ -317,6 +376,32 @@ const SeedLabDetailsDialog = ({
       }
       return;
     }
+
+    // Reception flow (receive or reject)
+    if (action === 'receive_sample' || action === 'reject_sample') {
+      try {
+        const decision = action === 'receive_sample' ? 'received' : 'halted';
+        const res = await receiveRequest({
+          variables: {
+            input: { id: String(d?.id ?? ''), decision, receptionist_comment: comment },
+          },
+        });
+        const payload = res?.data && Object.values(res.data)[0];
+        const ok = payload?.success;
+        if (!ok) {
+          setAssignError(payload?.message || 'Failed to perform reception');
+          toast('Failed to update reception', { description: payload?.message || 'Unknown error' });
+          return;
+        }
+        toast(payload?.message || (decision === 'receive' ? 'Sample received' : 'Reception rejected'));
+        onOpenChange(false);
+      } catch (e: any) {
+        setAssignError(e?.message || 'Failed to perform reception');
+        toast('Failed to update reception', { description: e?.message || 'Unknown error' });
+      }
+      return;
+    }
+
     onOpenChange(false);
   };
 
@@ -333,14 +418,8 @@ const SeedLabDetailsDialog = ({
       (!!d.inspector?.username && !!(currentUser as any).username &&
         d.inspector.username === (currentUser as any).username));
 
-  const meIsTechnician =
-    !!currentUser &&
-    !!d?.inspector_id &&
-    (String(d.inspector_id) === String((currentUser as any).id) ||
-      (!!d.inspector?.username && !!(currentUser as any).username &&
-        d.inspector.username === (currentUser as any).username));
-      
-
+  const meIsTechnician = !!currentUser && canPerfomLabTest;
+     
   const showOpenInspection = !!d?.id && isInspectorAssigned && meIsInspector;
   const showOpenlabtest = !!d?.id && isReceivedbyLab && meIsTechnician;
   const inspectionPath = `/qa/labs/${d?.id}/inspection`;
@@ -559,6 +638,32 @@ const SeedLabDetailsDialog = ({
                     </div>
                   )}
 
+                {receptionActions.length > 0 && (
+                  <>
+                    <div className="text-sm font-semibold text-gray-900">Reception</div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                      {receptionActions.map((opt) => (
+                        <label
+                          key={opt.value}
+                          className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
+                            action === opt.value ? 'border-primary-500' : 'border-gray-200'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="lab-action"
+                            value={opt.value}
+                            checked={action === opt.value}
+                            onChange={() => setAction(opt.value)}
+                            className="text-primary-600"
+                          />
+                          <span className="text-sm font-medium text-gray-800">{opt.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </>
+                )}
+
                 {action === 'assign_inspector' && (
                   <div className="max-w-sm">
                     <label className="form-label text-sm">Select Inspector</label>
@@ -616,6 +721,8 @@ const SeedLabDetailsDialog = ({
                 {(action === 'halt' ||
                   action === 'reject' ||
                   action === 'recommend' ||
+                  action === 'receive_sample' ||
+                  action === 'reject_sample' ||
                   d.status === 'assigned_inspector' ||
                   d.status === 'inspector_assigned') &&
                   (d.status === 'pending' ||
@@ -633,7 +740,28 @@ const SeedLabDetailsDialog = ({
                         disabled={assigning}
                       />
                     </div>
-                  )}
+                  )
+                  }
+                {showCommentInput &&
+                  (d.status === 'pending' ||
+                    d.status === 'recommended' ||
+                    d.status === 'assigned_inspector' ||
+                    d.status === 'inspector_assigned' ||
+                    d.status === 'accepted') && (
+                    <div className="max-w-xl">
+                      <label className="form-label text-sm">Status comment</label>
+                      <Textarea
+                        className="mt-2"
+                        rows={3}
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder={`Provide a reason for ${action || 'this update'}…`}
+                        disabled={assigning || receiving}
+                      />
+                      
+                    </div>
+                  )
+                }
               </div>
             </>
           )}
@@ -656,13 +784,19 @@ const SeedLabDetailsDialog = ({
                   </Button>
                 </Link>
               )}
-              {/* {showOpenlabtest && ( */}
+              {showOpenlabtest && (
                 <Link to={labTestPath} onClick={() => onOpenChange(false)}>
                   <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
                     <KeenIcon icon="geolocation" /> Open lab test form
                   </Button>
                 </Link>
-              {/* )} */}
+              )}
+              {receptionActions.length > 0 && (
+                <Button onClick={handleConfirm} disabled={isConfirmDisabled || receiving}>
+                  <KeenIcon icon="tick-square" />
+                  {action === 'receive_sample' ? ' Receive Sample' : action === 'reject_sample' ? ' Reject Reception' : ' Confirm'}
+                </Button>
+              )}
 
               {/* Confirm Action (assign inspector) */}
               {permittedActions.length > 0 &&
@@ -674,6 +808,7 @@ const SeedLabDetailsDialog = ({
                     {action === 'assign_inspector' && assigning ? ' Assigning…' : ' Confirm Action'}
                   </Button>
                 )}
+              
             </div>
           </div>
         </div>

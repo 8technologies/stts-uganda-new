@@ -945,3 +945,58 @@ export const LOAD_PLANTING_INSPECTION = gql`
     }
   }
 `;
+
+export const PRODUCTS = gql`
+query Products($filter: ProductFilterInput) {
+  products(filter: $filter) {
+    id
+    name
+    description
+    price
+    unit
+    category_id
+    seller_id
+    stock
+    quantity
+    metadata
+    deleted
+    created_at
+    updated_at
+    Seller {
+      username
+      name
+      email
+    }
+    CropVariety {
+      name
+    }
+    Crop {
+      name
+    }
+  }
+}
+`;
+
+export const ORDERS = gql`
+  query GetOrders {
+  getOrders {
+    id
+    product_id
+    quantity
+    buyer_id
+    seller_id
+    comment
+    status
+    created_at
+    Buyer {
+      username
+      name
+    }
+    Seller {
+      username
+      name
+      id
+    }
+  }
+}
+`;

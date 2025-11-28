@@ -44,6 +44,7 @@ export const fetchSeedLabs = async ({
   user_id = null,
   inspector_id = null,
   status = null,
+  statusNotIn = null,
 } = {}) => {
   try {
     const values = [];
@@ -60,15 +61,19 @@ export const fetchSeedLabs = async ({
     }
 
     if (inspector_id) {
-      where.push("seed_labs.inspector_id = ?");
-      values.push(inspector_id);        // <-- FIXED: push inspector_id, not user_id
+      where.push("seed_labs.inspector_id = ?");        // <-- FIXED: push inspector_id, not user_id
+      values.push(inspector_id);
     }
 
     if (status) {
       where.push("seed_labs.status = ?");
-      values.push(status);        
+      values.push(status);
+    } else if (Array.isArray(statusNotIn) && statusNotIn.length > 0) {
+      const placeholders = statusNotIn.map(() => "?").join(",");
+      where.push(`seed_labs.status NOT IN (${placeholders})`);
+      values.push(...statusNotIn);
     }
-
+    
     const sql = `
       SELECT seed_labs.*
       FROM seed_labs
@@ -133,16 +138,22 @@ const seedLabResolvers = {
           "can_perform_seed_lab_tests"
         );
 
-        const status = (() => {
-          if (can_receive_seed_lab_inspections) return "accepted";
-          if (can_perform_seed_lab_tests) return "received";
-          return null;
-        })();
+        // Receptionists should see everything except pending / inspector assigned / rejected
+        let status = null;
+        let statusNotIn = null;
+        if (can_receive_seed_lab_inspections) {
+          statusNotIn = ["pending", "assigned_inspector", "inspector_assigned", "rejected"];
+        } else if (can_perform_seed_lab_tests) {
+          // status = "received";
+          statusNotIn = ["pending", "assigned_inspector", "inspector_assigned", "rejected", "accepted", "halted"];
           
+        }
+
         const labs = await fetchSeedLabs({
           user_id: can_manage_all_forms ? null : user?.id ?? null,
           inspector_id: can_view_only_assigned_seed_stock ? user?.id ?? null : null,
           status: status,
+          statusNotIn,
         });
 
         return labs;
@@ -509,6 +520,7 @@ const seedLabResolvers = {
 
     //submitLabTestReport
     submitLabTestReport: async (parent, args, context) => {
+      const connection = await db.getConnection();
       try {
         const { id, lab_test_report, marketableStatus } = args.input;
         const user = context.req.user;
@@ -518,6 +530,7 @@ const seedLabResolvers = {
           "can_perform_seed_lab_tests",
           "You dont have permissions to submit lab test reports"
         );
+        await connection.beginTransaction();
         const data = {
           lab_test_report: JSON.stringify(lab_test_report),
           status: marketableStatus,
@@ -527,7 +540,36 @@ const seedLabResolvers = {
           table: "seed_labs",
           data,
           id: id,
+          connection,
         });
+        
+        if (marketableStatus === "marketable") {
+          // If the seed is marketable, update the stock examination status
+          const seedLab = await fetchSeedLabs({ id });
+          const marketabledata = {
+            user_id: seedLab[0].user_id,
+            crop_variety_id : seedLab[0].variety_id,
+            seed_lab_id : seedLab[0].id,
+            // seed_label_id : seedLab[0].seed_label_id,
+            lot_number : seedLab[0].lot_number,
+            quantity : seedLab[0].inspector_report.quantity_represented_kg,
+            seed_class : seedLab[0].seed_class?? null,
+            source : seedLab[0].source?? null,
+            // detail : seedLab[0].detail,
+            package_id : seedLab[0].seed_label_package_id?? null,
+            // lab_test_number : seedLab[0].lab_test_number,
+          };
+          
+          await saveData({
+            table: "marketable_seeds",
+            data: marketabledata,
+            id: null,
+            connection,
+          });
+        }
+
+        await connection.commit();
+
         return {
           success: true,
           message: "Lab test report submitted successfully",

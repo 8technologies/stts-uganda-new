@@ -431,7 +431,7 @@ const SeedLabInspectionPage = () => {
                 onChange={(e) => setTestsRequired(e.target.value)}
                 disabled={lock}
               /> */}
-              <small className="text-slate-500">Comma-separated list will be saved as an array.</small>
+              {/* <small className="text-slate-500">Comma-separated list will be saved as an array.</small> */}
             </div>
           </div>
         </div>
