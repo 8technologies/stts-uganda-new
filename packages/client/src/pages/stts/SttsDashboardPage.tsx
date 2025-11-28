@@ -1,139 +1,162 @@
 import { Fragment } from "react";
 import ApexChart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import { useQuery } from "@apollo/client/react";
+import { formatDistanceToNow } from "date-fns";
 
 import { Container } from "@/components/container";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { KeenIcon } from "@/components";
+import { DASHBOARD_STATS } from "@/gql/queries";
 
-const statCards = [
+type DashboardInspectionSlice = {
+  label: string;
+  value: number;
+};
+
+type DashboardSeedStockPoint = {
+  label: string;
+  total: number;
+};
+
+type DashboardActivity = {
+  id: string;
+  title: string;
+  entity?: string | null;
+  status?: string | null;
+  category: string;
+  timestamp: string;
+};
+
+type DashboardStatsResponse = {
+  registeredUsers: number;
+  userPermits: number;
+  pendingPermits: number;
+  cropDeclarations: number;
+  printedLabels: number;
+  pendingLabels: number;
+  totalInspections: number;
+  scheduledVisits: number;
+  pendingCorrectiveActions: number;
+  inspections: DashboardInspectionSlice[];
+  seedStock: DashboardSeedStockPoint[];
+  recentActivities: DashboardActivity[];
+};
+
+type StatCardConfig = {
+  key: keyof Pick<
+    DashboardStatsResponse,
+    "registeredUsers" | "userPermits" | "cropDeclarations" | "printedLabels"
+  >;
+  title: string;
+  description: string;
+  icon: string;
+  cardClass: string;
+  valueClass: string;
+  titleClass: string;
+  descriptionClass: string;
+  iconClass: string;
+  chipClass: string;
+  defaultFootnote?: string;
+  getFootnote?: (stats?: DashboardStatsResponse) => string | null;
+};
+
+const numberFormatter = new Intl.NumberFormat("en-US");
+
+const formatNumber = (value?: number | null) => {
+  if (value == null || Number.isNaN(value)) {
+    return "—";
+  }
+  return numberFormatter.format(value);
+};
+
+const formatRelativeTime = (value?: string | null) => {
+  if (!value) return "—";
+  try {
+    return formatDistanceToNow(new Date(value), { addSuffix: true });
+  } catch (error) {
+    return "—";
+  }
+};
+
+const fallbackSeedStock: DashboardSeedStockPoint[] = [
+  { label: "Q1", total: 0 },
+  { label: "Q2", total: 0 },
+  { label: "Q3", total: 0 },
+  { label: "Q4", total: 0 },
+];
+
+const fallbackInspectionSlices: DashboardInspectionSlice[] = [
+  { label: "Completed", value: 0 },
+  { label: "Pending", value: 0 },
+  { label: "Skipped", value: 0 },
+];
+
+const inspectionColors: Record<string, string> = {
+  Completed: "#00A651",
+  Pending: "#6CC24A",
+  Skipped: "#C5DA4B",
+};
+
+const statCardConfigs: StatCardConfig[] = [
   {
+    key: "registeredUsers",
     title: "Registered Users",
-    value: "1,234",
     description: "Authorized individuals or organizations",
     icon: "users",
-    // text classes
-    valueColor: "text-emerald-900",
+    cardClass:
+      "border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100",
+    valueClass: "text-emerald-900",
     titleClass: "text-emerald-900",
-    descriptionClass: "text-emerald-800",
-    // border + layout class only (background provided via bgStyle)
-    cardClass: "border-emerald-100",
+    descriptionClass: "text-emerald-700",
     iconClass: "bg-white text-emerald-600",
-    accentClass: "bg-emerald-700",
-    decorColor: "#16A34A",
-    badgeIconColor: "#16A34A",
-    bgStyle: "linear-gradient(135deg,#ECFDF5 0%, #6EE7B7 100%)",
-    footnote: "+3.2% vs last week",
-    footnoteClass: "text-emerald-700",
+    chipClass: "bg-white/70 text-emerald-700",
+    defaultFootnote: "System-wide total",
   },
   {
+    key: "userPermits",
     title: "User Permits",
-    value: "84",
     description: "Official approvals for imports and export permits",
     icon: "security-user",
-    valueColor: "text-amber-900",
+    cardClass:
+      "border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-100",
+    valueClass: "text-amber-900",
     titleClass: "text-amber-900",
-    descriptionClass: "text-amber-800",
-    cardClass: "border-amber-100",
+    descriptionClass: "text-amber-700",
     iconClass: "bg-white text-amber-600",
-    accentClass: "bg-amber-500",
-    decorColor: "#F59E0B",
-    badgeIconColor: "#F59E0B",
-    bgStyle: "linear-gradient(135deg,#FFFBEB 0%, #FDE68A 100%)",
-    footnote: "+11 pending reviews",
-    footnoteClass: "text-amber-700",
+    chipClass: "bg-white/70 text-amber-700",
+    getFootnote: (stats) =>
+      stats ? `${formatNumber(stats.pendingPermits)} pending reviews` : null,
   },
   {
+    key: "cropDeclarations",
     title: "Crop Declarations",
-    value: "712",
     description: "Crop declarations from seed producers",
     icon: "richtext-box",
-    valueColor: "text-sky-900",
+    cardClass:
+      "border-sky-100 bg-gradient-to-br from-sky-50 via-white to-sky-100",
+    valueClass: "text-sky-900",
     titleClass: "text-sky-900",
     descriptionClass: "text-sky-700",
-    cardClass: "border-sky-100",
     iconClass: "bg-white text-sky-600",
-    accentClass: "bg-sky-500",
-    decorColor: "#0EA5E9",
-    badgeIconColor: "#0EA5E9",
-    bgStyle: "linear-gradient(135deg,#ECFEFF 0%, #7DD3FC 100%)",
-    footnote: "64 awaiting validation",
-    footnoteClass: "text-sky-700",
+    chipClass: "bg-white/70 text-sky-700",
+    defaultFootnote: "Includes active QDS filings",
   },
   {
+    key: "printedLabels",
     title: "Printed Labels",
-    value: "20",
     description: "Approved and pending seed labels",
     icon: "printer",
-    valueColor: "text-white",
+    cardClass:
+      "border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white",
+    valueClass: "text-white",
     titleClass: "text-white/90",
     descriptionClass: "text-white/80",
-    cardClass: "border-emerald-600",
     iconClass: "bg-white/20 text-white",
-    accentClass: "bg-white/60",
-    decorColor: "#059669",
-    badgeIconColor: "#059669",
-    bgStyle: "linear-gradient(135deg,#10B981 0%, #059669 100%)",
-    footnote: "4 queued for print",
-    footnoteClass: "text-white",
-  },
-];
-
-const inspectionsBreakdown = [
-  { label: "Completed", value: 72, color: "#00A651" },
-  { label: "Skipped", value: 10, color: "#6CC24A" },
-  { label: "Pending", value: 18, color: "#C5DA4B" },
-];
-
-const recentActivities = [
-  {
-    title: "SR4 Application Submitted",
-    entity: "ABC Seeds Ltd",
-    time: "Just now",
-    color: "#00A651",
-  },
-  {
-    title: "Crop Inspection Completed",
-    entity: "John Farmer",
-    time: "12 mins ago",
-    color: "#24C08A",
-  },
-  {
-    title: "Stock Updated",
-    entity: "Green Valley Farm",
-    time: "Today 09:24",
-    color: "#F6B73C",
-  },
-  {
-    title: "Export Permit Approved",
-    entity: "Global Seeds Co",
-    time: "Yesterday",
-    color: "#2BB5F6",
-  },
-];
-
-const seedStockSeries = [18, 54, 42, 60];
-const seedStockCategories = ["Q1", "Q2", "Q3", "Q4"];
-
-const heroHighlights = [
-  { label: "Inspections in field", value: "42", meta: "+5 vs yesterday" },
-  { label: "Permits pending review", value: "18", meta: "SLA 3 days" },
-  { label: "Seed lots tracked", value: "312", meta: "24 new batches" },
-];
-
-const heroFilters = ["Facilities", "Permits", "Inspectors"];
-
-const inspectionQuickStats = [
-  {
-    label: "Total visits scheduled",
-    value: "128",
-    meta: "42 districts covered",
-  },
-  {
-    label: "Pending corrective actions",
-    value: "9",
-    meta: "High priority farms",
+    chipClass: "bg-white/10 text-white/90",
+    getFootnote: (stats) =>
+      stats ? `${formatNumber(stats.pendingLabels)} awaiting print` : null,
   },
 ];
 
@@ -203,14 +226,19 @@ const buildCalendarCells = (year: number, month: number): CalendarCell[] => {
   return cells;
 };
 
-const InspectionDonut = () => {
+type InspectionSliceWithColor = DashboardInspectionSlice & { color: string };
+
+const InspectionDonut = ({ data }: { data: InspectionSliceWithColor[] }) => {
+  const series = data.map((slice) => Number(slice.value) || 0);
+  const total = series.reduce((sum, value) => sum + value, 0);
+
   const options: ApexOptions = {
     chart: {
       type: "donut",
       sparkline: { enabled: true },
     },
-    labels: inspectionsBreakdown.map((x) => x.label),
-    colors: inspectionsBreakdown.map((x) => x.color),
+    labels: data.map((x) => x.label),
+    colors: data.map((x) => x.color),
     stroke: { width: 0 },
     plotOptions: {
       pie: {
@@ -231,7 +259,7 @@ const InspectionDonut = () => {
               label: "inspections",
               fontSize: "12px",
               color: "#94A3B8",
-              formatter: () => "100",
+              formatter: () => `${total}`,
             },
           },
         },
@@ -244,14 +272,20 @@ const InspectionDonut = () => {
   return (
     <ApexChart
       options={options}
-      series={inspectionsBreakdown.map((x) => x.value)}
+      series={series}
       type="donut"
       height={250}
     />
   );
 };
 
-const SeedStockBar = () => {
+const SeedStockBar = ({
+  categories,
+  series,
+}: {
+  categories: string[];
+  series: number[];
+}) => {
   const options: ApexOptions = {
     chart: {
       type: "bar",
@@ -261,11 +295,11 @@ const SeedStockBar = () => {
     series: [
       {
         name: "Seed stock",
-        data: seedStockSeries,
+        data: series,
       },
     ],
     xaxis: {
-      categories: seedStockCategories,
+      categories,
       axisBorder: { color: "#E5E7EB" },
       axisTicks: { color: "#E5E7EB" },
     },
@@ -305,149 +339,160 @@ const SttsDashboardPage = () => {
     calendarMeta.year,
     calendarMeta.monthIndex
   );
+  const { data, loading, error } = useQuery<{
+    dashboardStats: DashboardStatsResponse;
+  }>(DASHBOARD_STATS);
+
+  const metrics = data?.dashboardStats;
+
+  const resolvedStatCards = statCardConfigs.map((card) => {
+    const value = metrics?.[card.key] ?? null;
+    return {
+      ...card,
+      valueText: formatNumber(value),
+      footnote: card.getFootnote?.(metrics) ?? card.defaultFootnote ?? "",
+    };
+  });
+
+  const inspectionSlices = (metrics?.inspections?.length
+    ? metrics.inspections
+    : fallbackInspectionSlices
+  ).map((slice) => ({
+    ...slice,
+    color: inspectionColors[slice.label] ?? "#00A651",
+  }));
+
+  const inspectionQuickStats = [
+    {
+      label: "Total visits scheduled",
+      value: formatNumber(metrics?.scheduledVisits ?? metrics?.totalInspections ?? 0),
+      meta: metrics?.totalInspections
+        ? `${formatNumber(metrics.totalInspections)} inspections logged`
+        : "Awaiting new submissions",
+    },
+    {
+      label: "Pending corrective actions",
+      value: formatNumber(metrics?.pendingCorrectiveActions ?? 0),
+      meta: "Requires follow-up",
+    },
+  ];
+
+  const seedStockPoints = metrics?.seedStock?.length
+    ? metrics.seedStock
+    : fallbackSeedStock;
+  const seedStockCategories = seedStockPoints.map((point) => point.label);
+  const seedStockSeries = seedStockPoints.map((point) => Number(point.total) || 0);
+
+  const activityColorMap: Record<string, string> = {
+    permit: "#00A651",
+    inspection: "#24C08A",
+    label: "#F6B73C",
+  };
+
+  const recentActivityCards = (metrics?.recentActivities ?? []).map((activity) => ({
+    id: activity.id,
+    title: activity.title,
+    entity: activity.entity || activity.status || "—",
+    time: formatRelativeTime(activity.timestamp),
+    color: activityColorMap[activity.category] ?? "#00A651",
+  }));
+
+  const hasActivities = recentActivityCards.length > 0;
+  const activitySyncLabel = hasActivities
+    ? `Updated ${recentActivityCards[0].time}`
+    : loading
+      ? "Syncing activity…"
+      : "No recent activity";
 
   return (
     <Fragment>
       <Container>
         <div className="space-y-8 pb-12">
-          {/* <div className="relative overflow-hidden rounded-[32px] border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100 p-6 shadow-sm lg:p-10">
-            <span className="pointer-events-none absolute -right-16 top-10 h-48 w-48 rounded-full bg-emerald-200/60 blur-3xl" />
-            <span className="pointer-events-none absolute left-12 -bottom-10 h-32 w-32 rounded-full bg-emerald-300/40 blur-2xl" />
-
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              <div className="relative z-0 flex-1 space-y-6">
-                <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.4em] text-emerald-700">
-                  <span className="rounded-full bg-white/70 px-3 py-1 text-[10px] tracking-[0.2em] text-emerald-600">
-                    Live Dashboard
-                  </span>
+          <div className="rounded-[32px] border border-gray-100 bg-white p-6 shadow-sm lg:p-10">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+              <div className="space-y-4">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.55em] text-emerald-600">
                   National Seed Tracking & Tracing System
-                </div>
-                <div className="space-y-3">
+                </p>
+                <div className="space-y-2">
                   <p className="text-3xl font-semibold text-gray-900 md:text-4xl">
                     Welcome, Commissioner
                   </p>
                   <p className="text-sm text-gray-600 md:text-base">
-                    Stay ahead of inspections, permits, and stock status with
-                    proactive alerts and instant traceability across the
-                    national supply chain.
+                    Real-time monitoring of seed movement from production to
+                    distribution with instant traceability.
                   </p>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {heroHighlights.map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-2xl border border-white/70 bg-white/80 p-4 text-sm shadow-sm backdrop-blur"
-                    >
-                      <p className="text-xs font-medium uppercase text-emerald-500">
-                        {item.label}
-                      </p>
-                      <p className="mt-1 text-2xl font-bold text-gray-900">
-                        {item.value}
-                      </p>
-                      <p className="text-xs text-gray-500">{item.meta}</p>
-                    </div>
-                  ))}
-                </div>
+                {loading && (
+                  <p className="text-xs font-medium uppercase tracking-[0.35em] text-emerald-500">
+                    Syncing live metrics…
+                  </p>
+                )}
               </div>
-              <div className="relative z-0 w-full max-w-md space-y-4">
-                <div className="rounded-[28px] border border-white/60 bg-white/80 p-4 shadow-inner backdrop-blur">
-                  <div className="relative">
-                    <KeenIcon
-                      icon="search"
-                      className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-gray-400"
-                    />
-                    <Input
-                      className="h-12 rounded-2xl border-0 bg-transparent pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:ring-emerald-500"
-                      placeholder="Search facilities, permits, or inspectors"
-                    />
-                  </div>
-                  <div className="flex flex-wrap gap-2 pt-3 text-sm">
-                    {heroFilters.map((filter) => (
-                      <button
-                        key={filter}
-                        className="rounded-full border border-emerald-200/80 bg-white px-3 py-1 text-xs font-medium text-emerald-700 shadow-sm"
-                        type="button"
-                      >
-                        {filter}
-                      </button>
-                    ))}
-                  </div>
+              <div className="w-full max-w-md space-y-4">
+                <div className="flex items-center justify-end gap-2">
+                  <button className="rounded-full border border-gray-200 p-2 text-gray-500 transition hover:border-gray-300 hover:text-gray-900">
+                    <KeenIcon icon="setting-2" className="size-4" />
+                  </button>
+                  <button className="relative rounded-full border border-gray-200 p-2 text-gray-500 transition hover:border-gray-300 hover:text-gray-900">
+                    <span className="absolute right-1 top-1 inline-flex h-2 w-2 rounded-full bg-rose-500" />
+                    <KeenIcon icon="notification" className="size-4" />
+                  </button>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  <Button className="flex-1 rounded-full" size="lg">
-                    <KeenIcon icon="chart" className="mr-2" /> Open Command
-                    Center
-                  </Button>
+                <div className="relative">
+                  <KeenIcon
+                    icon="search"
+                    className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-gray-400"
+                  />
+                  <Input
+                    className="h-12 rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:ring-emerald-500"
+                    placeholder="Search permits, facilities, or inspectors"
+                  />
+                </div>
+                <div className="flex justify-end">
                   <Button className="rounded-full px-6" variant="light">
                     <KeenIcon icon="export" className="mr-2" /> Export Files
                   </Button>
                 </div>
               </div>
             </div>
-          </div> */}
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {statCards.map((card) => (
-              <div
-                key={card.title}
-                className={`relative overflow-hidden rounded-3xl border p-6 shadow-sm transition-transform duration-200 hover:shadow-lg hover:-translate-y-1 ${card.cardClass}`}
-                style={
-                  card.bgStyle
-                    ? ({ background: card.bgStyle, minHeight: 140 } as any)
-                    : { minHeight: 140 }
-                }
-              >
-                {/* decorative blurred circle */}
-                <span
-                  aria-hidden
-                  className="absolute -right-10 -top-10 h-44 w-44 rounded-full opacity-25 blur-2xl"
-                  style={{ backgroundColor: card.decorColor }}
-                />
-
-                {/* top-right white icon badge */}
-                <div className="absolute right-5 top-4 z-0">
-                  <div
-                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm"
-                    style={{ boxShadow: "0 6px 18px rgba(16,24,40,0.06)" }}
-                  >
-                    <span
-                      style={{ color: card.badgeIconColor || card.decorColor }}
+            {error && (
+              <div className="mt-6 rounded-2xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">
+                Failed to load live metrics. Showing the latest cached values.
+              </div>
+            )}
+            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {resolvedStatCards.map((card) => (
+                <div
+                  key={card.title}
+                  className={`rounded-2xl border p-5 shadow-sm transition-shadow hover:shadow-md ${card.cardClass}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-2xl ${card.iconClass}`}
                     >
                       <KeenIcon icon={card.icon} className="size-5" />
+                    </div>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${card.chipClass}`}
+                    >
+                      {card.footnote || "—"}
                     </span>
                   </div>
-                </div>
-
-                <div className="flex items-start gap-4 relative z-0">
-                  <div className="flex-1">
-                    <p
-                      className={`text-xs font-semibold uppercase tracking-wide ${card.titleClass}`}
-                    >
-                      {card.title}
-                    </p>
-                    <p
-                      className={`mt-2 text-4xl font-extrabold ${card.valueColor}`}
-                    >
-                      {card.value}
-                    </p>
-                    <p className={`mt-2 text-sm ${card.descriptionClass}`}>
-                      {card.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 relative z-0">
-                  <p className={`text-sm font-semibold ${card.footnoteClass}`}>
-                    {card.footnote}
+                  <p
+                    className={`mt-6 text-xs font-semibold uppercase tracking-[0.4em] ${card.titleClass}`}
+                  >
+                    {card.title}
                   </p>
-                  <div className="mt-3 flex">
-                    <span
-                      className={`block h-2 w-20 rounded-full ${card.accentClass}`}
-                    />
-                  </div>
+                  <p className={`mt-2 text-4xl font-bold ${card.valueClass}`}>
+                    {card.valueText}
+                  </p>
+                  <p className={`text-sm ${card.descriptionClass}`}>
+                    {card.description}
+                  </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
@@ -468,7 +513,7 @@ const SttsDashboardPage = () => {
                       last month
                     </div>
                   </div>
-                  <InspectionDonut />
+                  <InspectionDonut data={inspectionSlices} />
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
                     {inspectionQuickStats.map((stat) => (
                       <div
@@ -486,7 +531,7 @@ const SttsDashboardPage = () => {
                     ))}
                   </div>
                   <div className="mt-5 grid grid-cols-1 gap-3 text-center text-sm sm:grid-cols-2">
-                    {inspectionsBreakdown.map((item) => (
+                    {inspectionSlices.map((item) => (
                       <div
                         key={item.label}
                         className="rounded-2xl border border-gray-100 p-3"
@@ -495,7 +540,7 @@ const SttsDashboardPage = () => {
                           className="font-semibold"
                           style={{ color: item.color }}
                         >
-                          {item.value}%
+                          {formatNumber(item.value)}
                         </p>
                         <p className="text-xs text-gray-500">{item.label}</p>
                       </div>
@@ -522,7 +567,10 @@ const SttsDashboardPage = () => {
                       </p>
                     </div>
                   </div>
-                  <SeedStockBar />
+                  <SeedStockBar
+                    categories={seedStockCategories}
+                    series={seedStockSeries}
+                  />
                   <div className="mt-6 flex flex-wrap gap-3">
                     {seedStockTags.map((tag) => (
                       <div
@@ -548,9 +596,7 @@ const SttsDashboardPage = () => {
                     <p className="text-sm font-semibold text-gray-900">
                       Recent activities
                     </p>
-                    <p className="text-xs text-gray-500">
-                      Synced 2 minutes ago
-                    </p>
+                    <p className="text-xs text-gray-500">{activitySyncLabel}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 text-xs font-medium text-gray-500">
                     {activityFilters.map((filter) => (
@@ -568,35 +614,41 @@ const SttsDashboardPage = () => {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  {recentActivities.map((item) => (
-                    <div
-                      key={item.title}
-                      className="flex items-start gap-3 rounded-2xl border border-gray-100 p-3"
-                    >
-                      <span
-                        className="mt-1 inline-flex size-3 rounded-full"
-                        style={{ backgroundColor: item.color }}
-                      ></span>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-900">
-                          {item.title}
-                        </p>
-                        <p className="text-xs text-gray-500">{item.entity}</p>
+                  {hasActivities ? (
+                    recentActivityCards.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-start gap-3 rounded-2xl border border-gray-100 p-3"
+                      >
+                        <span
+                          className="mt-1 inline-flex size-3 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900">
+                            {item.title}
+                          </p>
+                          <p className="text-xs text-gray-500">{item.entity}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="whitespace-nowrap text-xs text-gray-400">
+                            {item.time}
+                          </p>
+                          <button className="mt-1 inline-flex items-center text-[11px] font-medium text-emerald-600">
+                            Details
+                            <KeenIcon
+                              icon="arrow-up-right"
+                              className="ml-1 size-3"
+                            />
+                          </button>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-400 whitespace-nowrap">
-                          {item.time}
-                        </p>
-                        <button className="mt-1 inline-flex items-center text-[11px] font-medium text-emerald-600">
-                          Details
-                          <KeenIcon
-                            icon="arrow-up-right"
-                            className="ml-1 size-3"
-                          />
-                        </button>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
+                      No recent updates to display.
                     </div>
-                  ))}
+                  )}
                 </div>
                 <div className="pt-4 text-right">
                   <button className="inline-flex items-center text-xs font-semibold text-emerald-700">
