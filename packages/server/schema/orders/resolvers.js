@@ -126,7 +126,7 @@ const orderResolvers = {
                 const product = mapProductRow(productRows[0]);
 
                 if (product.user_id === buyerId) {
-                return { success: false, message: 'You cant order your own product' };
+                    return { success: false, message: 'You cant order your own product' };
                 }
                 
                 if (product.stock < input.quantity) {

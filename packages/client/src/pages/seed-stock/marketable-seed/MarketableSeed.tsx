@@ -3,10 +3,9 @@ import { useQuery } from "@apollo/client/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { KeenIcon } from "@/components";
-import { LOAD_SEED_LABS, LOAD_STOCK_RECORDS } from "@/gql/queries";
+import { LOAD_STOCK_RECORDS } from "@/gql/queries";
 import { seedCategory, statusBadge } from "../stock-examination/StockExamination";
 import { Input } from "@/components/ui/input";
-import StockDetailsSheet from "./StockDetailsSheet";
 
 type StockExam = {
   id: string;
@@ -17,29 +16,18 @@ type StockExam = {
   is_deposit: boolean;
   is_transfer: boolean;
   quantity?: string;
-  Owner: {
-    name: string;
-  };
-  CropVariety:{
-    name:string;
-  }
 };
 
 const formatDate = (iso?: string) =>
   iso ? new Date(iso).toLocaleString() : "—";
 
-const StockRecordsPage = () => {
+const MarketableSeed = () => {
   const { data, loading, error, refetch } = useQuery(LOAD_STOCK_RECORDS);
-  const { data:labs, loading:labsLoading, error:labsError } = useQuery(LOAD_SEED_LABS);
-console.log('labs', labs);
-
   const [items, setItems] = useState<StockExam[]>([]);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [lastRefreshedAt, setLastRefreshedAt] = useState<Date | null>(null);
-  const [detailsStock, setDetailsStock] = useState<any | null>(null);
-  
 
   useEffect(() => {
     if (data?.stockRecords) {
@@ -216,7 +204,7 @@ console.log('labs', labs);
                 <div className="text-xs text-gray-500">{formatDate(row.created_at)}</div>
               </div>
               <div className="text-sm text-gray-700 mb-2">{row.seed_class}</div>
-              <div className="text-sm text-gray-600">Owner: {row.Owner.name || "—"}</div>
+              <div className="text-sm text-gray-600">Owner: {row.user_id || "—"}</div>
               <div className="mt-2">{inStockBadge(row.is_deposit)}</div>
               <div className="mt-1 text-sm text-gray-700">
                 Decision: <span className="capitalize">{row.quantity || "—"}</span>
@@ -240,7 +228,6 @@ console.log('labs', labs);
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Status</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Quantity</th>
                 <th className="px-4 py-3 text-left font-medium text-gray-600">Date</th>
-                <th className="px-4 py-3 text-left font-medium text-gray-600">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -248,21 +235,13 @@ console.log('labs', labs);
                 <tr key={row.id} className="border-b hover:bg-gray-50 transition">
                   <td className="px-4 py-3 font-medium text-gray-900">{row.lot_number}</td>
                   <td className="px-4 py-3">{row.seed_class}</td>
-                  <td className="px-4 py-3">{row.Owner.name || "—"}</td>
+                  <td className="px-4 py-3">{row.user_id || "—"}</td>
                   <td className="px-4 py-3">{inStockBadge(row.is_deposit)}</td>
                   <td className="px-4 py-3 text-gray-800 capitalize">
                     {row.quantity || "—"}
                   </td>
                   <td className="px-4 py-3 text-gray-500">
                     {formatDate(row.created_at)}
-                  </td>
-                  <td>
-                    <button
-                        className="btn btn-sm btn-ghost"
-                        onClick={() => setDetailsStock(row)}
-                      >
-                        View
-                      </button>
                   </td>
                 </tr>
               ))}
@@ -272,18 +251,6 @@ console.log('labs', labs);
           <EmptyState onRefresh={handleRefresh} />
         )}
       </div>
-      {/* Order Details Sheet */}
-      {detailsStock && (
-        <StockDetailsSheet
-          open={!!detailsStock}
-          onOpenChange={() => {
-            setDetailsStock(null);
-            toast.success('Stock details closed');
-          }}
-          order={detailsStock}
-          labs={labs?.getLabInspections || []}
-        />
-      )}
     </div>
   );
 };
@@ -303,4 +270,4 @@ const EmptyState = ({ onRefresh }: { onRefresh: () => void }) => (
   </div>
 );
 
-export default StockRecordsPage;
+export default MarketableSeed;

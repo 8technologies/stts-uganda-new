@@ -1,9 +1,6 @@
-import { GraphQLError } from "graphql";
 import { db } from "../../config/config.js";
 import checkPermission from "../../helpers/checkPermission.js";
 import hasPermission from "../../helpers/hasPermission.js";
-import { fetchVarietyById } from "../crop/resolvers.js";
-import { getUsers } from "../user/resolvers.js";
 // Make sure this import matches your project setup:
 
 const mapRecordRow = (row) => ({
@@ -29,35 +26,35 @@ export const fetchRecords = async ({
 } = {}) => {
   try {
     const values = [];
-    let where = "WHERE stock_records.deleted = 0";
+    let where = "WHERE marketable_seeds.deleted = 0";
 
     if (id) {
-      where += " AND stock_records.id = ?";
+      where += " AND marketable_seeds.id = ?";
       values.push(id);
     }
 
     if (user_id) {
-      where += " AND stock_records.user_id = ?";
+      where += " AND marketable_seeds.user_id = ?";
       values.push(user_id);
     }
 
     const sql = `
-      SELECT stock_records.*
-      FROM stock_records
+      SELECT marketable_seeds.*
+      FROM marketable_seeds
       ${where}
-      ORDER BY stock_records.created_at DESC
+      ORDER BY marketable_seeds.created_at DESC
     `;
 
     const [results] = await db.execute(sql, values);
     return results.map(mapRecordRow);
   } catch (error) {
-    throw new Error(`Failed to fetch stock records: ${error.message}`);
+    throw new Error(`Failed to fetch marketable seeds: ${error.message}`);
   }
 };
 
-const stockRecordResolvers = {
+const marketableSeedsResolvers = {
   Query: {
-    stockRecords: async (_parent, args, context) => {
+    marketableSeeds: async (_parent, args, context) => {
       try {
         const user = context?.req?.user;
         const userPermissions = user?.permissions || [];
@@ -65,7 +62,7 @@ const stockRecordResolvers = {
         checkPermission(
           userPermissions,
           "can_view_seed_stock",
-          "You dont have permissions to view seed stock"
+          "You dont have permissions to view marketable seeds"
         );
 
         const can_manage_all_forms = hasPermission(
@@ -93,7 +90,7 @@ const stockRecordResolvers = {
         // Since the field is named stockRecords, return an array.
         return records;
       } catch (error) {
-        throw new Error(`Failed to fetch stock records: ${error.message}`);
+        throw new Error(`Failed to fetch marketable seeds: ${error.message}`);
       }
     },
 
@@ -104,36 +101,6 @@ const stockRecordResolvers = {
     //   return one || null;
     // },
   },
-  StockRecord: {
-    Owner: async (parent) => {
-      try {
-          const user_id = parent.user_id;
-  
-          const [user] = await getUsers({
-            id: user_id,
-          });
-          return user;
-      } catch (error) {
-          throw new GraphQLError(error.message);
-      }
-    },
-    CropVariety: async (parent) => {
-      try {
-                  
-      const variety_id = parent.crop_variety_id;
-
-      if (!variety_id) return null;
-
-      const variety = await fetchVarietyById(variety_id);
-
-      return variety;
-      } catch (error) {
-          console.error("Error fetching crop variety:", error);
-          throw new GraphQLError(error.message);
-      }
-    },
-  },
-  
 };
 
-export default stockRecordResolvers;
+export default marketableSeedsResolvers;

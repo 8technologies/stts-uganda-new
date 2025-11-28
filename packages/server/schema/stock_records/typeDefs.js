@@ -20,6 +20,8 @@ const stockRecordsTypeDefs = `#graphql
         created_at: DateTime
         updated_at: DateTime
         lot_number: String
+        Owner: User
+        CropVariety: CropVariety
     }
 
     type Query {

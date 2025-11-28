@@ -684,6 +684,14 @@ const LOAD_STOCK_RECORDS = gql`
       created_at
       updated_at
       lot_number
+      Owner{
+        username
+        name
+      }
+
+      CropVariety {
+        name
+      }
     }
   }
 `;

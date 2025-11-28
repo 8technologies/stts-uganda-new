@@ -112,6 +112,7 @@ import StockLabTestForm from '@/pages/QA/seedLabs/blocks/SeedLabTest';
 import SeedLabelManagementPage from '@/pages/QA/seed_Labels/SeedLabels';
 import MarketplacePage from '@/pages/marketplace/products/MarketplacePage';
 import OrdersPage from '@/pages/marketplace/orders/OrdersPage';
+import MarketableSeed from '@/pages/seed-stock/marketable-seed/MarketableSeed';
 
 
 const AppRoutingSetup = (): ReactElement => {
@@ -184,6 +185,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/stock/examination" element={<StockExamination />} />
           <Route path="/stock/inspection/:stockId" element={<StockRecordsPage />} />
           <Route path="/stock/mystock" element={<StockRecordsPage />} />
+          <Route path="/stock/marketable" element={<MarketableSeed />} />
 
           <Route path="/market/products" element={<MarketplacePage />} />
           <Route path="/market/orders" element={<OrdersPage />} />

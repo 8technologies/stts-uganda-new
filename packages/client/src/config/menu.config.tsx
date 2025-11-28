@@ -118,7 +118,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       { title: 'Stock examination', path: '/stock/examination' },
       { title: 'My Stock', path: '/stock/mystock' },
-      { title: 'Marketable seed', path: '/stock/marketable' }
+      // { title: 'Marketable seed', path: '/stock/marketable' }
     ]
   },
   {
@@ -127,7 +127,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       { title: 'Products', path: '/market/products' },
       { title: 'Orders', path: '/market/orders' },
-      { title: 'Quotations', path: '/market/quotations' }
+      // { title: 'Quotations', path: '/market/quotations' }
     ]
   },
   {
