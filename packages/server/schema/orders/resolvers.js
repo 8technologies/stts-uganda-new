@@ -1,6 +1,8 @@
 import { GraphQLError } from "graphql";
 import { db } from "../../config/config";
 import { getUsers } from "../user/resolvers";
+import { mapProductRow } from "../marketplace/resolvers";
+import saveData from "../../utils/db/saveData";
 
 const mapOrdersRow = (row) => {
   return {
@@ -8,6 +10,7 @@ const mapOrdersRow = (row) => {
     product_id: row.product_id?.toString(),
     quantity: row.quantity != null ? Number(row.quantity) : null,
     buyer_id: row.buyer_id?.toString(),
+    status: row.status || null,
     seller_id: row.seller_id?.toString(),
     comment: row.comment || null,
     created_at: row.created_at ? new Date(row.created_at) : null,
@@ -101,6 +104,97 @@ const orderResolvers = {
             }
         }
     },
+
+    Mutation:{
+        orderProduct: async (parent, args, context) => {
+            const input = args.input;
+            
+            const connection = await db.getConnection();
+            try {
+                const buyerId = context?.req?.user?.id;
+                await connection.beginTransaction();
+                const user = context?.req?.user;
+                const userPermissions = user?.permissions || [];
+                // checkPermission(userPermissions, 'can_order_product', 'No permission to order product');
+
+                // Fetch the product to ensure it exists and has enough stock
+                const [productRows] = await db.execute('SELECT * FROM products WHERE id = ? AND deleted = 0', [input.productId]);
+                if (productRows.length === 0) {
+                return { success: false, message: 'Product not found' };
+                }
+
+                const product = mapProductRow(productRows[0]);
+
+                if (product.user_id === buyerId) {
+                return { success: false, message: 'You cant order your own product' };
+                }
+                
+                if (product.stock < input.quantity) {
+                    return { success: false, message: 'Insufficient stock available' };
+                }
+
+                const data = {
+                    product_id: input.productId,
+                    quantity: input.quantity,
+                    seller_id: product.user_id,
+                    buyer_id: buyerId,
+                    comment: input.comment || null,
+                    created_at: new Date(),
+                };
+
+                // Create the order 
+                await saveData({
+                    table:'orders', 
+                    data,
+                    id: null,
+                    connection
+                });
+
+                connection.commit();
+                return { success: true, message: 'Order placed successfully', data: data };
+            }
+            catch (err) {
+                return { success: false, message: err.message };
+            }
+        },
+
+        orderProcessing: async (parent, args, context) => {
+            const input = args.input;
+            const connection = await db.getConnection();
+            try {
+                await connection.beginTransaction();
+                const user = context?.req?.user;
+                const userPermissions = user?.permissions || [];
+                // checkPermission(userPermissions, 'can_process_order', 'No permission to process order');
+
+                // Fetch the order to ensure it exists
+                const order= await getOrders({id: input.orderId});
+                if (order.length === 0) {
+                    return { success: false, message: 'Order not found' };
+                }
+
+                const data = {
+                    status: input.status,
+                    comment: input.comment || null,
+                };
+
+                // Update the order 
+                await saveData({
+                    table:'orders', 
+                    data,
+                    id: input.orderId,
+                    connection
+                });
+
+                connection.commit();
+                return { success: true, message: 'Order updated successfully', order: {...order[0], ...data} };
+
+
+            }catch (err) {
+                return { success: false, message: err.message };
+            }
+        }
+    }
 };
 
 export default orderResolvers;

@@ -79,7 +79,7 @@ const marketplaceTypeDefs = `#graphql
     createProduct(input: CreateProductInput!): ProductResponse!
     updateProduct(id: ID!, input: UpdateProductInput!): ProductResponse!
     deleteProduct(id: ID!): DeleteResponse!
-    orderProduct(input: OrderProductInput!): ProductResponse!
+    # orderProduct(input: OrderProductInput!): ProductResponse!
   }
 `;
 

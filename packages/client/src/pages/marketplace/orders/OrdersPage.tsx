@@ -186,7 +186,7 @@ const OrdersPage: React.FC = () => {
                     <th className="text-left px-4 py-3 font-semibold text-gray-700">Buyer</th>
                   )}
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Quantity</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-700">Comment</th>
+                  {/* <th className="text-left px-4 py-3 font-semibold text-gray-700">Comment</th> */}
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Date</th>
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Status</th>
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Action</th>
@@ -206,22 +206,17 @@ const OrdersPage: React.FC = () => {
                         <div className="font-medium">{order.Buyer?.name || order.Buyer?.username || '-'}</div>
                       </td>
                     )}
-                    <td className="px-4 py-3 text-gray-700">
-                      <div className="font-medium">{order.Buyer?.name || order.Buyer?.username || '-'}</div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-700">
-                      <div className="font-medium">{order.Seller?.name || order.Seller?.username || '-'}</div>
-                    </td>
                     <td className="px-4 py-3 text-gray-700">{order.quantity ?? '-'} kg</td>
-                    <td className="px-4 py-3 text-gray-600 truncate max-w-xs">
-                      {order.comment ? order.comment.substring(0, 30) + (order.comment.length > 30 ? '…' : '') : '-'}
-                    </td>
+                    
+                    
                     <td className="px-4 py-3 text-gray-600">{formatDate(order.created_at)}</td>
+                    
                     <td className="px-4 py-3">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                         {order.status || 'Pending'}
                       </span>
                     </td>
+                    
                     <td className="px-4 py-3">
                       <button
                         className="btn btn-sm btn-ghost"

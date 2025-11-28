@@ -889,6 +889,7 @@ export const ORDERS = gql`
     buyer_id
     seller_id
     comment
+    status
     created_at
     Buyer {
       username
@@ -896,6 +897,7 @@ export const ORDERS = gql`
     }
     Seller {
       username
+      name
       id
     }
   }
