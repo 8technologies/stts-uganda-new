@@ -1,5 +1,8 @@
-import React, { forwardRef } from 'react';
-import { TabsList as MuiTabsList, TabsListProps as MuiTabProps } from '@mui/base/TabsList';
+import React, { forwardRef } from "react";
+import {
+  TabsList as MuiTabsList,
+  TabsListProps as MuiTabProps,
+} from "@mui/base/TabsList";
 
 // Define the extended tab component
 const TabsList = forwardRef<HTMLDivElement, MuiTabProps>((props, ref) => {
@@ -7,8 +10,8 @@ const TabsList = forwardRef<HTMLDivElement, MuiTabProps>((props, ref) => {
     <MuiTabsList
       slotProps={{
         root: () => ({
-          className: 'tabs'
-        })
+          className: "tabs",
+        }),
       }}
       {...props}
       ref={ref}

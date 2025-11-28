@@ -6,10 +6,10 @@
  */
 const hasPermission = (
   userPermissions: Record<string, boolean> | null | undefined,
-  permissionKey: string
+  permissionKey: string,
 ): boolean => {
-  if (!userPermissions || typeof userPermissions !== 'object') {
-    console.error('Invalid user permissions object.');
+  if (!userPermissions || typeof userPermissions !== "object") {
+    console.error("Invalid user permissions object.");
     return false;
   }
 

@@ -1,78 +1,78 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link } from 'react-router-dom';
-import { KeenIcon } from '@/components/keenicons';
-import { useResponsive, useViewport } from '@/hooks';
-import { useDemo3Layout } from '..';
-import { useEffect } from 'react';
-import { usePathname } from '@/providers';
+import { Link } from "react-router-dom";
+import { KeenIcon } from "@/components/keenicons";
+import { useResponsive, useViewport } from "@/hooks";
+import { useDemo3Layout } from "..";
+import { useEffect } from "react";
+import { usePathname } from "@/providers";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet';
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const Sidebar = () => {
   const { mobileSidebarOpen, setMobileSidebarOpen } = useDemo3Layout();
   const { pathname, prevPathname } = usePathname();
-  const desktopMode = useResponsive('up', 'lg');
-  const mobileMode = useResponsive('down', 'lg');
+  const desktopMode = useResponsive("up", "lg");
+  const mobileMode = useResponsive("down", "lg");
   const [viewportHeight] = useViewport();
   const scrollableOffset = 70;
   const scrollableHeight = viewportHeight - scrollableOffset;
   const items = [
     {
-      icon: 'chart-line-star',
-      path: '/',
-      tooltip: 'Dashboard'
+      icon: "chart-line-star",
+      path: "/",
+      tooltip: "Dashboard",
     },
     {
-      icon: 'profile-circle',
-      path: '/public-profile/profiles/default',
-      tooltip: 'Profile'
+      icon: "profile-circle",
+      path: "/public-profile/profiles/default",
+      tooltip: "Profile",
     },
     {
-      icon: 'setting-2',
+      icon: "setting-2",
       active: true,
-      path: '/account/home/get-started',
-      tooltip: 'Account'
+      path: "/account/home/get-started",
+      tooltip: "Account",
     },
     {
-      icon: 'users',
-      path: '/network/get-started',
-      tooltip: 'Network'
+      icon: "users",
+      path: "/network/get-started",
+      tooltip: "Network",
     },
     {
-      icon: 'security-user',
-      path: '/account/billing/plans',
-      tooltip: 'Plans'
+      icon: "security-user",
+      path: "/account/billing/plans",
+      tooltip: "Plans",
     },
     {
-      icon: 'messages',
-      path: '/account/security/security-log',
-      tooltip: 'Security Logs'
+      icon: "messages",
+      path: "/account/security/security-log",
+      tooltip: "Security Logs",
     },
     {
-      icon: 'shop',
-      path: '/account/notifications',
-      tooltip: 'Notifications'
+      icon: "shop",
+      path: "/account/notifications",
+      tooltip: "Notifications",
     },
     {
-      icon: 'cheque',
-      path: '/account/members/roles',
-      tooltip: 'ACL'
+      icon: "cheque",
+      path: "/account/members/roles",
+      tooltip: "ACL",
     },
     {
-      icon: 'code',
-      path: '/account/api-keys',
-      tooltip: 'API Keys'
+      icon: "code",
+      path: "/account/api-keys",
+      tooltip: "API Keys",
     },
     {
-      icon: 'question',
-      path: 'https://keenthemes.com/metronic/tailwind/docs/',
-      tooltip: 'Docs'
-    }
+      icon: "question",
+      path: "https://keenthemes.com/metronic/tailwind/docs/",
+      tooltip: "Docs",
+    },
   ];
 
   const handleMobileSidebarClose = () => {
@@ -86,11 +86,12 @@ const Sidebar = () => {
           <div
             className="scrollable-y-auto grow gap-2.5 shrink-0 flex items-center flex-col"
             style={{
-              ...(desktopMode && scrollableHeight > 0 && { height: `${scrollableHeight}px` })
+              ...(desktopMode &&
+                scrollableHeight > 0 && { height: `${scrollableHeight}px` }),
             }}
           >
             {items.map((item, index) =>
-              item.path.startsWith('http') ? (
+              item.path.startsWith("http") ? (
                 <a
                   href={item.path}
                   key={index}
@@ -100,7 +101,7 @@ const Sidebar = () => {
                   rel="noopener noreferrer"
                   className={`btn btn-icon btn-icon-lg rounded-full size-10 border here:border-gray-300 
                     text-gray-600 hover:bg-light hover:text-primary hover:border-gray-300 ${
-                      item.active ? 'bg-light text-primary' : ''
+                      item.active ? "bg-light text-primary" : ""
                     }`}
                 >
                   <span className="menu-icon">
@@ -115,7 +116,7 @@ const Sidebar = () => {
                   data-tooltip={item.tooltip}
                   data-tooltip-placement="right"
                   className={`btn btn-icon btn-icon-lg rounded-full size-10 border active:border-gray-300 text-gray-600 hover:bg-light hover:text-primary hover:border-gray-300 ${
-                    item.active ? 'bg-light text-primary border-gray-300' : ''
+                    item.active ? "bg-light text-primary border-gray-300" : ""
                   }`}
                 >
                   <span className="menu-icon">
@@ -123,7 +124,7 @@ const Sidebar = () => {
                   </span>
                   <span className="tooltip">{item.tooltip}</span>
                 </Link>
-              )
+              ),
             )}
           </div>
         </div>

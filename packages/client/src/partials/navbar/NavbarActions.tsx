@@ -1,4 +1,4 @@
-import { INavbarActionsProps } from './';
+import { INavbarActionsProps } from "./";
 
 const NavbarActions = ({ children }: INavbarActionsProps) => {
   return (

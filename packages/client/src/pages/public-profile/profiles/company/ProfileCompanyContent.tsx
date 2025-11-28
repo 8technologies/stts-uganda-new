@@ -1,4 +1,4 @@
-import { Connections, Contributions, Projects, Tags } from '../default';
+import { Connections, Contributions, Projects, Tags } from "../default";
 import {
   Statistics,
   Highlights,
@@ -7,23 +7,23 @@ import {
   CompanyProfile,
   Locations,
   IStatisticsItems,
-  INetworkItems
-} from './blocks';
+  INetworkItems,
+} from "./blocks";
 
 const ProfileCompanyContent = () => {
   const items: IStatisticsItems = [
-    { number: '624', label: 'Employees' },
-    { number: '60.7M', label: 'Users' },
-    { number: '369M', label: 'Revenue' },
-    { number: '27', label: 'Company Rank' }
+    { number: "624", label: "Employees" },
+    { number: "60.7M", label: "Users" },
+    { number: "369M", label: "Revenue" },
+    { number: "27", label: "Company Rank" },
   ];
 
   const data: INetworkItems = [
-    { icon: 'dribbble', link: 'https://duolingo.com' },
-    { icon: 'sms', link: 'info@duolingo.com' },
-    { icon: 'facebook', link: 'duolingo' },
-    { icon: 'twitter', link: 'duolingo-news' },
-    { icon: 'youtube', link: 'duolingo-tuts' }
+    { icon: "dribbble", link: "https://duolingo.com" },
+    { icon: "sms", link: "info@duolingo.com" },
+    { icon: "facebook", link: "duolingo" },
+    { icon: "twitter", link: "duolingo-news" },
+    { icon: "youtube", link: "duolingo-tuts" },
   ];
 
   return (

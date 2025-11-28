@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { useLanguage } from '@/i18n';
-import { DropdownCard2 } from '../dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { useLanguage } from "@/i18n";
+import { DropdownCard2 } from "../dropdowns/general";
 
 interface ICampaignItem {
   total: string;
@@ -36,7 +36,7 @@ const CardCampaign = ({
   status,
   statistics,
   progress,
-  url
+  url,
 }: ICampaignProps) => {
   const { isRTL } = useLanguage();
 
@@ -46,7 +46,9 @@ const CardCampaign = ({
         key={index}
         className="flex flex-col gap-1.5 border border-dashed border-gray-300 rounded-md px-2.5 py-2"
       >
-        <span className="text-gray-900 text-sm leading-none font-medium">{statistic.total}</span>
+        <span className="text-gray-900 text-sm leading-none font-medium">
+          {statistic.total}
+        </span>
         <span className="text-gray-700 text-xs">{statistic.description}</span>
       </div>
     );
@@ -56,22 +58,24 @@ const CardCampaign = ({
     <div className="card overflow-hidden grow justify-between">
       <div className="p-5 mb-5">
         <div className="flex items-center justify-between mb-5">
-          <span className={`badge ${status.variant} badge-outline`}>{status.label}</span>
+          <span className={`badge ${status.variant} badge-outline`}>
+            {status.label}
+          </span>
 
           <Menu className="items-stretch">
             <MenuItem
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -106,7 +110,10 @@ const CardCampaign = ({
         </div>
 
         <div className="text-center mb-7">
-          <a href={url} className="text-lg font-medium text-gray-900 hover:text-primary">
+          <a
+            href={url}
+            className="text-lg font-medium text-gray-900 hover:text-primary"
+          >
             {title}
           </a>
 
@@ -121,10 +128,18 @@ const CardCampaign = ({
       </div>
 
       <div className={`progress ${progress?.variant}`}>
-        <div className="progress-bar" style={{ width: `${progress?.value}%` }}></div>
+        <div
+          className="progress-bar"
+          style={{ width: `${progress?.value}%` }}
+        ></div>
       </div>
     </div>
   );
 };
 
-export { CardCampaign, type ICampaignItem, type ICampaignItems, type ICampaignProps };
+export {
+  CardCampaign,
+  type ICampaignItem,
+  type ICampaignItems,
+  type ICampaignProps,
+};

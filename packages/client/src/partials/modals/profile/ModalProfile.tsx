@@ -1,23 +1,23 @@
-import { Fragment } from 'react';
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
-import { NavbarDropdown } from '@/partials/navbar';
+import { Fragment } from "react";
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils";
+import { NavbarDropdown } from "@/partials/navbar";
 import {
   Dialog,
   DialogBody,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   About,
   CommunityBadges,
   Connections,
   Contributions,
   Projects,
-  WorkExperience
-} from '@/pages/public-profile/profiles/default';
+  WorkExperience,
+} from "@/pages/public-profile/profiles/default";
 
 interface IModalProfileProps {
   open: boolean;
@@ -30,10 +30,10 @@ const ModalProfile = ({ open, onOpenChange }: IModalProfileProps) => {
       <style>
         {`
           .modal-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/2.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/2.png")}');
           }
           .dark .modal-bg  {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/2-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/2-dark.png")}');
           }
         `}
       </style>
@@ -46,7 +46,7 @@ const ModalProfile = ({ open, onOpenChange }: IModalProfileProps) => {
             <div className="flex flex-col justify-end border-b-0 grow px-9 bg-gradient-to-t from-light from-3% to-transparent">
               <div className="flex justify-center mb-5">
                 <img
-                  src={toAbsoluteUrl('/media/avatars/300-1.png')}
+                  src={toAbsoluteUrl("/media/avatars/300-1.png")}
                   className="rounded-full border-3 border-success max-h-[100px]"
                   alt=""
                 />
@@ -81,7 +81,10 @@ const ModalProfile = ({ open, onOpenChange }: IModalProfileProps) => {
 
                   <div className="flex flex-wrap justify-center gap-1 lg:gap-3 text-sm">
                     <div className="flex gap-1 items-center">
-                      <KeenIcon icon="abstract" className="text-gray-500 text-base" />
+                      <KeenIcon
+                        icon="abstract"
+                        className="text-gray-500 text-base"
+                      />
                       <a
                         href="https://keenthemes.com"
                         className="text-gray-600 hover:text-primary"
@@ -91,8 +94,14 @@ const ModalProfile = ({ open, onOpenChange }: IModalProfileProps) => {
                       </a>
                     </div>
                     <div className="flex gap-1 items-center">
-                      <KeenIcon icon="sms" className="text-gray-500 text-base" />
-                      <a href="mailto:jenny@kteam.com" className="text-gray-600 hover:text-primary">
+                      <KeenIcon
+                        icon="sms"
+                        className="text-gray-500 text-base"
+                      />
+                      <a
+                        href="mailto:jenny@kteam.com"
+                        className="text-gray-600 hover:text-primary"
+                      >
                         jenny@kteam.com
                       </a>
                     </div>

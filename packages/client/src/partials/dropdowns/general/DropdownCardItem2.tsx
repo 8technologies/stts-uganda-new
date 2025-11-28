@@ -5,8 +5,8 @@ import {
   MenuLink,
   MenuSeparator,
   MenuSub,
-  MenuTitle
-} from '@/components';
+  MenuTitle,
+} from "@/components";
 
 const DropdownCardItem2 = () => {
   return (

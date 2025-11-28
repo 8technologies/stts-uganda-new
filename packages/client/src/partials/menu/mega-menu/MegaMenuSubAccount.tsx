@@ -1,10 +1,14 @@
-import { TMenuConfig, IMenuItemConfig, MenuSub } from '@/components/menu';
-import { MegaMenuSubHighlighted, MegaMenuSubDefault } from './components';
+import { TMenuConfig, IMenuItemConfig, MenuSub } from "@/components/menu";
+import { MegaMenuSubHighlighted, MegaMenuSubDefault } from "./components";
 
 const MegaMenuSubAccount = (items: TMenuConfig) => {
   const myAccountItem = items[2];
-  const myAccountItemGeneral = myAccountItem.children ? myAccountItem.children[0] : {};
-  const myAccountItemOthers = myAccountItem.children ? myAccountItem.children[1] : {};
+  const myAccountItemGeneral = myAccountItem.children
+    ? myAccountItem.children[0]
+    : {};
+  const myAccountItemOthers = myAccountItem.children
+    ? myAccountItem.children[1]
+    : {};
 
   return (
     <MenuSub className="flex-col lg:flex-row gap-0 w-full lg:max-w-[1240px]">
@@ -13,7 +17,8 @@ const MegaMenuSubAccount = (items: TMenuConfig) => {
           {myAccountItemGeneral.title}
         </h3>
         <div className="menu menu-default menu-fit flex-col">
-          {myAccountItemGeneral.children && MegaMenuSubHighlighted(myAccountItemGeneral.children)}
+          {myAccountItemGeneral.children &&
+            MegaMenuSubHighlighted(myAccountItemGeneral.children)}
         </div>
       </div>
       <div className="pt-4 pb-2 lg:p-7.5 lg:pb-5 grow">

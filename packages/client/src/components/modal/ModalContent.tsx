@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef, ReactNode } from "react";
 
 interface IModalContentProps {
   className?: string;
@@ -10,11 +10,15 @@ interface IModalContentProps {
 const ModalContent = forwardRef<HTMLDivElement, IModalContentProps>(
   ({ className, children, tabIndex = -1 }, ref) => {
     return (
-      <div ref={ref} tabIndex={tabIndex} className={`modal-content ${className}`}>
+      <div
+        ref={ref}
+        tabIndex={tabIndex}
+        className={`modal-content ${className}`}
+      >
         {children}
       </div>
     );
-  }
+  },
 );
 
 export { ModalContent };

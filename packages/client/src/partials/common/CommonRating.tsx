@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
 interface IRatingProps {
   className?: string;
@@ -8,14 +8,14 @@ interface IRatingProps {
 
 const CommonRating = ({ className, rating, round }: IRatingProps) => {
   return (
-    <div className={clsx('rating', className && className)}>
+    <div className={clsx("rating", className && className)}>
       {[...Array(5)].map((_, index) => (
         <div
           key={index}
           className={clsx(
-            'rating-label',
-            index < rating ? 'checked' : '',
-            index === rating && round ? 'indeterminate' : ''
+            "rating-label",
+            index < rating ? "checked" : "",
+            index === rating && round ? "indeterminate" : "",
           )}
         >
           {index === rating && round ? (

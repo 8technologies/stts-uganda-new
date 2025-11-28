@@ -1,19 +1,19 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { Container } from '@/components/container';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { KeenIcon } from '@/components';
+import { Container } from "@/components/container";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { KeenIcon } from "@/components";
 
-import { UserProfileHero } from '@/partials/heros';
-import { Navbar, NavbarActions, NavbarDropdown } from '@/partials/navbar';
-import { PageMenu } from '@/pages/public-profile';
+import { UserProfileHero } from "@/partials/heros";
+import { Navbar, NavbarActions, NavbarDropdown } from "@/partials/navbar";
+import { PageMenu } from "@/pages/public-profile";
 
-import { ProfileGamerContent } from '.';
+import { ProfileGamerContent } from ".";
 
 const ProfileGamerPage = () => {
   const image = (
     <img
-      src={toAbsoluteUrl('/media/avatars/300-27.png')}
+      src={toAbsoluteUrl("/media/avatars/300-27.png")}
       className="rounded-full border-3 border-success size-[100px] shrink-0"
     />
   );
@@ -24,9 +24,9 @@ const ProfileGamerPage = () => {
         name="Floyd Miles"
         image={image}
         info={[
-          { label: 'SF, Bay Area', icon: 'geolocation' },
-          { label: 'floydgg', icon: 'twitch' },
-          { email: 'Level 22', icon: 'ocus' }
+          { label: "SF, Bay Area", icon: "geolocation" },
+          { label: "floydgg", icon: "twitch" },
+          { email: "Level 22", icon: "ocus" },
         ]}
       />
 

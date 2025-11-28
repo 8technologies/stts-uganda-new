@@ -1,5 +1,5 @@
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
-import { Users } from './blocks/users';
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
+import { Users } from "./blocks/users";
 
 const NetworkSaasUsersContent = () => {
   return (

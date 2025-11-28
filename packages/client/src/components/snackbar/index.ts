@@ -1,1 +1,1 @@
-export * from './SolidSnackbar';
+export * from "./SolidSnackbar";

@@ -1,7 +1,7 @@
-import { Fragment, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment, ReactNode } from "react";
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface IFeaturesHighlightProps {
   image: ReactNode;
@@ -16,7 +16,7 @@ const FeaturesHighlight = ({
   description,
   features,
   image,
-  more
+  more,
 }: IFeaturesHighlightProps) => {
   const renderItem = (cell: string, index: number) => {
     return (
@@ -37,7 +37,9 @@ const FeaturesHighlight = ({
               dangerouslySetInnerHTML={{ __html: title }}
             ></h2>
 
-            <p className="text-sm font-normal text-gray-700 leading-5.5 mb-2.5">{description}</p>
+            <p className="text-sm font-normal text-gray-700 leading-5.5 mb-2.5">
+              {description}
+            </p>
 
             <div className="grid md:grid-cols-2 gap-2">
               {features.map((feature, index) => (

@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { toAbsoluteUrl } from '@/utils';
-import { useResponsive } from '@/hooks';
+import { Link } from "react-router-dom";
+import { toAbsoluteUrl } from "@/utils";
+import { useResponsive } from "@/hooks";
 import {
   Menu,
   MenuArrow,
@@ -10,11 +10,11 @@ import {
   MenuSub,
   MenuTitle,
   MenuToggle,
-  KeenIcon
-} from '@/components';
+  KeenIcon,
+} from "@/components";
 
-import { useDemo5Layout } from '..';
-import { useLanguage } from '@/i18n';
+import { useDemo5Layout } from "..";
+import { useLanguage } from "@/i18n";
 
 interface IHeaderLogoTeam {
   title: string;
@@ -37,7 +37,7 @@ interface IHeaderLogoStaging {
 interface IHeaderLogoStagings extends Array<IHeaderLogoStaging> {}
 
 const HeaderLogo = () => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const { setMobileSidebarOpen } = useDemo5Layout();
   const { isRTL } = useLanguage();
 
@@ -47,47 +47,47 @@ const HeaderLogo = () => {
 
   const teams: IHeaderLogoTeams = [
     {
-      title: 'MetronicTeam',
-      icon: 'profile-circle',
-      urlPartial: '/public-profile/',
-      path: '/public-profile/profiles/default'
+      title: "MetronicTeam",
+      icon: "profile-circle",
+      urlPartial: "/public-profile/",
+      path: "/public-profile/profiles/default",
     },
     {
-      title: 'KeenTeam',
-      icon: 'setting-2',
-      urlPartial: '/account/',
-      path: '/'
-    }
+      title: "KeenTeam",
+      icon: "setting-2",
+      urlPartial: "/account/",
+      path: "/",
+    },
   ];
 
   const items: IHeaderLogoItems = [
     {
-      title: 'Fall ‘24 Campaign',
-      icon: 'profile-circle'
+      title: "Fall ‘24 Campaign",
+      icon: "profile-circle",
     },
     {
-      title: 'Fall Winter 2024 ',
-      icon: 'setting-2'
+      title: "Fall Winter 2024 ",
+      icon: "setting-2",
     },
     {
-      title: 'Barberry Autmn 24',
-      icon: 'users'
+      title: "Barberry Autmn 24",
+      icon: "users",
     },
     {
-      title: 'PF24 Advertising',
-      icon: 'security-user'
-    }
+      title: "PF24 Advertising",
+      icon: "security-user",
+    },
   ];
 
   const stagings: IHeaderLogoStagings = [
     {
-      title: 'Staging',
-      icon: 'profile-circle'
+      title: "Staging",
+      icon: "profile-circle",
     },
     {
-      title: 'Account',
-      icon: 'setting-2'
-    }
+      title: "Account",
+      icon: "setting-2",
+    },
   ];
 
   return (
@@ -102,12 +102,12 @@ const HeaderLogo = () => {
 
       <Link to="/">
         <img
-          src={toAbsoluteUrl('/media/app/mini-logo-circle.svg')}
+          src={toAbsoluteUrl("/media/app/mini-logo-circle.svg")}
           className="dark:hidden min-h-[34px]"
           alt="logo"
         />
         <img
-          src={toAbsoluteUrl('/media/app/mini-logo-circle-dark.svg')}
+          src={toAbsoluteUrl("/media/app/mini-logo-circle-dark.svg")}
           className="hidden dark:inline-block min-h-[34px]"
           alt="logo"
         />
@@ -120,15 +120,15 @@ const HeaderLogo = () => {
               toggle="dropdown"
               trigger="hover"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-end' : 'bottom-start',
+                placement: isRTL() ? "bottom-end" : "bottom-start",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="text-gray-900 text-sm font-medium">
@@ -154,22 +154,24 @@ const HeaderLogo = () => {
             </MenuItem>
           </Menu>
 
-          <span className="text-sm text-gray-400 font-medium px-2.5 md:inline">/</span>
+          <span className="text-sm text-gray-400 font-medium px-2.5 md:inline">
+            /
+          </span>
 
           <Menu className="menu-default">
             <MenuItem
               toggle="dropdown"
               trigger="hover"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-end' : 'bottom-start',
+                placement: isRTL() ? "bottom-end" : "bottom-start",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="text-gray-900 text-sm font-medium">
@@ -202,15 +204,15 @@ const HeaderLogo = () => {
               toggle="dropdown"
               trigger="hover"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-end' : 'bottom-start',
+                placement: isRTL() ? "bottom-end" : "bottom-start",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="text-gray-900 text-sm font-medium">

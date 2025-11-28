@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface IOpenJobsItem {
   icon: string;
@@ -13,29 +13,29 @@ interface IOpenJobsItems extends Array<IOpenJobsItem> {}
 const OpenJobs = () => {
   const items: IOpenJobsItems = [
     {
-      icon: 'chart-line-star',
-      link: 'Data Science',
-      desc: 'Data Science Ninja',
-      price: '$80,000 - $110,000'
+      icon: "chart-line-star",
+      link: "Data Science",
+      desc: "Data Science Ninja",
+      price: "$80,000 - $110,000",
     },
     {
-      icon: 'rocket',
-      link: 'Exploration',
-      desc: 'Galactic Guide Writer',
-      price: '$45,000 - $60,000'
+      icon: "rocket",
+      link: "Exploration",
+      desc: "Galactic Guide Writer",
+      price: "$45,000 - $60,000",
     },
     {
-      icon: 'milk',
-      link: 'Drinking Arts',
-      desc: 'Taste',
-      price: '$40,000 - $55,000'
+      icon: "milk",
+      link: "Drinking Arts",
+      desc: "Taste",
+      price: "$40,000 - $55,000",
     },
     {
-      icon: 'abstract-44',
-      link: 'Film Production',
-      desc: 'Zombie Makeup Artist',
-      price: ' $55,000 - $75,000'
-    }
+      icon: "abstract-44",
+      link: "Film Production",
+      desc: "Zombie Makeup Artist",
+      price: " $55,000 - $75,000",
+    },
   ];
 
   const renderItems = (item: IOpenJobsItem, index: number) => {

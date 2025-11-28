@@ -1,9 +1,14 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatar } from '../common';
-import { IUserSocialProps } from './CardUserSocial';
+import { CommonAvatar } from "../common";
+import { IUserSocialProps } from "./CardUserSocial";
 
-const CardUserSocialRow = ({ avatar, name, description, verify }: IUserSocialProps) => {
+const CardUserSocialRow = ({
+  avatar,
+  name,
+  description,
+  verify,
+}: IUserSocialProps) => {
   return (
     <div className="card p-7.5">
       <div className="flex items-center flex-wrap justify-between gap-5">

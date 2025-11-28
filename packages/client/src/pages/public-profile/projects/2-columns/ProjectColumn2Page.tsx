@@ -1,19 +1,19 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { Container } from '@/components/container';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { KeenIcon } from '@/components';
+import { Container } from "@/components/container";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { KeenIcon } from "@/components";
 
-import { UserProfileHero } from '@/partials/heros';
-import { Navbar, NavbarActions, NavbarDropdown } from '@/partials/navbar';
-import { PageMenu } from '@/pages/public-profile';
+import { UserProfileHero } from "@/partials/heros";
+import { Navbar, NavbarActions, NavbarDropdown } from "@/partials/navbar";
+import { PageMenu } from "@/pages/public-profile";
 
-import { Projects } from './blocks';
+import { Projects } from "./blocks";
 
 const ProjectColumn2Page = () => {
   const image = (
     <img
-      src={toAbsoluteUrl('/media/avatars/300-1.png')}
+      src={toAbsoluteUrl("/media/avatars/300-1.png")}
       className="rounded-full border-3 border-success h-[100px] shrink-0"
     />
   );
@@ -24,9 +24,9 @@ const ProjectColumn2Page = () => {
         name="Jenny Klabber"
         image={image}
         info={[
-          { label: 'KeenThemes', icon: 'abstract' },
-          { label: 'SF, Bay Area', icon: 'geolocation' },
-          { email: 'jenny@kteam.com', icon: 'sms' }
+          { label: "KeenThemes", icon: "abstract" },
+          { label: "SF, Bay Area", icon: "geolocation" },
+          { email: "jenny@kteam.com", icon: "sms" },
         ]}
       />
 

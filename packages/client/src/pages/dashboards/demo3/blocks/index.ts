@@ -1,1 +1,1 @@
-export * from './Integrations';
+export * from "./Integrations";

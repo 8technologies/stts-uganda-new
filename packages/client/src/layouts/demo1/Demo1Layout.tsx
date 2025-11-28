@@ -1,5 +1,5 @@
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { Demo1LayoutProvider, Main } from './';
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { Demo1LayoutProvider, Main } from "./";
 
 const Demo1Layout = () => {
   // Using the useBodyClasses hook to set background styles for light and dark modes

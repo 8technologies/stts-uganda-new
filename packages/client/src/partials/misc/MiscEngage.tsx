@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 interface IEngageProps {
   title: string;
@@ -18,7 +18,9 @@ const MiscEngage = ({ title, description, image, more }: IEngageProps) => {
           <div className="flex flex-col items-start gap-3">
             <h2 className="text-1.5xl font-medium text-gray-900">{title}</h2>
 
-            <p className="text-sm text-gray-800 leading-5.5 mb-2.5">{description}</p>
+            <p className="text-sm text-gray-800 leading-5.5 mb-2.5">
+              {description}
+            </p>
           </div>
 
           {image}

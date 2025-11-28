@@ -1,21 +1,21 @@
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
-import { Fragment } from 'react/jsx-runtime';
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
+import { Fragment } from "react/jsx-runtime";
 
 const Error500Page = () => {
-  useBodyClasses('dark:bg-coal-500');
+  useBodyClasses("dark:bg-coal-500");
 
   return (
     <Fragment>
       <div className="mb-10">
         <img
-          src={toAbsoluteUrl('/media/illustrations/20.svg')}
+          src={toAbsoluteUrl("/media/illustrations/20.svg")}
           className="dark:hidden max-h-[160px]"
           alt="image"
         />
         <img
-          src={toAbsoluteUrl('/media/illustrations/20-dark.svg')}
+          src={toAbsoluteUrl("/media/illustrations/20-dark.svg")}
           className="light:hidden max-h-[160px]"
           alt="image"
         />

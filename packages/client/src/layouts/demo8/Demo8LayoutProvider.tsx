@@ -1,11 +1,17 @@
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { MENU_MEGA, MENU_SIDEBAR } from '@/config';
-import { useMenus } from '@/providers';
-import { ILayoutConfig, useLayout } from '@/providers';
-import { deepMerge } from '@/utils';
-import { Demo8LayoutConfig } from '.';
-import { useMenuChildren } from '@/components';
-import { useLocation } from 'react-router';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { MENU_MEGA, MENU_SIDEBAR } from "@/config";
+import { useMenus } from "@/providers";
+import { ILayoutConfig, useLayout } from "@/providers";
+import { deepMerge } from "@/utils";
+import { Demo8LayoutConfig } from ".";
+import { useMenuChildren } from "@/components";
+import { useLocation } from "react-router";
 
 // Interface defining the properties of the layout provider context
 export interface IDemo8LayoutProviderProps {
@@ -20,11 +26,12 @@ const initalLayoutProps: IDemo8LayoutProviderProps = {
   mobileSidebarOpen: false, // Mobile sidebar is closed by default
   setMobileSidebarOpen: (open: boolean) => {
     console.log(`${open}`);
-  }
+  },
 };
 
 // Create a context to manage the layout-related state and logic for Demo8 layout
-const Demo8LayoutContext = createContext<IDemo8LayoutProviderProps>(initalLayoutProps);
+const Demo8LayoutContext =
+  createContext<IDemo8LayoutProviderProps>(initalLayoutProps);
 
 // Custom hook to access the layout context in other components
 const useDemo8Layout = () => useContext(Demo8LayoutContext);
@@ -36,17 +43,20 @@ const Demo8LayoutProvider = ({ children }: PropsWithChildren) => {
   const { getLayout, setCurrentLayout } = useLayout(); // Hook to get and set layout configuration
 
   // Merge the Demo8 layout configuration with the current layout configuration fetched via getLayout
-  const layoutConfig = deepMerge(Demo8LayoutConfig, getLayout(Demo8LayoutConfig.name));
+  const layoutConfig = deepMerge(
+    Demo8LayoutConfig,
+    getLayout(Demo8LayoutConfig.name),
+  );
 
   // Set the initial state for layout and mobile sidebar
   const [layout] = useState(layoutConfig); // Layout configuration is stored in state
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false); // Manage state for mobile sidebar
 
   // Set the menu configuration for the primary menu using the provided MENU_SIDEBAR configuration
-  setMenuConfig('primary', MENU_SIDEBAR);
-  setMenuConfig('mega', MENU_MEGA);
+  setMenuConfig("primary", MENU_SIDEBAR);
+  setMenuConfig("mega", MENU_MEGA);
   const secondaryMenu = useMenuChildren(pathname, MENU_SIDEBAR, 0); // Retrieves the secondary menu
-  setMenuConfig('secondary', secondaryMenu);
+  setMenuConfig("secondary", secondaryMenu);
 
   // When the layout state changes, set the current layout configuration in the layout provider
   useEffect(() => {
@@ -59,7 +69,7 @@ const Demo8LayoutProvider = ({ children }: PropsWithChildren) => {
       value={{
         layout, // The current layout configuration
         mobileSidebarOpen, // Whether the mobile sidebar is currently open
-        setMobileSidebarOpen // Function to toggle the mobile sidebar state
+        setMobileSidebarOpen, // Function to toggle the mobile sidebar state
       }}
     >
       {children} {/* Render child components that consume this context */}

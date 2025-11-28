@@ -1,6 +1,6 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IAvatarsItem {
   path?: string;
@@ -18,7 +18,7 @@ interface IAvatarsProps {
 }
 
 const CommonAvatars = ({ size, group, more, className }: IAvatarsProps) => {
-  const avatarSize = size ? size : 'size-6';
+  const avatarSize = size ? size : "size-6";
 
   const renderItem = (each: IAvatarsItem, index: number) => {
     return (
@@ -27,7 +27,7 @@ const CommonAvatars = ({ size, group, more, className }: IAvatarsProps) => {
           <img
             src={toAbsoluteUrl(each.path || `/media/avatars/${each.filename}`)}
             className={clsx(
-              `hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light ${avatarSize}`
+              `hover:z-5 relative shrink-0 rounded-full ring-1 ring-light-light ${avatarSize}`,
             )}
             alt=""
           />
@@ -35,7 +35,7 @@ const CommonAvatars = ({ size, group, more, className }: IAvatarsProps) => {
           <span
             className={clsx(
               `hover:z-5 relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-3xs ${avatarSize}`,
-              each.variant
+              each.variant,
             )}
           >
             {each.fallback}
@@ -46,7 +46,7 @@ const CommonAvatars = ({ size, group, more, className }: IAvatarsProps) => {
   };
 
   return (
-    <div className={clsx('flex -space-x-2', className && className)}>
+    <div className={clsx("flex -space-x-2", className && className)}>
       {group.map((each, index) => {
         return renderItem(each, index);
       })}
@@ -56,7 +56,7 @@ const CommonAvatars = ({ size, group, more, className }: IAvatarsProps) => {
           <span
             className={clsx(
               `relative inline-flex items-center justify-center shrink-0 rounded-full ring-1 font-semibold leading-none text-3xs ${size} size-6`,
-              more.variant
+              more.variant,
             )}
           >
             +{more.number || more.label}
@@ -67,4 +67,9 @@ const CommonAvatars = ({ size, group, more, className }: IAvatarsProps) => {
   );
 };
 
-export { CommonAvatars, type IAvatarsItem, type IAvatarsItems, type IAvatarsProps };
+export {
+  CommonAvatars,
+  type IAvatarsItem,
+  type IAvatarsItems,
+  type IAvatarsProps,
+};

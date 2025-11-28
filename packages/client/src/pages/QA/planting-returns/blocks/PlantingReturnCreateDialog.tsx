@@ -1,27 +1,27 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { KeenIcon } from '@/components';
-import { useAuthContext } from '@/auth';
-import { useLazyQuery, useQuery } from '@apollo/client/react';
-import { LOAD_CROPS, LOAD_CROP } from '@/gql/queries';
-import { Upload } from 'lucide-react';
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { KeenIcon } from "@/components";
+import { useAuthContext } from "@/auth";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { LOAD_CROPS, LOAD_CROP } from "@/gql/queries";
+import { Upload } from "lucide-react";
 
 export type PlantingReturnFormValues = {
   growerName: string;
@@ -58,57 +58,71 @@ interface Props {
 }
 
 const DEFAULT_VALUES: PlantingReturnFormValues = {
-  growerName: '',
-  growerNumber: '',
-  contactPhone: '',
-  gardenNumber: '',
-  fieldName: '',
-  district: '',
-  subcounty: '',
-  parish: '',
-  village: '',
-  gpsLat: '',
-  gpsLng: '',
-  crop: '',
-  variety: '',
-  seedClass: '',
-  areaHa: '',
-  dateSown: '',
-  expectedHarvest: '',
-  seedSource: '',
-  seedLotCode: '',
-  intendedMerchant: '',
-  seedRatePerHa: '',
-  receipt_id: '',
-  notes: ''
+  growerName: "",
+  growerNumber: "",
+  contactPhone: "",
+  gardenNumber: "",
+  fieldName: "",
+  district: "",
+  subcounty: "",
+  parish: "",
+  village: "",
+  gpsLat: "",
+  gpsLng: "",
+  crop: "",
+  variety: "",
+  seedClass: "",
+  areaHa: "",
+  dateSown: "",
+  expectedHarvest: "",
+  seedSource: "",
+  seedLotCode: "",
+  intendedMerchant: "",
+  seedRatePerHa: "",
+  receipt_id: "",
+  notes: "",
 };
 
 // Seed class options
 
-const SEED_CLASS_OPTIONS = ['Pre-Basic', 'Basic', 'Certified', 'QDS'];
+const SEED_CLASS_OPTIONS = ["Pre-Basic", "Basic", "Certified", "QDS"];
 
 const PlantingReturnCreateDialog = ({
   open,
   onOpenChange,
   onSave,
   saving,
-  initialValues
+  initialValues,
 }: Props) => {
   const { currentUser } = useAuthContext();
-  const [values, setValues] = useState<PlantingReturnFormValues>({ ...DEFAULT_VALUES });
+  const [values, setValues] = useState<PlantingReturnFormValues>({
+    ...DEFAULT_VALUES,
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Crops and varieties from API
   const LIST_VARS = { filter: {}, pagination: { page: 1, size: 200 } } as const;
-  const { data: cropsData, loading: cropsLoading } = useQuery(LOAD_CROPS, { variables: LIST_VARS });
+  const { data: cropsData, loading: cropsLoading } = useQuery(LOAD_CROPS, {
+    variables: LIST_VARS,
+  });
   const cropOptions = useMemo(
     () =>
-      ((cropsData?.crops?.items || []) as any[]).map((c) => ({ id: String(c.id), name: c.name })),
-    [cropsData?.crops?.items]
+      ((cropsData?.crops?.items || []) as any[]).map((c) => ({
+        id: String(c.id),
+        name: c.name,
+      })),
+    [cropsData?.crops?.items],
   );
   const [loadCropVarieties] = useLazyQuery(LOAD_CROP);
   const [varietyStore, setVarietyStore] = useState<
-    Record<string, { items: { id: string; name: string }[]; loading?: boolean; error?: string }>
+    Record<
+      string,
+      {
+        items: { id: string; name: string }[];
+        loading?: boolean;
+        error?: string;
+      }
+    >
   >({});
 
   const fetchVarieties = async (cropId: string) => {
@@ -119,18 +133,18 @@ const PlantingReturnCreateDialog = ({
         ...(prev[cropId] || {}),
         loading: true,
         error: undefined,
-        items: prev[cropId]?.items || []
-      }
+        items: prev[cropId]?.items || [],
+      },
     }));
     try {
       const res = await loadCropVarieties({ variables: { id: cropId } });
       const items = ((res.data?.crop?.varieties || []) as any[]).map((v) => ({
         id: String(v.id),
-        name: v.name
+        name: v.name,
       }));
       setVarietyStore((prev) => ({
         ...prev,
-        [cropId]: { items, loading: false, error: undefined }
+        [cropId]: { items, loading: false, error: undefined },
       }));
     } catch (e: any) {
       setVarietyStore((prev) => ({
@@ -138,8 +152,8 @@ const PlantingReturnCreateDialog = ({
         [cropId]: {
           items: prev[cropId]?.items || [],
           loading: false,
-          error: e?.message || 'Failed to load varieties'
-        }
+          error: e?.message || "Failed to load varieties",
+        },
       }));
     }
   };
@@ -147,8 +161,8 @@ const PlantingReturnCreateDialog = ({
   useEffect(() => {
     if (open) {
       const prefill: Partial<PlantingReturnFormValues> = {
-        growerName: currentUser?.name || currentUser?.username || '',
-        contactPhone: currentUser?.phone_number || ''
+        growerName: currentUser?.name || currentUser?.username || "",
+        contactPhone: currentUser?.phone_number || "",
       };
       if (initialValues) {
         setValues({ ...DEFAULT_VALUES, ...prefill, ...initialValues });
@@ -164,7 +178,7 @@ const PlantingReturnCreateDialog = ({
 
   const varietyOptions = useMemo(
     () => (values.crop ? varietyStore[values.crop]?.items || [] : []),
-    [values.crop, varietyStore]
+    [values.crop, varietyStore],
   );
 
   const handleChange = (key: keyof PlantingReturnFormValues, value: any) => {
@@ -178,33 +192,35 @@ const PlantingReturnCreateDialog = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
-    setValues(prev => ({ ...prev, [name]: files?.[0] || null }));
+    setValues((prev) => ({ ...prev, [name]: files?.[0] || null }));
   };
 
   const handleGeo = () => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        handleChange('gpsLat', String(pos.coords.latitude));
-        handleChange('gpsLng', String(pos.coords.longitude));
+        handleChange("gpsLat", String(pos.coords.latitude));
+        handleChange("gpsLng", String(pos.coords.longitude));
       },
       () => {
         // ignore
-      }
+      },
     );
   };
 
   const validate = (): boolean => {
     const er: Record<string, string> = {};
-    if (!values.growerName) er.growerName = 'Grower name is required';
+    if (!values.growerName) er.growerName = "Grower name is required";
     // Garden number is generated in backend; do not validate here
-    if (!values.crop) er.crop = 'Select crop';
-    if (!values.variety) er.variety = 'Select variety';
-    if (!values.areaHa || Number(values.areaHa) <= 0) er.areaHa = 'Enter area in ha';
-    if (!values.dateSown) er.dateSown = 'Date of sowing required';
-    if (!values.expectedHarvest) er.expectedHarvest = 'Expected harvest date required';
-    if (!values.seedSource) er.seedSource = 'Seed source is required';
-    if (!values.seedLotCode) er.seedLotCode = 'Lot code is required';
+    if (!values.crop) er.crop = "Select crop";
+    if (!values.variety) er.variety = "Select variety";
+    if (!values.areaHa || Number(values.areaHa) <= 0)
+      er.areaHa = "Enter area in ha";
+    if (!values.dateSown) er.dateSown = "Date of sowing required";
+    if (!values.expectedHarvest)
+      er.expectedHarvest = "Expected harvest date required";
+    if (!values.seedSource) er.seedSource = "Seed source is required";
+    if (!values.seedLotCode) er.seedLotCode = "Lot code is required";
     setErrors(er);
     return Object.keys(er).length === 0;
   };
@@ -229,27 +245,29 @@ const PlantingReturnCreateDialog = ({
               <label className="form-label">Seed Grower Name</label>
               <Input
                 value={values.growerName}
-                onChange={(e) => handleChange('growerName', e.target.value)}
+                onChange={(e) => handleChange("growerName", e.target.value)}
                 placeholder="Name"
                 readOnly
               />
               {errors.growerName && (
-                <div className="text-xs text-danger mt-1">{errors.growerName}</div>
+                <div className="text-xs text-danger mt-1">
+                  {errors.growerName}
+                </div>
               )}
             </div>
             <div>
               <label className="form-label">Seed Grower Number</label>
               <Input
-                value={values.growerNumber || ''}
-                onChange={(e) => handleChange('growerNumber', e.target.value)}
+                value={values.growerNumber || ""}
+                onChange={(e) => handleChange("growerNumber", e.target.value)}
                 placeholder="e.g. H001"
               />
             </div>
             <div>
               <label className="form-label">Contact Phone</label>
               <Input
-                value={values.contactPhone || ''}
-                onChange={(e) => handleChange('contactPhone', e.target.value)}
+                value={values.contactPhone || ""}
+                onChange={(e) => handleChange("contactPhone", e.target.value)}
                 placeholder="Phone number"
                 readOnly
               />
@@ -258,8 +276,8 @@ const PlantingReturnCreateDialog = ({
             <div className="md:col-span-2">
               <label className="form-label">Field Name</label>
               <Input
-                value={values.fieldName || ''}
-                onChange={(e) => handleChange('fieldName', e.target.value)}
+                value={values.fieldName || ""}
+                onChange={(e) => handleChange("fieldName", e.target.value)}
                 placeholder="Field name"
               />
             </div>
@@ -267,37 +285,39 @@ const PlantingReturnCreateDialog = ({
 
           {/* Location */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Location</h3>
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Location
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="form-label">District</label>
                 <Input
-                  value={values.district || ''}
-                  onChange={(e) => handleChange('district', e.target.value)}
+                  value={values.district || ""}
+                  onChange={(e) => handleChange("district", e.target.value)}
                   placeholder="District"
                 />
               </div>
               <div>
                 <label className="form-label">Sub-county</label>
                 <Input
-                  value={values.subcounty || ''}
-                  onChange={(e) => handleChange('subcounty', e.target.value)}
+                  value={values.subcounty || ""}
+                  onChange={(e) => handleChange("subcounty", e.target.value)}
                   placeholder="Sub-county"
                 />
               </div>
               <div>
                 <label className="form-label">Parish</label>
                 <Input
-                  value={values.parish || ''}
-                  onChange={(e) => handleChange('parish', e.target.value)}
+                  value={values.parish || ""}
+                  onChange={(e) => handleChange("parish", e.target.value)}
                   placeholder="Parish"
                 />
               </div>
               <div>
                 <label className="form-label">Village</label>
                 <Input
-                  value={values.village || ''}
-                  onChange={(e) => handleChange('village', e.target.value)}
+                  value={values.village || ""}
+                  onChange={(e) => handleChange("village", e.target.value)}
                   placeholder="Village"
                 />
               </div>
@@ -305,8 +325,8 @@ const PlantingReturnCreateDialog = ({
                 <label className="form-label">GPS Latitude</label>
                 <div className="flex gap-2">
                   <Input
-                    value={values.gpsLat || ''}
-                    onChange={(e) => handleChange('gpsLat', e.target.value)}
+                    value={values.gpsLat || ""}
+                    onChange={(e) => handleChange("gpsLat", e.target.value)}
                     placeholder="Latitude"
                   />
                   <Button type="button" variant="outline" onClick={handleGeo}>
@@ -317,8 +337,8 @@ const PlantingReturnCreateDialog = ({
               <div>
                 <label className="form-label">GPS Longitude</label>
                 <Input
-                  value={values.gpsLng || ''}
-                  onChange={(e) => handleChange('gpsLng', e.target.value)}
+                  value={values.gpsLng || ""}
+                  onChange={(e) => handleChange("gpsLng", e.target.value)}
                   placeholder="Longitude"
                 />
               </div>
@@ -327,20 +347,26 @@ const PlantingReturnCreateDialog = ({
 
           {/* Crop details */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Crop Details</h3>
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Crop Details
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="form-label">Crop</label>
                 <Select
                   value={values.crop}
                   onValueChange={(v) => {
-                    handleChange('crop', v);
-                    handleChange('variety', '');
+                    handleChange("crop", v);
+                    handleChange("variety", "");
                     fetchVarieties(v);
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={cropsLoading ? 'Loading crops…' : 'Select crop'} />
+                    <SelectValue
+                      placeholder={
+                        cropsLoading ? "Loading crops…" : "Select crop"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {cropOptions.map((c) => (
@@ -350,14 +376,21 @@ const PlantingReturnCreateDialog = ({
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.crop && <div className="text-xs text-danger mt-1">{errors.crop}</div>}
+                {errors.crop && (
+                  <div className="text-xs text-danger mt-1">{errors.crop}</div>
+                )}
               </div>
               <div>
                 <label className="form-label">Crop Variety</label>
-                <Select value={values.variety} onValueChange={(v) => handleChange('variety', v)}>
+                <Select
+                  value={values.variety}
+                  onValueChange={(v) => handleChange("variety", v)}
+                >
                   <SelectTrigger>
                     <SelectValue
-                      placeholder={values.crop ? 'Select variety' : 'Select crop first'}
+                      placeholder={
+                        values.crop ? "Select variety" : "Select crop first"
+                      }
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -368,13 +401,17 @@ const PlantingReturnCreateDialog = ({
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.variety && <div className="text-xs text-danger mt-1">{errors.variety}</div>}
+                {errors.variety && (
+                  <div className="text-xs text-danger mt-1">
+                    {errors.variety}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="form-label">Select Seed Class</label>
                 <Select
                   value={values.seedClass}
-                  onValueChange={(v) => handleChange('seedClass', v)}
+                  onValueChange={(v) => handleChange("seedClass", v)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select seed class" />
@@ -392,69 +429,89 @@ const PlantingReturnCreateDialog = ({
                 <label className="form-label">Area planted (ha)</label>
                 <Input
                   type="number"
-                  value={values.areaHa || ''}
-                  onChange={(e) => handleChange('areaHa', e.target.value)}
+                  value={values.areaHa || ""}
+                  onChange={(e) => handleChange("areaHa", e.target.value)}
                   placeholder="e.g. 2.5"
                 />
-                {errors.areaHa && <div className="text-xs text-danger mt-1">{errors.areaHa}</div>}
+                {errors.areaHa && (
+                  <div className="text-xs text-danger mt-1">
+                    {errors.areaHa}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="form-label">Date of sowing</label>
                 <Input
                   type="date"
-                  value={values.dateSown || ''}
-                  onChange={(e) => handleChange('dateSown', e.target.value)}
+                  value={values.dateSown || ""}
+                  onChange={(e) => handleChange("dateSown", e.target.value)}
                 />
                 {errors.dateSown && (
-                  <div className="text-xs text-danger mt-1">{errors.dateSown}</div>
+                  <div className="text-xs text-danger mt-1">
+                    {errors.dateSown}
+                  </div>
                 )}
               </div>
               <div>
                 <label className="form-label">Expected harvest date</label>
                 <Input
                   type="date"
-                  value={values.expectedHarvest || ''}
-                  onChange={(e) => handleChange('expectedHarvest', e.target.value)}
+                  value={values.expectedHarvest || ""}
+                  onChange={(e) =>
+                    handleChange("expectedHarvest", e.target.value)
+                  }
                 />
                 {errors.expectedHarvest && (
-                  <div className="text-xs text-danger mt-1">{errors.expectedHarvest}</div>
+                  <div className="text-xs text-danger mt-1">
+                    {errors.expectedHarvest}
+                  </div>
                 )}
               </div>
               <div>
                 <label className="form-label">Seed source</label>
                 <Input
-                  value={values.seedSource || ''}
-                  onChange={(e) => handleChange('seedSource', e.target.value)}
+                  value={values.seedSource || ""}
+                  onChange={(e) => handleChange("seedSource", e.target.value)}
                   placeholder="Supplier / source"
                 />
                 {errors.seedSource && (
-                  <div className="text-xs text-danger mt-1">{errors.seedSource}</div>
+                  <div className="text-xs text-danger mt-1">
+                    {errors.seedSource}
+                  </div>
                 )}
               </div>
               <div>
                 <label className="form-label">Seed lot code</label>
                 <Input
-                  value={values.seedLotCode || ''}
-                  onChange={(e) => handleChange('seedLotCode', e.target.value)}
+                  value={values.seedLotCode || ""}
+                  onChange={(e) => handleChange("seedLotCode", e.target.value)}
                   placeholder="Lot number/code"
                 />
                 {errors.seedLotCode && (
-                  <div className="text-xs text-danger mt-1">{errors.seedLotCode}</div>
+                  <div className="text-xs text-danger mt-1">
+                    {errors.seedLotCode}
+                  </div>
                 )}
               </div>
               <div>
-                <label className="form-label">Intended merchant / seed company</label>
+                <label className="form-label">
+                  Intended merchant / seed company
+                </label>
                 <Input
-                  value={values.intendedMerchant || ''}
-                  onChange={(e) => handleChange('intendedMerchant', e.target.value)}
+                  value={values.intendedMerchant || ""}
+                  onChange={(e) =>
+                    handleChange("intendedMerchant", e.target.value)
+                  }
                   placeholder="Company"
                 />
               </div>
               <div>
                 <label className="form-label">Seed rate per hectare</label>
                 <Input
-                  value={values.seedRatePerHa || ''}
-                  onChange={(e) => handleChange('seedRatePerHa', e.target.value)}
+                  value={values.seedRatePerHa || ""}
+                  onChange={(e) =>
+                    handleChange("seedRatePerHa", e.target.value)
+                  }
                   placeholder="e.g. 20kg/ha"
                 />
               </div>
@@ -463,13 +520,13 @@ const PlantingReturnCreateDialog = ({
               <label className="form-label">Detail</label>
               <Textarea
                 rows={4}
-                value={values.notes || ''}
-                onChange={(e) => handleChange('notes', e.target.value)}
+                value={values.notes || ""}
+                onChange={(e) => handleChange("notes", e.target.value)}
                 placeholder="Any additional info"
               />
             </div>
 
-             <div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Payment receipt *
               </label>
@@ -495,9 +552,11 @@ const PlantingReturnCreateDialog = ({
                     Browse
                   </label>
                 </Button>
-                
+
                 <span className="text-sm text-gray-500 truncate">
-                  {values.receipt_id ? values.receipt_id : initialValues?.receipt_id || 'Select file'}
+                  {values.receipt_id
+                    ? values.receipt_id
+                    : initialValues?.receipt_id || "Select file"}
                 </span>
               </div>
             </div>
@@ -511,7 +570,8 @@ const PlantingReturnCreateDialog = ({
           </div>
           <div className="flex gap-2">
             <Button onClick={handleSubmit} disabled={!!saving}>
-              <KeenIcon icon="tick-square" /> {saving ? 'Saving…' : 'Submit SR8'}
+              <KeenIcon icon="tick-square" />{" "}
+              {saving ? "Saving…" : "Submit SR8"}
             </Button>
           </div>
         </DialogFooter>

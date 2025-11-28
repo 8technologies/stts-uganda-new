@@ -1,33 +1,38 @@
+import { Fragment, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
 
-import { Fragment, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
-
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { KeenIcon } from '@/components';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { KeenIcon } from "@/components";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import { useLayout } from '@/providers';
-import { useAuthContext } from '@/auth';
-import { _formatDate, formatDateTime } from '@/utils/Date';
-import { toast } from 'sonner';
+import { useLayout } from "@/providers";
+import { useAuthContext } from "@/auth";
+import { _formatDate, formatDateTime } from "@/utils/Date";
+import { toast } from "sonner";
 
 // antd timeline + card with ribbon badge
-import { Badge, Card, ConfigProvider, Descriptions, Row, Col, Timeline } from 'antd';
-import { URL_2 } from '@/config/urls';
-import { LOAD_QDS_FORMS } from '@/gql/queries';
-import { SAVE_QDS_FORMS } from '@/gql/mutations';
-import { QDSFormDialog } from '../QDS forms/blocks/QDSFormDialog';
-import { QDSDetailsDialog } from '../QDS forms/blocks/QDSDetailsDialog';
-
-
+import {
+  Badge,
+  Card,
+  ConfigProvider,
+  Descriptions,
+  Row,
+  Col,
+  Timeline,
+} from "antd";
+import { URL_2 } from "@/config/urls";
+import { LOAD_QDS_FORMS } from "@/gql/queries";
+import { SAVE_QDS_FORMS } from "@/gql/mutations";
+import { QDSFormDialog } from "../QDS forms/blocks/QDSFormDialog";
+import { QDSDetailsDialog } from "../QDS forms/blocks/QDSDetailsDialog";
 
 type QdsApplication = {
   id: string | number;
@@ -65,24 +70,26 @@ type QdsApplication = {
     premises_location?: string;
     phone_number?: string;
   };
-}
+};
 
 const typeLabel = (t?: string) =>
-  t === 'seed_exporter_or_importer' ? 'Seed Exporter/Importer' : 'Seed Merchant/Company';
+  t === "seed_exporter_or_importer"
+    ? "Seed Exporter/Importer"
+    : "Seed Merchant/Company";
 
 const statusToColor = (status?: string | null) => {
   switch (status) {
-    case 'accepted':
-    case 'approved':
-    case 'recommended':
-      return 'success';
-    case 'rejected':
-    case 'halted':
-      return 'danger';
-    case 'assigned_inspector':
-    case 'pending':
+    case "accepted":
+    case "approved":
+    case "recommended":
+      return "success";
+    case "rejected":
+    case "halted":
+      return "danger";
+    case "assigned_inspector":
+    case "pending":
     default:
-      return 'primary';
+      return "primary";
   }
 };
 
@@ -91,14 +98,16 @@ const handlePrint = (formDetails: any) => {
   const registrationNumber = formDetails.seed_board_registration_number;
   const validFrom = _formatDate(formDetails.valid_from);
   const validUntil = _formatDate(formDetails.valid_until);
-  const applicantName = formDetails.user?.name || formDetails.user?.company_initials || '';
-  const companyInitials = formDetails.user?.company_initials || '';
-  const address = formDetails.user?.address || formDetails.user?.premises_location || '';
-  const premisesLocation = formDetails.user?.premises_location || '';
-  const phoneNumber = formDetails.user?.phone_number || '';
-  const category = formDetails.marketing_of || '';
+  const applicantName =
+    formDetails.user?.name || formDetails.user?.company_initials || "";
+  const companyInitials = formDetails.user?.company_initials || "";
+  const address =
+    formDetails.user?.address || formDetails.user?.premises_location || "";
+  const premisesLocation = formDetails.user?.premises_location || "";
+  const phoneNumber = formDetails.user?.phone_number || "";
+  const category = formDetails.marketing_of || "";
   const issueDate = _formatDate(new Date());
-  const verifyUrl = `${URL_2}/certificates/qds/${String(formDetails?.id ?? '')}`;
+  const verifyUrl = `${URL_2}/certificates/qds/${String(formDetails?.id ?? "")}`;
 
   const formHTML = `<!DOCTYPE html>
 <html lang="en">
@@ -271,7 +280,11 @@ const handlePrint = (formDetails: any) => {
   </body>
 </html>`;
 
-  const popup = window.open('', '_blank', 'width=1000,height=800,scrollbars=yes,resizable=yes');
+  const popup = window.open(
+    "",
+    "_blank",
+    "width=1000,height=800,scrollbars=yes,resizable=yes",
+  );
   if (popup) {
     popup.document.open();
     popup.document.write(formHTML);
@@ -290,12 +303,11 @@ const MyQdsApplicationForms = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingQds, setEditingQds] = useState<QdsApplication | null>(null);
-  
 
   const { data, loading, error, refetch } = useQuery(LOAD_QDS_FORMS);
   const [saveForm, { loading: saving }] = useMutation(SAVE_QDS_FORMS, {
     refetchQueries: [{ query: LOAD_QDS_FORMS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const myForms = useMemo(() => {
@@ -304,9 +316,8 @@ const MyQdsApplicationForms = () => {
     return forms.filter((f) => String(f.user_id) === String(currentUser.id));
   }, [data?.qds_applications, currentUser?.id]);
 
-
-   const handleSave = async (vals: Record<string, any>) => {
-    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+  const handleSave = async (vals: Record<string, any>) => {
+    const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const payload: any = {
       id: editingQds?.id ?? undefined,
       certification: vals.otherDocuments,
@@ -332,26 +343,26 @@ const MyQdsApplicationForms = () => {
         : 0,
       have_adequate_storage_facility: toBool(vals.adequateStorage),
       is_not_used: null,
-      examination_category: null
+      examination_category: null,
     };
 
     console.log(payload);
 
     try {
       await saveForm({ variables: { payload } });
-      toast(editingQds ? 'QDS application updated' : 'QDS application created');
+      toast(editingQds ? "QDS application updated" : "QDS application created");
       setDialogOpen(false);
       setEditingQds(null);
     } catch (e: any) {
-      toast('Failed to save application', {
-        description: e?.message ?? 'Unknown error'
+      toast("Failed to save application", {
+        description: e?.message ?? "Unknown error",
       });
     }
   };
 
   const handleEditSave = async (vals: Record<string, any>) => {
     if (!selectedForm?.id) return;
-    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const payload: any = {
       id: selectedForm.id,
       years_of_experience: vals.yearsOfExperience || null,
@@ -372,22 +383,24 @@ const MyQdsApplicationForms = () => {
       have_internal_quality_program: toBool(vals.internalQualityProgram),
       have_adequate_storage: toBool(vals.adequateStorage),
       source_of_seed: vals.sourceOfSeed || null,
-      type: vals.applicationCategory
+      type: vals.applicationCategory,
     };
 
     try {
       await saveForm({ variables: { payload } });
-      toast('QDS application updated');
+      toast("QDS application updated");
       setEditOpen(false);
     } catch (e: any) {
-      toast('Failed to update application', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to update application", {
+        description: e?.message ?? "Unknown error",
+      });
     }
   };
 
   return (
     <>
       <Fragment>
-        {currentLayout?.name === 'demo1-layout' && (
+        {currentLayout?.name === "demo1-layout" && (
           <Container>
             <Toolbar>
               <ToolbarHeading>
@@ -403,7 +416,9 @@ const MyQdsApplicationForms = () => {
                       </>
                     ) : (
                       <>
-                        <span className="text-md text-gray-700">Applications:</span>
+                        <span className="text-md text-gray-700">
+                          Applications:
+                        </span>
                         <span className="text-md text-gray-800 font-medium me-2">
                           {myForms.length}
                         </span>
@@ -421,7 +436,7 @@ const MyQdsApplicationForms = () => {
                   }}
                   className="btn btn-sm btn-primary"
                 >
-                  {saving ? 'Saving…' : 'Create Application'}
+                  {saving ? "Saving…" : "Create Application"}
                 </a>
               </ToolbarActions>
             </Toolbar>
@@ -439,7 +454,7 @@ const MyQdsApplicationForms = () => {
                 </button>
               </div>
               <div className="text-xs text-gray-600">
-                {String(error.message || 'Unknown error')}
+                {String(error.message || "Unknown error")}
               </div>
             </div>
           )}
@@ -447,7 +462,9 @@ const MyQdsApplicationForms = () => {
           {/* Empty state */}
           {!loading && !error && myForms.length === 0 && (
             <div className="card p-8 flex flex-col items-center gap-4">
-              <div className="text-gray-800 font-medium">No QDS applications yet</div>
+              <div className="text-gray-800 font-medium">
+                No QDS applications yet
+              </div>
               <Button onClick={() => setCreateOpen(true)} size="sm">
                 <KeenIcon icon="plus" /> Create Application
               </Button>
@@ -460,13 +477,13 @@ const MyQdsApplicationForms = () => {
             theme={{
               components: {
                 Timeline: {
-                  tailColor: '#E5E7EB' // gray-200
+                  tailColor: "#E5E7EB", // gray-200
                 },
                 Card: {
-                  headerBg: '#F8FAFC', // slate-50
-                  headerHeightSM: 40
-                }
-              }
+                  headerBg: "#F8FAFC", // slate-50
+                  headerHeightSM: 40,
+                },
+              },
             }}
           >
             {loading ? (
@@ -485,22 +502,22 @@ const MyQdsApplicationForms = () => {
               <Timeline
                 items={myForms.map((f) => {
                   const color =
-                    f.status === 'approved' 
-                      ? 'green'
-                      :f.status === 'recommended'
-                        ? 'blue'
-                      : f.status === 'rejected' || f.status === 'halted'
-                        ? 'red'
-                        : 'orange';
+                    f.status === "approved"
+                      ? "green"
+                      : f.status === "recommended"
+                        ? "blue"
+                        : f.status === "rejected" || f.status === "halted"
+                          ? "red"
+                          : "orange";
                   const ribbonColor = color as any;
                   const inspector = f.inspector
-                    ? `${f.inspector?.name ?? ''}${f.inspector?.district ? ` - ${f.inspector.district}` : ''}`
-                    : '-';
+                    ? `${f.inspector?.name ?? ""}${f.inspector?.district ? ` - ${f.inspector.district}` : ""}`
+                    : "-";
                   const title = `QDS Application — ${formatDateTime(f.created_at)}`;
-                  const niceStatus = (f.status || 'pending')
-                    .split('_')
+                  const niceStatus = (f.status || "pending")
+                    .split("_")
                     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-                    .join(' ');
+                    .join(" ");
                   return {
                     color,
                     children: (
@@ -510,8 +527,8 @@ const MyQdsApplicationForms = () => {
                           title={title}
                           styles={{ body: { paddingTop: 12 } }}
                           style={{
-                            borderColor: '#CBD5E1', // slate-300 for stronger contrast
-                            borderWidth: 1
+                            borderColor: "#CBD5E1", // slate-300 for stronger contrast
+                            borderWidth: 1,
                             // borderStyle: 'solid'
                             // borderRadius: 12
                           }}
@@ -531,36 +548,44 @@ const MyQdsApplicationForms = () => {
                                     span: 2
                                   }, */
                                   {
-                                    key: 'created',
-                                    label: 'Created On',
+                                    key: "created",
+                                    label: "Created On",
                                     children: formatDateTime(f.created_at),
-                                    span: 2
+                                    span: 2,
                                   },
                                   {
-                                    key: 'valid',
-                                    label: 'Valid Until',
-                                    children: f.valid_until ? _formatDate(f.valid_until) : '-',
-                                    span: 2
+                                    key: "valid",
+                                    label: "Valid Until",
+                                    children: f.valid_until
+                                      ? _formatDate(f.valid_until)
+                                      : "-",
+                                    span: 2,
                                   },
                                   {
-                                    key: 'years',
-                                    label: 'Years of Experience',
-                                    children: f.years_of_experience || '-',
-                                    span: 2
-                                  },
-                                  { key: 'ins', label: 'Inspector', children: inspector, span: 2 },
-                                  {
-                                    key: 'reg',
-                                    label: 'Registration No.',
-                                    children: f.seed_board_registration_number || '-',
-                                    span: 2
+                                    key: "years",
+                                    label: "Years of Experience",
+                                    children: f.years_of_experience || "-",
+                                    span: 2,
                                   },
                                   {
-                                    key: 'growerNo',
-                                    label: 'Grower Number.',
-                                    children: f.grower_number || '-',
-                                    span: 2
-                                  }
+                                    key: "ins",
+                                    label: "Inspector",
+                                    children: inspector,
+                                    span: 2,
+                                  },
+                                  {
+                                    key: "reg",
+                                    label: "Registration No.",
+                                    children:
+                                      f.seed_board_registration_number || "-",
+                                    span: 2,
+                                  },
+                                  {
+                                    key: "growerNo",
+                                    label: "Grower Number.",
+                                    children: f.grower_number || "-",
+                                    span: 2,
+                                  },
                                 ]}
                                 className="custom-descriptions"
                                 style={
@@ -571,12 +596,12 @@ const MyQdsApplicationForms = () => {
                                   }
                                 }
                                 labelStyle={{
-                                  backgroundColor: '#E2E8F0', // slate-200
-                                  color: '#0F172A', // slate-900
-                                  fontWeight: 600
+                                  backgroundColor: "#E2E8F0", // slate-200
+                                  color: "#0F172A", // slate-900
+                                  fontWeight: 600,
                                 }}
                                 contentStyle={{
-                                  textAlign: 'left'
+                                  textAlign: "left",
                                 }}
                               />
                             </Col>
@@ -592,7 +617,7 @@ const MyQdsApplicationForms = () => {
                                 >
                                   <KeenIcon icon="eye" /> View Details
                                 </Button>
-                                {(f.status || 'pending') === 'pending' && (
+                                {(f.status || "pending") === "pending" && (
                                   <Button
                                     variant="outline"
                                     className="w-full"
@@ -604,7 +629,7 @@ const MyQdsApplicationForms = () => {
                                     <KeenIcon icon="note" /> Edit Application
                                   </Button>
                                 )}
-                                {f.status === 'approved' && (
+                                {f.status === "approved" && (
                                   <Button
                                     variant="outline"
                                     // className="w-full text-success-700 border-success-300"
@@ -612,7 +637,8 @@ const MyQdsApplicationForms = () => {
                                       handlePrint(f);
                                     }}
                                   >
-                                    <KeenIcon icon="printer" /> Print Certificate
+                                    <KeenIcon icon="printer" /> Print
+                                    Certificate
                                   </Button>
                                 )}
                               </div>
@@ -620,7 +646,7 @@ const MyQdsApplicationForms = () => {
                           </Row>
                         </Card>
                       </Badge.Ribbon>
-                    )
+                    ),
                   };
                 })}
               />

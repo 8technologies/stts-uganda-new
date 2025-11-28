@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils";
 
 interface IPaymentMethodsItem {
   logo: string;
@@ -12,23 +12,23 @@ interface IPaymentMethodsItems extends Array<IPaymentMethodsItem> {}
 const PaymentMethods = () => {
   const items: IPaymentMethodsItems = [
     {
-      logo: 'visa.svg',
-      title: 'Jason Tatum',
-      email: 'Ending 3604  Expires on 12/2026',
-      label: true
+      logo: "visa.svg",
+      title: "Jason Tatum",
+      email: "Ending 3604  Expires on 12/2026",
+      label: true,
     },
     {
-      logo: 'ideal.svg',
-      title: 'Jason Tatum',
-      email: 'iDeal with ABN Ambro',
-      label: false
+      logo: "ideal.svg",
+      title: "Jason Tatum",
+      email: "iDeal with ABN Ambro",
+      label: false,
     },
     {
-      logo: 'paypal.svg',
-      title: 'Jason Tatum',
-      email: 'jasontt@studio.co',
-      label: false
-    }
+      logo: "paypal.svg",
+      title: "Jason Tatum",
+      email: "jasontt@studio.co",
+      label: false,
+    },
   ];
 
   const renderItem = (item: IPaymentMethodsItem, index: number) => {
@@ -56,7 +56,9 @@ const PaymentMethods = () => {
         </div>
         <div className="flex items-center gap-5">
           {item.label && (
-            <span className="badge badge-sm badge-success badge-outline">Primary</span>
+            <span className="badge badge-sm badge-success badge-outline">
+              Primary
+            </span>
           )}
           <div className="flex gap-0.5">
             <div className="btn btn-sm btn-icon btn-clear btn-light">

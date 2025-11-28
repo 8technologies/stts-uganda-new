@@ -1,5 +1,5 @@
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { Demo2LayoutProvider, Main } from './';
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { Demo2LayoutProvider, Main } from "./";
 
 const Demo2Layout = () => {
   // Using the custom hook to set multiple CSS variables and class properties

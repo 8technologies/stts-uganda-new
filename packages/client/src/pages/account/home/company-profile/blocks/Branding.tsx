@@ -1,20 +1,20 @@
-import { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 const Branding = () => {
-  const [brandColorInput, setBrandColorInput] = useState('#BA35A0');
+  const [brandColorInput, setBrandColorInput] = useState("#BA35A0");
 
   return (
     <Fragment>
       <style>
         {`
           .branding-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-5.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-5.png")}');
           }
           .dark .branding-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-5-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-5-dark.png")}');
           }
         `}
       </style>
@@ -34,13 +34,17 @@ const Branding = () => {
         <div className="card-body lg:py-7.5 py-5">
           <div className="flex flex-wrap justify-between gap-5">
             <div className="flex flex-col">
-              <div className="text-gray-900 text-sm font-medium">Company Logo</div>
-              <span className="text-gray-700 text-2sm">Emblematic Corporate Identity Symbol</span>
+              <div className="text-gray-900 text-sm font-medium">
+                Company Logo
+              </div>
+              <span className="text-gray-700 text-2sm">
+                Emblematic Corporate Identity Symbol
+              </span>
             </div>
 
             <div className="flex flex-wrap sm:flex-nowrap gap-5 lg:gap-7.5 max-w-96 w-full">
               <img
-                src={toAbsoluteUrl('/media/brand-logos/hex-lab.svg')}
+                src={toAbsoluteUrl("/media/brand-logos/hex-lab.svg")}
                 className="h-[35px] mt-2"
                 alt=""
               />
@@ -73,7 +77,10 @@ const Branding = () => {
                       </svg>
 
                       <div className="absolute leading-none left-2/4 top-2/4 -translate-y-2/4 -translate-x-2/4">
-                        <KeenIcon icon="picture" className="text-xl ps-px text-brand" />
+                        <KeenIcon
+                          icon="picture"
+                          className="text-xl ps-px text-brand"
+                        />
                       </div>
                     </div>
                   </div>
@@ -96,12 +103,20 @@ const Branding = () => {
 
           <div className="flex flex-wrap justify-between gap-5">
             <div className="flex flex-col">
-              <div className="text-gray-900 text-sm font-medium">Brand Color</div>
-              <span className="text-gray-700 text-2sm">Signature Palette Branding Element</span>
+              <div className="text-gray-900 text-sm font-medium">
+                Brand Color
+              </div>
+              <span className="text-gray-700 text-2sm">
+                Signature Palette Branding Element
+              </span>
             </div>
 
             <label className="input sm:max-w-full xl:max-w-96 w-full">
-              <KeenIcon icon="mouse-square" className="text-success" style="solid" />
+              <KeenIcon
+                icon="mouse-square"
+                className="text-success"
+                style="solid"
+              />
               <input
                 type="text"
                 value={brandColorInput}
@@ -115,16 +130,25 @@ const Branding = () => {
           <div className="flex flex-wrap justify-between gap-5">
             <div className="flex flex-col">
               <div className="text-gray-900 text-sm font-medium">Branding</div>
-              <span className="text-gray-700 text-2sm">Comprehensive Image Identity Design</span>
+              <span className="text-gray-700 text-2sm">
+                Comprehensive Image Identity Design
+              </span>
             </div>
 
             <div className="flex flex-col gap-5 max-w-96 w-full">
               <div className="flex flex-col gap-2.5">
                 <label className="checkbox-group">
-                  <input type="checkbox" className="checkbox checkbox-sm" value="1" readOnly />
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm"
+                    value="1"
+                    readOnly
+                  />
                   <span className="checkbox-label">Security Questionaries</span>
                 </label>
-                <div className="form-hint">Detailed Risk Assessment & Compliance Verification</div>
+                <div className="form-hint">
+                  Detailed Risk Assessment & Compliance Verification
+                </div>
               </div>
               <div className="flex flex-col gap-2.5">
                 <label className="checkbox-group">
@@ -137,7 +161,9 @@ const Branding = () => {
                   />
                   <span className="checkbox-label">Emails</span>
                 </label>
-                <div className="form-hint">Electronic Message Communication</div>
+                <div className="form-hint">
+                  Electronic Message Communication
+                </div>
               </div>
               <div className="flex flex-col gap-2.5">
                 <label className="checkbox-group">
@@ -150,7 +176,9 @@ const Branding = () => {
                   />
                   <span className="checkbox-label">Vendor Reports</span>
                 </label>
-                <div className="form-hint">Supplier Performance & Reliability Evaluations</div>
+                <div className="form-hint">
+                  Supplier Performance & Reliability Evaluations
+                </div>
               </div>
             </div>
           </div>

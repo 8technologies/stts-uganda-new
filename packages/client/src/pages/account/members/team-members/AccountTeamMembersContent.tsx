@@ -1,6 +1,6 @@
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
 
-import { InvitePeople, InviteWithLink, Members } from './blocks';
+import { InvitePeople, InviteWithLink, Members } from "./blocks";
 
 const AccountTeamMembersContent = () => {
   return (

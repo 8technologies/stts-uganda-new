@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from 'react';
-import { useResponsive, useViewport } from '@/hooks';
-import { useDemo10Layout } from '..';
-import { SidebarHeader, SidebarMenu, SidebarFooter } from '.';
-import { getHeight } from '@/utils';
-import { usePathname } from '@/providers';
+import { useEffect, useRef, useState } from "react";
+import { useResponsive, useViewport } from "@/hooks";
+import { useDemo10Layout } from "..";
+import { SidebarHeader, SidebarMenu, SidebarFooter } from ".";
+import { getHeight } from "@/utils";
+import { usePathname } from "@/providers";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet';
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const Sidebar = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const { pathname, prevPathname } = usePathname();
   const [viewportHeight] = useViewport();
   const { mobileSidebarOpen, setMobileSidebarOpen } = useDemo10Layout();
@@ -41,7 +41,8 @@ const Sidebar = () => {
     if (headerRef.current && footerRef.current) {
       const headerHeight = getHeight(headerRef.current);
       const footerHeight = getHeight(footerRef.current);
-      const availableHeight = viewportHeight - headerHeight - footerHeight - scrollableOffset;
+      const availableHeight =
+        viewportHeight - headerHeight - footerHeight - scrollableOffset;
       setScrollableHeight(availableHeight);
     } else {
       setScrollableHeight(viewportHeight);

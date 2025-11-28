@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils";
 
-import { DropdownCard2 } from '@/partials/dropdowns/general';
+import { DropdownCard2 } from "@/partials/dropdowns/general";
 
 interface ITrustedDevicesItem {
   logo: string;
@@ -16,21 +16,21 @@ interface ITrustedDevicesItems extends Array<ITrustedDevicesItem> {}
 const TrustedDevices = () => {
   const items: ITrustedDevicesItems = [
     {
-      logo: 'chrome.svg',
-      browser: 'Chrome',
-      location: 'Seville, Spain',
-      flag: 'spain.svg',
-      device: 'MacOS 12.19.6',
-      datetime: 'Active: Today at 9:03 AM'
+      logo: "chrome.svg",
+      browser: "Chrome",
+      location: "Seville, Spain",
+      flag: "spain.svg",
+      device: "MacOS 12.19.6",
+      datetime: "Active: Today at 9:03 AM",
     },
     {
-      logo: 'chrome.svg',
-      browser: 'Chrome',
-      location: 'Lyon, France',
-      flag: 'france.svg',
-      device: 'Android 14.35',
-      datetime: 'Active: Mar 18 at 9:03 AM'
-    }
+      logo: "chrome.svg",
+      browser: "Chrome",
+      location: "Lyon, France",
+      flag: "france.svg",
+      device: "Android 14.35",
+      datetime: "Active: Mar 18 at 9:03 AM",
+    },
   ];
 
   const renderItem = (item: ITrustedDevicesItem, index: number) => {
@@ -85,15 +85,15 @@ const TrustedDevices = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: 'bottom-end',
+              placement: "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

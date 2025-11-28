@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { CardPost } from '@/partials/cards';
+import { CardPost } from "@/partials/cards";
 
 interface IPostsItem {
   image: string;
@@ -13,35 +13,35 @@ interface IPostsItems extends Array<IPostsItem> {}
 const Posts = () => {
   const items: IPostsItems = [
     {
-      image: '14.jpg',
-      label: 'Software',
-      description: 'Maximizing Efficiency with Modern Software',
-      time: '4 hours ago'
+      image: "14.jpg",
+      label: "Software",
+      description: "Maximizing Efficiency with Modern Software",
+      time: "4 hours ago",
     },
     {
-      image: '15.jpg',
-      label: 'Work-Life',
-      description: 'Balancing Work and Life: Strategies for Success',
-      time: '2 days ago'
+      image: "15.jpg",
+      label: "Work-Life",
+      description: "Balancing Work and Life: Strategies for Success",
+      time: "2 days ago",
     },
     {
-      image: '16.jpg',
-      label: 'Technology',
-      description: 'Exploring the Latest Technological',
-      time: 'A week ago'
+      image: "16.jpg",
+      label: "Technology",
+      description: "Exploring the Latest Technological",
+      time: "A week ago",
     },
     {
-      image: '11.jpg',
-      label: '',
-      description: '',
-      time: ''
+      image: "11.jpg",
+      label: "",
+      description: "",
+      time: "",
     },
     {
-      image: '12.jpg',
-      label: '',
-      description: '',
-      time: ''
-    }
+      image: "12.jpg",
+      label: "",
+      description: "",
+      time: "",
+    },
   ];
 
   const renderItems = (item: IPostsItem, index: number) => {

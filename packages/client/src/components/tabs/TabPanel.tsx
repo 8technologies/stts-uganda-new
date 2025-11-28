@@ -1,5 +1,8 @@
-import React, { forwardRef } from 'react';
-import { TabPanel as MuiTabPanel, TabPanelProps as MuiTabPanelProps } from '@mui/base/TabPanel';
+import React, { forwardRef } from "react";
+import {
+  TabPanel as MuiTabPanel,
+  TabPanelProps as MuiTabPanelProps,
+} from "@mui/base/TabPanel";
 
 // Define the extended tab component
 const TabPanel = forwardRef<HTMLDivElement, MuiTabPanelProps>((props, ref) => {

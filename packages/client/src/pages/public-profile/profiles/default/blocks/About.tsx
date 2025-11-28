@@ -6,16 +6,16 @@ interface IAboutTables extends Array<IAboutTable> {}
 
 const About = () => {
   const tables: IAboutTables = [
-    { status: 'Age', info: '32' },
-    { status: 'City:', info: 'Amsterdam' },
-    { status: 'State:', info: 'North Holland' },
-    { status: 'Country:', info: 'Netherlands' },
-    { status: 'Postcode:', info: '1092 NL' },
-    { status: 'Phone:', info: '+31 6 1234 56 78' },
+    { status: "Age", info: "32" },
+    { status: "City:", info: "Amsterdam" },
+    { status: "State:", info: "North Holland" },
+    { status: "Country:", info: "Netherlands" },
+    { status: "Postcode:", info: "1092 NL" },
+    { status: "Phone:", info: "+31 6 1234 56 78" },
     {
-      status: 'Email:',
-      info: '<a href="#" class="text-gray-800 hover:text-primary-active">jenny@ktstudio.com</a>'
-    }
+      status: "Email:",
+      info: '<a href="#" class="text-gray-800 hover:text-primary-active">jenny@ktstudio.com</a>',
+    },
   ];
 
   const renderTable = (table: IAboutTable, index: number) => {

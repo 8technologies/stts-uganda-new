@@ -1,5 +1,5 @@
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
-import { StoreClients } from './blocks/store-clients';
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
+import { StoreClients } from "./blocks/store-clients";
 
 const NetworkStoreClientsContent = () => {
   return (

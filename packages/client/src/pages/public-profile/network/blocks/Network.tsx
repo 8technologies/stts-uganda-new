@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CardConnection, CardConnectionRow } from '@/partials/cards';
+import { CardConnection, CardConnectionRow } from "@/partials/cards";
 
 interface INetworkItem {
   name: string;
@@ -30,223 +30,231 @@ interface INetworkItem {
 interface INetworkItems extends Array<INetworkItem> {}
 
 const Network = () => {
-  const [activeView, setActiveView] = useState('cards');
+  const [activeView, setActiveView] = useState("cards");
 
   const items: INetworkItems = [
     {
-      name: 'Jenny Klabber',
-      info: 'Pinnacle Innovate',
+      name: "Jenny Klabber",
+      info: "Pinnacle Innovate",
       avatar: {
-        className: 'size-20 relative',
-        image: '300-1.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-1.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      email: 'kevin@pinnacle.com',
+      email: "kevin@pinnacle.com",
       team: {
-        size: 'size-7',
-        group: [{ filename: '300-4.png' }, { filename: '300-1.png' }, { filename: '300-2.png' }],
+        size: "size-7",
+        group: [
+          { filename: "300-4.png" },
+          { filename: "300-1.png" },
+          { filename: "300-2.png" },
+        ],
         more: {
           number: 10,
-          variant: 'text-success-inverse ring-success-light bg-success size-7'
-        }
+          variant: "text-success-inverse ring-success-light bg-success size-7",
+        },
       },
       statistics: [
         {
-          total: '92',
-          description: 'Purchases'
+          total: "92",
+          description: "Purchases",
         },
         {
-          total: '$69',
-          description: 'Avg. Price'
+          total: "$69",
+          description: "Avg. Price",
         },
         {
-          total: '$6,240',
-          description: 'Total spent'
-        }
+          total: "$6,240",
+          description: "Total spent",
+        },
       ],
-      connected: true
+      connected: true,
     },
     {
-      name: 'Sarah Johnson',
-      info: 'InnovateX',
+      name: "Sarah Johnson",
+      info: "InnovateX",
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-info size-20 ring-1 ring-info-clarity bg-info-light rounded-full',
-        fallback: 'S',
+          "flex items-center justify-center relative text-2.5xl text-info size-20 ring-1 ring-info-clarity bg-info-light rounded-full",
+        fallback: "S",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      email: 'sarahj@innx.com',
+      email: "sarahj@innx.com",
       team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-5.png' },
-          { filename: '300-6.png' },
-          { filename: '300-7.png' },
-          { filename: '300-11.png' }
-        ]
+          { filename: "300-5.png" },
+          { filename: "300-6.png" },
+          { filename: "300-7.png" },
+          { filename: "300-11.png" },
+        ],
       },
       statistics: [
         {
-          total: '123',
-          description: 'Purchases'
+          total: "123",
+          description: "Purchases",
         },
         {
-          total: '$30',
-          description: 'Avg. Price'
+          total: "$30",
+          description: "Avg. Price",
         },
         {
-          total: '$3,713',
-          description: 'Total spent'
-        }
+          total: "$3,713",
+          description: "Total spent",
+        },
       ],
-      connected: false
+      connected: false,
     },
     {
-      name: 'Kevin Wang',
-      info: 'Pinnacle Innovate',
+      name: "Kevin Wang",
+      info: "Pinnacle Innovate",
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-danger size-20 ring-1 ring-danger-clarity bg-danger-light rounded-full',
-        fallback: 'K',
+          "flex items-center justify-center relative text-2.5xl text-danger size-20 ring-1 ring-danger-clarity bg-danger-light rounded-full",
+        fallback: "K",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      email: 'kevin@pinnacle.com',
+      email: "kevin@pinnacle.com",
       team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-29.png' },
-          { filename: '300-33.png' },
-          { filename: '300-23.png' },
-          { filename: '300-31.png' }
-        ]
+          { filename: "300-29.png" },
+          { filename: "300-33.png" },
+          { filename: "300-23.png" },
+          { filename: "300-31.png" },
+        ],
       },
       statistics: [
         {
-          total: '30',
-          description: 'Purchases'
+          total: "30",
+          description: "Purchases",
         },
         {
-          total: '$150',
-          description: 'Avg. Price'
+          total: "$150",
+          description: "Avg. Price",
         },
         {
-          total: '$4,500',
-          description: 'Total spent'
-        }
+          total: "$4,500",
+          description: "Total spent",
+        },
       ],
-      connected: true
+      connected: true,
     },
     {
-      name: 'Brian Davis',
-      info: 'Vortex Tech',
+      name: "Brian Davis",
+      info: "Vortex Tech",
       avatar: {
-        className: 'size-20 relative',
-        image: '300-9.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-9.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      email: 'brian@vortextech.com',
+      email: "brian@vortextech.com",
       team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-14.png' },
-          { filename: '300-3.png' },
-          { filename: '300-19.png' },
-          { filename: '300-15.png' }
-        ]
+          { filename: "300-14.png" },
+          { filename: "300-3.png" },
+          { filename: "300-19.png" },
+          { filename: "300-15.png" },
+        ],
       },
       statistics: [
         {
-          total: '87',
-          description: 'Purchases'
+          total: "87",
+          description: "Purchases",
         },
         {
-          total: '$22',
-          description: 'Avg. Price'
+          total: "$22",
+          description: "Avg. Price",
         },
         {
-          total: '$1958',
-          description: 'Total spent'
-        }
+          total: "$1958",
+          description: "Total spent",
+        },
       ],
-      connected: true
+      connected: true,
     },
     {
-      name: 'Megan Taylor',
-      info: 'Catalyst',
+      name: "Megan Taylor",
+      info: "Catalyst",
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full',
-        fallback: 'M',
+          "flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full",
+        fallback: "M",
         badgeClass:
-          'flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-gray-400 rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      email: 'megan@catalyst.com',
+      email: "megan@catalyst.com",
       team: {
-        size: 'size-7',
+        size: "size-7",
         group: [
-          { filename: '300-5.png' },
-          { filename: '300-26.png' },
-          { filename: '300-6.png' },
-          { filename: '300-1.png' }
-        ]
+          { filename: "300-5.png" },
+          { filename: "300-26.png" },
+          { filename: "300-6.png" },
+          { filename: "300-1.png" },
+        ],
       },
       statistics: [
         {
-          total: '45',
-          description: 'Purchases'
+          total: "45",
+          description: "Purchases",
         },
         {
-          total: '$300',
-          description: 'Avg. Price'
+          total: "$300",
+          description: "Avg. Price",
         },
         {
-          total: '$13,500',
-          description: 'Total spent'
-        }
+          total: "$13,500",
+          description: "Total spent",
+        },
       ],
-      connected: false
+      connected: false,
     },
     {
-      name: 'Alex Martinez',
-      info: 'Precision Solutions',
+      name: "Alex Martinez",
+      info: "Precision Solutions",
       avatar: {
-        className: 'size-20 relative',
-        image: '300-8.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-8.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      email: 'alex@kteam.com',
+      email: "alex@kteam.com",
       team: {
-        size: 'size-7',
-        group: [{ filename: '300-4.png' }, { filename: '300-5.png' }, { filename: '300-11.png' }],
+        size: "size-7",
+        group: [
+          { filename: "300-4.png" },
+          { filename: "300-5.png" },
+          { filename: "300-11.png" },
+        ],
         more: {
           number: 10,
-          variant: 'text-success-inverse ring-success-light bg-success size-7'
-        }
+          variant: "text-success-inverse ring-success-light bg-success size-7",
+        },
       },
       statistics: [
         {
-          total: '63',
-          description: 'Purchases'
+          total: "63",
+          description: "Purchases",
         },
         {
-          total: '$65',
-          description: 'Avg. Price'
+          total: "$65",
+          description: "Avg. Price",
         },
         {
-          total: '$4,095',
-          description: 'Total spent'
-        }
+          total: "$4,095",
+          description: "Total spent",
+        },
       ],
-      connected: true
-    }
+      connected: true,
+    },
   ];
 
   const renderItem = (item: INetworkItem, index: number) => {
@@ -282,25 +290,27 @@ const Network = () => {
   return (
     <div className="flex flex-col items-stretch gap-5 lg:gap-7.5">
       <div className="flex flex-wrap items-center gap-5 justify-between">
-        <h3 className="text-lg text-gray-900 font-semibold">{items.length} Connections</h3>
+        <h3 className="text-lg text-gray-900 font-semibold">
+          {items.length} Connections
+        </h3>
 
         <div className="btn-tabs" data-tabs="true">
           <a
             href="#"
-            className={`btn btn-icon btn-sm ${activeView === 'cards' ? 'active' : ''}`}
+            className={`btn btn-icon btn-sm ${activeView === "cards" ? "active" : ""}`}
             data-tab-toggle="#network_cards"
             onClick={() => {
-              setActiveView('cards');
+              setActiveView("cards");
             }}
           >
             <KeenIcon icon="category" />
           </a>
           <a
             href="#"
-            className={`btn btn-icon btn-sm ${activeView === 'list' ? 'active' : ''}`}
+            className={`btn btn-icon btn-sm ${activeView === "list" ? "active" : ""}`}
             data-tab-toggle="#network_list"
             onClick={() => {
-              setActiveView('list');
+              setActiveView("list");
             }}
           >
             <KeenIcon icon="row-horizontal" />
@@ -308,7 +318,7 @@ const Network = () => {
         </div>
       </div>
 
-      {activeView === 'cards' && (
+      {activeView === "cards" && (
         <div id="network_cards">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-7.5">
             {items.map((item, index) => {
@@ -324,7 +334,7 @@ const Network = () => {
         </div>
       )}
 
-      {activeView === 'list' && (
+      {activeView === "list" && (
         <div id="network_list">
           <div className="flex flex-col gap-5 lg:gap-7.5">
             {items.map((data, index) => {

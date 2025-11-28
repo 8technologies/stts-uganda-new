@@ -1,7 +1,7 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatar } from '../common';
-import { IAvatar } from './CardAuthor';
+import { CommonAvatar } from "../common";
+import { IAvatar } from "./CardAuthor";
 
 interface IUserSocialProps {
   avatar: IAvatar;
@@ -10,7 +10,12 @@ interface IUserSocialProps {
   verify: boolean;
 }
 
-const CardUserSocial = ({ avatar, name, description, verify }: IUserSocialProps) => {
+const CardUserSocial = ({
+  avatar,
+  name,
+  description,
+  verify,
+}: IUserSocialProps) => {
   return (
     <div className="card">
       <div className="card-body flex flex-col items-center lg:pt-10">

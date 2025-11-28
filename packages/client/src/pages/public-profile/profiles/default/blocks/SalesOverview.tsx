@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 const SalesOverview = () => {
   return (

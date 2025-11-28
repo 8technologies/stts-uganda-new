@@ -1,7 +1,7 @@
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
-import { MenuSub } from '@/components';
-import { useResponsive } from '@/hooks';
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
+import { MenuSub } from "@/components";
+import { useResponsive } from "@/hooks";
 
 interface IDropdownAppsItem {
   logo: string;
@@ -11,39 +11,39 @@ interface IDropdownAppsItem {
 }
 
 const DropdownApps = () => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
 
   const items: IDropdownAppsItem[] = [
     {
-      logo: 'jira.svg',
-      title: 'Jira',
-      description: 'Project management',
-      checkbox: false
+      logo: "jira.svg",
+      title: "Jira",
+      description: "Project management",
+      checkbox: false,
     },
     {
-      logo: 'inferno.svg',
-      title: 'Inferno',
-      description: 'Ensures healthcare app',
-      checkbox: true
+      logo: "inferno.svg",
+      title: "Inferno",
+      description: "Ensures healthcare app",
+      checkbox: true,
     },
     {
-      logo: 'evernote.svg',
-      title: 'Evernote',
-      description: 'Notes management app',
-      checkbox: true
+      logo: "evernote.svg",
+      title: "Evernote",
+      description: "Notes management app",
+      checkbox: true,
     },
     {
-      logo: 'gitlab.svg',
-      title: 'Gitlab',
-      description: 'DevOps platform',
-      checkbox: false
+      logo: "gitlab.svg",
+      title: "Gitlab",
+      description: "DevOps platform",
+      checkbox: false,
     },
     {
-      logo: 'google-webdev.svg',
-      title: 'Google webdev',
-      description: 'Building web experiences',
-      checkbox: true
-    }
+      logo: "google-webdev.svg",
+      title: "Google webdev",
+      description: "Building web experiences",
+      checkbox: true,
+    },
   ];
 
   const buildHeader = () => {
@@ -58,7 +58,10 @@ const DropdownApps = () => {
   const buildFooter = () => {
     return (
       <div className="grid p-5 border-t border-t-gray-200">
-        <Link to="/account/api-keys" className="btn btn-sm btn-light justify-center">
+        <Link
+          to="/account/api-keys"
+          className="btn btn-sm btn-light justify-center"
+        >
           Go to Apps
         </Link>
       </div>
@@ -89,7 +92,9 @@ const DropdownApps = () => {
                 >
                   {item.title}
                 </a>
-                <span className="text-2xs font-medium text-gray-600">{item.description}</span>
+                <span className="text-2xs font-medium text-gray-600">
+                  {item.description}
+                </span>
               </div>
             </div>
 
@@ -105,10 +110,16 @@ const DropdownApps = () => {
   };
 
   return (
-    <MenuSub rootClassName="w-full max-w-[320px]" className="light:border-gray-300">
+    <MenuSub
+      rootClassName="w-full max-w-[320px]"
+      className="light:border-gray-300"
+    >
       {buildHeader()}
 
-      <div className="scrollable-y-auto" style={{ maxHeight: desktopMode ? '400px' : '75vh' }}>
+      <div
+        className="scrollable-y-auto"
+        style={{ maxHeight: desktopMode ? "400px" : "75vh" }}
+      >
         {buildList(items)}
       </div>
 

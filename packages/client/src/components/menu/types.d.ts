@@ -1,23 +1,32 @@
 /* eslint-disable no-unused-vars */
-import { PopperProps } from '@mui/base';
-import { TooltipProps } from '@mui/material/Tooltip';
-import { HTMLAttributes, MouseEvent, ReactNode, RefAttributes, RefObject } from 'react';
+import { PopperProps } from "@mui/base";
+import { TooltipProps } from "@mui/material/Tooltip";
+import {
+  HTMLAttributes,
+  MouseEvent,
+  ReactNode,
+  RefAttributes,
+  RefObject,
+} from "react";
 
 export type TMenuEventHandler = (e: MouseEvent<HTMLElement>) => void;
 
-export type TMenuClickEvent = (e: MouseEvent<HTMLElement>, props: unknown) => void;
+export type TMenuClickEvent = (
+  e: MouseEvent<HTMLElement>,
+  props: unknown,
+) => void;
 
 export type TMenuShow = boolean;
 
-export type TMenuTrigger = 'click' | 'hover';
+export type TMenuTrigger = "click" | "hover";
 
 export type TMenuItemTrigger = Record<string, TMenuToggle> | TMenuTrigger;
 
-export type TMenuToggle = 'accordion' | 'dropdown';
+export type TMenuToggle = "accordion" | "dropdown";
 
 export type TMenuItemToggle = Record<string, TMenuToggle> | TMenuToggle;
 
-export type TMenuDropdown = Partial<Omit<PopperProps, 'children'>>;
+export type TMenuDropdown = Partial<Omit<PopperProps, "children">>;
 
 export type TMenuTabIndex = number;
 
@@ -66,7 +75,8 @@ export interface IMenuItemProps {
   handleClick?: TMenuEventHandler;
   tabIndex?: TMenuTabIndex;
   itemRef?: unknown;
-  containerProps?: HTMLAttributes<HTMLElement> & RefAttributes<HTMLElement | null>;
+  containerProps?: HTMLAttributes<HTMLElement> &
+    RefAttributes<HTMLElement | null>;
   containerRef?: RefObject<HTMLDivElement>;
   children?: ReactNode;
 }

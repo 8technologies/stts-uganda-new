@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface ICalendarAccountsItem {
   logo: string;
@@ -11,15 +11,15 @@ interface ICalendarAccountsItems extends Array<ICalendarAccountsItem> {}
 const CalendarAccounts = () => {
   const items: ICalendarAccountsItems = [
     {
-      logo: 'google-calendar.svg',
-      title: 'Google',
-      email: 'jasontt@studio.co'
+      logo: "google-calendar.svg",
+      title: "Google",
+      email: "jasontt@studio.co",
     },
     {
-      logo: 'monday.svg',
-      title: 'Monday',
-      email: 'jasontatum@keenthemes.com'
-    }
+      logo: "monday.svg",
+      title: "Monday",
+      email: "jasontatum@keenthemes.com",
+    },
   ];
 
   const renderItem = (item: ICalendarAccountsItem, index: number) => {
@@ -42,7 +42,10 @@ const CalendarAccounts = () => {
             >
               {item.title}
             </a>
-            <a href="#" className="text-2sm text-gray-700 hover:text-primary-active">
+            <a
+              href="#"
+              className="text-2sm text-gray-700 hover:text-primary-active"
+            >
               {item.email}
             </a>
           </div>
@@ -59,7 +62,8 @@ const CalendarAccounts = () => {
     <div className="card">
       <div className="card-header">
         <h3 className="card-title">
-          Calendar Accounts <span className="text-gray-600 font-medium text-2sm">1/5</span>
+          Calendar Accounts{" "}
+          <span className="text-gray-600 font-medium text-2sm">1/5</span>
         </h3>
 
         <button className="btn btn-light btn-sm">
@@ -79,4 +83,8 @@ const CalendarAccounts = () => {
   );
 };
 
-export { CalendarAccounts, type ICalendarAccountsItem, type ICalendarAccountsItems };
+export {
+  CalendarAccounts,
+  type ICalendarAccountsItem,
+  type ICalendarAccountsItems,
+};

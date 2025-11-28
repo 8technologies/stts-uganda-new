@@ -1,18 +1,18 @@
-import { toAbsoluteUrl } from '@/utils';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { toAbsoluteUrl } from "@/utils";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const ModalSearchEmpty = () => {
   return (
     <div className="flex flex-col text-center py-9 gap-5">
       <div className="flex justify-center">
         <img
-          src={toAbsoluteUrl('/media/illustrations/33.svg')}
+          src={toAbsoluteUrl("/media/illustrations/33.svg")}
           className="dark:hidden max-h-[113px]"
           alt="image"
         />
         <img
-          src={toAbsoluteUrl('/media/illustrations/33-dark.svg')}
+          src={toAbsoluteUrl("/media/illustrations/33-dark.svg")}
           className="light:hidden max-h-[113px]"
           alt="image"
         />

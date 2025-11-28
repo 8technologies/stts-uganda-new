@@ -1,15 +1,15 @@
-import clsx from 'clsx';
-import { Fragment } from 'react';
-import { useLocation } from 'react-router';
+import clsx from "clsx";
+import { Fragment } from "react";
+import { useLocation } from "react-router";
 
-import { KeenIcon } from '@/components';
-import { TMenuBreadcrumbs, useMenuBreadcrumbs } from '@/components/menu';
-import { useMenus } from '@/providers';
+import { KeenIcon } from "@/components";
+import { TMenuBreadcrumbs, useMenuBreadcrumbs } from "@/components/menu";
+import { useMenus } from "@/providers";
 
 const Breadcrumbs = () => {
   const { pathname } = useLocation();
   const { getMenuConfig } = useMenus();
-  const menuConfig = getMenuConfig('primary');
+  const menuConfig = getMenuConfig("primary");
   const items = useMenuBreadcrumbs(pathname, menuConfig);
 
   const renderItems = (items: TMenuBreadcrumbs) => {
@@ -18,11 +18,18 @@ const Breadcrumbs = () => {
 
       return (
         <Fragment key={`root-${index}`}>
-          <span className={clsx(item.active ? 'text-white' : 'text-white')} key={`item-${index}`}>
+          <span
+            className={clsx(item.active ? "text-white" : "text-white")}
+            key={`item-${index}`}
+          >
             {item.title}
           </span>
           {!last && (
-            <KeenIcon icon="right" className="text-gray-500 text-3xs" key={`separator-${index}`} />
+            <KeenIcon
+              icon="right"
+              className="text-gray-500 text-3xs"
+              key={`separator-${index}`}
+            />
           )}
         </Fragment>
       );

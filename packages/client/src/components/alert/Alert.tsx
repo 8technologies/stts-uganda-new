@@ -1,9 +1,9 @@
-import React from 'react';
-import { KeenIcon } from '@/components/keenicons';
+import React from "react";
+import { KeenIcon } from "@/components/keenicons";
 
 interface IAlertProps {
   /** Specifies the variant style of the alert */
-  variant?: 'success' | 'info' | 'danger' | 'primary' | 'warning';
+  variant?: "success" | "info" | "danger" | "primary" | "warning";
   /** Name of the icon to display */
   icon?: string;
   /** Content inside the alert */
@@ -13,18 +13,18 @@ interface IAlertProps {
 }
 
 const variantStyles = {
-  success: 'border-success-clarity bg-success-light text-success',
-  info: 'border-info-clarity bg-info-light text-info',
-  danger: 'border-danger-clarity bg-danger-light text-danger',
-  primary: 'border-primary-clarity bg-primary-light text-primary',
-  warning: 'border-warning-clarity bg-warning-light text-warning'
+  success: "border-success-clarity bg-success-light text-success",
+  info: "border-info-clarity bg-info-light text-info",
+  danger: "border-danger-clarity bg-danger-light text-danger",
+  primary: "border-primary-clarity bg-primary-light text-primary",
+  warning: "border-warning-clarity bg-warning-light text-warning",
 };
 
 const Alert: React.FC<IAlertProps> = ({
-  variant = 'primary',
-  icon = 'information-2',
+  variant = "primary",
+  icon = "information-2",
   children,
-  className = ''
+  className = "",
 }) => {
   return (
     <div
@@ -34,7 +34,7 @@ const Alert: React.FC<IAlertProps> = ({
       <KeenIcon
         icon={icon}
         style="solid"
-        className={`text-lg leading-0 ${variantStyles[variant].split(' ')[2]}`}
+        className={`text-lg leading-0 ${variantStyles[variant].split(" ")[2]}`}
         aria-label={icon}
       />
       <div className="text-gray-700 text-sm">{children}</div>

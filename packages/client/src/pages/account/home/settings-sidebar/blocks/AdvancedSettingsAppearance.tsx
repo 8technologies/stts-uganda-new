@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IAdvancedSettingsAppearanceItem {
   image: string;
@@ -7,32 +7,35 @@ interface IAdvancedSettingsAppearanceItem {
   label: string;
   checked: boolean;
 }
-interface IAdvancedSettingsAppearanceItems extends Array<IAdvancedSettingsAppearanceItem> {}
+interface IAdvancedSettingsAppearanceItems
+  extends Array<IAdvancedSettingsAppearanceItem> {}
 
 interface IAdvancedSettingsAppearanceProps {
   title: string;
 }
 
-const AdvancedSettingsAppearance = ({ title }: IAdvancedSettingsAppearanceProps) => {
+const AdvancedSettingsAppearance = ({
+  title,
+}: IAdvancedSettingsAppearanceProps) => {
   const items: IAdvancedSettingsAppearanceItems = [
     {
-      image: '28.jpg',
-      logo: 'azure.svg',
-      label: 'Dark',
-      checked: true
+      image: "28.jpg",
+      logo: "azure.svg",
+      label: "Dark",
+      checked: true,
     },
     {
-      image: '32.jpg',
-      logo: 'google.svg',
-      label: 'Light',
-      checked: false
+      image: "32.jpg",
+      logo: "google.svg",
+      label: "Light",
+      checked: false,
     },
     {
-      image: '30.jpg',
-      logo: 'openid.svg',
-      label: 'Sistem',
-      checked: false
-    }
+      image: "30.jpg",
+      logo: "openid.svg",
+      label: "Sistem",
+      checked: false,
+    },
   ];
 
   const renderItem = (item: IAdvancedSettingsAppearanceItem, index: number) => {
@@ -41,7 +44,7 @@ const AdvancedSettingsAppearance = ({ title }: IAdvancedSettingsAppearanceProps)
         <label
           className="flex items-end border bg-no-repeat bg-cover border-gray-300 rounded-xl has-[:checked]:border-success has-[:checked]:border-3 [&_.checked]:has-[:checked]:flex h-[170px] mb-0.5"
           style={{
-            backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x400/${item.image}`)})`
+            backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x400/${item.image}`)})`,
           }}
         >
           <input
@@ -66,13 +69,15 @@ const AdvancedSettingsAppearance = ({ title }: IAdvancedSettingsAppearanceProps)
   return (
     <div className="card">
       <div className="card-header" id="advanced_settings_appearance">
-        <h3 className="card-title">{title || 'Appearance'}</h3>
+        <h3 className="card-title">{title || "Appearance"}</h3>
       </div>
 
       <div className="card-body lg:py-7.5">
         <div className="mb-5">
           <h3 className="text-md font-medium text-gray-900">Theme mode</h3>
-          <span className="text-2sm text-gray-700">Select or customize your ui theme</span>
+          <span className="text-2sm text-gray-700">
+            Select or customize your ui theme
+          </span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-7.5">
@@ -89,13 +94,15 @@ const AdvancedSettingsAppearance = ({ title }: IAdvancedSettingsAppearanceProps)
           </label>
           <div className="flex items-center gap-7.5 grow">
             <label className="switch">
-              <span className="switch-label text-700 font-semibold">Active</span>
+              <span className="switch-label text-700 font-semibold">
+                Active
+              </span>
               <input type="checkbox" defaultChecked value="1" readOnly />
             </label>
 
             <span className="form-info text-gray-800 font-normal">
-              Toggle the transparent sidebar for a sleek interface.Switch it on for transparency or
-              off for a solid background.
+              Toggle the transparent sidebar for a sleek interface.Switch it on
+              for transparency or off for a solid background.
             </span>
           </div>
         </div>
@@ -112,5 +119,5 @@ export {
   AdvancedSettingsAppearance,
   type IAdvancedSettingsAppearanceItem,
   type IAdvancedSettingsAppearanceItems,
-  type IAdvancedSettingsAppearanceProps
+  type IAdvancedSettingsAppearanceProps,
 };

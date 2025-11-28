@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import {
   ActivitiesBloggingConference,
   ActivitiesLogin,
   ActivitiesNewProduct,
   ActivitiesProductSpecific,
-  ActivitiesProductWebinar
-} from '@/partials/activities/items';
+  ActivitiesProductWebinar,
+} from "@/partials/activities/items";
 
 const Activity = () => {
   return (
@@ -21,7 +21,13 @@ const Activity = () => {
               <span className="switch-on:hidden">Off</span>
               <span className="hidden switch-on:inline">On</span>
             </span>
-            <input type="checkbox" value="1" name="check" defaultChecked readOnly />
+            <input
+              type="checkbox"
+              value="1"
+              name="check"
+              defaultChecked
+              readOnly
+            />
           </label>
         </div>
       </div>

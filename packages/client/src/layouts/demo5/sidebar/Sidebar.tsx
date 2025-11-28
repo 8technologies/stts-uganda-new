@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-import clsx from 'clsx';
-import { useResponsive, useScrollPosition, useViewport } from '@/hooks';
-import { usePathname } from '@/providers';
-import { useDemo5Layout } from '../';
-import { SidebarMenuDashboard, SidebarMenuDefault } from '.';
+import { useEffect, useState } from "react";
+import clsx from "clsx";
+import { useResponsive, useScrollPosition, useViewport } from "@/hooks";
+import { usePathname } from "@/providers";
+import { useDemo5Layout } from "../";
+import { SidebarMenuDashboard, SidebarMenuDefault } from ".";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet';
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const Sidebar = () => {
   const { pathname, prevPathname } = usePathname();
@@ -20,7 +20,7 @@ const Sidebar = () => {
   const scrollPosition = useScrollPosition();
   const [scrollableHeight, setScrollableHeight] = useState<number>(0);
   const scrollableOffset = 100;
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const { mobileSidebarOpen, setMobileSidebarOpen } = useDemo5Layout();
   const { layout } = useDemo5Layout();
 
@@ -46,17 +46,22 @@ const Sidebar = () => {
       <div className="w-[--tw-sidebar-width] shrink-0 lg:flex items-start">
         <div
           className={clsx(
-            'w-[--tw-sidebar-width] z-5 lg:top-[80px] top-0 bottom-0 lg:end-auto lg:start-auto shrink-0 py-3 lg:py-0 bg-light dark:bg-coal-100 lg:dark:bg-transparent',
-            sidebarSticky && 'fixed'
+            "w-[--tw-sidebar-width] z-5 lg:top-[80px] top-0 bottom-0 lg:end-auto lg:start-auto shrink-0 py-3 lg:py-0 bg-light dark:bg-coal-100 lg:dark:bg-transparent",
+            sidebarSticky && "fixed",
           )}
         >
           <div
             className="scrollable-y-auto"
             style={{
-              ...(desktopMode && scrollableHeight > 0 && { height: `${scrollableHeight}px` })
+              ...(desktopMode &&
+                scrollableHeight > 0 && { height: `${scrollableHeight}px` }),
             }}
           >
-            {pathname === '/' ? <SidebarMenuDashboard /> : <SidebarMenuDefault />}
+            {pathname === "/" ? (
+              <SidebarMenuDashboard />
+            ) : (
+              <SidebarMenuDefault />
+            )}
           </div>
         </div>
       </div>

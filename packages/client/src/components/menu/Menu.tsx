@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 import {
   Children,
   cloneElement,
@@ -6,10 +6,10 @@ import {
   isValidElement,
   memo,
   useContext,
-  useState
-} from 'react';
-import { IMenuContextProps, IMenuItemProps, IMenuProps } from './';
-import { MenuItem } from './';
+  useState,
+} from "react";
+import { IMenuContextProps, IMenuItemProps, IMenuProps } from "./";
+import { MenuItem } from "./";
 
 const initalProps: IMenuContextProps = {
   disabled: false,
@@ -22,9 +22,11 @@ const initalProps: IMenuContextProps = {
   },
   // Default function for checking if an accordion is open (to be overridden)
   isOpenAccordion: (parentId: string, id: string) => {
-    console.log(`Checking if accordion at level ${parentId}, with ID ${id} is open`);
+    console.log(
+      `Checking if accordion at level ${parentId}, with ID ${id} is open`,
+    );
     return false; // By default, no accordion is open
-  }
+  },
 };
 
 // Create a Menu Context
@@ -39,15 +41,17 @@ const MenuComponent = ({
   disabled = false,
   highlight = false,
   dropdownTimeout = 150,
-  multipleExpand = false
+  multipleExpand = false,
 }: IMenuProps) => {
-  const [openAccordions, setOpenAccordions] = useState<{ [key: string]: string | null }>({});
+  const [openAccordions, setOpenAccordions] = useState<{
+    [key: string]: string | null;
+  }>({});
 
   // Function to handle the accordion toggle
   const setOpenAccordion = (parentId: string, id: string) => {
     setOpenAccordions((prevState) => ({
       ...prevState,
-      [parentId]: prevState[parentId] === id ? null : id // Toggle the current item and collapse others at the same level
+      [parentId]: prevState[parentId] === id ? null : id, // Toggle the current item and collapse others at the same level
     }));
   };
 
@@ -59,8 +63,8 @@ const MenuComponent = ({
     if (isValidElement(child)) {
       if (child.type === MenuItem) {
         const modifiedProps: IMenuItemProps = {
-          parentId: 'root',
-          id: `root-${index}`
+          parentId: "root",
+          id: `root-${index}`,
         };
 
         return cloneElement(child, modifiedProps);
@@ -80,10 +84,12 @@ const MenuComponent = ({
         dropdownTimeout,
         multipleExpand,
         setOpenAccordion,
-        isOpenAccordion
+        isOpenAccordion,
       }}
     >
-      <div className={clsx('menu', className && className)}>{modifiedChildren}</div>
+      <div className={clsx("menu", className && className)}>
+        {modifiedChildren}
+      </div>
     </MenuContext.Provider>
   );
 };

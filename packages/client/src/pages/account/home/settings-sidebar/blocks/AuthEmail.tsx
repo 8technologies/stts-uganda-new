@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const AuthEmail = () => {
-  const [emailInput, setEmailInput] = useState('jason@studio.io');
+  const [emailInput, setEmailInput] = useState("jason@studio.io");
 
   return (
     <div className="card pb-2.5">
@@ -18,7 +18,7 @@ const AuthEmail = () => {
                 type="text"
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
-              />   
+              />
               <div className="flex items-center gap-7.5">
                 <label className="switch">
                   <span className="switch-label">Active</span>
@@ -32,8 +32,8 @@ const AuthEmail = () => {
               </div>
 
               <span className="form-info text-gray-800 text-2sm font-normal">
-                Input your email, designate as primary for priority updates. Toggle to seamlessly
-                customize <br />
+                Input your email, designate as primary for priority updates.
+                Toggle to seamlessly customize <br />
                 your communication preferences
               </span>
             </div>

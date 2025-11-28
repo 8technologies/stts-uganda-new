@@ -1,34 +1,38 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { IHighlightedPostsItems, MiscEngage, MiscHighlightedPosts } from '@/partials/misc';
-import { toAbsoluteUrl } from '@/utils';
+import {
+  IHighlightedPostsItems,
+  MiscEngage,
+  MiscHighlightedPosts,
+} from "@/partials/misc";
+import { toAbsoluteUrl } from "@/utils";
 
-import { InviteWithLink } from '../members/team-members/blocks';
-import { InvitePeople, Invites } from './blocks';
+import { InviteWithLink } from "../members/team-members/blocks";
+import { InvitePeople, Invites } from "./blocks";
 
 const AccountInviteAFriendContent = () => {
   const posts: IHighlightedPostsItems = [
     {
-      icon: 'users',
-      title: 'Expand Your Network: Seamless Friend Invitation System',
+      icon: "users",
+      title: "Expand Your Network: Seamless Friend Invitation System",
       summary:
-        'Invite colleagues to join and collaborate with ease using our streamlined invitation process. Share the experience and grow your professional network effortlessly.',
-      path: '#'
+        "Invite colleagues to join and collaborate with ease using our streamlined invitation process. Share the experience and grow your professional network effortlessly.",
+      path: "#",
     },
     {
-      icon: 'message-add',
-      title: 'Collaboration Growth: Refer Peers with Custom Invites',
+      icon: "message-add",
+      title: "Collaboration Growth: Refer Peers with Custom Invites",
       summary:
         "Enhance your team's capabilities by inviting peers directly through personalized invitations. Strengthen your projects by collaborating with trusted professionals.",
-      path: '#'
+      path: "#",
     },
     {
-      icon: 'address-book',
-      title: 'Team Building: Easy Referral of Professional Contacts',
+      icon: "address-book",
+      title: "Team Building: Easy Referral of Professional Contacts",
       summary:
         "Strengthen your team's dynamics by inviting industry friends to collaborate. Use our intuitive referral system to bring in expertise and foster collaboration.",
-      path: '#'
-    }
+      path: "#",
+    },
   ];
 
   return (
@@ -47,20 +51,20 @@ const AccountInviteAFriendContent = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/31.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/31.svg")}
                   className="dark:hidden max-h-[150px]"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/31-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/31-dark.svg")}
                   className="light:hidden max-h-[150px]"
                   alt=""
                 />
               </Fragment>
             }
             more={{
-              title: 'Contact Support',
-              url: 'https://keenthemes.com/contact'
+              title: "Contact Support",
+              url: "https://keenthemes.com/contact",
             }}
           />
         </div>

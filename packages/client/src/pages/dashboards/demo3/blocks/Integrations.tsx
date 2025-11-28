@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils";
 
 interface IIntegrationsItem {
   logo: string;
@@ -13,26 +13,27 @@ interface IIntegrationsItems extends Array<IIntegrationsItem> {}
 const Integrations = () => {
   const items: IIntegrationsItems = [
     {
-      logo: 'google-webdev.svg',
-      title: 'Google web.dev',
-      email: 'webdev@webdevmail.com',
-      description: 'Integrate for enhanced collaboration in web development.',
-      checkbox: true
+      logo: "google-webdev.svg",
+      title: "Google web.dev",
+      email: "webdev@webdevmail.com",
+      description: "Integrate for enhanced collaboration in web development.",
+      checkbox: true,
     },
     {
-      logo: 'evernote.svg',
-      title: 'Evernote',
-      email: 'evernote@noteexample.com',
-      description: 'Streamline cryptocurrency transactions securely and efficiently.',
-      checkbox: true
+      logo: "evernote.svg",
+      title: "Evernote",
+      email: "evernote@noteexample.com",
+      description:
+        "Streamline cryptocurrency transactions securely and efficiently.",
+      checkbox: true,
     },
     {
-      logo: 'inferno.svg',
-      title: 'Inferno',
-      email: 'inferno@dataexample.com',
-      description: 'Robust email integration for data management.',
-      checkbox: true
-    }
+      logo: "inferno.svg",
+      title: "Inferno",
+      email: "inferno@dataexample.com",
+      description: "Robust email integration for data management.",
+      checkbox: true,
+    },
   ];
 
   const renderItem = (item: IIntegrationsItem, index: number) => {
@@ -50,14 +51,22 @@ const Integrations = () => {
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
-              <a href="#" className="text-sm font-semibold text-gray-900 hover:text-primary-active">
+              <a
+                href="#"
+                className="text-sm font-semibold text-gray-900 hover:text-primary-active"
+              >
                 {item.title}
               </a>
-              <a href="#" className="text-2sm font-medium text-gray-600 hover:text-primary-active">
+              <a
+                href="#"
+                className="text-2sm font-medium text-gray-600 hover:text-primary-active"
+              >
                 {item.email}
               </a>
             </div>
-            <span className="text-2sm font-medium text-gray-600">{item.description}</span>
+            <span className="text-2sm font-medium text-gray-600">
+              {item.description}
+            </span>
           </div>
         </div>
 

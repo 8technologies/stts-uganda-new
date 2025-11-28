@@ -1,22 +1,27 @@
-import { INetworkItems, IStatisticsItems, Network, Statistics } from '../company';
-import { Tags } from '../default';
-import { AboutMe, GettingStarted, OpenToWork } from './blocks';
+import {
+  INetworkItems,
+  IStatisticsItems,
+  Network,
+  Statistics,
+} from "../company";
+import { Tags } from "../default";
+import { AboutMe, GettingStarted, OpenToWork } from "./blocks";
 
 const ProfilePlainContent = () => {
   const items: IStatisticsItems = [
-    { number: '249', label: 'Connections' },
-    { number: '1.2k', label: 'Uploads' },
-    { number: '1M+', label: 'Gross Sales' },
-    { number: '27', label: 'Author Rank' }
+    { number: "249", label: "Connections" },
+    { number: "1.2k", label: "Uploads" },
+    { number: "1M+", label: "Gross Sales" },
+    { number: "27", label: "Author Rank" },
   ];
 
   const data: INetworkItems = [
-    { icon: 'abstract-41', link: 'KeenThemes' },
-    { icon: 'crown-2', link: 'Author Level 100' },
-    { icon: 'briefcase', link: 'UI/UX Desiger' },
-    { icon: 'sms', link: 'jenny@kteam.com' },
-    { icon: 'icon', link: 'https://keenthemes.com' },
-    { icon: 'facebook', link: 'keenthemes' }
+    { icon: "abstract-41", link: "KeenThemes" },
+    { icon: "crown-2", link: "Author Level 100" },
+    { icon: "briefcase", link: "UI/UX Desiger" },
+    { icon: "sms", link: "jenny@kteam.com" },
+    { icon: "icon", link: "https://keenthemes.com" },
+    { icon: "facebook", link: "keenthemes" },
   ];
 
   return (

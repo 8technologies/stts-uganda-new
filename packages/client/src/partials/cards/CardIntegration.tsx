@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { ReactNode } from 'react';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { ReactNode } from "react";
 
 interface IIntegrationProps {
   logo: string;
@@ -12,7 +12,13 @@ interface IIntegrationProps {
   actions: ReactNode;
 }
 
-const CardIntegration = ({ logo, path, name, description, actions }: IIntegrationProps) => {
+const CardIntegration = ({
+  logo,
+  path,
+  name,
+  description,
+  actions,
+}: IIntegrationProps) => {
   return (
     <div className="card">
       <div className="card-body p-5 lg:p-7.5">

@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useRef, useState } from "react";
 import {
   Menu,
   MenuIcon,
@@ -6,14 +6,14 @@ import {
   MenuLabel,
   MenuSub,
   MenuTitle,
-  MenuToggle
-} from '@/components/menu';
-import { KeenIcon } from '@/components/keenicons';
-import { useLanguage } from '@/i18n';
-import { ModalShareProfile } from '../modals/share-profile';
-import { ModalGiveAward } from '../modals/give-award';
-import { ModalReportUser } from '../modals/report-user';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+  MenuToggle,
+} from "@/components/menu";
+import { KeenIcon } from "@/components/keenicons";
+import { useLanguage } from "@/i18n";
+import { ModalShareProfile } from "../modals/share-profile";
+import { ModalGiveAward } from "../modals/give-award";
+import { ModalReportUser } from "../modals/report-user";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 const NavbarDropdown = () => {
   const itemRef = useRef<any>(null);
@@ -54,21 +54,24 @@ const NavbarDropdown = () => {
           toggle="dropdown"
           trigger="click"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                }
-              }
-            ]
+                  offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="btn btn-sm btn-icon btn-light">
             <KeenIcon icon="dots-vertical" />
           </MenuToggle>
-          <MenuSub className="menu-default" rootClassName="w-full max-w-[220px]">
+          <MenuSub
+            className="menu-default"
+            rootClassName="w-full max-w-[220px]"
+          >
             <MenuItem onClick={handleSettingsModalOpen}>
               <MenuLabel>
                 <MenuIcon>
@@ -108,9 +111,18 @@ const NavbarDropdown = () => {
         </MenuItem>
       </Menu>
 
-      <ModalShareProfile open={ShareProfileModalOpen} onOpenChange={handleShareProfileModalClose} />
-      <ModalGiveAward open={giveAwardModalOpen} onOpenChange={handleGiveAwardModalClose} />
-      <ModalReportUser open={reportUserModalOpen} onOpenChange={handleReportUserModalClose} />
+      <ModalShareProfile
+        open={ShareProfileModalOpen}
+        onOpenChange={handleShareProfileModalClose}
+      />
+      <ModalGiveAward
+        open={giveAwardModalOpen}
+        onOpenChange={handleGiveAwardModalClose}
+      />
+      <ModalReportUser
+        open={reportUserModalOpen}
+        onOpenChange={handleReportUserModalClose}
+      />
     </Fragment>
   );
 };

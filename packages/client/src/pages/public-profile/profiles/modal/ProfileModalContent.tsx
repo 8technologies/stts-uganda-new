@@ -1,5 +1,5 @@
-import { ModalProfile } from '@/partials/modals/profile';
-import { useState } from 'react';
+import { ModalProfile } from "@/partials/modals/profile";
+import { useState } from "react";
 
 const ProfileModalContent = () => {
   const [profileModalOpen, setProfileModalOpen] = useState(true);

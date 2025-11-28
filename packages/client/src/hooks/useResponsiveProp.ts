@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useResponsive, TResponsiveBreakpoint } from '.';
+import { useResponsive, TResponsiveBreakpoint } from ".";
 
 export default function useResponsiveProp(prop: any, defaultProp: any = null) {
   let value = prop;
@@ -7,9 +7,9 @@ export default function useResponsiveProp(prop: any, defaultProp: any = null) {
   if (prop) {
     for (const condition in prop) {
       const breakpoint = prop[condition] as TResponsiveBreakpoint;
-      if (condition === 'up' && useResponsive('up', breakpoint)) {
+      if (condition === "up" && useResponsive("up", breakpoint)) {
         value = prop[condition][breakpoint];
-      } else if (condition === 'down' && useResponsive('down', breakpoint)) {
+      } else if (condition === "down" && useResponsive("down", breakpoint)) {
         value = prop[condition][breakpoint];
       }
     }

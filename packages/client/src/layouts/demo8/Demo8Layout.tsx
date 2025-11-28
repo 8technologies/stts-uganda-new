@@ -1,5 +1,5 @@
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { Demo8LayoutProvider, Main } from '.';
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { Demo8LayoutProvider, Main } from ".";
 
 const Demo8Layout = () => {
   // Using the custom hook to set classes on the body

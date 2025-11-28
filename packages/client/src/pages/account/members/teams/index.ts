@@ -1,3 +1,3 @@
-export * from './AccountTeamsContent';
-export * from './AccountTeamsPage';
-export * from './blocks';
+export * from "./AccountTeamsContent";
+export * from "./AccountTeamsPage";
+export * from "./blocks";

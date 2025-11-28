@@ -6,18 +6,20 @@ interface IAboutItems extends Array<IAboutItem> {}
 
 const About = () => {
   const items: IAboutItems = [
-    { label: 'Joined:', info: '26 Aug, 2021' },
-    { label: 'Sector:', info: 'Online Education' },
+    { label: "Joined:", info: "26 Aug, 2021" },
+    { label: "Sector:", info: "Online Education" },
     {
-      label: 'Status:',
-      info: '<span class="badge badge-sm badge-success badge-outline">Subscribed</span>'
-    }
+      label: "Status:",
+      info: '<span class="badge badge-sm badge-success badge-outline">Subscribed</span>',
+    },
   ];
 
   const renderItems = (item: IAboutItem, index: number) => {
     return (
       <div key={index} className="flex items-center gap-2.5">
-        <span className="text-sm text-gray-600 min-w-14 xl:min-w-24 shrink-0">{item.label}</span>
+        <span className="text-sm text-gray-600 min-w-14 xl:min-w-24 shrink-0">
+          {item.label}
+        </span>
         <div className="text-sm text-gray-900">
           <span dangerouslySetInnerHTML={{ __html: item.info }}></span>
         </div>
@@ -38,8 +40,8 @@ const About = () => {
         </div>
 
         <p className="text-sm text-gray-800 leading-5.5 mb-2.5">
-          Experienced and creative professional with a passion great as a commitment to best
-          excellence.
+          Experienced and creative professional with a passion great as a
+          commitment to best excellence.
         </p>
       </div>
     </div>

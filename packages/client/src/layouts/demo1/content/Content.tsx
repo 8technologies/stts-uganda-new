@@ -1,12 +1,12 @@
-import { Outlet } from 'react-router';
+import { Outlet } from "react-router";
 
-import { Container } from '@/components/container';
-import { useResponsive } from '@/hooks';
+import { Container } from "@/components/container";
+import { useResponsive } from "@/hooks";
 
-import { Breadcrumbs } from '../';
+import { Breadcrumbs } from "../";
 
 const Content = () => {
-  const mobileMode = useResponsive('down', 'lg');
+  const mobileMode = useResponsive("down", "lg");
 
   return (
     <div className="grow content pt-5" role="content">

@@ -1,12 +1,14 @@
-import { KeenIcon } from '@/components';
-import React from 'react';
-import { IModalSearchSettingsItem } from './types';
+import { KeenIcon } from "@/components";
+import React from "react";
+import { IModalSearchSettingsItem } from "./types";
 
 export interface IModalSearchSettingsItemsProps {
   items: IModalSearchSettingsItem[];
 }
 
-const ModalSearchSettingsItems = ({ items }: IModalSearchSettingsItemsProps) => {
+const ModalSearchSettingsItems = ({
+  items,
+}: IModalSearchSettingsItemsProps) => {
   return (
     <>
       {items.map((item, index) => (

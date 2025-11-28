@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { Scrollspy } from '@/components';
-import { Modal, ModalContent, ModalBody, ModalHeader } from '@/components/modal'; // Import your custom Modal component
-import { AccountSettingsSidebar } from '@/pages/account/home/settings-sidebar';
+import { useEffect, useRef, useState } from "react";
+import { Scrollspy } from "@/components";
+import {
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalHeader,
+} from "@/components/modal"; // Import your custom Modal component
+import { AccountSettingsSidebar } from "@/pages/account/home/settings-sidebar";
 import {
   AdvancedSettingsAddress,
   AdvancedSettingsAppearance,
@@ -15,10 +20,15 @@ import {
   BasicSettings,
   DeleteAccount,
   ExternalServicesIntegrations,
-  ExternalServicesManageApi
-} from '@/pages/account/home/settings-sidebar/blocks';
-import { useResponsive, useViewport } from '@/hooks';
-import { Dialog, DialogBody, DialogContent, DialogHeader } from '@/components/ui/dialog';
+  ExternalServicesManageApi,
+} from "@/pages/account/home/settings-sidebar/blocks";
+import { useResponsive, useViewport } from "@/hooks";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+} from "@/components/ui/dialog";
 
 interface IModalProfileProps {
   open: boolean;
@@ -26,7 +36,7 @@ interface IModalProfileProps {
 }
 
 const AccountSettingsModal = ({ open, onOpenChange }: IModalProfileProps) => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const navBar = useRef<any | null>(null);
   const parentRef = useRef<any | null>(null);
   const [sidebarHeight, setSidebarHeight] = useState<number>(0);
@@ -43,7 +53,9 @@ const AccountSettingsModal = ({ open, onOpenChange }: IModalProfileProps) => {
         <DialogHeader className="p-0 border-0">
           <div className="flex items-center justify-between flex-wrap grow gap-5 pb-7.5">
             <div className="flex flex-col justify-center gap-2">
-              <h1 className="text-xl font-semibold leading-none text-gray-900">Settings - Modal</h1>
+              <h1 className="text-xl font-semibold leading-none text-gray-900">
+                Settings - Modal
+              </h1>
               <div className="flex items-center gap-2 text-sm font-normal text-gray-700">
                 Dynamic, Focused Adjustment Interface
               </div>
@@ -53,7 +65,10 @@ const AccountSettingsModal = ({ open, onOpenChange }: IModalProfileProps) => {
             </button>
           </div>
         </DialogHeader>
-        <DialogBody className="scrollable-y py-0 mb-5 ps-0 pe-3 -me-7" ref={parentRef}>
+        <DialogBody
+          className="scrollable-y py-0 mb-5 ps-0 pe-3 -me-7"
+          ref={parentRef}
+        >
           <div className="flex grow gap-5 lg:gap-7.5">
             {desktopMode && (
               <div className="block w-[230px] shrink-0">
@@ -83,13 +98,13 @@ const AccountSettingsModal = ({ open, onOpenChange }: IModalProfileProps) => {
 
               <AdvancedSettingsPreferences />
 
-              <AdvancedSettingsAppearance title={''} />
+              <AdvancedSettingsAppearance title={""} />
 
               <AdvancedSettingsNotifications />
 
               <AdvancedSettingsAddress />
 
-              <ExternalServicesManageApi title={''} switch={false} />
+              <ExternalServicesManageApi title={""} switch={false} />
 
               <ExternalServicesIntegrations />
 

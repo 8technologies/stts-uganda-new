@@ -1,6 +1,6 @@
-import React from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Row } from '@tanstack/react-table';
+import React from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Row } from "@tanstack/react-table";
 
 export interface IDataGridRowSelectProps<TData> {
   row: Row<TData>;

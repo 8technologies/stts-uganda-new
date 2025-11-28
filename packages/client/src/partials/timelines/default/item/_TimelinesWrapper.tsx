@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface ITimelinesWrapperProps {
   icon: string;
@@ -9,7 +9,12 @@ interface ITimelinesWrapperProps {
   removeSpace?: boolean;
 }
 
-const TimelinesWrapper = ({ line, icon, children, removeSpace }: ITimelinesWrapperProps) => {
+const TimelinesWrapper = ({
+  line,
+  icon,
+  children,
+  removeSpace,
+}: ITimelinesWrapperProps) => {
   return (
     <div className="flex items-start relative">
       {line && (
@@ -19,7 +24,9 @@ const TimelinesWrapper = ({ line, icon, children, removeSpace }: ITimelinesWrapp
       <div className="flex items-center justify-center shrink-0 rounded-full bg-gray-100 border border-gray-300 size-9 text-gray-600">
         <KeenIcon icon={icon} className="text-base" />
       </div>
-      <div className={`ps-2.5 ${!removeSpace ? 'mb-7' : ''} text-md grow`}>{children}</div>
+      <div className={`ps-2.5 ${!removeSpace ? "mb-7" : ""} text-md grow`}>
+        {children}
+      </div>
     </div>
   );
 };

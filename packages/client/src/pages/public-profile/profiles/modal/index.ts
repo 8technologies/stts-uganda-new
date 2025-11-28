@@ -1,2 +1,2 @@
-export * from './ProfileModalContent';
-export * from './ProfileModalPage';
+export * from "./ProfileModalContent";
+export * from "./ProfileModalPage";

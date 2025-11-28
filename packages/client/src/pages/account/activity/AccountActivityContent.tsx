@@ -1,10 +1,10 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { MiscEngage } from '@/partials/misc';
+import { MiscEngage } from "@/partials/misc";
 
-import { ProfileActivityContent } from '@/pages/public-profile/activity';
+import { ProfileActivityContent } from "@/pages/public-profile/activity";
 
 const AccountActivityContent = () => {
   return (
@@ -18,20 +18,20 @@ const AccountActivityContent = () => {
           image={
             <Fragment>
               <img
-                src={toAbsoluteUrl('/media/illustrations/31.svg')}
+                src={toAbsoluteUrl("/media/illustrations/31.svg")}
                 className="dark:hidden max-h-[150px]"
                 alt="image"
               />
               <img
-                src={toAbsoluteUrl('/media/illustrations/31-dark.svg')}
+                src={toAbsoluteUrl("/media/illustrations/31-dark.svg")}
                 className="light:hidden max-h-[150px]"
                 alt="image"
               />
             </Fragment>
           }
           more={{
-            title: 'Contact Support',
-            url: ''
+            title: "Contact Support",
+            url: "",
           }}
         />
 
@@ -41,20 +41,20 @@ const AccountActivityContent = () => {
           image={
             <Fragment>
               <img
-                src={toAbsoluteUrl('/media/illustrations/29.svg')}
+                src={toAbsoluteUrl("/media/illustrations/29.svg")}
                 className="dark:hidden max-h-[150px]"
                 alt="image"
               />
               <img
-                src={toAbsoluteUrl('/media/illustrations/29-dark.svg')}
+                src={toAbsoluteUrl("/media/illustrations/29-dark.svg")}
                 className="light:hidden max-h-[150px]"
                 alt="image"
               />
             </Fragment>
           }
           more={{
-            title: 'Go to Help Center',
-            url: ''
+            title: "Go to Help Center",
+            url: "",
           }}
         />
       </div>

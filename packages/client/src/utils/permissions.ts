@@ -4,22 +4,22 @@ type FlatPermissions = Record<string, boolean>;
 
 const base64UrlDecode = (str: string): string => {
   try {
-    const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = str.replace(/-/g, "+").replace(/_/g, "/");
     const json = decodeURIComponent(
       atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(""),
     );
     return json;
   } catch {
-    return '';
+    return "";
   }
 };
 
 const decodeJWTPayload = (token?: string) => {
   if (!token) return null;
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length < 2) return null;
   const payloadJson = base64UrlDecode(parts[1]);
   try {
@@ -34,7 +34,7 @@ const flattenPermissions = (permissions: any): FlatPermissions => {
   const flat: FlatPermissions = {};
   if (Array.isArray(permissions)) {
     for (const item of permissions) {
-      if (item && typeof item === 'object') {
+      if (item && typeof item === "object") {
         for (const [k, v] of Object.entries(item)) {
           if (v) flat[k] = true;
         }
@@ -51,4 +51,3 @@ const getPermissionsFromToken = (token?: string): FlatPermissions => {
 };
 
 export { decodeJWTPayload, flattenPermissions, getPermissionsFromToken };
-

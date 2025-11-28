@@ -1,9 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { createContext, type PropsWithChildren, useContext, useState } from 'react';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useState,
+} from "react";
 
-import { defaultSettings, ISettings, type TSettingsThemeMode } from '@/config/settings.config';
+import {
+  defaultSettings,
+  ISettings,
+  type TSettingsThemeMode,
+} from "@/config/settings.config";
 
-import { getData, setData } from '@/utils';
+import { getData, setData } from "@/utils";
 
 export interface ISettingsProps {
   settings: ISettings;
@@ -12,7 +21,7 @@ export interface ISettingsProps {
   getThemeMode: () => TSettingsThemeMode;
 }
 
-const SETTINGS_CONFIGS_KEY = 'settings-configs';
+const SETTINGS_CONFIGS_KEY = "settings-configs";
 
 const getStoredSettings = (): Partial<ISettings> => {
   return (getData(SETTINGS_CONFIGS_KEY) as Partial<ISettings>) || {};
@@ -22,7 +31,7 @@ const initialProps: ISettingsProps = {
   settings: { ...defaultSettings, ...getStoredSettings() },
   updateSettings: (settings: Partial<ISettings>) => {},
   storeSettings: (settings: Partial<ISettings>) => {},
-  getThemeMode: () => 'light'
+  getThemeMode: () => "light",
 };
 
 const LayoutsContext = createContext<ISettingsProps>(initialProps);
@@ -43,17 +52,21 @@ const SettingsProvider = ({ children }: PropsWithChildren) => {
   const getThemeMode = (): TSettingsThemeMode => {
     const { themeMode } = settings;
 
-    if (themeMode === 'system') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    } else if (themeMode === 'dark') {
-      return 'dark';
+    if (themeMode === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    } else if (themeMode === "dark") {
+      return "dark";
     } else {
-      return 'light';
+      return "light";
     }
   };
 
   return (
-    <LayoutsContext.Provider value={{ settings, updateSettings, storeSettings, getThemeMode }}>
+    <LayoutsContext.Provider
+      value={{ settings, updateSettings, storeSettings, getThemeMode }}
+    >
       {children}
     </LayoutsContext.Provider>
   );

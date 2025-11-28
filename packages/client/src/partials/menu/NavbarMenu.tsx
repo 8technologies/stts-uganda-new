@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 import {
   Menu,
   TMenuConfig,
@@ -6,9 +6,9 @@ import {
   MenuLink,
   MenuSub,
   MenuTitle,
-  MenuArrow
-} from '@/components/menu';
-import { useLanguage } from '@/i18n';
+  MenuArrow,
+} from "@/components/menu";
+import { useLanguage } from "@/i18n";
 
 const NavbarMenu = ({ items }: { items: TMenuConfig }) => {
   const { isRTL } = useLanguage();
@@ -23,15 +23,15 @@ const NavbarMenu = ({ items }: { items: TMenuConfig }) => {
             toggle="dropdown"
             trigger="hover"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-end' : 'bottom-start',
+              placement: isRTL() ? "bottom-end" : "bottom-start",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [0, 0] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [0, 0], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuLink className="gap-1.5 pb-2 lg:pb-4 px-2">
@@ -46,7 +46,10 @@ const NavbarMenu = ({ items }: { items: TMenuConfig }) => {
                 />
               </MenuArrow>
             </MenuLink>
-            <MenuSub className="menu-default" rootClassName="py-2 min-w-[200px]">
+            <MenuSub
+              className="menu-default"
+              rootClassName="py-2 min-w-[200px]"
+            >
               {buildMenuSub(item.children)}
             </MenuSub>
           </MenuItem>
@@ -77,15 +80,15 @@ const NavbarMenu = ({ items }: { items: TMenuConfig }) => {
             toggle="dropdown"
             trigger="hover"
             dropdownProps={{
-              placement: isRTL() ? 'left-start' : 'right-start',
+              placement: isRTL() ? "left-start" : "right-start",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [10, 0] : [-10, 0] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [10, 0] : [-10, 0], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuLink>
@@ -112,7 +115,10 @@ const NavbarMenu = ({ items }: { items: TMenuConfig }) => {
   const buildMenuToggle = () => {
     return (
       <MenuArrow>
-        <KeenIcon icon="down" className="text-2xs [.menu-dropdown_&]:-rotate-90" />
+        <KeenIcon
+          icon="down"
+          className="text-2xs [.menu-dropdown_&]:-rotate-90"
+        />
       </MenuArrow>
     );
   };

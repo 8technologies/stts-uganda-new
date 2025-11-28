@@ -1,16 +1,19 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { ImageInput } from '@/components/image-input';
-import type { IImageInputFile } from '@/components/image-input';
-import { useState } from 'react';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { ImageInput } from "@/components/image-input";
+import type { IImageInputFile } from "@/components/image-input";
+import { useState } from "react";
 
 const CrudAvatarUpload = () => {
   const [avatar, setAvatar] = useState<IImageInputFile[]>([
-    { dataURL: toAbsoluteUrl(`/media/avatars/300-2.png`) }
+    { dataURL: toAbsoluteUrl(`/media/avatars/300-2.png`) },
   ]);
 
   return (
-    <ImageInput value={avatar} onChange={(selectedAvatar) => setAvatar(selectedAvatar)}>
+    <ImageInput
+      value={avatar}
+      onChange={(selectedAvatar) => setAvatar(selectedAvatar)}
+    >
       {({ onImageUpload }) => (
         <div className="image-input size-16" onClick={onImageUpload}>
           <div
@@ -28,7 +31,9 @@ const CrudAvatarUpload = () => {
 
           <div
             className="image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300"
-            style={{ backgroundImage: `url(${toAbsoluteUrl(`/media/avatars/blank.png`)})` }}
+            style={{
+              backgroundImage: `url(${toAbsoluteUrl(`/media/avatars/blank.png`)})`,
+            }}
           >
             {avatar.length > 0 && <img src={avatar[0].dataURL} alt="avatar" />}
 

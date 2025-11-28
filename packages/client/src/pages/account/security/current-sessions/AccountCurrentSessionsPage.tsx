@@ -1,18 +1,18 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { PageNavbar } from '@/pages/account';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { PageNavbar } from "@/pages/account";
 
-import { AccountCurrentSessionsContent } from '.';
-import { useLayout } from '@/providers';
+import { AccountCurrentSessionsContent } from ".";
+import { useLayout } from "@/providers";
 
 const AccountCurrentSessionsPage = () => {
   const { currentLayout } = useLayout();
@@ -21,15 +21,20 @@ const AccountCurrentSessionsPage = () => {
     <Fragment>
       <PageNavbar />
 
-      {currentLayout?.name === 'demo1-layout' && (
+      {currentLayout?.name === "demo1-layout" && (
         <Container>
           <Toolbar>
             <ToolbarHeading>
               <ToolbarPageTitle />
-              <ToolbarDescription>Authorized Devices for Report Access</ToolbarDescription>
+              <ToolbarDescription>
+                Authorized Devices for Report Access
+              </ToolbarDescription>
             </ToolbarHeading>
             <ToolbarActions>
-              <Link to="/account/security/security-log" className="btn btn-sm btn-light">
+              <Link
+                to="/account/security/security-log"
+                className="btn btn-sm btn-light"
+              >
                 Activity Log
               </Link>
             </ToolbarActions>

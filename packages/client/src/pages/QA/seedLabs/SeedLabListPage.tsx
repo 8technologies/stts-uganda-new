@@ -1,36 +1,40 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState } from "react";
 
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
 
-import { NetworkUserTableTeamCrewContent } from './NetworkUserTableTeamCrewContent';
-import { useLayout } from '@/providers';
-import { SeedLabCreateDialog } from './blocks/SeedLabCreateDialog';
-import { LOAD_SEED_LABS, LOAD_SR6_FORMS } from '@/gql/queries';
-import { useMutation, useQuery } from '@apollo/client/react';
-import { toast } from 'sonner';
-import { Skeleton } from '@/components/ui/skeleton';
-import { SAVE_SR6_FORMS } from '@/gql/mutations';
+import { NetworkUserTableTeamCrewContent } from "./NetworkUserTableTeamCrewContent";
+import { useLayout } from "@/providers";
+import { SeedLabCreateDialog } from "./blocks/SeedLabCreateDialog";
+import { LOAD_SEED_LABS, LOAD_SR6_FORMS } from "@/gql/queries";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SAVE_SR6_FORMS } from "@/gql/mutations";
 
 const SeedLabListPage = () => {
   const { currentLayout } = useLayout();
   const [createOpen, setCreateOpen] = useState(false);
   // const { data: listData, loading: listLoading, error } = useQuery(LOAD_SR6_FORMS);
-  const { data: listData, loading: listLoading, error } = useQuery(LOAD_SEED_LABS);
+  const {
+    data: listData,
+    loading: listLoading,
+    error,
+  } = useQuery(LOAD_SEED_LABS);
 
   const [saveForm, { loading: saving }] = useMutation(SAVE_SR6_FORMS, {
     refetchQueries: [{ query: LOAD_SEED_LABS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const handleSave = async (vals: Record<string, any>) => {
-    const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const payload: any = {
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
@@ -49,22 +53,24 @@ const SeedLabListPage = () => {
       type: vals.applicationCategory,
       id: vals?.id || null,
       receipt: vals.receipt,
-      other_documents: vals.otherDocuments
+      other_documents: vals.otherDocuments,
     };
 
     try {
       await saveForm({ variables: { payload } });
-      toast('SR6 application saved');
+      toast("SR6 application saved");
       setCreateOpen(false);
     } catch (e: any) {
-      toast('Failed to save application', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to save application", {
+        description: e?.message ?? "Unknown error",
+      });
     }
   };
 
   return (
     <>
       <Fragment>
-        {currentLayout?.name === 'demo1-layout' && (
+        {currentLayout?.name === "demo1-layout" && (
           <Container>
             <Toolbar>
               <ToolbarHeading>
@@ -80,17 +86,17 @@ const SeedLabListPage = () => {
                       </>
                     ) : (
                       <>
-                        <span className="text-md text-gray-700">Applications:</span>
+                        <span className="text-md text-gray-700">
+                          Applications:
+                        </span>
                         <span className="text-md text-gray-800 font-medium me-2">
                           {(listData?.getLabInspections?.length ?? 0) as number}
                         </span>
-                        
                       </>
                     )}
                   </div>
                 </ToolbarDescription>
               </ToolbarHeading>
-              
             </Toolbar>
           </Container>
         )}

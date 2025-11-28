@@ -1,7 +1,7 @@
-import { Teams } from '@/pages/dashboards/demo1';
-import { TeamInfo } from '@/pages/account/members/team-info';
-import { MiscFaq } from '@/partials/misc';
-import { Options } from './blocks';
+import { Teams } from "@/pages/dashboards/demo1";
+import { TeamInfo } from "@/pages/account/members/team-info";
+import { MiscFaq } from "@/partials/misc";
+import { Options } from "./blocks";
 
 const Demo5Content = () => {
   return (

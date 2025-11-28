@@ -1,5 +1,5 @@
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
-import { Visitors } from './blocks/visitors';
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
+import { Visitors } from "./blocks/visitors";
 
 const NetworkVisitorsContent = () => {
   return (

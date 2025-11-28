@@ -1,7 +1,13 @@
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { deepMerge } from '@/utils';
-import { ILayoutConfig, useLayout } from '@/providers';
-import { errorsLayoutConfig } from './ErrorsLayoutConfig';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { deepMerge } from "@/utils";
+import { ILayoutConfig, useLayout } from "@/providers";
+import { errorsLayoutConfig } from "./ErrorsLayoutConfig";
 
 // Interface defining the properties for the AuthLayoutProvider
 interface AuthLayoutProviderProps {
@@ -10,7 +16,7 @@ interface AuthLayoutProviderProps {
 
 // Initial layout properties using the errors layout configuration
 const initalLayoutProps: AuthLayoutProviderProps = {
-  layout: errorsLayoutConfig // Initial layout is set to errorsLayoutConfig
+  layout: errorsLayoutConfig, // Initial layout is set to errorsLayoutConfig
 };
 
 // Creating a context for managing layout-related state and logic
@@ -39,7 +45,7 @@ const ErrorsLayoutProvider = ({ children }: PropsWithChildren) => {
   return (
     <LayoutContext.Provider
       value={{
-        layout // Providing the layout object to child components
+        layout, // Providing the layout object to child components
       }}
     >
       {children}

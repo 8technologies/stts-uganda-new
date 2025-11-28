@@ -1,7 +1,13 @@
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { deepMerge } from '@/utils';
-import { ILayoutConfig, useLayout } from '@/providers';
-import { authLayoutConfig } from './AuthLayoutConfig';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { deepMerge } from "@/utils";
+import { ILayoutConfig, useLayout } from "@/providers";
+import { authLayoutConfig } from "./AuthLayoutConfig";
 
 // Defining the structure for the AuthLayoutProvider's props, which contains a layout of type ILayoutConfig
 interface AuthLayoutProviderProps {
@@ -10,7 +16,7 @@ interface AuthLayoutProviderProps {
 
 // Initial layout properties for the AuthLayoutProvider, using authLayoutConfig as the default configuration
 const initalLayoutProps: AuthLayoutProviderProps = {
-  layout: authLayoutConfig
+  layout: authLayoutConfig,
 };
 
 // Creating a context for the AuthLayout with the initial layout properties
@@ -40,7 +46,7 @@ const AuthLayoutProvider = ({ children }: PropsWithChildren) => {
   return (
     <LayoutContext.Provider
       value={{
-        layout
+        layout,
       }}
     >
       {children}

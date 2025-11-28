@@ -1,4 +1,4 @@
-import { DefaultTooltip, KeenIcon } from '@/components';
+import { DefaultTooltip, KeenIcon } from "@/components";
 import {
   TMenuConfig,
   MenuItem,
@@ -8,15 +8,15 @@ import {
   MenuArrow,
   MenuIcon,
   MenuBadge,
-  MenuSeparator
-} from '@/components/menu';
-import { useResponsive } from '@/hooks';
-import { useLanguage } from '@/i18n';
-import clsx from 'clsx';
-import { ReactNode } from 'react';
+  MenuSeparator,
+} from "@/components/menu";
+import { useResponsive } from "@/hooks";
+import { useLanguage } from "@/i18n";
+import clsx from "clsx";
+import { ReactNode } from "react";
 
 const MegaMenuSubDropdown = (items: TMenuConfig) => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const { isRTL } = useLanguage();
 
   const buildItems = (items: TMenuConfig): ReactNode => {
@@ -27,10 +27,10 @@ const MegaMenuSubDropdown = (items: TMenuConfig) => {
         return (
           <MenuItem
             key={index}
-            toggle={desktopMode ? 'dropdown' : 'accordion'}
-            trigger={desktopMode ? 'hover' : 'click'}
+            toggle={desktopMode ? "dropdown" : "accordion"}
+            trigger={desktopMode ? "hover" : "click"}
             dropdownProps={{
-              placement: isRTL() ? 'left-start' : 'right-start'
+              placement: isRTL() ? "left-start" : "right-start",
             }}
           >
             <MenuLink className="grow-0">
@@ -39,12 +39,18 @@ const MegaMenuSubDropdown = (items: TMenuConfig) => {
                   <KeenIcon icon={item.icon} />
                 </MenuIcon>
               )}
-              <MenuTitle className={clsx('')}>{item.title}</MenuTitle>
+              <MenuTitle className={clsx("")}>{item.title}</MenuTitle>
               <MenuArrow>
-                <KeenIcon icon="right" className="text-3xs rtl:transform rtl:rotate-180" />
+                <KeenIcon
+                  icon="right"
+                  className="text-3xs rtl:transform rtl:rotate-180"
+                />
               </MenuArrow>
             </MenuLink>
-            <MenuSub className="menu-default" rootClassName="max-w-[175px] lg:max-w-[220px]">
+            <MenuSub
+              className="menu-default"
+              rootClassName="max-w-[175px] lg:max-w-[220px]"
+            >
               {buildItems(item.children)}
             </MenuSub>
           </MenuItem>
@@ -68,13 +74,21 @@ const MegaMenuSubDropdown = (items: TMenuConfig) => {
 
               {item.badge && (
                 <MenuBadge>
-                  <span className="badge badge-primary badge-outline badge-xs">{item.badge}</span>
+                  <span className="badge badge-primary badge-outline badge-xs">
+                    {item.badge}
+                  </span>
                 </MenuBadge>
               )}
 
               {item.tooltip && (
-                <DefaultTooltip title={item.tooltip.title} placement={item.tooltip.placement}>
-                  <KeenIcon icon="information-2" className="text-gray-500 text-md" />
+                <DefaultTooltip
+                  title={item.tooltip.title}
+                  placement={item.tooltip.placement}
+                >
+                  <KeenIcon
+                    icon="information-2"
+                    className="text-gray-500 text-md"
+                  />
                 </DefaultTooltip>
               )}
             </MenuLink>

@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, CSSProperties } from 'react';
+import { forwardRef, ReactNode, CSSProperties } from "react";
 
 interface IModalBodyProps {
   className?: string;
@@ -11,11 +11,16 @@ interface IModalBodyProps {
 const ModalBody = forwardRef<HTMLDivElement, IModalBodyProps>(
   ({ className, children, style, tabIndex = -1 }, ref) => {
     return (
-      <div ref={ref} tabIndex={tabIndex} className={`modal-body ${className}`} style={style}>
+      <div
+        ref={ref}
+        tabIndex={tabIndex}
+        className={`modal-body ${className}`}
+        style={style}
+      >
         {children}
       </div>
     );
-  }
+  },
 );
 
 export { ModalBody };

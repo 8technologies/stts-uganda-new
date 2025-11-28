@@ -1,5 +1,5 @@
-import clsx from 'clsx';
-import { KeenIcon } from '@/components';
+import clsx from "clsx";
+import { KeenIcon } from "@/components";
 
 interface INetworkItem {
   icon: string;
@@ -28,7 +28,7 @@ const Network = ({ data, className, title }: INetworkProps) => {
   };
 
   return (
-    <div className={clsx('card', className && className)}>
+    <div className={clsx("card", className && className)}>
       <div className="card-header">
         <h3 className="card-title">{title}</h3>
       </div>

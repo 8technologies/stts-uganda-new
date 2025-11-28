@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IPostProps {
   image: string;
@@ -13,11 +13,16 @@ const CardPost = ({ image, label, description, time }: IPostProps) => {
     <div className="card shadow-none w-[280px] border-0 mb-4">
       <div
         className="rounded-t-xl w-[280px] h-[240px] bg-cover bg-center"
-        style={{ backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x400/${image}`)})` }}
+        style={{
+          backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x400/${image}`)})`,
+        }}
       ></div>
 
       <div className="card-border card-rounded-b grid gap-1.5 px-5 py-4">
-        <a href="#" className="font-medium text-brand text-2sm hover:text-primary">
+        <a
+          href="#"
+          className="font-medium text-brand text-2sm hover:text-primary"
+        >
           {label}
         </a>
         <a

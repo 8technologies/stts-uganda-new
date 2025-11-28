@@ -1,17 +1,17 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { PageNavbar } from '@/pages/account';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { PageNavbar } from "@/pages/account";
 
-import { AccountPermissionsCheckContent } from '.';
-import { useLayout } from '@/providers';
+import { AccountPermissionsCheckContent } from ".";
+import { useLayout } from "@/providers";
 
 const AccountPermissionsCheckPage = () => {
   const { currentLayout } = useLayout();
@@ -20,12 +20,14 @@ const AccountPermissionsCheckPage = () => {
     <Fragment>
       <PageNavbar />
 
-      {currentLayout?.name === 'demo1-layout' && (
+      {currentLayout?.name === "demo1-layout" && (
         <Container>
           <Toolbar>
             <ToolbarHeading>
               <ToolbarPageTitle />
-              <ToolbarDescription>Overview of all team members and roles.</ToolbarDescription>
+              <ToolbarDescription>
+                Overview of all team members and roles.
+              </ToolbarDescription>
             </ToolbarHeading>
             <ToolbarActions>
               <a href="#" className="btn btn-sm btn-light">

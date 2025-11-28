@@ -17,19 +17,18 @@ export const mapLabelsRow = (row) => {
     seed_label_package: row.label_package,
 
     seed_lab_id: row.seed_lab_id,
-    quantity:row.quantity?.toString(),
-    available_stock:row.available_stock,
+    quantity: row.quantity?.toString(),
+    available_stock: row.available_stock,
     status_comment: row.available_stock,
     image_id: row.image_id,
     receipt_id: row.receipt_id || null,
     applicant_remark: row.applicant_remark || null,
-    inspector_id: row.inspector_id?.toString() || null,   // cast to string for GraphQL ID consistency
+    inspector_id: row.inspector_id?.toString() || null, // cast to string for GraphQL ID consistency
     // status: row.status?.toUpperCase(),
     status: row.status,
-    
+
     deleted: Boolean(row.deleted),
     created_at: row.created_at ? new Date(row.created_at) : null,
-   
   };
 };
 
@@ -178,81 +177,73 @@ const seedLabelResolvers = {
             }
         },
 
+    getSeedLabel: async (_parent, _args, context) => {
+      try {
+        const { id } = _args;
+        const user = context?.req?.user;
+        const userPermissions = user?.permissions || [];
+        console.log("ID here:", id);
+
+        checkPermission(
+          userPermissions,
+          "can_view_seed_labels", // consider a more specific permission, e.g., "can_view_seed_labels"
+          "You dont have permissions to view seed labels"
+        );
+
+        const can_manage_all_forms = hasPermission(
+          userPermissions,
+          "can_manage_seed_labels"
+        );
+
+        const can_view_only_assigned_seed_stock = hasPermission(
+          userPermissions,
+          "can_view_only_assigned_seed_lab_inspection"
+        );
+
+        const can_print_seed_labels = hasPermission(
+          userPermissions,
+          "can_print_seed_labels"
+        );
+
+        const can_approve_seed_labels = hasPermission(
+          userPermissions,
+          "can_approve_seed_labels"
+        );
+
+        const status = (() => {
+          if (can_print_seed_labels) return "approved";
+          return null;
+        })();
+
+        const labs = await fetchSeedLabels({
+          id,
+          // user_id: can_manage_all_forms ? null : user?.id ?? null,
+          // status: status,
+        });
+
+        return labs;
+      } catch (error) {
+        throw new Error(`Failed to fetch seed labels: ${error.message}`);
+      }
     },
-    SeedLabel: {
-        createdBy: async (parent) => {
-            try {
-                const user_id = parent.user_id;
-        
-                const [user] = await getUsers({
-                  id: user_id,
-                });
-                return user;
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
-        },
-            // Resolve variety field
-        CropVariety: async (parent) => {
-            try {
-            
-            const variety_id = parent.crop_variety_id;
-    
-            if (!variety_id) return null;
-    
-            const variety = await fetchVarietyById(variety_id);
-    
-            return variety;
-            } catch (error) {
-                console.error("Error fetching crop variety:", error);
-                throw new GraphQLError(error.message);
-            }
-        },
-        Crop: async (parent) => {
-            try {
-                // 1️⃣ Get the variety based on crop_variety_id
-                const [varietyRows] = await db.execute(
-                "SELECT * FROM crop_varieties WHERE id = ?",
-                [parent.crop_variety_id]
-                );
+  },
+  SeedLabel: {
+    createdBy: async (parent) => {
+      try {
+        const user_id = parent.user_id;
 
-                if (!varietyRows || varietyRows.length === 0) {
-                return null; // no variety found
-                }
-
-                const variety = varietyRows[0];
-
-                // 2️⃣ Get the crop based on the variety’s crop_id
-                const [cropRows] = await db.execute(
-                "SELECT * FROM crops WHERE id = ?",
-                [variety.crop_id]
-                );
-
-                if (!cropRows || cropRows.length === 0) {
-                return null; // no crop found
-                }
-
-                return cropRows[0];
-            } catch (error) {
-                console.error("Error fetching crop:", error);
-                throw new Error("Failed to load crop.");
-            }
-        },
-
-
-        SeedLab: async (parent) => {
-            try {
-                const seed_lab_id = parent.seed_lab_id;
-        
-                const [seedLab] = await fetchSeedLabs({
-                  id: seed_lab_id,
-                });
-                return seedLab;
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
-        },
+        const [user] = await getUsers({
+          id: user_id,
+        });
+        return user;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
     },
+    // Resolve variety field
+    CropVariety: async (parent) => {
+      try {
+        const variety_id = parent.crop_variety_id;
 
     Mutation: {
         saveSeedLabelRequest: async (_parent, args, context) => {

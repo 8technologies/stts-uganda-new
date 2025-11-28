@@ -1,20 +1,20 @@
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Alert, KeenIcon } from '@/components';
-import { useAuthContext } from '@/auth';
-import { useState } from 'react';
-import clsx from 'clsx';
-import { useNavigate } from 'react-router-dom';
-import { useLayout } from '@/providers';
-import { AxiosError } from 'axios';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Alert, KeenIcon } from "@/components";
+import { useAuthContext } from "@/auth";
+import { useState } from "react";
+import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
+import { useLayout } from "@/providers";
+import { AxiosError } from "axios";
 
 const passwordSchema = Yup.object().shape({
   newPassword: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('New password is required'),
+    .min(6, "Password must be at least 6 characters")
+    .required("New password is required"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('newPassword')], 'Passwords must match')
-    .required('Please confirm your new password')
+    .oneOf([Yup.ref("newPassword")], "Passwords must match")
+    .required("Please confirm your new password"),
 });
 
 const ResetPasswordChange = () => {
@@ -24,49 +24,55 @@ const ResetPasswordChange = () => {
   const [loading, setLoading] = useState(false);
   const [hasErrors, setHasErrors] = useState<boolean | undefined>(undefined);
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showNewPasswordConfirmation, setShowNewPasswordConfirmation] = useState(false);
+  const [showNewPasswordConfirmation, setShowNewPasswordConfirmation] =
+    useState(false);
 
   const formik = useFormik({
     initialValues: {
-      newPassword: '',
-      confirmPassword: ''
+      newPassword: "",
+      confirmPassword: "",
     },
     validationSchema: passwordSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       setLoading(true);
       setHasErrors(undefined);
 
-      const token = new URLSearchParams(window.location.search).get('token');
-      const email = new URLSearchParams(window.location.search).get('email');
+      const token = new URLSearchParams(window.location.search).get("token");
+      const email = new URLSearchParams(window.location.search).get("email");
 
       if (!token || !email) {
         setHasErrors(true);
-        setStatus('Token and email properties are required');
+        setStatus("Token and email properties are required");
         setLoading(false);
         setSubmitting(false);
         return;
       }
 
       try {
-        await changePassword(email, token, values.newPassword, values.confirmPassword);
+        await changePassword(
+          email,
+          token,
+          values.newPassword,
+          values.confirmPassword,
+        );
         setHasErrors(false);
         navigate(
-          currentLayout?.name === 'auth-branded'
-            ? '/auth/reset-password/changed'
-            : '/auth/classic/reset-password/changed'
+          currentLayout?.name === "auth-branded"
+            ? "/auth/reset-password/changed"
+            : "/auth/classic/reset-password/changed",
         );
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
           setStatus(error.response.data.message);
         } else {
-          setStatus('Password reset failed. Please try again.');
+          setStatus("Password reset failed. Please try again.");
         }
         setHasErrors(true);
       } finally {
         setLoading(false);
         setSubmitting(false);
       }
-    }
+    },
   });
 
   return (
@@ -78,7 +84,9 @@ const ResetPasswordChange = () => {
       >
         <div className="text-center">
           <h3 className="text-lg font-medium text-gray-900">Reset Password</h3>
-          <span className="text-2sm text-gray-700">Enter your new password</span>
+          <span className="text-2sm text-gray-700">
+            Enter your new password
+          </span>
         </div>
 
         {hasErrors && <Alert variant="danger">{formik.status}</Alert>}
@@ -87,14 +95,20 @@ const ResetPasswordChange = () => {
           <label className="form-label text-gray-900">New Password</label>
           <label className="input">
             <input
-              type={showNewPassword ? 'text' : 'password'}
+              type={showNewPassword ? "text" : "password"}
               placeholder="Enter a new password"
               autoComplete="off"
-              {...formik.getFieldProps('newPassword')}
+              {...formik.getFieldProps("newPassword")}
               className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.newPassword && formik.errors.newPassword },
-                { 'is-valid': formik.touched.newPassword && !formik.errors.newPassword }
+                "form-control bg-transparent",
+                {
+                  "is-invalid":
+                    formik.touched.newPassword && formik.errors.newPassword,
+                },
+                {
+                  "is-valid":
+                    formik.touched.newPassword && !formik.errors.newPassword,
+                },
               )}
             />
             <button
@@ -104,10 +118,13 @@ const ResetPasswordChange = () => {
                 setShowNewPassword(!showNewPassword);
               }}
             >
-              <KeenIcon icon="eye" className={clsx('text-gray-500', { hidden: showNewPassword })} />
+              <KeenIcon
+                icon="eye"
+                className={clsx("text-gray-500", { hidden: showNewPassword })}
+              />
               <KeenIcon
                 icon="eye-slash"
-                className={clsx('text-gray-500', { hidden: !showNewPassword })}
+                className={clsx("text-gray-500", { hidden: !showNewPassword })}
               />
             </button>
           </label>
@@ -119,17 +136,27 @@ const ResetPasswordChange = () => {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="form-label font-normal text-gray-900">Confirm New Password</label>
+          <label className="form-label font-normal text-gray-900">
+            Confirm New Password
+          </label>
           <label className="input">
             <input
-              type={showNewPasswordConfirmation ? 'text' : 'password'}
+              type={showNewPasswordConfirmation ? "text" : "password"}
               placeholder="Re-enter a new Password"
               autoComplete="off"
-              {...formik.getFieldProps('confirmPassword')}
+              {...formik.getFieldProps("confirmPassword")}
               className={clsx(
-                'form-control bg-transparent',
-                { 'is-invalid': formik.touched.confirmPassword && formik.errors.confirmPassword },
-                { 'is-valid': formik.touched.confirmPassword && !formik.errors.confirmPassword }
+                "form-control bg-transparent",
+                {
+                  "is-invalid":
+                    formik.touched.confirmPassword &&
+                    formik.errors.confirmPassword,
+                },
+                {
+                  "is-valid":
+                    formik.touched.confirmPassword &&
+                    !formik.errors.confirmPassword,
+                },
               )}
             />
             <button
@@ -141,11 +168,15 @@ const ResetPasswordChange = () => {
             >
               <KeenIcon
                 icon="eye"
-                className={clsx('text-gray-500', { hidden: showNewPasswordConfirmation })}
+                className={clsx("text-gray-500", {
+                  hidden: showNewPasswordConfirmation,
+                })}
               />
               <KeenIcon
                 icon="eye-slash"
-                className={clsx('text-gray-500', { hidden: !showNewPasswordConfirmation })}
+                className={clsx("text-gray-500", {
+                  hidden: !showNewPasswordConfirmation,
+                })}
               />
             </button>
           </label>
@@ -161,7 +192,7 @@ const ResetPasswordChange = () => {
           className="btn btn-primary flex justify-center grow"
           disabled={loading}
         >
-          {loading ? 'Please wait...' : 'Submit'}
+          {loading ? "Please wait..." : "Submit"}
         </button>
       </form>
     </div>

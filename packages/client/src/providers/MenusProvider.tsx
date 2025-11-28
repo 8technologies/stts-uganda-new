@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { createContext, type PropsWithChildren, useContext, useState } from 'react';
-import { IMenuItemConfig, TMenuConfig } from '@/components/menu';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useState,
+} from "react";
+import { IMenuItemConfig, TMenuConfig } from "@/components/menu";
 
 export interface IMenusProps {
   configs: Map<string, TMenuConfig | null>;
@@ -15,14 +20,15 @@ const initialProps: IMenusProps = {
   setMenuConfig: () => {},
   getMenuConfig: () => null,
   setCurrentMenuItem: () => {},
-  getCurrentMenuItem: () => null
+  getCurrentMenuItem: () => null,
 };
 
 const MenuContext = createContext<IMenusProps>(initialProps);
 const useMenus = () => useContext(MenuContext);
 
 const MenusProvider = ({ children }: PropsWithChildren) => {
-  const [currentMenuItem, setCurrentMenuItem] = useState<IMenuItemConfig | null>(null);
+  const [currentMenuItem, setCurrentMenuItem] =
+    useState<IMenuItemConfig | null>(null);
   const configs = initialProps.configs;
 
   const setMenuConfig = (name: string, config: TMenuConfig | null) => {
@@ -39,7 +45,13 @@ const MenusProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <MenuContext.Provider
-      value={{ configs, setMenuConfig, getMenuConfig, setCurrentMenuItem, getCurrentMenuItem }}
+      value={{
+        configs,
+        setMenuConfig,
+        getMenuConfig,
+        setCurrentMenuItem,
+        getCurrentMenuItem,
+      }}
     >
       {children}
     </MenuContext.Provider>

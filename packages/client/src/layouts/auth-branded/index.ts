@@ -1,1 +1,1 @@
-export * from './AuthBrandedLayout';
+export * from "./AuthBrandedLayout";

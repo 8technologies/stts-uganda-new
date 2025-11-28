@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { CardTournament } from '@/partials/cards';
+import { CardTournament } from "@/partials/cards";
 
 interface ITournamentsItem {
   image: string;
@@ -20,70 +20,70 @@ interface ITournamentsItems extends Array<ITournamentsItem> {}
 const Tournaments = () => {
   const items: ITournamentsItems = [
     {
-      image: '9.jpg',
-      logo: 'clusterhq.svg',
-      title: 'CyberStorm Cup',
-      time: 'WED, FEB 16, 12:30 CET',
-      labels: ['CS 2', 'PUBG', 'RAID', 'COD', 'Fortnite'],
+      image: "9.jpg",
+      logo: "clusterhq.svg",
+      title: "CyberStorm Cup",
+      time: "WED, FEB 16, 12:30 CET",
+      labels: ["CS 2", "PUBG", "RAID", "COD", "Fortnite"],
       progress: {
-        variant: 'progress-primary',
+        variant: "progress-primary",
         value: 80,
         slotNumber: 76,
-        leftNumber: 9
-      }
+        leftNumber: 9,
+      },
     },
     {
-      image: '33.jpg',
-      logo: 'jira.svg',
-      title: 'PixelPulse Showdown',
-      time: 'MON, MAR 2, 16:00 CET',
-      labels: ['TERA', 'MK11', 'PUBG', 'HOTS', 'R6'],
+      image: "33.jpg",
+      logo: "jira.svg",
+      title: "PixelPulse Showdown",
+      time: "MON, MAR 2, 16:00 CET",
+      labels: ["TERA", "MK11", "PUBG", "HOTS", "R6"],
       progress: {
-        variant: 'progress-primary',
+        variant: "progress-primary",
         value: 20,
         slotNumber: 520,
-        leftNumber: 27
-      }
+        leftNumber: 27,
+      },
     },
     {
-      image: '34.jpg',
-      logo: 'xostme-ltd.svg',
-      title: 'NexusRift Masters',
-      time: 'SUN, APR 29, 11:00 CET',
-      labels: ['HS', 'Valorant', 'Dota 2', 'PUBG', 'COD'],
+      image: "34.jpg",
+      logo: "xostme-ltd.svg",
+      title: "NexusRift Masters",
+      time: "SUN, APR 29, 11:00 CET",
+      labels: ["HS", "Valorant", "Dota 2", "PUBG", "COD"],
       progress: {
-        variant: 'progress-primary',
+        variant: "progress-primary",
         value: 42,
         slotNumber: 18,
-        leftNumber: 21
-      }
+        leftNumber: 21,
+      },
     },
     {
-      image: '11.jpg',
-      logo: 'tezos.svg',
-      title: 'CyberStorm Cup',
-      time: 'WED, FEB 16, 12:30 CET',
-      labels: ['CS 2', 'PUBG', 'RAID', 'COD', 'Fortnite'],
+      image: "11.jpg",
+      logo: "tezos.svg",
+      title: "CyberStorm Cup",
+      time: "WED, FEB 16, 12:30 CET",
+      labels: ["CS 2", "PUBG", "RAID", "COD", "Fortnite"],
       progress: {
-        variant: 'progress-primary',
+        variant: "progress-primary",
         value: 80,
         slotNumber: 98,
-        leftNumber: 44
-      }
+        leftNumber: 44,
+      },
     },
     {
-      image: '12.jpg',
-      logo: 'paccion.svg',
-      title: 'PixelPulse Showdown',
-      time: 'MON, MAR 2, 16:00 CET',
-      labels: ['TERA', 'MK11', 'PUBG', 'HOTS', 'R6'],
+      image: "12.jpg",
+      logo: "paccion.svg",
+      title: "PixelPulse Showdown",
+      time: "MON, MAR 2, 16:00 CET",
+      labels: ["TERA", "MK11", "PUBG", "HOTS", "R6"],
       progress: {
-        variant: 'progress-primary',
+        variant: "progress-primary",
         value: 60,
         slotNumber: 324,
-        leftNumber: 15
-      }
-    }
+        leftNumber: 15,
+      },
+    },
   ];
 
   const renderItem = (item: ITournamentsItem, index: number) => {

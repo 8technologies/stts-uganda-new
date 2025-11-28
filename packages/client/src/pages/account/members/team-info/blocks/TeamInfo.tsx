@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { CrudAvatarUpload } from '@/partials/crud';
+import { KeenIcon } from "@/components";
+import { CrudAvatarUpload } from "@/partials/crud";
 
 interface ITeamInfoItem {
   label: string;
@@ -8,12 +8,12 @@ interface ITeamInfoItems extends Array<ITeamInfoItem> {}
 
 const TeamInfo = () => {
   const skills: ITeamInfoItems = [
-    { label: 'Management' },
-    { label: 'Web Design' },
-    { label: 'Code Review' },
-    { label: 'No-code' },
-    { label: 'Webflow' },
-    { label: 'AI' }
+    { label: "Management" },
+    { label: "Web Design" },
+    { label: "Code Review" },
+    { label: "No-code" },
+    { label: "Webflow" },
+    { label: "AI" },
   ];
 
   const renderItem = (skill: ITeamInfoItem, index: number) => {
@@ -38,7 +38,9 @@ const TeamInfo = () => {
         <table className="table align-middle text-sm">
           <tbody>
             <tr>
-              <td className="py-2 min-w-32 text-gray-600 font-normal">Thumbnail</td>
+              <td className="py-2 min-w-32 text-gray-600 font-normal">
+                Thumbnail
+              </td>
               <td className="py-2 text-gray-700 font-normal min-w-32 text-2sm">
                 150x150px JPEG, PNG Image
               </td>
@@ -49,9 +51,14 @@ const TeamInfo = () => {
 
             <tr>
               <td className="py-2 text-gray-600 font-normal">Team Name</td>
-              <td className="py-2 text-gray-700 font-normal">Product Management</td>
+              <td className="py-2 text-gray-700 font-normal">
+                Product Management
+              </td>
               <td className="py-2 text-center">
-                <a href="#" className="btn btn-sm btn-icon btn-clear btn-primary">
+                <a
+                  href="#"
+                  className="btn btn-sm btn-icon btn-clear btn-primary"
+                >
                   <KeenIcon icon="notepad-edit" />
                 </a>
               </td>
@@ -60,11 +67,14 @@ const TeamInfo = () => {
             <tr>
               <td className="py-2 text-gray-600 font-normal">Description</td>
               <td className="py-2 text-gray-700 font-normal">
-                We're open to partnerships, guest posts, and more. Join us to share your insights
-                and grow your audience.
+                We're open to partnerships, guest posts, and more. Join us to
+                share your insights and grow your audience.
               </td>
               <td className="py-2 text-center">
-                <a href="#" className="btn btn-sm btn-icon btn-clear btn-primary">
+                <a
+                  href="#"
+                  className="btn btn-sm btn-icon btn-clear btn-primary"
+                >
                   <KeenIcon icon="notepad-edit" />
                 </a>
               </td>
@@ -73,10 +83,15 @@ const TeamInfo = () => {
             <tr>
               <td className="py-3 text-gray-600 font-normal">View as</td>
               <td className="py-3 text-gray-700">
-                <span className="badge badge-sm badge-outline badge-success">Public</span>
+                <span className="badge badge-sm badge-outline badge-success">
+                  Public
+                </span>
               </td>
               <td className="py-3 text-center">
-                <a href="#" className="btn btn-sm btn-icon btn-clear btn-primary">
+                <a
+                  href="#"
+                  className="btn btn-sm btn-icon btn-clear btn-primary"
+                >
                   <KeenIcon icon="notepad-edit" />
                 </a>
               </td>
@@ -92,7 +107,10 @@ const TeamInfo = () => {
                 </div>
               </td>
               <td className="py-3 text-center">
-                <a href="#" className="btn btn-sm btn-icon btn-clear btn-primary">
+                <a
+                  href="#"
+                  className="btn btn-sm btn-icon btn-clear btn-primary"
+                >
                   <KeenIcon icon="notepad-edit" />
                 </a>
               </td>

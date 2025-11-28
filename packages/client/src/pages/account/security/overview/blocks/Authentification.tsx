@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 const Authentification = () => {
   return (
@@ -12,7 +12,9 @@ const Authentification = () => {
           <tbody>
             <tr>
               <td className="text-gray-600 font-normal">Password</td>
-              <td className="text-gray-700 font-normal">Password last changed 2 months ago</td>
+              <td className="text-gray-700 font-normal">
+                Password last changed 2 months ago
+              </td>
               <td className="text-end">
                 <a href="#" className="btn btn-sm btn-icon btn-icon-lg link">
                   <KeenIcon icon="notepad-edit" />
@@ -37,7 +39,7 @@ const Authentification = () => {
                     className="flex items-center justify-center size-8 bg-light rounded-full border border-gray-300"
                   >
                     <img
-                      src={toAbsoluteUrl('/media/brand-logos/google.svg')}
+                      src={toAbsoluteUrl("/media/brand-logos/google.svg")}
                       className="size-4"
                       alt=""
                     />
@@ -48,7 +50,7 @@ const Authentification = () => {
                     className="flex items-center justify-center size-8 bg-light rounded-full border border-gray-300"
                   >
                     <img
-                      src={toAbsoluteUrl('/media/brand-logos/facebook.svg')}
+                      src={toAbsoluteUrl("/media/brand-logos/facebook.svg")}
                       className="size-4"
                       alt=""
                     />
@@ -59,12 +61,12 @@ const Authentification = () => {
                     className="flex items-center justify-center size-8 bg-light rounded-full border border-gray-300"
                   >
                     <img
-                      src={toAbsoluteUrl('/media/brand-logos/apple-black.svg')}
+                      src={toAbsoluteUrl("/media/brand-logos/apple-black.svg")}
                       className="dark:hidden size-4"
                       alt=""
                     />
                     <img
-                      src={toAbsoluteUrl('/media/brand-logos/apple-white.svg')}
+                      src={toAbsoluteUrl("/media/brand-logos/apple-white.svg")}
                       className="light:hidden size-4"
                       alt=""
                     />

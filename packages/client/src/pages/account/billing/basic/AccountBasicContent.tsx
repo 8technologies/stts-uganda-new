@@ -1,30 +1,30 @@
-import { IHighlightedPostsItems, MiscHighlightedPosts } from '@/partials/misc';
+import { IHighlightedPostsItems, MiscHighlightedPosts } from "@/partials/misc";
 
-import { Details, Invoicing, PaymentMethods, Plan } from './blocks';
+import { Details, Invoicing, PaymentMethods, Plan } from "./blocks";
 
 const AccountBasicContent = () => {
   const posts: IHighlightedPostsItems = [
     {
-      icon: 'discount',
-      title: 'Tailor-Made Plans Selection and Efficient Billing Systems',
+      icon: "discount",
+      title: "Tailor-Made Plans Selection and Efficient Billing Systems",
       summary:
-        'Select the perfect plan for your needs, complemented by an efficient, user-friendly billing system for convenience.',
-      path: '#'
+        "Select the perfect plan for your needs, complemented by an efficient, user-friendly billing system for convenience.",
+      path: "#",
     },
     {
-      icon: 'package',
-      title: 'Customized Plans and Simple Billing Solutions',
+      icon: "package",
+      title: "Customized Plans and Simple Billing Solutions",
       summary:
-        'Offering an array of plans to suit diverse requirements, paired with straightforward, hassle-free billing processes.',
-      path: '#'
+        "Offering an array of plans to suit diverse requirements, paired with straightforward, hassle-free billing processes.",
+      path: "#",
     },
     {
-      icon: 'cheque',
-      title: 'Comprehensive Plan Options with Streamlined Billing',
+      icon: "cheque",
+      title: "Comprehensive Plan Options with Streamlined Billing",
       summary:
-        'Our plans are crafted to cater to various user demands, accompanied by streamlined billing for maximum efficiency and clarity.',
-      path: '#'
-    }
+        "Our plans are crafted to cater to various user demands, accompanied by streamlined billing for maximum efficiency and clarity.",
+      path: "#",
+    },
   ];
 
   return (

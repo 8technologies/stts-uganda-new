@@ -1,4 +1,4 @@
-import { Menu, MenuItem, MenuLink, MenuTitle } from '@/components';
+import { Menu, MenuItem, MenuLink, MenuTitle } from "@/components";
 
 interface INavbarMenuItem {
   title: string;
@@ -10,30 +10,30 @@ interface INavbarMenuItems extends Array<INavbarMenuItem> {}
 const NavbarMenu = () => {
   const items: INavbarMenuItems = [
     {
-      title: 'Dashboards',
-      path: '/',
-      partial: false
+      title: "Dashboards",
+      path: "/",
+      partial: false,
     },
     {
-      title: 'Public Profiles',
-      path: '/public-profile/profiles/default',
-      partial: '/public-profile'
+      title: "Public Profiles",
+      path: "/public-profile/profiles/default",
+      partial: "/public-profile",
     },
     {
-      title: 'Account Settings',
-      path: '/account/home/get-started',
-      partial: '/account'
+      title: "Account Settings",
+      path: "/account/home/get-started",
+      partial: "/account",
     },
     {
-      title: 'Network',
-      path: '/network/get-started',
-      partial: '/network'
+      title: "Network",
+      path: "/network/get-started",
+      partial: "/network",
     },
     {
-      title: 'Authentication',
-      path: '/authentication/get-started',
-      partial: '/authentication'
-    }
+      title: "Authentication",
+      path: "/authentication/get-started",
+      partial: "/authentication",
+    },
   ];
 
   return (

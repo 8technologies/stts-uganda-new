@@ -1,2 +1,2 @@
-export * from './AccountSettingsModalPage';
-export * from './AccountSettingsModal';
+export * from "./AccountSettingsModalPage";
+export * from "./AccountSettingsModal";

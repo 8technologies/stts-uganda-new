@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonAvatar } from '../common';
+import { CommonAvatar } from "../common";
 
 interface IAvatar {
   className?: string;
@@ -27,14 +27,20 @@ interface IAuthorProps {
   works: IWork[];
 }
 
-const CardAuthor = ({ avatar, bgImage, name, location, works }: IAuthorProps) => {
+const CardAuthor = ({
+  avatar,
+  bgImage,
+  name,
+  location,
+  works,
+}: IAuthorProps) => {
   const renderItem = (work: IWork, index: number) => {
     return (
       <div key={index} className="card mb-4 border-0 last:me-5">
         <div
           className="bg-cover bg-no-repeat card-rounded-t w-[240px] shrink-0 h-44"
           style={{
-            backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${work.image}`)})`
+            backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${work.image}`)})`,
           }}
         ></div>
 
@@ -47,7 +53,9 @@ const CardAuthor = ({ avatar, bgImage, name, location, works }: IAuthorProps) =>
           </a>
           <div className="text-2sm text-gray-700">
             Token ID:&nbsp;
-            <span className="text-2sm font-medium text-gray-800">{work.id}</span>
+            <span className="text-2sm font-medium text-gray-800">
+              {work.id}
+            </span>
           </div>
         </div>
       </div>
@@ -58,7 +66,9 @@ const CardAuthor = ({ avatar, bgImage, name, location, works }: IAuthorProps) =>
     <div className="card">
       <div
         className="card-header p-0 bg-no-repeat bg-cover bg-center card-rounded-t h-40"
-        style={{ backgroundImage: `url(${toAbsoluteUrl(`/media/images/2600x1200/${bgImage}`)})` }}
+        style={{
+          backgroundImage: `url(${toAbsoluteUrl(`/media/images/2600x1200/${bgImage}`)})`,
+        }}
       ></div>
 
       <div className="card-body mb-7.5 p-0">

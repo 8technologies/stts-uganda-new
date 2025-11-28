@@ -1,7 +1,7 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IAvatarProps {
   image?: string;
@@ -20,7 +20,7 @@ const CommonAvatar = ({
   iconClass,
   badgeClass,
   className,
-  imageClass
+  imageClass,
 }: IAvatarProps) => {
   return (
     <div className={clsx(className && className)}>

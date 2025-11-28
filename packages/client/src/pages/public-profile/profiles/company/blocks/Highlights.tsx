@@ -7,24 +7,26 @@ interface IHighlightsItems extends Array<IHighlightsItem> {}
 
 const Highlights = () => {
   const items: IHighlightsItems = [
-    { label: 'Locations:', info: '79', type: 1 },
-    { label: 'Founded:', info: '2011', type: 2 },
+    { label: "Locations:", info: "79", type: 1 },
+    { label: "Founded:", info: "2011", type: 2 },
     {
-      label: 'Status:',
-      info: '<span class="badge badge-sm badge-success badge-outline">Subscribed</span>'
+      label: "Status:",
+      info: '<span class="badge badge-sm badge-success badge-outline">Subscribed</span>',
     },
-    { label: 'Area:', info: 'Worldwide' },
+    { label: "Area:", info: "Worldwide" },
     {
-      label: 'CEO:',
-      info: '<a href="#" class="text-primary hover:text-primary-active">Luis von Ahn</a>'
+      label: "CEO:",
+      info: '<a href="#" class="text-primary hover:text-primary-active">Luis von Ahn</a>',
     },
-    { label: 'Sector:', info: 'Online Education' }
+    { label: "Sector:", info: "Online Education" },
   ];
 
   const renderItems = (item: IHighlightsItem, index: number) => {
     return (
       <tr key={index}>
-        <td className="text-sm text-gray-600 pb-3 pe-4 lg:pe-10">{item.label}</td>
+        <td className="text-sm text-gray-600 pb-3 pe-4 lg:pe-10">
+          {item.label}
+        </td>
         <td className="text-sm ext-gray-900 pb-3">
           {item.type === 1 ? (
             item.info

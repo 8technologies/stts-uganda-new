@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { useLanguage } from '@/i18n';
-import { DropdownCard2 } from '@/partials/dropdowns/general';
-import { CommonHexagonBadge } from '@/partials/common';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { useLanguage } from "@/i18n";
+import { DropdownCard2 } from "@/partials/dropdowns/general";
+import { CommonHexagonBadge } from "@/partials/common";
 
 interface IAuthTwoFactorItem {
   icon: string;
@@ -16,17 +16,18 @@ const AuthTwoFactor = () => {
 
   const items: IAuthTwoFactorItems = [
     {
-      icon: 'message-text-2',
-      title: 'Text Message (SMS)',
-      description: 'Instant codes for secure account verification.',
-      checkbox: true
+      icon: "message-text-2",
+      title: "Text Message (SMS)",
+      description: "Instant codes for secure account verification.",
+      checkbox: true,
     },
     {
-      icon: 'shield-tick',
-      title: 'Authenticator App (TOTP)',
-      description: 'Elevate protection with an authenticator app for two-factor authentication.',
-      checkbox: false
-    }
+      icon: "shield-tick",
+      title: "Authenticator App (TOTP)",
+      description:
+        "Elevate protection with an authenticator app for two-factor authentication.",
+      checkbox: false,
+    },
   ];
 
   const renderItem = (item: IAuthTwoFactorItem, index: number) => {
@@ -40,7 +41,9 @@ const AuthTwoFactor = () => {
             stroke="stroke-gray-300"
             fill="fill-gray-100"
             size="size-[50px]"
-            badge={<KeenIcon icon={item.icon} className="text-xl text-gray-500" />}
+            badge={
+              <KeenIcon icon={item.icon} className="text-xl text-gray-500" />
+            }
           />
 
           <div className="flex flex-col">
@@ -71,15 +74,15 @@ const AuthTwoFactor = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

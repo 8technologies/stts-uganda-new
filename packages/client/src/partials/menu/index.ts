@@ -1,2 +1,2 @@
-export * from './NavbarMenu';
-export * from './ScrollspyMenu';
+export * from "./NavbarMenu";
+export * from "./ScrollspyMenu";

@@ -1,31 +1,41 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonHexagonBadge } from '@/partials/common';
-import { ReactNode } from 'react';
+import { CommonHexagonBadge } from "@/partials/common";
+import { ReactNode } from "react";
 
 interface IAdvancedSettingsNotificationsItem {
   title: string;
   description: string;
   badge: ReactNode;
 }
-interface IAdvancedSettingsNotificationsItems extends Array<IAdvancedSettingsNotificationsItem> {}
+interface IAdvancedSettingsNotificationsItems
+  extends Array<IAdvancedSettingsNotificationsItem> {}
 
 const AdvancedSettingsNotifications = () => {
   const items: IAdvancedSettingsNotificationsItems = [
     {
-      title: 'Email',
-      description: 'Tailor Your Email Preferences.',
-      badge: <KeenIcon icon="sms" className="text-xl text-gray-500" />
+      title: "Email",
+      description: "Tailor Your Email Preferences.",
+      badge: <KeenIcon icon="sms" className="text-xl text-gray-500" />,
     },
     {
-      title: 'Slack',
-      description: 'Stay Updated on Slack.',
-      badge: <img src={toAbsoluteUrl('/media/brand-logos/slack.svg')} className="h-5" alt="" />
-    }
+      title: "Slack",
+      description: "Stay Updated on Slack.",
+      badge: (
+        <img
+          src={toAbsoluteUrl("/media/brand-logos/slack.svg")}
+          className="h-5"
+          alt=""
+        />
+      ),
+    },
   ];
 
-  const renderItem = (item: IAdvancedSettingsNotificationsItem, index: number) => {
+  const renderItem = (
+    item: IAdvancedSettingsNotificationsItem,
+    index: number,
+  ) => {
     return (
       <div
         key={index}
@@ -70,7 +80,9 @@ const AdvancedSettingsNotifications = () => {
         </div>
 
         <div className="flex flex-col gap-3.5 mb-7">
-          <span className="text-md font-medium text-gray-900 pb-0.5">Desktop notifications</span>
+          <span className="text-md font-medium text-gray-900 pb-0.5">
+            Desktop notifications
+          </span>
 
           <div className="flex flex-col items-start gap-4">
             <label className="radio-group">
@@ -81,7 +93,9 @@ const AdvancedSettingsNotifications = () => {
                 value="1"
                 readOnly
               />
-              <span className="radio-label radio-label-sm">All new messages (Recommended)</span>
+              <span className="radio-label radio-label-sm">
+                All new messages (Recommended)
+              </span>
             </label>
             <label className="radio-group">
               <input
@@ -91,7 +105,9 @@ const AdvancedSettingsNotifications = () => {
                 value="2"
                 readOnly
               />
-              <span className="radio-label radio-label-sm">Direct @mentions</span>
+              <span className="radio-label radio-label-sm">
+                Direct @mentions
+              </span>
             </label>
             <label className="radio-group">
               <input
@@ -107,31 +123,61 @@ const AdvancedSettingsNotifications = () => {
         </div>
 
         <div className="flex flex-col gap-3.5 mb-7">
-          <span className="text-md font-medium text-gray-900 pb-0.5">Email notifications</span>
+          <span className="text-md font-medium text-gray-900 pb-0.5">
+            Email notifications
+          </span>
 
           <div className="flex flex-col items-start gap-4">
             <label className="radio-group">
-              <input className="radio" name="email_notification" type="radio" value="1" readOnly />
-              <span className="radio-label radio-label-sm">All new messages and statuses</span>
+              <input
+                className="radio"
+                name="email_notification"
+                type="radio"
+                value="1"
+                readOnly
+              />
+              <span className="radio-label radio-label-sm">
+                All new messages and statuses
+              </span>
             </label>
             <label className="radio-group">
-              <input className="radio" name="email_notification" type="radio" value="2" readOnly />
+              <input
+                className="radio"
+                name="email_notification"
+                type="radio"
+                value="2"
+                readOnly
+              />
               <span className="radio-label radio-label-sm text-gray-800 font-medium">
                 AUnread messages and statuses
               </span>
             </label>
             <label className="radio-group">
-              <input className="radio" name="email_notification" type="radio" value="3" readOnly />
+              <input
+                className="radio"
+                name="email_notification"
+                type="radio"
+                value="3"
+                readOnly
+              />
               <span className="radio-label radio-label-sm">Disabled</span>
             </label>
           </div>
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <span className="text-md font-medium text-gray-900 pb-0.5">Subscriptions</span>
+          <span className="text-md font-medium text-gray-900 pb-0.5">
+            Subscriptions
+          </span>
 
           <label className="checkbox-group">
-            <input className="checkbox" name="check" type="checkbox" value="1" readOnly />
+            <input
+              className="checkbox"
+              name="check"
+              type="checkbox"
+              value="1"
+              readOnly
+            />
             <span className="checkbox-label checkbox-label-sm">
               Automatically subscribe to tasks you create
             </span>
@@ -149,5 +195,5 @@ const AdvancedSettingsNotifications = () => {
 export {
   AdvancedSettingsNotifications,
   type IAdvancedSettingsNotificationsItem,
-  type IAdvancedSettingsNotificationsItems
+  type IAdvancedSettingsNotificationsItems,
 };

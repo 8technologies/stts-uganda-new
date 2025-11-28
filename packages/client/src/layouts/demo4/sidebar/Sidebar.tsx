@@ -1,20 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react';
-import { useResponsive } from '@/hooks';
-import { SidebarPrimary, SidebarSecondary } from './';
-import { usePathname } from '@/providers';
-import { useDemo4Layout } from '../';
+import { useEffect } from "react";
+import { useResponsive } from "@/hooks";
+import { SidebarPrimary, SidebarSecondary } from "./";
+import { usePathname } from "@/providers";
+import { useDemo4Layout } from "../";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet';
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const Sidebar = () => {
-  const desktopMode = useResponsive('up', 'lg');
-  const mobileMode = useResponsive('down', 'lg');
+  const desktopMode = useResponsive("up", "lg");
+  const mobileMode = useResponsive("down", "lg");
   const { pathname, prevPathname } = usePathname();
   const { mobileSidebarOpen, setMobileSidebarOpen } = useDemo4Layout();
 

@@ -1,1 +1,1 @@
-export * from './AuthenticationGetStartedPage';
+export * from "./AuthenticationGetStartedPage";

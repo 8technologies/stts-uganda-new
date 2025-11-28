@@ -1,7 +1,7 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatars, CommonRating } from '@/partials/common';
-import { TimelinesWrapper } from '@/partials/timelines/default/item';
+import { CommonAvatars, CommonRating } from "@/partials/common";
+import { TimelinesWrapper } from "@/partials/timelines/default/item";
 
 const ActivitiesNewTeam = () => {
   return (
@@ -10,7 +10,10 @@ const ActivitiesNewTeam = () => {
         <div className="flex flex-col pb-2.5">
           <div className="text-sm text-gray-800">
             A new team
-            <a href="#" className="text-sm font-medium text-gray-900 hover:text-primary-active">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-900 hover:text-primary-active"
+            >
               &nbsp;Market Mavericks&nbsp;
             </a>
             joined community
@@ -45,12 +48,18 @@ const ActivitiesNewTeam = () => {
                   />
                 </svg>
                 <div className="absolute leading-none start-2/4 top-2/4 -translate-y-2/4 -translate-x-2/4 rtl:translate-x-2/4">
-                  <KeenIcon icon="abstract-39" className="text-xl ps-px text-primary" />
+                  <KeenIcon
+                    icon="abstract-39"
+                    className="text-xl ps-px text-primary"
+                  />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <a href="#" className="text-base font-medium hover:text-primary text-gray-900">
+                <a
+                  href="#"
+                  className="text-base font-medium hover:text-primary text-gray-900"
+                >
                   Market Mavericks
                 </a>
                 <p className="text-2sm text-gray-700">
@@ -66,17 +75,20 @@ const ActivitiesNewTeam = () => {
               </div>
 
               <div className="flex flex-col items-end gap-3 lg:min-w-24 shrink-0 max-w-auto">
-                <span className="text-2xs text-gray-600 uppercase">members</span>
+                <span className="text-2xs text-gray-600 uppercase">
+                  members
+                </span>
                 <CommonAvatars
                   size="size-7"
                   group={[
-                    { filename: '300-4.png' },
-                    { filename: '300-1.png' },
-                    { filename: '300-2.png' },
+                    { filename: "300-4.png" },
+                    { filename: "300-1.png" },
+                    { filename: "300-2.png" },
                     {
-                      fallback: 'S',
-                      variant: 'text-primary-inverse ring-primary-light bg-primary'
-                    }
+                      fallback: "S",
+                      variant:
+                        "text-primary-inverse ring-primary-light bg-primary",
+                    },
                   ]}
                 />
               </div>

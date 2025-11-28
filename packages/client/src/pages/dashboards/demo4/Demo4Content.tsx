@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
-import { BlockList } from '@/pages/account/security/privacy-settings';
-import { MiscCreateTeam } from '@/partials/misc';
-import { toAbsoluteUrl } from '@/utils';
-import { Highlights, Teams } from '..';
+import { Fragment } from "react";
+import { BlockList } from "@/pages/account/security/privacy-settings";
+import { MiscCreateTeam } from "@/partials/misc";
+import { toAbsoluteUrl } from "@/utils";
+import { Highlights, Teams } from "..";
 
 const Demo4Content = () => {
   return (
@@ -13,12 +13,12 @@ const Demo4Content = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/32.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/32.svg")}
                   className="dark:hidden max-h-[180px]"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/32-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/32-dark.svg")}
                   className="light:hidden max-h-[180px]"
                   alt=""
                 />
@@ -28,15 +28,16 @@ const Demo4Content = () => {
             title="Swift Setup for New Teams"
             subTitle={
               <Fragment>
-                Enhance team formation and management with easy-to-use tools for communication,
+                Enhance team formation and management with easy-to-use tools for
+                communication,
                 <br />
                 task organization, and progress tracking, all in one place.
               </Fragment>
             }
             engage={{
-              path: '/public-profile/teams',
-              label: 'Create Team',
-              btnColor: 'btn-primary'
+              path: "/public-profile/teams",
+              label: "Create Team",
+              btnColor: "btn-primary",
             }}
           />
         </div>

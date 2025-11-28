@@ -1,5 +1,5 @@
-import { CommonAvatar } from '../common';
-import { IAvatar } from './CardAuthor';
+import { CommonAvatar } from "../common";
+import { IAvatar } from "./CardAuthor";
 
 interface IUserMiniProps {
   avatar?: IAvatar;

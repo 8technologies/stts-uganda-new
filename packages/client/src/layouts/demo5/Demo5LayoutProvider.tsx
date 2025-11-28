@@ -1,13 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
-import { useMenuChildren } from '@/components/menu';
-import { MENU_SIDEBAR } from '@/config/menu.config';
-import { useScrollPosition } from '@/hooks/useScrollPosition';
-import { useMenus } from '@/providers';
-import { ILayoutConfig, useLayout } from '@/providers';
-import { deepMerge } from '@/utils';
-import { demo5LayoutConfig } from './Demo5LayoutConfig';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useLocation } from "react-router";
+import { useMenuChildren } from "@/components/menu";
+import { MENU_SIDEBAR } from "@/config/menu.config";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useMenus } from "@/providers";
+import { ILayoutConfig, useLayout } from "@/providers";
+import { deepMerge } from "@/utils";
+import { demo5LayoutConfig } from "./Demo5LayoutConfig";
 
 // Interface defining the structure for layout provider properties
 export interface IDemo5LayoutProviderProps {
@@ -24,11 +30,12 @@ const initalLayoutProps: IDemo5LayoutProviderProps = {
   mobileSidebarOpen: false, // Mobile sidebar is closed by default
   setMobileSidebarOpen: (open: boolean) => {
     console.log(`${open}`);
-  }
+  },
 };
 
 // Creating context for the layout provider with initial properties
-const Demo5LayoutContext = createContext<IDemo5LayoutProviderProps>(initalLayoutProps);
+const Demo5LayoutContext =
+  createContext<IDemo5LayoutProviderProps>(initalLayoutProps);
 
 // Custom hook to access the layout context
 const useDemo5Layout = () => useContext(Demo5LayoutContext);
@@ -40,8 +47,8 @@ const Demo5LayoutProvider = ({ children }: PropsWithChildren) => {
   const secondaryMenu = useMenuChildren(pathname, MENU_SIDEBAR, 0); // Retrieves the secondary menu
 
   // Sets the primary and secondary menu configurations
-  setMenuConfig('primary', MENU_SIDEBAR);
-  setMenuConfig('secondary', secondaryMenu);
+  setMenuConfig("primary", MENU_SIDEBAR);
+  setMenuConfig("secondary", secondaryMenu);
 
   const { getLayout, updateLayout, setCurrentLayout } = useLayout(); // Layout management methods
 
@@ -61,7 +68,8 @@ const Demo5LayoutProvider = ({ children }: PropsWithChildren) => {
 
   const scrollPosition = useScrollPosition(); // Tracks the scroll position
 
-  const headerSticky: boolean = scrollPosition > layout.options.header.stickyOffset; // Makes the header sticky based on scroll
+  const headerSticky: boolean =
+    scrollPosition > layout.options.header.stickyOffset; // Makes the header sticky based on scroll
 
   return (
     // Provides the layout configuration and controls via context to the application
@@ -70,7 +78,7 @@ const Demo5LayoutProvider = ({ children }: PropsWithChildren) => {
         layout,
         headerSticky,
         mobileSidebarOpen,
-        setMobileSidebarOpen
+        setMobileSidebarOpen,
       }}
     >
       {children}

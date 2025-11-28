@@ -1,6 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
 const Saves = () => {
   return (
@@ -8,12 +8,12 @@ const Saves = () => {
       <style>
         {`
           .post-saves-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-2.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-2.png")}');
             margin-top: -1rem;
 		        height: 7rem;
           }
           .dark .post-saves-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-2-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-2-dark.png")}');
             height: 12rem;
 		        margin-bottom: -4.5rem;
           }

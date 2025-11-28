@@ -1,6 +1,9 @@
-import { BlockList, ReportSettings } from '@/pages/account/security/privacy-settings';
-import { EntryCallout, Teams } from '@/pages/dashboards/demo1';
-import { Integrations, ManageData, MyBalance, Options } from './blocks';
+import {
+  BlockList,
+  ReportSettings,
+} from "@/pages/account/security/privacy-settings";
+import { EntryCallout, Teams } from "@/pages/dashboards/demo1";
+import { Integrations, ManageData, MyBalance, Options } from "./blocks";
 
 const Demo2Content = () => {
   return (

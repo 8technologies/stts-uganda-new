@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import { KeenIcon } from '@/components';
-import { CommonHexagonBadge } from '../common';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
+import { KeenIcon } from "@/components";
+import { CommonHexagonBadge } from "../common";
 
 interface IAddNewProps {
   path: string;
@@ -11,7 +11,13 @@ interface IAddNewProps {
   subTitle: string;
 }
 
-const CardAddNewRow = ({ path, size, iconSize, title, subTitle }: IAddNewProps) => {
+const CardAddNewRow = ({
+  path,
+  size,
+  iconSize,
+  title,
+  subTitle,
+}: IAddNewProps) => {
   return (
     <Fragment>
       <Link
@@ -23,7 +29,12 @@ const CardAddNewRow = ({ path, size, iconSize, title, subTitle }: IAddNewProps) 
             <div className="flex justify-center">
               <CommonHexagonBadge
                 size={size}
-                badge={<KeenIcon icon="rocket" className={`${iconSize} text-brand`} />}
+                badge={
+                  <KeenIcon
+                    icon="rocket"
+                    className={`${iconSize} text-brand`}
+                  />
+                }
                 stroke="stroke-brand-clarity"
                 fill="fill-light"
               />
@@ -33,7 +44,9 @@ const CardAddNewRow = ({ path, size, iconSize, title, subTitle }: IAddNewProps) 
               <span className="text-lg font-semibold text-gray-900 hover:text-primary-active mb-px">
                 {title}
               </span>
-              <span className="text-2sm font-normal text-gray-600">{subTitle}</span>
+              <span className="text-2sm font-normal text-gray-600">
+                {subTitle}
+              </span>
             </div>
           </div>
         </div>
