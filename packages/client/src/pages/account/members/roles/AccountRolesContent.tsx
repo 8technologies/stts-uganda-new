@@ -1,4 +1,4 @@
-import { Roles } from './blocks';
+import { Roles } from "./blocks";
 
 const AccountRolesContent = () => {
   return <Roles />;

@@ -1,1 +1,1 @@
-export * from './ModalWelcomMessage';
+export * from "./ModalWelcomMessage";

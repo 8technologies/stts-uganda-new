@@ -1,2 +1,2 @@
-export * from './ApiIntegrations';
-export * from './ApiIntegrationsData';
+export * from "./ApiIntegrations";
+export * from "./ApiIntegrationsData";

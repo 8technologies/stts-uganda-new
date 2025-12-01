@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Download, Edit, Eye, Plus, Search, Trash2, Upload } from 'lucide-react';
-import { toast } from 'sonner';
-import { Skeleton } from '@/components/ui/skeleton';
-import { PlantingReturnsForm } from './components/PlantingReturnForm';
-import { PlantingReturnDetails } from './components/PlantingReturnDetails';
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Download,
+  Edit,
+  Eye,
+  Plus,
+  Search,
+  Trash2,
+  Upload,
+} from "lucide-react";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { PlantingReturnsForm } from "./components/PlantingReturnForm";
+import { PlantingReturnDetails } from "./components/PlantingReturnDetails";
 
 type PlantingReturns = {
   id: string | number;
@@ -26,7 +34,7 @@ type PlantingReturns = {
   registeredSeedMerchant: string;
   subGrowersFile?: string;
   createdAt: string;
-  status: 'Pending' | 'Approved' | 'Rejected';
+  status: "Pending" | "Approved" | "Rejected";
 };
 
 // Application List Component
@@ -38,7 +46,7 @@ const PlantingReturnsList = ({
   onViewApplication,
   searchTerm,
   onSearchChange,
-  deletingApplicationId
+  deletingApplicationId,
 }: {
   applications: PlantingReturns[];
   onAddApplication: () => void;
@@ -52,14 +60,18 @@ const PlantingReturnsList = ({
   const filteredApplications = applications.filter(
     (app) =>
       app.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.registeredSeedMerchant.toLowerCase().includes(searchTerm.toLowerCase())
+      app.registeredSeedMerchant
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
   );
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200">
       <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h2 className="text-lg font-semibold text-gray-900">Planting Returns</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Planting Returns
+          </h2>
           <Button onClick={onAddApplication} size="sm">
             <Plus size={16} className="mr-2" />
             New Application
@@ -112,7 +124,9 @@ const PlantingReturnsList = ({
                     <div className="text-sm font-medium text-gray-900">
                       {application.companyName}
                     </div>
-                    <div className="text-sm text-gray-500">{application.companyTelephone}</div>
+                    <div className="text-sm text-gray-500">
+                      {application.companyTelephone}
+                    </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -124,11 +138,11 @@ const PlantingReturnsList = ({
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      application.status === 'Approved'
-                        ? 'bg-green-100 text-green-800'
-                        : application.status === 'Rejected'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                      application.status === "Approved"
+                        ? "bg-green-100 text-green-800"
+                        : application.status === "Rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
                     {application.status}
@@ -159,13 +173,15 @@ const PlantingReturnsList = ({
                       variant="outline"
                       size="sm"
                       onClick={() => onDeleteApplication(application)}
-                      disabled={String(deletingApplicationId) === String(application.id)}
+                      disabled={
+                        String(deletingApplicationId) === String(application.id)
+                      }
                       className="text-red-600 hover:text-red-700"
                     >
                       <Trash2 size={14} className="mr-1" />
                       {String(deletingApplicationId) === String(application.id)
-                        ? 'Deleting…'
-                        : 'Delete'}
+                        ? "Deleting…"
+                        : "Delete"}
                     </Button>
                   </div>
                 </td>
@@ -218,43 +234,46 @@ const PlantingReturnsListSkeleton = () => (
 // Main Component with static list and dialog-based editing
 const PlantingReturnsListPage = () => {
   const [applications, setApplications] = useState<PlantingReturns[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [deletingApplicationId, setDeletingApplicationId] = useState<string | null>(null);
+  const [deletingApplicationId, setDeletingApplicationId] = useState<
+    string | null
+  >(null);
 
   // Dialog states
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsOpen, setIsDetailOpen] = useState(false);
   const [resetForm, setResetForm] = useState(false);
-  const [editingApplication, setEditingApplication] = useState<PlantingReturns | null>(null);
+  const [editingApplication, setEditingApplication] =
+    useState<PlantingReturns | null>(null);
 
   // Sample data
   useEffect(() => {
     setApplications([
       {
-        id: '1',
-        companyName: 'Green Valley Seeds Ltd',
-        companyAddress: '123 Agricultural Lane, Farm City, FC 12345',
-        companyTelephone: '+256-123-456-789',
-        amountEnclosed: '50000',
-        registeredSeedMerchant: 'AgriCorp International',
-        paymentReceipt: 'receipt_001.pdf',
-        subGrowersFile: 'subgrowers_001.xlsx',
-        createdAt: '2024-09-20',
-        status: 'Pending'
+        id: "1",
+        companyName: "Green Valley Seeds Ltd",
+        companyAddress: "123 Agricultural Lane, Farm City, FC 12345",
+        companyTelephone: "+256-123-456-789",
+        amountEnclosed: "50000",
+        registeredSeedMerchant: "AgriCorp International",
+        paymentReceipt: "receipt_001.pdf",
+        subGrowersFile: "subgrowers_001.xlsx",
+        createdAt: "2024-09-20",
+        status: "Pending",
       },
       {
-        id: '2',
-        companyName: 'Sunrise Agriculture Co',
-        companyAddress: '456 Harvest Road, Crop Town, CT 67890',
-        companyTelephone: '+256-987-654-321',
-        amountEnclosed: '75000',
-        registeredSeedMerchant: 'Seed Masters Ltd',
-        paymentReceipt: 'receipt_002.pdf',
-        subGrowersFile: 'subgrowers_002.xlsx',
-        createdAt: '2024-09-18',
-        status: 'Approved'
-      }
+        id: "2",
+        companyName: "Sunrise Agriculture Co",
+        companyAddress: "456 Harvest Road, Crop Town, CT 67890",
+        companyTelephone: "+256-987-654-321",
+        amountEnclosed: "75000",
+        registeredSeedMerchant: "Seed Masters Ltd",
+        paymentReceipt: "receipt_002.pdf",
+        subGrowersFile: "subgrowers_002.xlsx",
+        createdAt: "2024-09-18",
+        status: "Approved",
+      },
     ]);
   }, []);
 
@@ -276,15 +295,20 @@ const PlantingReturnsListPage = () => {
   };
 
   const handleDeleteApplication = async (application: PlantingReturns) => {
-    if (!window.confirm(`Delete application from "${application.companyName}"?`)) return;
+    if (
+      !window.confirm(`Delete application from "${application.companyName}"?`)
+    )
+      return;
 
     try {
       setDeletingApplicationId(String(application.id));
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      setApplications((apps) => apps.filter((app) => app.id !== application.id));
-      toast('Application deleted successfully');
+      setApplications((apps) =>
+        apps.filter((app) => app.id !== application.id),
+      );
+      toast("Application deleted successfully");
     } catch (error) {
-      toast('Failed to delete application');
+      toast("Failed to delete application");
     } finally {
       setDeletingApplicationId(null);
     }
@@ -299,9 +323,11 @@ const PlantingReturnsListPage = () => {
         // Update existing application
         const updatedApplication = { ...editingApplication, ...data };
         setApplications((prev) =>
-          prev.map((app) => (app.id === editingApplication.id ? updatedApplication : app))
+          prev.map((app) =>
+            app.id === editingApplication.id ? updatedApplication : app,
+          ),
         );
-        toast('Application updated successfully');
+        toast("Application updated successfully");
       } else {
         // Create new application
         const newApplication: PlantingReturns = {
@@ -313,17 +339,17 @@ const PlantingReturnsListPage = () => {
           registeredSeedMerchant: data.registeredSeedMerchant,
           paymentReceipt: data.paymentReceipt,
           subGrowersFile: data.subGrowersFile,
-          createdAt: new Date().toISOString().split('T')[0],
-          status: 'Pending'
+          createdAt: new Date().toISOString().split("T")[0],
+          status: "Pending",
         };
         setApplications((prev) => [...prev, newApplication]);
-        toast('Application created successfully');
+        toast("Application created successfully");
       }
 
       setIsDialogOpen(false);
       setEditingApplication(null);
     } catch (error) {
-      toast('Failed to save application');
+      toast("Failed to save application");
     } finally {
       setLoading(false);
     }
@@ -346,8 +372,12 @@ const PlantingReturnsListPage = () => {
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Planting Returns</h1>
-            <p className="text-gray-600">Manage planting return applications and approvals</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Planting Returns
+            </h1>
+            <p className="text-gray-600">
+              Manage planting return applications and approvals
+            </p>
           </div>
           <PlantingReturnsListSkeleton />
         </div>
@@ -360,7 +390,9 @@ const PlantingReturnsListPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Planting Returns</h1>
-          <p className="text-gray-600">Manage planting return applications and approvals</p>
+          <p className="text-gray-600">
+            Manage planting return applications and approvals
+          </p>
         </div>
 
         <PlantingReturnsList
@@ -381,8 +413,12 @@ const PlantingReturnsListPage = () => {
           loading={loading}
           resetForm={resetForm}
           initialValues={editingApplication}
-          title={editingApplication ? 'Edit Application' : 'Create New Application'}
-          submitLabel={editingApplication ? 'Update Application' : 'Create Application'}
+          title={
+            editingApplication ? "Edit Application" : "Create New Application"
+          }
+          submitLabel={
+            editingApplication ? "Update Application" : "Create Application"
+          }
         />
 
         <PlantingReturnDetails

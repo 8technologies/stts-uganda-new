@@ -1,6 +1,6 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonHexagonBadge } from '@/partials/common';
+import { CommonHexagonBadge } from "@/partials/common";
 
 const NextPayment = () => {
   return (
@@ -17,11 +17,16 @@ const NextPayment = () => {
                 stroke="stroke-brand-clarity"
                 fill="fill-brand-light"
                 size="size-[50px]"
-                badge={<KeenIcon icon="calendar" className="text-xl text-brand" />}
+                badge={
+                  <KeenIcon icon="calendar" className="text-xl text-brand" />
+                }
               />
 
               <div className="flex flex-col">
-                <a href="#" className="text-sm font-medium hover:text-primary text-gray-900">
+                <a
+                  href="#"
+                  className="text-sm font-medium hover:text-primary text-gray-900"
+                >
                   on 17 Aug, 2024
                 </a>
                 <p className="text-2sm text-gray-700">Due date</p>

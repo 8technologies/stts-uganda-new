@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface IHexagonBadgeProps {
   size?: string;
@@ -7,7 +7,12 @@ interface IHexagonBadgeProps {
   badge?: ReactNode;
 }
 
-const CommonHexagonBadge = ({ size, stroke, fill, badge }: IHexagonBadgeProps) => {
+const CommonHexagonBadge = ({
+  size,
+  stroke,
+  fill,
+  badge,
+}: IHexagonBadgeProps) => {
   return (
     <div className={`relative ${size} shrink-0`}>
       <svg

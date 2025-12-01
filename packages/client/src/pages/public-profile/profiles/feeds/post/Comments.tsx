@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { ICommentsItem } from '../blocks';
+import { useState } from "react";
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { ICommentsItem } from "../blocks";
 
 interface ICommentsProps {
   items: ICommentsItem[];
 }
 
 const Comments = ({ items }: ICommentsProps) => {
-  const [commentInput, setCommentInput] = useState('');
+  const [commentInput, setCommentInput] = useState("");
 
   const renderItem = (item: ICommentsItem, index: number) => {
     return (
@@ -22,7 +22,10 @@ const Comments = ({ items }: ICommentsProps) => {
         <div className="grid gap-2.5 grow">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-1.5">
-              <a href="#" className="text-md font-medium text-gray-900 hover:text-primary-active">
+              <a
+                href="#"
+                className="text-md font-medium text-gray-900 hover:text-primary-active"
+              >
                 {item.author}
               </a>
               <span className="text-sm text-gray-700">{item.date}</span>
@@ -49,7 +52,7 @@ const Comments = ({ items }: ICommentsProps) => {
 
       <div className="flex items-center gap-2.5">
         <img
-          src={toAbsoluteUrl('/media/avatars/300-3.png')}
+          src={toAbsoluteUrl("/media/avatars/300-3.png")}
           className="rounded-full size-10 shrink-0"
           alt=""
         />

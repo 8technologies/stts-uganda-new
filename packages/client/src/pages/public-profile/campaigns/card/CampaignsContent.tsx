@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
-import { CardCampaign, CardCampaignRow } from '@/partials/cards';
+import { KeenIcon } from "@/components";
+import { CardCampaign, CardCampaignRow } from "@/partials/cards";
 
 interface ICampaignsContentItem {
   logo: string;
@@ -31,174 +31,174 @@ const CampaignsContent = ({ mode }: ICampaignsContentProps) => {
 
   const items: ICampaignsContentItems = [
     {
-      logo: 'twitch-purple.svg',
-      logoSize: '50px',
-      title: 'Urban Dreams',
-      description: 'Live Gaming Spectacle Unveiled',
+      logo: "twitch-purple.svg",
+      logoSize: "50px",
+      title: "Urban Dreams",
+      description: "Live Gaming Spectacle Unveiled",
       status: {
-        variant: 'badge-success',
-        label: 'Completed'
+        variant: "badge-success",
+        label: "Completed",
       },
       statistics: [
         {
-          total: '50.7%',
-          description: 'Traffic Up'
+          total: "50.7%",
+          description: "Traffic Up",
         },
         {
-          total: '20.1k',
-          description: 'New Fans'
+          total: "20.1k",
+          description: "New Fans",
         },
         {
-          total: '$100k',
-          description: 'Donated'
-        }
+          total: "$100k",
+          description: "Donated",
+        },
       ],
       progress: {
-        variant: 'progress-success',
-        value: 100
-      }
+        variant: "progress-success",
+        value: 100,
+      },
     },
     {
-      logo: 'instagram.svg',
-      logoSize: '50px',
-      title: 'Photo Promotion',
-      description: 'Visual Stories Unleashed Worldwide',
+      logo: "instagram.svg",
+      logoSize: "50px",
+      title: "Photo Promotion",
+      description: "Visual Stories Unleashed Worldwide",
       status: {
-        variant: 'badge-primary',
-        label: 'Running'
+        variant: "badge-primary",
+        label: "Running",
       },
       statistics: [
         {
-          total: '25k',
-          description: 'Link Hits'
+          total: "25k",
+          description: "Link Hits",
         },
         {
-          total: '32.9%',
-          description: 'Engage Uptick'
+          total: "32.9%",
+          description: "Engage Uptick",
         },
         {
-          total: '$7,5k',
-          description: 'Earnings'
-        }
+          total: "$7,5k",
+          description: "Earnings",
+        },
       ],
       progress: {
-        variant: 'progress-primary',
-        value: 60
-      }
+        variant: "progress-primary",
+        value: 60,
+      },
     },
     {
-      logo: 'youtube.svg',
-      logoSize: '50px',
-      title: 'Video Viral',
-      description: 'Video Content Showcase Spotlighted',
+      logo: "youtube.svg",
+      logoSize: "50px",
+      title: "Video Viral",
+      description: "Video Content Showcase Spotlighted",
       status: {
-        variant: 'badge-primary',
-        label: 'Running'
+        variant: "badge-primary",
+        label: "Running",
       },
       statistics: [
         {
-          total: '12M',
-          description: 'Video Plays'
+          total: "12M",
+          description: "Video Plays",
         },
         {
-          total: '40%',
-          description: 'Sub Gain'
+          total: "40%",
+          description: "Sub Gain",
         },
         {
-          total: '25k',
-          description: 'Link Hits'
-        }
+          total: "25k",
+          description: "Link Hits",
+        },
       ],
       progress: {
-        variant: 'progress-primary',
-        value: 55
-      }
+        variant: "progress-primary",
+        value: 55,
+      },
     },
     {
-      logo: 'amazon-2.svg',
-      logoDark: 'amazon-dark.svg',
-      logoSize: '50px',
-      title: 'Product Push',
-      description: 'Prime Shopping Bliss Delivered',
+      logo: "amazon-2.svg",
+      logoDark: "amazon-dark.svg",
+      logoSize: "50px",
+      title: "Product Push",
+      description: "Prime Shopping Bliss Delivered",
       status: {
-        variant: 'badge-success',
-        label: 'Completed'
+        variant: "badge-success",
+        label: "Completed",
       },
       statistics: [
         {
-          total: '50%',
-          description: 'Traffic Rise'
+          total: "50%",
+          description: "Traffic Rise",
         },
         {
-          total: '$34,9k',
-          description: 'Product Sales'
+          total: "$34,9k",
+          description: "Product Sales",
         },
         {
-          total: '10k',
-          description: 'Actions'
-        }
+          total: "10k",
+          description: "Actions",
+        },
       ],
       progress: {
-        variant: 'progress-success',
-        value: 100
-      }
+        variant: "progress-success",
+        value: 100,
+      },
     },
     {
-      logo: 'mailchimp-1.svg',
-      logoSize: '50px',
-      title: 'Email Engagement',
-      description: 'Email Engagement Power Unleashed',
+      logo: "mailchimp-1.svg",
+      logoSize: "50px",
+      title: "Email Engagement",
+      description: "Email Engagement Power Unleashed",
       status: {
-        variant: '',
-        label: 'Upcoming'
+        variant: "",
+        label: "Upcoming",
       },
       statistics: [
         {
-          total: '24.3k',
-          description: 'Subscribers'
+          total: "24.3k",
+          description: "Subscribers",
         },
         {
-          total: '34.8%',
-          description: 'Traffic Rise'
+          total: "34.8%",
+          description: "Traffic Rise",
         },
         {
-          total: '$20,5k',
-          description: 'Total Sales'
-        }
+          total: "$20,5k",
+          description: "Total Sales",
+        },
       ],
       progress: {
-        variant: 'progress-gray-300',
-        value: 100
-      }
+        variant: "progress-gray-300",
+        value: 100,
+      },
     },
     {
-      logo: 'linkedin.svg',
-      logoSize: '50px',
-      title: 'Career Boost',
-      description: 'Pro Connections Empowered Globally',
+      logo: "linkedin.svg",
+      logoSize: "50px",
+      title: "Career Boost",
+      description: "Pro Connections Empowered Globally",
       status: {
-        variant: 'badge-primary',
-        label: 'Running'
+        variant: "badge-primary",
+        label: "Running",
       },
       statistics: [
         {
-          total: '9.1k',
-          description: 'Suvey Inputs'
+          total: "9.1k",
+          description: "Suvey Inputs",
         },
         {
-          total: '834',
-          description: 'Influencer Tie-ins'
+          total: "834",
+          description: "Influencer Tie-ins",
         },
         {
-          total: '70k',
-          description: 'Impressions'
-        }
+          total: "70k",
+          description: "Impressions",
+        },
       ],
       progress: {
-        variant: 'progress-primary',
-        value: 30
-      }
-    }
+        variant: "progress-primary",
+        value: 30,
+      },
+    },
   ];
 
   const renderProject = (item: ICampaignsContentItem, index: number) => {
@@ -235,26 +235,28 @@ const CampaignsContent = ({ mode }: ICampaignsContentProps) => {
   return (
     <div className="flex flex-col items-stretch gap-5 lg:gap-7.5">
       <div className="flex flex-wrap items-center gap-5 justify-between">
-        <h3 className="text-lg text-gray-900 font-semibold">{items.length} Campaigns</h3>
+        <h3 className="text-lg text-gray-900 font-semibold">
+          {items.length} Campaigns
+        </h3>
 
         <div className="flex gap-5">
           <div className="btn-tabs" data-tabs="true">
             <a
               href="#"
-              className={`btn btn-icon ${currentMode === 'card' ? 'active' : ''}`}
+              className={`btn btn-icon ${currentMode === "card" ? "active" : ""}`}
               data-tab-toggle="#campaigns_cards"
               onClick={() => {
-                setCurrentMode('cards');
+                setCurrentMode("cards");
               }}
             >
               <KeenIcon icon="category" />
             </a>
             <a
               href="#"
-              className={`btn btn-icon ${currentMode === 'list' ? 'active' : ''}`}
+              className={`btn btn-icon ${currentMode === "list" ? "active" : ""}`}
               data-tab-toggle="#campaigns_list"
               onClick={() => {
-                setCurrentMode('list');
+                setCurrentMode("list");
               }}
             >
               <KeenIcon icon="row-horizontal" />
@@ -266,7 +268,10 @@ const CampaignsContent = ({ mode }: ICampaignsContentProps) => {
         </div>
       </div>
 
-      <div id="campaigns_cards" className={currentMode === 'list' ? 'hidden' : ''}>
+      <div
+        id="campaigns_cards"
+        className={currentMode === "list" ? "hidden" : ""}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-7.5">
           {items.map((item, index) => {
             return renderProject(item, index);
@@ -280,7 +285,10 @@ const CampaignsContent = ({ mode }: ICampaignsContentProps) => {
         </div>
       </div>
 
-      <div className={currentMode === 'card' ? 'hidden' : ''} id="campaigns_list">
+      <div
+        className={currentMode === "card" ? "hidden" : ""}
+        id="campaigns_list"
+      >
         <div className="flex flex-col gap-5 lg:gap-7.5">
           {items.map((data, index) => {
             return renderItem(data, index);
@@ -301,5 +309,5 @@ export {
   CampaignsContent,
   type ICampaignsContentItem,
   type ICampaignsContentItems,
-  type ICampaignsContentProps
+  type ICampaignsContentProps,
 };

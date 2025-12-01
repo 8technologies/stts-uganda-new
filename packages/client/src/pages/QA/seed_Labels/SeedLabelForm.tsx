@@ -1,13 +1,24 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { FieldLabel } from '../seedLabs/blocks/SeedLabTest';
-import { useQuery } from '@apollo/client/react';
-import { LOAD_SEED_LABS } from '@/gql/queries';
-import { SeedLabInspection } from '../seedLabs/MySeedLabsForms';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { FieldLabel } from "../seedLabs/blocks/SeedLabTest";
+import { useQuery } from "@apollo/client/react";
+import { LOAD_SEED_LABS } from "@/gql/queries";
+import { SeedLabInspection } from "../seedLabs/MySeedLabsForms";
 
 interface SeedLabelFormProps {
   open: boolean;
@@ -16,12 +27,21 @@ interface SeedLabelFormProps {
   initialData?: any;
 }
 
-const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFormProps) => {
-  const [labTestNumber, setLabTestNumber] = useState<string>(initialData?.labTestNumber || '');
-  const [seedLabelPackage, setSeedLabelPackage] = useState<string>(initialData?.seedLabelPackage || '');
+const SeedLabelForm = ({
+  open,
+  onOpenChange,
+  onSave,
+  initialData,
+}: SeedLabelFormProps) => {
+  const [labTestNumber, setLabTestNumber] = useState<string>(
+    initialData?.labTestNumber || "",
+  );
+  const [seedLabelPackage, setSeedLabelPackage] = useState<string>(
+    initialData?.seedLabelPackage || "",
+  );
   const [quantity, setQuantity] = useState<number>(initialData?.quantity || 0);
   const [thumbnailImage, setThumbnailImage] = useState<File | null>(null);
-  const [remarks, setRemarks] = useState<string>(initialData?.remarks || '');
+  const [remarks, setRemarks] = useState<string>(initialData?.remarks || "");
   const [receipt, setReceipt] = useState<File | null>(null);
 
   const { data, loading, error, refetch } = useQuery(LOAD_SEED_LABS);
@@ -41,7 +61,10 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-[700px] h-full overflow-y-auto">
+      <SheetContent
+        side="right"
+        className="w-full sm:max-w-[700px] h-full overflow-y-auto"
+      >
         <SheetHeader>
           <SheetTitle>Create/Edit Seed Label</SheetTitle>
         </SheetHeader>
@@ -53,12 +76,14 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
                 <SelectValue placeholder="Select lab test number" />
               </SelectTrigger>
               <SelectContent>
-                {!loading && !error && allInspections.map((opt) => (
+                {!loading &&
+                  !error &&
+                  allInspections.map((opt) => (
                     <SelectItem key={opt.id} value={opt.id}>
-                    {opt.lab_test_number}
+                      {opt.lab_test_number}
                     </SelectItem>
-                ))}
-                
+                  ))}
+
                 {/* Add more options dynamically if needed */}
               </SelectContent>
             </Select>
@@ -66,7 +91,10 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
 
           <div>
             <FieldLabel required>Seed Label Package</FieldLabel>
-            <Select value={seedLabelPackage} onValueChange={setSeedLabelPackage}>
+            <Select
+              value={seedLabelPackage}
+              onValueChange={setSeedLabelPackage}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select Seed label package" />
               </SelectTrigger>
@@ -88,7 +116,8 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
               placeholder="Enter quantity in Kgs"
             />
             <p className="text-xs text-gray-500 mt-1">
-              The quantity entered shouldn't be more than the quantity you have in stock.
+              The quantity entered shouldn't be more than the quantity you have
+              in stock.
             </p>
           </div>
 
@@ -98,12 +127,14 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
           </div> */}
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Image Upload</h3>
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Image Upload
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="max-w-md">
                 <div className="flex flex-col gap-2">
                   <label className="form-label text-gray-700 font-medium">
-                    Attach Image 
+                    Attach Image
                   </label>
 
                   <label
@@ -118,35 +149,46 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
                         strokeWidth="2"
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l-4-4m4 4l4-4" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l-4-4m4 4l4-4"
+                        />
                       </svg>
-                      <span className="text-sm text-gray-500">Click to upload or drag & drop</span>
-                      <span className="text-xs text-gray-400">PNG, JPG, PDF (max 5MB)</span>
+                      <span className="text-sm text-gray-500">
+                        Click to upload or drag & drop
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        PNG, JPG, PDF (max 5MB)
+                      </span>
                     </div>
                     <input
                       id="thumbnailImage-upload"
                       type="file"
                       className="hidden"
                       accept=".png,.jpg,.jpeg,.pdf"
-                    //   onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
-                      onChange={(file) => setThumbnailImage(file.target.files?.[0] || null)} 
-              
+                      //   onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
+                      onChange={(file) =>
+                        setThumbnailImage(file.target.files?.[0] || null)
+                      }
                     />
                   </label>
 
                   {thumbnailImage && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Selected file: <span className="font-medium">{thumbnailImage.name}</span>
+                      Selected file:{" "}
+                      <span className="font-medium">{thumbnailImage.name}</span>
                     </p>
                   )}
 
-                  {thumbnailImage && thumbnailImage.type?.startsWith('image/') && (
-                    <img
-                      src={URL.createObjectURL(thumbnailImage)}
-                      alt="Receipt preview"
-                      className="mt-2 w-40 rounded-lg shadow"
-                    />
-                  )}
+                  {thumbnailImage &&
+                    thumbnailImage.type?.startsWith("image/") && (
+                      <img
+                        src={URL.createObjectURL(thumbnailImage)}
+                        alt="Receipt preview"
+                        className="mt-2 w-40 rounded-lg shadow"
+                      />
+                    )}
                 </div>
               </div>
             </div>
@@ -167,7 +209,9 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
           </div> */}
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Receipt Upload</h3>
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Receipt Upload
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="max-w-md">
                 <div className="flex flex-col gap-2">
@@ -187,29 +231,39 @@ const SeedLabelForm = ({ open, onOpenChange, onSave, initialData }: SeedLabelFor
                         strokeWidth="2"
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l-4-4m4 4l4-4" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l-4-4m4 4l4-4"
+                        />
                       </svg>
-                      <span className="text-sm text-gray-500">Click to upload or drag & drop</span>
-                      <span className="text-xs text-gray-400">PNG, JPG, PDF (max 5MB)</span>
+                      <span className="text-sm text-gray-500">
+                        Click to upload or drag & drop
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        PNG, JPG, PDF (max 5MB)
+                      </span>
                     </div>
                     <input
                       id="receipt-upload"
                       type="file"
                       className="hidden"
                       accept=".png,.jpg,.jpeg,.pdf"
-                    //   onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
-                      onChange={(file) => setReceipt(file.target.files?.[0] || null)} 
-              
+                      //   onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
+                      onChange={(file) =>
+                        setReceipt(file.target.files?.[0] || null)
+                      }
                     />
                   </label>
 
                   {receipt && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Selected file: <span className="font-medium">{receipt.name}</span>
+                      Selected file:{" "}
+                      <span className="font-medium">{receipt.name}</span>
                     </p>
                   )}
 
-                  {receipt && receipt.type?.startsWith('image/') && (
+                  {receipt && receipt.type?.startsWith("image/") && (
                     <img
                       src={URL.createObjectURL(receipt)}
                       alt="Receipt preview"

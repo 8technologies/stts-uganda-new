@@ -1,12 +1,12 @@
-import { Collaborate } from '../blogger';
-import { IStatisticsItems, Statistics, Summary } from '../creator';
-import { Tags } from '../default';
-import { Post1, Post2, Post3, Post4 } from './blocks';
+import { Collaborate } from "../blogger";
+import { IStatisticsItems, Statistics, Summary } from "../creator";
+import { Tags } from "../default";
+import { Post1, Post2, Post3, Post4 } from "./blocks";
 
 const ProfileFeedsContent = () => {
   const data: IStatisticsItems = [
-    { title: 'Connections', value: '5.3k' },
-    { title: 'Uploads', value: '28.9k' }
+    { title: "Connections", value: "5.3k" },
+    { title: "Uploads", value: "28.9k" },
   ];
 
   return (

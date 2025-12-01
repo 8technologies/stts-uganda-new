@@ -1,5 +1,5 @@
-import { CommonHexagonBadge } from '@/partials/common';
-import { ReactNode } from 'react';
+import { CommonHexagonBadge } from "@/partials/common";
+import { ReactNode } from "react";
 
 interface IProductInsightProps {
   image: ReactNode;
@@ -8,7 +8,12 @@ interface IProductInsightProps {
   number: number;
 }
 
-const ProductInsight = ({ image, title, description, number }: IProductInsightProps) => {
+const ProductInsight = ({
+  image,
+  title,
+  description,
+  number,
+}: IProductInsightProps) => {
   return (
     <div className="card p-5">
       <div className="flex flex-wrap items-center justify-between gap-5">
@@ -20,7 +25,9 @@ const ProductInsight = ({ image, title, description, number }: IProductInsightPr
             badge={image}
           />
           <div className="flex flex-col gap-0.5">
-            <span className="leading-none font-medium text-base text-gray-900">{title}</span>
+            <span className="leading-none font-medium text-base text-gray-900">
+              {title}
+            </span>
             <span className="text-2sm text-gray-700">{description}</span>
           </div>
         </div>

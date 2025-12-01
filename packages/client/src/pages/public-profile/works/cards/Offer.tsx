@@ -1,10 +1,10 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonHexagonBadge } from '@/partials/common';
+import { CommonHexagonBadge } from "@/partials/common";
 
 interface IOfferRowProps {
   path: string;
@@ -20,10 +20,10 @@ const Offer = ({ path, size, iconSize, title, subTitle }: IOfferRowProps) => {
       <style>
         {`
           .offer-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-4.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-4.png")}');
           }
           .dark .offer-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-4-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-4-dark.png")}');
           }
         `}
       </style>
@@ -37,7 +37,12 @@ const Offer = ({ path, size, iconSize, title, subTitle }: IOfferRowProps) => {
             <div className="flex justify-center pt-5">
               <CommonHexagonBadge
                 size={size}
-                badge={<KeenIcon icon="rocket" className={`${iconSize} text-brand`} />}
+                badge={
+                  <KeenIcon
+                    icon="rocket"
+                    className={`${iconSize} text-brand`}
+                  />
+                }
                 stroke="stroke-brand-clarity"
                 fill="fill-light"
               />
@@ -47,7 +52,9 @@ const Offer = ({ path, size, iconSize, title, subTitle }: IOfferRowProps) => {
               <span className="text-1.5xl font-semibold text-gray-900 hover:text-primary-active mb-px">
                 {title}
               </span>
-              <span className="text-sm font-medium text-gray-600">{subTitle}</span>
+              <span className="text-sm font-medium text-gray-600">
+                {subTitle}
+              </span>
             </div>
           </div>
         </div>

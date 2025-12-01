@@ -1,2 +1,2 @@
-export * from './ErrorsLayout';
-export * from './ErrorsLayoutConfig';
+export * from "./ErrorsLayout";
+export * from "./ErrorsLayoutConfig";

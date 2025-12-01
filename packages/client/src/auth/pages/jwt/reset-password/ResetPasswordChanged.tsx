@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { toAbsoluteUrl } from '@/utils';
-import { useLayout } from '@/providers';
+import { Link } from "react-router-dom";
+import { toAbsoluteUrl } from "@/utils";
+import { useLayout } from "@/providers";
 
 const ResetPasswordChanged = () => {
   const { currentLayout } = useLayout();
@@ -10,12 +10,12 @@ const ResetPasswordChanged = () => {
       <div className="card-body p-10">
         <div className="flex justify-center mb-5">
           <img
-            src={toAbsoluteUrl('/media/illustrations/32.svg')}
+            src={toAbsoluteUrl("/media/illustrations/32.svg")}
             className="dark:hidden max-h-[180px]"
             alt=""
           />
           <img
-            src={toAbsoluteUrl('/media/illustrations/32-dark.svg')}
+            src={toAbsoluteUrl("/media/illustrations/32-dark.svg")}
             className="light:hidden max-h-[180px]"
             alt=""
           />
@@ -32,7 +32,11 @@ const ResetPasswordChanged = () => {
 
         <div className="flex justify-center">
           <Link
-            to={currentLayout?.name === 'auth-branded' ? '/auth/login' : '/auth/classic/login'}
+            to={
+              currentLayout?.name === "auth-branded"
+                ? "/auth/login"
+                : "/auth/classic/login"
+            }
             className="btn btn-primary"
           >
             Sign in

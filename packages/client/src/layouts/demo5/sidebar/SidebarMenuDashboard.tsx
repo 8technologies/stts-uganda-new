@@ -6,9 +6,9 @@ import {
   MenuToggle,
   KeenIcon,
   MenuSub,
-  MenuIcon
-} from '@/components';
-import { useLanguage } from '@/i18n';
+  MenuIcon,
+} from "@/components";
+import { useLanguage } from "@/i18n";
 
 interface IDashboardDropdownItem {
   title: string;
@@ -35,95 +35,95 @@ const SidebarMenuDashboard = () => {
   const { isRTL } = useLanguage();
   const dropdownItems: IDashboardDropdownItems = [
     {
-      title: 'Admin API',
-      path: '',
-      icon: 'calendar',
-      active: true
+      title: "Admin API",
+      path: "",
+      icon: "calendar",
+      active: true,
     },
     {
-      title: 'Client API',
-      path: '',
-      icon: 'setting'
-    }
+      title: "Client API",
+      path: "",
+      icon: "setting",
+    },
   ];
 
   const menuItems: IDashboardMenuItems = [
     {
-      title: 'Configuration',
+      title: "Configuration",
       children: [
         {
-          title: 'API Setup',
-          icon: 'setting',
-          path: ''
+          title: "API Setup",
+          icon: "setting",
+          path: "",
         },
         {
-          title: 'Team Settings',
-          icon: 'users',
-          path: '',
-          active: true
+          title: "Team Settings",
+          icon: "users",
+          path: "",
+          active: true,
         },
         {
-          title: 'Authentication',
-          icon: 'password-check',
-          path: ''
+          title: "Authentication",
+          icon: "password-check",
+          path: "",
         },
         {
-          title: 'Endpoints Configs',
-          icon: 'technology-4',
-          path: ''
+          title: "Endpoints Configs",
+          icon: "technology-4",
+          path: "",
         },
         {
-          title: 'Rate Limiting',
-          icon: 'chart-line-star',
-          path: ''
-        }
-      ]
+          title: "Rate Limiting",
+          icon: "chart-line-star",
+          path: "",
+        },
+      ],
     },
     {
-      title: 'Security',
+      title: "Security",
       children: [
         {
-          title: 'Data Encryption',
-          icon: 'chart-line-star',
-          path: ''
+          title: "Data Encryption",
+          icon: "chart-line-star",
+          path: "",
         },
         {
-          title: 'Rate Limiting',
-          icon: 'percentage',
-          path: ''
+          title: "Rate Limiting",
+          icon: "percentage",
+          path: "",
         },
         {
-          title: 'Access Control',
-          icon: 'safe-home',
-          path: ''
+          title: "Access Control",
+          icon: "safe-home",
+          path: "",
         },
         {
-          title: 'Incident Response',
-          icon: 'status',
-          path: ''
-        }
-      ]
+          title: "Incident Response",
+          icon: "status",
+          path: "",
+        },
+      ],
     },
     {
-      title: 'Analytics',
+      title: "Analytics",
       children: [
         {
-          title: 'Fetching Data',
-          icon: 'calendar-8',
-          path: ''
+          title: "Fetching Data",
+          icon: "calendar-8",
+          path: "",
         },
         {
-          title: 'Custom Reports',
-          icon: 'office-bag',
-          path: ''
+          title: "Custom Reports",
+          icon: "office-bag",
+          path: "",
         },
         {
-          title: 'Real Time Analytics',
-          icon: 'safe-home',
-          path: ''
-        }
-      ]
-    }
+          title: "Real Time Analytics",
+          icon: "safe-home",
+          path: "",
+        },
+      ],
+    },
   ];
 
   return (
@@ -134,15 +134,15 @@ const SidebarMenuDashboard = () => {
           toggle="dropdown"
           trigger="hover"
           dropdownProps={{
-            placement: isRTL() ? 'bottom-start' : 'bottom-end',
+            placement: isRTL() ? "bottom-start" : "bottom-end",
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: {
-                  offset: [0, 0] // [skid, distance]
-                }
-              }
-            ]
+                  offset: [0, 0], // [skid, distance]
+                },
+              },
+            ],
           }}
         >
           <MenuToggle className="w-full btn btn-light btn-sm justify-between flex-nowrap">
@@ -157,7 +157,7 @@ const SidebarMenuDashboard = () => {
 
           <MenuSub className="menu-default w-[182px] py-2">
             {dropdownItems.map((item, index) => (
-              <MenuItem key={index} className={item.active ? 'active' : ''}>
+              <MenuItem key={index} className={item.active ? "active" : ""}>
                 <MenuLink path={item.path}>
                   <MenuIcon>
                     <KeenIcon icon={item.icon} />
@@ -174,11 +174,13 @@ const SidebarMenuDashboard = () => {
         {menuItems.map((heading, index) => (
           <div key={index} className="flex flex-col gap-px">
             <MenuItem>
-              <div className="px-2 text-xs font-medium text-gray-600">{heading.title}</div>
+              <div className="px-2 text-xs font-medium text-gray-600">
+                {heading.title}
+              </div>
             </MenuItem>
 
             {heading.children.map((item, index) => (
-              <MenuItem key={index} className={item.active ? 'active' : ''}>
+              <MenuItem key={index} className={item.active ? "active" : ""}>
                 <MenuLink
                   path={item.path}
                   className="py-2 px-2.5 gap-2 rounded-md border border-transparent menu-item-active:border-gray-200 menu-item-active:bg-light menu-link-hover:bg-light menu-link-hover:border-gray-200"

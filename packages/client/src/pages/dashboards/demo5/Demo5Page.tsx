@@ -1,5 +1,5 @@
-import { Container } from '@/components/container';
-import { Demo5Content } from '.';
+import { Container } from "@/components/container";
+import { Demo5Content } from ".";
 
 const Demo5Page = () => {
   return (

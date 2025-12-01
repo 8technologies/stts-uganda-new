@@ -1,17 +1,17 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { Container } from '@/components/container';
+import { Container } from "@/components/container";
 import {
   Toolbar,
   ToolbarActions,
   ToolbarDescription,
   ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
-import { PageNavbar } from '@/pages/account';
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { PageNavbar } from "@/pages/account";
 
-import { AccountEnterpriseContent } from '.';
-import { useLayout } from '@/providers';
+import { AccountEnterpriseContent } from ".";
+import { useLayout } from "@/providers";
 
 const AccountEnterprisePage = () => {
   const { currentLayout } = useLayout();
@@ -20,7 +20,7 @@ const AccountEnterprisePage = () => {
     <Fragment>
       <PageNavbar />
 
-      {currentLayout?.name === 'demo1-layout' && (
+      {currentLayout?.name === "demo1-layout" && (
         <Container>
           <Toolbar>
             <ToolbarHeading>

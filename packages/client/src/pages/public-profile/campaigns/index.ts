@@ -1,2 +1,2 @@
-export * from './card/CampaignsCardPage';
-export * from './list/CampaignsListPage';
+export * from "./card/CampaignsCardPage";
+export * from "./list/CampaignsListPage";

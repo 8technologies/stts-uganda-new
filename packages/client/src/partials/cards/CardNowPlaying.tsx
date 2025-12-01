@@ -1,5 +1,5 @@
-import { CommonAvatars } from '@/partials/common';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { CommonAvatars } from "@/partials/common";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface INowPlayingItem {
   number: string;
@@ -30,7 +30,7 @@ const CardNowPlaying = ({
   date,
   statistics,
   team,
-  label
+  label,
 }: INowPlayingProps) => {
   const renderItem = (statistic: INowPlayingItem, index: number) => {
     return (
@@ -38,7 +38,9 @@ const CardNowPlaying = ({
         <span className="text-gray-900 text-2sm leading-none font-semibold">
           {statistic.number}%
         </span>
-        <span className="text-gray-600 text-2xs font-medium">{statistic.description}</span>
+        <span className="text-gray-600 text-2xs font-medium">
+          {statistic.description}
+        </span>
       </div>
     );
   };
@@ -81,11 +83,18 @@ const CardNowPlaying = ({
 
         <div className="flex items-center place-content-between gap-2">
           <CommonAvatars group={team.group} more={team.more} />
-          <span className="badge badge-xs badge-warning badge-outline">Rank {label}</span>
+          <span className="badge badge-xs badge-warning badge-outline">
+            Rank {label}
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-export { CardNowPlaying, type INowPlayingItem, type INowPlayingItems, type INowPlayingProps };
+export {
+  CardNowPlaying,
+  type INowPlayingItem,
+  type INowPlayingItems,
+  type INowPlayingProps,
+};

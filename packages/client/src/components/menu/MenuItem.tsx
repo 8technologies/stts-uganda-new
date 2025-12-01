@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ClickAwayListener, Popper } from '@mui/base';
-import clsx from 'clsx';
+import { ClickAwayListener, Popper } from "@mui/base";
+import clsx from "clsx";
 import React, {
   Children,
   cloneElement,
@@ -12,10 +12,10 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
-  useState
-} from 'react';
-import useResponsiveProp from '@/hooks/useResponsiveProp';
-import { useMatchPath } from '../../hooks/useMatchPath';
+  useState,
+} from "react";
+import useResponsiveProp from "@/hooks/useResponsiveProp";
+import { useMatchPath } from "../../hooks/useMatchPath";
 import {
   IMenuItemRef,
   IMenuItemProps,
@@ -30,10 +30,10 @@ import {
   TMenuTrigger,
   IMenuToggleProps,
   MenuToggle,
-  useMenu
-} from './';
-import { usePathname } from '@/providers';
-import { getMenuLinkPath, hasMenuActiveChild } from './utils';
+  useMenu,
+} from "./";
+import { usePathname } from "@/providers";
+import { getMenuLinkPath, hasMenuActiveChild } from "./utils";
 
 const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
   function MenuItem(props, ref) {
@@ -53,7 +53,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
       children,
       open = false,
       parentId,
-      id
+      id,
     } = props;
 
     const { ...containerProps } = ContainerPropsProp;
@@ -68,10 +68,10 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
       multipleExpand,
       setOpenAccordion,
       isOpenAccordion,
-      dropdownTimeout
+      dropdownTimeout,
     } = useMenu();
-    const finalParentId = parentId !== undefined ? parentId : '';
-    const finalId = id !== undefined ? id : '';
+    const finalParentId = parentId !== undefined ? parentId : "";
+    const finalId = id !== undefined ? id : "";
 
     const menuContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -82,9 +82,9 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
 
     const { match } = useMatchPath(path);
 
-    const propToggle: TMenuToggle = useResponsiveProp(toggle, 'accordion');
+    const propToggle: TMenuToggle = useResponsiveProp(toggle, "accordion");
 
-    const propTrigger: TMenuTrigger = useResponsiveProp(trigger, 'click');
+    const propTrigger: TMenuTrigger = useResponsiveProp(trigger, "click");
 
     const propDropdownProps = useResponsiveProp(dropdownProps);
 
@@ -101,7 +101,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
     const [accordionEnter, setAccordionEnter] = useState(open);
 
     const hasSub = Children.toArray(children).some(
-      (child) => isValidElement(child) && child.type === MenuSub
+      (child) => isValidElement(child) && child.type === MenuSub,
     );
 
     const handleHide = () => {
@@ -109,8 +109,8 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         setShow(false);
       }
 
-      if (hasSub && propToggle === 'accordion' && multipleExpand === false) {
-        setOpenAccordion(finalParentId, '');
+      if (hasSub && propToggle === "accordion" && multipleExpand === false) {
+        setOpenAccordion(finalParentId, "");
       }
 
       if (handleParentHide) {
@@ -123,7 +123,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         setShow(true);
       }
 
-      if (hasSub && propToggle === 'accordion' && multipleExpand === false) {
+      if (hasSub && propToggle === "accordion" && multipleExpand === false) {
         setOpenAccordion(finalParentId, finalId);
       }
     };
@@ -137,7 +137,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         hideTimeoutRef.current = null;
       }
 
-      if (propTrigger === 'hover') {
+      if (propTrigger === "hover") {
         setShow(true);
 
         if (containerProps.onMouseEnter) {
@@ -149,7 +149,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
     const handleMouseLeave = (e: MouseEvent<HTMLElement>) => {
       if (isMenuDisabled) return;
 
-      if (propTrigger === 'hover') {
+      if (propTrigger === "hover") {
         // Set a timeout to hide the dropdown after `dropdownTimeout` delay
         hideTimeoutRef.current = setTimeout(() => {
           setShow(false);
@@ -169,13 +169,13 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
       if (disabled) return;
 
       if (show) {
-        if (propToggle === 'accordion') {
+        if (propToggle === "accordion") {
           setAccordionEnter(true);
         }
 
         handleHide();
       } else {
-        if (propToggle === 'accordion') {
+        if (propToggle === "accordion") {
           setAccordionEnter(true);
         }
 
@@ -205,7 +205,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         hasItemSub: hasSub,
         tabIndex,
         handleToggle,
-        handleClick
+        handleClick,
       };
 
       // Return the child with modified props
@@ -217,7 +217,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
       const modifiedProps: IMenuToggleProps = {
         hasItemSub: hasSub,
         tabIndex,
-        handleToggle
+        handleToggle,
       };
 
       // Return the child with modified props
@@ -230,7 +230,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         hasItemSub: hasSub,
         tabIndex,
         handleToggle,
-        handleClick
+        handleClick,
       };
 
       // Return the child with modified props
@@ -248,7 +248,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         toggle: propToggle,
         handleParentHide: handleHide,
         tabIndex,
-        menuItemRef: ref
+        menuItemRef: ref,
       };
 
       const modofiedChild = cloneElement(child, modifiedProps);
@@ -257,22 +257,24 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         <Popper
           style={{
             zIndex: dropdownZIndex,
-            pointerEvents: trigger === 'click' ? 'auto' : 'none'
+            pointerEvents: trigger === "click" ? "auto" : "none",
           }}
           {...propDropdownProps}
           anchorEl={show ? menuItemRef.current : null}
           open={show}
           autoFocus={false}
-          className={clsx(child.props.rootClassName && child.props.rootClassName)}
+          className={clsx(
+            child.props.rootClassName && child.props.rootClassName,
+          )}
         >
           <ClickAwayListener onClickAway={handleHide}>
             <div
               className={clsx(
-                'menu-container',
-                child.props.baseClassName && child.props.baseClassName
+                "menu-container",
+                child.props.baseClassName && child.props.baseClassName,
               )}
               ref={menuContainerRef}
-              style={{ pointerEvents: 'auto' }}
+              style={{ pointerEvents: "auto" }}
             >
               {modofiedChild}
             </div>
@@ -300,7 +302,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         toggle: propToggle,
         handleClick,
         handleEntered,
-        handleExited
+        handleExited,
       };
 
       return cloneElement(child, modifiedProps);
@@ -317,9 +319,9 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
             return renderLabel(child);
           } else if (child.type === MenuHeading) {
             return renderHeading(child);
-          } else if (child.type === MenuSub && propToggle === 'dropdown') {
+          } else if (child.type === MenuSub && propToggle === "dropdown") {
             return renderSubDropdown(child);
-          } else if (child.type === MenuSub && propToggle === 'accordion') {
+          } else if (child.type === MenuSub && propToggle === "accordion") {
             return renderSubAccordion(child);
           }
         }
@@ -342,9 +344,9 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         },
         isOpen: () => {
           return show;
-        }
+        },
       }),
-      [show]
+      [show],
     );
 
     useEffect(() => {
@@ -360,7 +362,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
     }, [show]);
 
     useEffect(() => {
-      if (propToggle === 'accordion' && multipleExpand === false) {
+      if (propToggle === "accordion" && multipleExpand === false) {
         setShow(accordionShow);
       }
     }, [accordionShow]);
@@ -368,13 +370,13 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
     useEffect(() => {
       if (highlight) {
         if (hasMenuActiveChild(pathname, children)) {
-          if (propToggle === 'accordion') {
+          if (propToggle === "accordion") {
             setShow(true);
           }
 
           setHere(true);
         } else {
-          if (propToggle === 'accordion') {
+          if (propToggle === "accordion") {
             setShow(false);
           }
 
@@ -382,7 +384,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         }
       }
 
-      if (prevPathname !== pathname && hasSub && propToggle === 'dropdown') {
+      if (prevPathname !== pathname && hasSub && propToggle === "dropdown") {
         handleHide();
       }
     }, [pathname]);
@@ -401,24 +403,24 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
         {...containerProps}
         ref={menuItemRef}
         tabIndex={tabIndex}
-        {...(propToggle === 'dropdown' && {
+        {...(propToggle === "dropdown" && {
           onMouseEnter: handleMouseEnter,
-          onMouseLeave: handleMouseLeave
+          onMouseLeave: handleMouseLeave,
         })}
         className={clsx(
-          'menu-item',
-          propToggle === 'dropdown' && 'menu-item-dropdown',
+          "menu-item",
+          propToggle === "dropdown" && "menu-item-dropdown",
           className && className,
-          active && 'active',
-          show && 'show',
-          here && 'here',
-          transitioning && 'transitioning'
+          active && "active",
+          show && "show",
+          here && "here",
+          transitioning && "transitioning",
         )}
       >
         {renderChildren()}
       </div>
     );
-  }
+  },
 );
 
 const MenuItem = memo(MenuItemComponent);

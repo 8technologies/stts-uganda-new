@@ -1,2 +1,2 @@
-export * from './IPAddresses';
-export * from './IPAddressesData';
+export * from "./IPAddresses";
+export * from "./IPAddressesData";

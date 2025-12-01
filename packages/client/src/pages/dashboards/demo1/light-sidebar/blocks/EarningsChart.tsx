@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
-import ApexChart from 'react-apexcharts';
-import { ApexOptions } from 'apexcharts';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import ApexChart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
+import axios from "axios";
 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 
 const fetchEarningsChart = () => {
   return axios.get<number[]>(`${import.meta.env.VITE_APP_API_URL}/sales/index`);
@@ -18,18 +18,18 @@ const fetchEarningsChart = () => {
 const EarningsChart = () => {
   const [charData, setCharData] = useState<number[]>();
   const categories: string[] = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
 
   useEffect(() => {
@@ -39,76 +39,76 @@ const EarningsChart = () => {
   const options: ApexOptions = {
     series: [
       {
-        name: 'series1',
-        data: charData ?? []
-      }
+        name: "series1",
+        data: charData ?? [],
+      },
     ],
     chart: {
       height: 250,
-      type: 'area',
+      type: "area",
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     legend: {
-      show: false
+      show: false,
     },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
       show: true,
       width: 3,
-      colors: ['var(--tw-primary)']
+      colors: ["var(--tw-primary)"],
     },
     xaxis: {
       categories: categories,
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
         style: {
-          colors: 'var(--tw-gray-500)',
-          fontSize: '12px'
-        }
+          colors: "var(--tw-gray-500)",
+          fontSize: "12px",
+        },
       },
       crosshairs: {
-        position: 'front',
+        position: "front",
         stroke: {
-          color: 'var(--tw-primary)',
+          color: "var(--tw-primary)",
           width: 1,
-          dashArray: 3
-        }
+          dashArray: 3,
+        },
       },
       tooltip: {
         enabled: false,
         formatter: undefined,
         offsetY: 0,
         style: {
-          fontSize: '12px'
-        }
-      }
+          fontSize: "12px",
+        },
+      },
     },
     yaxis: {
       min: 0,
       max: 100,
       tickAmount: 5,
       axisTicks: {
-        show: false
+        show: false,
       },
       labels: {
         style: {
-          colors: 'var(--tw-gray-500)',
-          fontSize: '12px'
+          colors: "var(--tw-gray-500)",
+          fontSize: "12px",
         },
         formatter: (defaultValue) => {
           return `$${defaultValue}K`;
-        }
-      }
+        },
+      },
     },
     tooltip: {
       enabled: true,
@@ -117,9 +117,9 @@ const EarningsChart = () => {
         const month = w.globals.seriesX[seriesIndex][dataPointIndex];
         const monthName = categories[month];
 
-        const formatter = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD'
+        const formatter = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
         });
 
         const formattedNumber = formatter.format(number);
@@ -133,18 +133,18 @@ const EarningsChart = () => {
             </div>
           </div>
           `;
-      }
+      },
     },
     markers: {
       size: 0,
-      colors: 'var(--tw-primary-light)',
-      strokeColors: 'var(--tw-primary)',
+      colors: "var(--tw-primary-light)",
+      strokeColors: "var(--tw-primary)",
       strokeWidth: 4,
       strokeOpacity: 1,
       strokeDashArray: 0,
       fillOpacity: 1,
       discrete: [],
-      shape: 'circle',
+      shape: "circle",
       offsetX: 0,
       offsetY: 0,
       onClick: undefined,
@@ -152,29 +152,29 @@ const EarningsChart = () => {
       showNullDataPoints: true,
       hover: {
         size: 8,
-        sizeOffset: 0
-      }
+        sizeOffset: 0,
+      },
     },
     fill: {
       gradient: {
         opacityFrom: 0.25,
-        opacityTo: 0
-      }
+        opacityTo: 0,
+      },
     },
     grid: {
-      borderColor: 'var(--tw-gray-200)',
+      borderColor: "var(--tw-gray-200)",
       strokeDashArray: 5,
       yaxis: {
         lines: {
-          show: true
-        }
+          show: true,
+        },
       },
       xaxis: {
         lines: {
-          show: false
-        }
-      }
-    }
+          show: false,
+        },
+      },
+    },
   };
 
   return (
@@ -184,7 +184,13 @@ const EarningsChart = () => {
 
         <div className="flex items-center gap-5">
           <label className="switch switch-sm">
-            <input name="check" type="checkbox" value="1" className="order-2" readOnly />
+            <input
+              name="check"
+              type="checkbox"
+              value="1"
+              className="order-2"
+              readOnly
+            />
             <span className="switch-label order-1">Referrals only</span>
           </label>
 

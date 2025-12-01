@@ -1,12 +1,12 @@
-import { ChangeEvent, Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import { useAuthContext } from '@/auth';
-import { useLanguage } from '@/i18n';
-import { toAbsoluteUrl } from '@/utils';
-import { DropdownUserLanguages } from './DropdownUserLanguages';
-import { useSettings } from '@/providers/SettingsProvider';
-import { DefaultTooltip, KeenIcon } from '@/components';
+import { ChangeEvent, Fragment } from "react";
+import { Link } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
+import { useAuthContext } from "@/auth";
+import { useLanguage } from "@/i18n";
+import { toAbsoluteUrl } from "@/utils";
+import { DropdownUserLanguages } from "./DropdownUserLanguages";
+import { useSettings } from "@/providers/SettingsProvider";
+import { DefaultTooltip, KeenIcon } from "@/components";
 import {
   MenuItem,
   MenuLink,
@@ -14,9 +14,9 @@ import {
   MenuTitle,
   MenuSeparator,
   MenuArrow,
-  MenuIcon
-} from '@/components/menu';
-import { URL_2 } from '@/config/urls';
+  MenuIcon,
+} from "@/components/menu";
+import { URL_2 } from "@/config/urls";
 
 interface IDropdownUserProps {
   menuItemRef: any;
@@ -28,10 +28,10 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
   const { isRTL } = useLanguage();
 
   const handleThemeMode = (event: ChangeEvent<HTMLInputElement>) => {
-    const newThemeMode = event.target.checked ? 'dark' : 'light';
+    const newThemeMode = event.target.checked ? "dark" : "light";
 
     storeSettings({
-      themeMode: newThemeMode
+      themeMode: newThemeMode,
     });
   };
 
@@ -45,7 +45,7 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
             src={
               currentUser?.image
                 ? `${URL_2}/imgs/${currentUser?.image}`
-                : toAbsoluteUrl('/media/avatars/blank.png')
+                : toAbsoluteUrl("/media/avatars/blank.png")
             }
             alt=""
           />
@@ -98,15 +98,15 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
             toggle="dropdown"
             trigger="hover"
             dropdownProps={{
-              placement: isRTL() ? 'left-start' : 'right-start',
+              placement: isRTL() ? "left-start" : "right-start",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [50, 0] : [-50, 0] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [50, 0] : [-50, 0], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuLink>
@@ -117,7 +117,10 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
                 <FormattedMessage id="USER.MENU.MY_ACCOUNT" />
               </MenuTitle>
               <MenuArrow>
-                <KeenIcon icon="right" className="text-3xs rtl:transform rtl:rotate-180" />
+                <KeenIcon
+                  icon="right"
+                  className="text-3xs rtl:transform rtl:rotate-180"
+                />
               </MenuArrow>
             </MenuLink>
             <MenuSub className="menu-default light:border-gray-300 w-[200px]] md:w-[220px]">
@@ -150,11 +153,16 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
                     <FormattedMessage id="USER.MENU.BILLING" />
                   </MenuTitle>
                   <DefaultTooltip
-                    title={<FormattedMessage id="USER.MENU.PAYMENT_&_SUBSCRIPTION_INFO" />}
+                    title={
+                      <FormattedMessage id="USER.MENU.PAYMENT_&_SUBSCRIPTION_INFO" />
+                    }
                     placement="top"
                     className="max-w-48"
                   >
-                    <KeenIcon icon="information-2" className="text-gray-500 text-md" />
+                    <KeenIcon
+                      icon="information-2"
+                      className="text-gray-500 text-md"
+                    />
                   </DefaultTooltip>
                 </MenuLink>
               </MenuItem>
@@ -198,7 +206,13 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
                     <FormattedMessage id="USER.MENU.NOTIFICATIONS" />
                   </MenuTitle>
                   <label className="switch switch-sm">
-                    <input name="check" type="checkbox" checked onChange={() => {}} value="1" />
+                    <input
+                      name="check"
+                      type="checkbox"
+                      checked
+                      onChange={() => {}}
+                      value="1"
+                    />
                   </label>
                 </MenuLink>
               </MenuItem>
@@ -236,7 +250,7 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
               <input
                 name="theme"
                 type="checkbox"
-                checked={settings.themeMode === 'dark'}
+                checked={settings.themeMode === "dark"}
                 onChange={handleThemeMode}
                 value="1"
               />

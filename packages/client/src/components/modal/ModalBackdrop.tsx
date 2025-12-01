@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import clsx from 'clsx';
-import { forwardRef } from 'react';
+import clsx from "clsx";
+import { forwardRef } from "react";
 
 interface IModalBackdropProps {
   className?: string;
@@ -16,12 +16,15 @@ const ModalBackdrop = forwardRef<HTMLDivElement, IModalBackdropProps>(
     return (
       <div
         ref={ref}
-        className={clsx('modal-backdrop transition-all duration-300 -z-1', className && className)}
+        className={clsx(
+          "modal-backdrop transition-all duration-300 -z-1",
+          className && className,
+        )}
         aria-hidden="true"
         {...other}
       />
     );
-  }
+  },
 );
 
 export { ModalBackdrop, type IModalBackdropProps };

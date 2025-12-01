@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
@@ -398,19 +398,19 @@ const APPROVE_PERMIT = gql`
 
 const UPLOAD_PLANTING_RETURNS = gql`
   mutation CreatePlantingReturnUpload($input: PlantingReturnUploadInput!) {
-  createPlantingReturnUpload(input: $input) {
-    success
-    message
-    record {
-      id
-      sr8Number
-      applicantName
-      areaHa
-      status
-      createdAt
+    createPlantingReturnUpload(input: $input) {
+      success
+      message
+      record {
+        id
+        sr8Number
+        applicantName
+        areaHa
+        status
+        createdAt
+      }
     }
   }
-}
 `;
 
 //----------------------------------------------------------
@@ -438,7 +438,12 @@ const UPDATE_PLANTING_RETURN = gql`
     updatePlantingReturn(id: $id, input: $input) {
       success
       message
-      record { id sr8Number status updatedAt }
+      record {
+        id
+        sr8Number
+        status
+        updatedAt
+      }
     }
   }
 `;
@@ -453,7 +458,9 @@ const DELETE_PLANTING_RETURN = gql`
 `;
 
 const ASSIGN_PLANTING_RETURN_INSPECTOR = gql`
-  mutation AssignPlantingReturnInspector($input: AssignPlantingReturnInspectorInput!) {
+  mutation AssignPlantingReturnInspector(
+    $input: AssignPlantingReturnInspectorInput!
+  ) {
     assignPlantingReturnInspector(input: $input) {
       success
       message
@@ -492,21 +499,21 @@ const HALT_PLANTING_RETURN = gql`
 
 const CREATE_CROP_DECLARATION = gql`
   mutation SaveCropDeclaration($payload: CropDeclarationInput!) {
-  saveCropDeclaration(payload: $payload) {
-    success
-    message
-    data {
-      id
-      application_id
-      source_of_seed
-      user_id
-      field_size
-      seed_rate
-      amount
-      receipt_id
+    saveCropDeclaration(payload: $payload) {
+      success
+      message
+      data {
+        id
+        application_id
+        source_of_seed
+        user_id
+        field_size
+        seed_rate
+        amount
+        receipt_id
+      }
     }
   }
-}
 `;
 
 const DELETE_CROP_DECLARATION = gql`
@@ -519,16 +526,20 @@ const DELETE_CROP_DECLARATION = gql`
 `;
 
 const ASSIGN_CROP_DECLARATION_INSPECTOR = gql`
-  mutation AssignCropDeclarationInspector($input: AssignCropDeclarationInspectorInput!) {
-  assignCropDeclarationInspector(input: $input) {
-    success
-    message
+  mutation AssignCropDeclarationInspector(
+    $input: AssignCropDeclarationInspectorInput!
+  ) {
+    assignCropDeclarationInspector(input: $input) {
+      success
+      message
+    }
   }
-}
 `;
 
-const INITIALIZE_QDS_INSPECTION  = gql`
-  mutation InitializeCropDecalrationInspection($input: InitializeCropDecalrationInspectionInput!) {
+const INITIALIZE_QDS_INSPECTION = gql`
+  mutation InitializeCropDecalrationInspection(
+    $input: InitializeCropDecalrationInspectionInput!
+  ) {
     initializeCropDecalrationInspection(input: $input) {
       success
       message
@@ -537,7 +548,9 @@ const INITIALIZE_QDS_INSPECTION  = gql`
 `;
 
 const SUBMIT_QDS_INSPECTION_STAGE = gql`
-  mutation SubmitCropDeclarationInspectionStage($input: SubmitCropDeclarationInspectionStageInput!) {
+  mutation SubmitCropDeclarationInspectionStage(
+    $input: SubmitCropDeclarationInspectionStageInput!
+  ) {
     submitCropDeclarationInspectionStage(input: $input) {
       success
       message
@@ -573,7 +586,9 @@ const CREATE_STOCKEXAMINATION = gql`
 `;
 
 const SUBMIT_STOCK_EXAMINATION_INSPECTION = gql`
-  mutation SubmitStockExaminationInspection($input: StockExaminationInspectionInput!) {
+  mutation SubmitStockExaminationInspection(
+    $input: StockExaminationInspectionInput!
+  ) {
     submitStockExaminationInspection(input: $input) {
       success
       message
@@ -581,7 +596,7 @@ const SUBMIT_STOCK_EXAMINATION_INSPECTION = gql`
   }
 `;
 
-const ASSIGN_STOCK_EXAMINATION_INSPECTOR = gql `
+const ASSIGN_STOCK_EXAMINATION_INSPECTOR = gql`
   mutation AssignStockExaminationInspector($input: AssignInspectorInput!) {
     assignStockExaminationInspector(input: $input) {
       success
@@ -590,29 +605,29 @@ const ASSIGN_STOCK_EXAMINATION_INSPECTOR = gql `
   }
 `;
 
-//----------------------------------------------------------  
+//----------------------------------------------------------
 
 const SAVE_SEED_LAB_REQUEST = gql`
   mutation SaveSeedLabRequest($input: SeedLabInput!) {
-  saveSeedLabRequest(input: $input) {
-    success
-    message
-    data {
-      id
-      user_id
-      variety_id
-      stock_examination_id
-      collection_date
-      receipt_id
-      applicant_remark
-      inspector_id
-      status
-      inspector_report
-      deleted
-      created_at
+    saveSeedLabRequest(input: $input) {
+      success
+      message
+      data {
+        id
+        user_id
+        variety_id
+        stock_examination_id
+        collection_date
+        receipt_id
+        applicant_remark
+        inspector_id
+        status
+        inspector_report
+        deleted
+        created_at
+      }
     }
   }
-}
 `;
 
 const ASSIGN_LAB_INSPECTOR = gql`
@@ -653,36 +668,36 @@ const SUBMIT_LAB_TEST = gql`
 
 const CREATE_SEED_LABEL = gql`
   mutation SaveSeedLabelRequest($input: SeedLabelInput!) {
-  saveSeedLabelRequest(input: $input) {
-    success
-    message
-    data {
-      id
-      user_id
-      seed_lab_id
-      crop_variety_id
-      CropVariety {
+    saveSeedLabelRequest(input: $input) {
+      success
+      message
+      data {
         id
-        name
-        cropId
+        user_id
+        seed_lab_id
+        crop_variety_id
+        CropVariety {
+          id
+          name
+          cropId
+        }
+        seed_label_package
+        quantity
+        available_stock
+        applicant_remark
+        status
+        status_comment
+        receipt_id
+        deleted
+        created_at
+        createdBy {
+          id
+          username
+        }
+        image_id
       }
-      seed_label_package
-      quantity
-      available_stock
-      applicant_remark
-      status
-      status_comment
-      receipt_id
-      deleted
-      created_at
-      createdBy {
-        id
-        username
-      }
-      image_id
     }
   }
-}
 `;
 
 const DELETE_SEED_LABEL = gql`
@@ -770,12 +785,13 @@ export {
   DELETE_SEED_LABEL,
   APPROVE_SEED_LABEL,
   PRINT_SEED_LABEL,
-
 };
 
 // ---- Plant Inspection (SR10) placeholder mutations ----
 export const INITIALIZE_PLANTING_INSPECTION = gql`
-  mutation InitializePlantingReturnInspection($input: InitializePlantingReturnInspectionInput!) {
+  mutation InitializePlantingReturnInspection(
+    $input: InitializePlantingReturnInspectionInput!
+  ) {
     initializePlantingReturnInspection(input: $input) {
       success
       message
@@ -784,7 +800,9 @@ export const INITIALIZE_PLANTING_INSPECTION = gql`
 `;
 
 export const SUBMIT_PLANTING_INSPECTION_STAGE = gql`
-  mutation SubmitPlantingInspectionStage($input: SubmitPlantingInspectionStageInput!) {
+  mutation SubmitPlantingInspectionStage(
+    $input: SubmitPlantingInspectionStageInput!
+  ) {
     submitPlantingInspectionStage(input: $input) {
       success
       message

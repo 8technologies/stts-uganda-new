@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import React, { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export interface IDataGridToolbarProps {
   children: ReactNode;
@@ -8,7 +8,10 @@ export interface IDataGridToolbarProps {
 
 const DataGridToolbar = ({ children, className }: IDataGridToolbarProps) => {
   return (
-    <div data-toolbar className={cn('flex items-center gap-2 justify-between', className)}>
+    <div
+      data-toolbar
+      className={cn("flex items-center gap-2 justify-between", className)}
+    >
       {children}
     </div>
   );

@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { useLanguage } from '@/i18n';
-import { DropdownCrud1, DropdownCrudItem1 } from '@/partials/dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { useLanguage } from "@/i18n";
+import { DropdownCrud1, DropdownCrudItem1 } from "@/partials/dropdowns/general";
 
 interface IMembersItem {
   avatar: string;
@@ -22,45 +22,45 @@ const Members = ({ url }: IMembersProps) => {
 
   const tables: IMembersItems = [
     {
-      avatar: '300-3.png',
-      name: 'Tyler Hero',
+      avatar: "300-3.png",
+      name: "Tyler Hero",
       connections: 26,
-      label: 'Project Member',
-      joined: 'Today',
-      disabled: true
+      label: "Project Member",
+      joined: "Today",
+      disabled: true,
     },
     {
-      avatar: '300-1.png',
-      name: 'Esther Howard',
+      avatar: "300-1.png",
+      name: "Esther Howard",
       connections: 639,
-      label: 'Accountant',
-      joined: '5 days ago',
-      disabled: false
+      label: "Accountant",
+      joined: "5 days ago",
+      disabled: false,
     },
     {
-      avatar: '300-11.png',
-      name: 'Jacob Jones',
+      avatar: "300-11.png",
+      name: "Jacob Jones",
       connections: 125,
-      label: 'Data Analyst',
-      joined: '3 days ago',
-      disabled: false
+      label: "Data Analyst",
+      joined: "3 days ago",
+      disabled: false,
     },
     {
-      avatar: '300-2.png',
-      name: 'Cody Fisher',
+      avatar: "300-2.png",
+      name: "Cody Fisher",
       connections: 81,
-      label: 'Accountant',
-      joined: '2 weeks ago',
-      disabled: true
+      label: "Accountant",
+      joined: "2 weeks ago",
+      disabled: true,
     },
     {
-      avatar: '300-5.png',
-      name: 'Leslie Alexander',
+      avatar: "300-5.png",
+      name: "Leslie Alexander",
       connections: 1203,
-      label: 'Director',
-      joined: '3 weeks ago',
-      disabled: false
-    }
+      label: "Director",
+      joined: "3 weeks ago",
+      disabled: false,
+    },
   ];
 
   const renderItem = (table: IMembersItem, index: number) => {
@@ -94,9 +94,9 @@ const Members = ({ url }: IMembersProps) => {
 
         <td className="text-end">
           <span
-            className={`badge badge-sm badge-outline ${table.disabled ? 'badge-danger' : 'badge-success'}`}
+            className={`badge badge-sm badge-outline ${table.disabled ? "badge-danger" : "badge-success"}`}
           >
-            {table.disabled ? 'Disabled' : 'Enabled'}
+            {table.disabled ? "Disabled" : "Enabled"}
           </span>
         </td>
 
@@ -108,15 +108,15 @@ const Members = ({ url }: IMembersProps) => {
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -148,15 +148,15 @@ const Members = ({ url }: IMembersProps) => {
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">

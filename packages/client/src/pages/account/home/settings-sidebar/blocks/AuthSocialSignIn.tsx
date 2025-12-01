@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface IAuthSocialSignInItem {
   logo: string;
@@ -19,33 +19,33 @@ interface IAuthSocialSignInBlocks extends Array<IAuthSocialSignInBlock> {}
 const AuthSocialSignIn = () => {
   const items: IAuthSocialSignInItems = [
     {
-      logo: 'google.svg',
-      title: 'Google',
-      email: 'jasontatum@ktstudio.io',
-      checkbox: true
+      logo: "google.svg",
+      title: "Google",
+      email: "jasontatum@ktstudio.io",
+      checkbox: true,
     },
     {
-      logo: 'linkedin.svg',
-      title: 'Linkedin',
-      email: 'jasontt@keenthemes.co',
-      checkbox: false
-    }
+      logo: "linkedin.svg",
+      title: "Linkedin",
+      email: "jasontt@keenthemes.co",
+      checkbox: false,
+    },
   ];
 
   const blocks: IAuthSocialSignInBlocks = [
     {
-      logo: 'apple-black.svg',
-      logoDark: 'apple-white.svg',
-      title: 'Sign in with Apple'
+      logo: "apple-black.svg",
+      logoDark: "apple-white.svg",
+      title: "Sign in with Apple",
     },
     {
-      logo: 'microsoft-5.svg',
-      title: 'Sign in with Microsoft'
+      logo: "microsoft-5.svg",
+      title: "Sign in with Microsoft",
     },
     {
-      logo: 'facebook.svg',
-      title: 'Sign in with Facebook'
-    }
+      logo: "facebook.svg",
+      title: "Sign in with Facebook",
+    },
   ];
 
   const renderItem = (item: IAuthSocialSignInItem, index: number) => {
@@ -62,10 +62,16 @@ const AuthSocialSignIn = () => {
           />
 
           <div className="flex flex-col gap-0.5">
-            <a href="#" className="text-sm font-medium text-gray-900 hover:text-primary-active">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-900 hover:text-primary-active"
+            >
               {item.title}
             </a>
-            <a href="#" className="text-2sm text-gray-700 hover:text-primary-active">
+            <a
+              href="#"
+              className="text-2sm text-gray-700 hover:text-primary-active"
+            >
               {item.email}
             </a>
           </div>
@@ -76,7 +82,7 @@ const AuthSocialSignIn = () => {
             <input
               type="checkbox"
               defaultChecked={item.checkbox}
-              value={item.checkbox ? '1' : '2'}
+              value={item.checkbox ? "1" : "2"}
               readOnly
             />
           </label>
@@ -106,7 +112,11 @@ const AuthSocialSignIn = () => {
             />
           </>
         ) : (
-          <img src={toAbsoluteUrl(`/media/brand-logos/${block.logo}`)} className="size-5" alt="" />
+          <img
+            src={toAbsoluteUrl(`/media/brand-logos/${block.logo}`)}
+            className="size-5"
+            alt=""
+          />
         )}
         {block.title}
       </a>
@@ -126,9 +136,12 @@ const AuthSocialSignIn = () => {
         </div>
 
         <div className="flex flex-col gap-0.5 mb-5">
-          <div className="text-md font-medium text-gray-900">More Social Sign in options</div>
+          <div className="text-md font-medium text-gray-900">
+            More Social Sign in options
+          </div>
           <div className="text-2sm text-gray-800">
-            Effortless access awaits! Connect seamlessly with your preferred social account.
+            Effortless access awaits! Connect seamlessly with your preferred
+            social account.
           </div>
         </div>
 
@@ -151,5 +164,5 @@ export {
   type IAuthSocialSignInItem,
   type IAuthSocialSignInItems,
   type IAuthSocialSignInBlock,
-  type IAuthSocialSignInBlocks
+  type IAuthSocialSignInBlocks,
 };

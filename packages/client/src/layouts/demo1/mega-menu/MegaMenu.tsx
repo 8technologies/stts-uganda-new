@@ -1,19 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useResponsive } from '@/hooks';
-import { useEffect } from 'react';
-import { usePathname } from '@/providers';
-import { useDemo1Layout } from '@/layouts/demo1';
-import { MegaMenuInner } from '.';
+import { useResponsive } from "@/hooks";
+import { useEffect } from "react";
+import { usePathname } from "@/providers";
+import { useDemo1Layout } from "@/layouts/demo1";
+import { MegaMenuInner } from ".";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle
-} from '@/components/ui/sheet';
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 const MegaMenu = () => {
-  const desktopMode = useResponsive('up', 'lg');
+  const desktopMode = useResponsive("up", "lg");
   const { pathname, prevPathname } = usePathname();
   const { mobileMegaMenuOpen, setMobileMegaMenuOpen } = useDemo1Layout();
 

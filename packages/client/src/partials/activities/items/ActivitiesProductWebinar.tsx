@@ -1,9 +1,9 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatars } from '@/partials/common';
-import { TimelinesWrapper } from '@/partials/timelines/default/item';
+import { CommonAvatars } from "@/partials/common";
+import { TimelinesWrapper } from "@/partials/timelines/default/item";
 
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const ActivitiesProductWebinar = () => {
   return (
@@ -36,14 +36,16 @@ const ActivitiesProductWebinar = () => {
 
             <div className="flex flex-wrap gap-7.5">
               <div className="flex items-center gap-1.5">
-                <span className="text-2sm font-medium text-gray-600">Code:</span>
+                <span className="text-2sm font-medium text-gray-600">
+                  Code:
+                </span>
                 <span className="text-2sm text-primary">#leaderdev-1</span>
               </div>
 
               <div className="flex items-center gap-1.5">
                 <span className="text-2sm text-gray-600">Progress:</span>
                 <div className="progress progress-success min-w-[120px]">
-                  <div className="progress-bar" style={{ width: '80%' }}></div>
+                  <div className="progress-bar" style={{ width: "80%" }}></div>
                 </div>
               </div>
 
@@ -52,13 +54,14 @@ const ActivitiesProductWebinar = () => {
                 <CommonAvatars
                   size="size-7"
                   group={[
-                    { filename: '300-4.png' },
-                    { filename: '300-1.png' },
-                    { filename: '300-2.png' },
+                    { filename: "300-4.png" },
+                    { filename: "300-1.png" },
+                    { filename: "300-2.png" },
                     {
-                      fallback: '+24',
-                      variant: 'text-primary-inverse ring-primary-light bg-primary'
-                    }
+                      fallback: "+24",
+                      variant:
+                        "text-primary-inverse ring-primary-light bg-primary",
+                    },
                   ]}
                 />
               </div>

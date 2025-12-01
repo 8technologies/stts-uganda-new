@@ -1,141 +1,435 @@
-import { Fragment } from "react";
+import { useMemo } from "react";
 import ApexChart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import { useQuery } from "@apollo/client/react";
+import { formatDistanceToNow } from "date-fns";
 
 import { Container } from "@/components/container";
+import { Toolbar, ToolbarHeading } from "@/layouts/demo1/toolbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { KeenIcon } from "@/components";
+import { KeenIcon } from "@/components/keenicons";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Calendar } from "@/components/ui/calendar";
+import { DASHBOARD_STATS, ME } from "@/gql/queries";
+import { cn } from "@/lib/utils";
+import { FolderInput } from "lucide-react";
+import { getPermissionsFromToken } from "@/utils/permissions";
+import { useAuthContext } from "@/auth";
 
-const statCards = [
+const numberFormatter = new Intl.NumberFormat("en-US");
+
+const formatNumber = (value?: number | null) => {
+  if (value == null || Number.isNaN(value)) {
+    return "—";
+  }
+  return numberFormatter.format(value);
+};
+
+const formatRelativeTime = (value?: string | null) => {
+  if (!value) return "—";
+  try {
+    return formatDistanceToNow(new Date(value), { addSuffix: true });
+  } catch (error) {
+    return "—";
+  }
+};
+
+type DashboardInspectionSlice = {
+  label: string;
+  value: number;
+};
+
+type DashboardSeedStockPoint = {
+  label: string;
+  total: number;
+};
+
+type DashboardActivity = {
+  id: string;
+  title: string;
+  entity?: string | null;
+  status?: string | null;
+  category?: string | null;
+  timestamp?: string | null;
+};
+
+type DashboardStatsResponse = {
+  registeredUsers: number;
+  userPermits: number;
+  pendingPermits: number;
+  cropDeclarations: number;
+  printedLabels: number;
+  pendingLabels: number;
+  myActiveForms: number;
+  myActivePermits: number;
+  myApprovedPlantingReturns: number;
+  assignedForms: number;
+  assignedPermits: number;
+  assignedPlantingReturns: number;
+  pendingInspections: number;
+  receivedLabRequests: number;
+  haltedLabRequests: number;
+  marketableSeed: number;
+  nonMarketableSeed: number;
+  totalInspections: number;
+  scheduledVisits: number;
+  pendingCorrectiveActions: number;
+  inspections: DashboardInspectionSlice[];
+  seedStock: DashboardSeedStockPoint[];
+  recentActivities: DashboardActivity[];
+};
+
+type DashboardStatsQuery = {
+  dashboardStats: DashboardStatsResponse;
+};
+
+type CurrentUser = {
+  id: string;
+  name?: string | null;
+  username?: string | null;
+  company_initials?: string | null;
+};
+
+type MeQuery = {
+  me: CurrentUser | null;
+};
+
+type DashboardMetricKey = keyof Pick<
+  DashboardStatsResponse,
+  | "registeredUsers"
+  | "userPermits"
+  | "cropDeclarations"
+  | "printedLabels"
+  | "myActiveForms"
+  | "myActivePermits"
+  | "myApprovedPlantingReturns"
+  | "assignedForms"
+  | "assignedPermits"
+  | "assignedPlantingReturns"
+  | "pendingInspections"
+  | "receivedLabRequests"
+  | "haltedLabRequests"
+  | "marketableSeed"
+  | "nonMarketableSeed"
+>;
+
+type StatCardConfig = {
+  key: DashboardMetricKey;
+  title: string;
+  description: string;
+  icon: string;
+  cardClass: string;
+  valueClass: string;
+  titleClass: string;
+  descriptionClass: string;
+  iconClass: string;
+  chipClass: string;
+  defaultFootnote?: string;
+  getFootnote?: (stats?: DashboardStatsResponse) => string | null;
+};
+
+const fallbackSeedStock: DashboardSeedStockPoint[] = [
+  { label: "Q1", total: 0 },
+  { label: "Q2", total: 0 },
+  { label: "Q3", total: 0 },
+  { label: "Q4", total: 0 },
+];
+
+const fallbackInspectionSlices: DashboardInspectionSlice[] = [
+  { label: "Completed", value: 0 },
+  { label: "Pending", value: 0 },
+  { label: "Skipped", value: 0 },
+];
+
+const inspectionColors: Record<string, string> = {
+  Completed: "#00A651",
+  Pending: "#6CC24A",
+  Skipped: "#C5DA4B",
+};
+
+const activityCategoryColors: Record<string, string> = {
+  Permits: "bg-emerald-500",
+  Inspections: "bg-lime-500",
+  Logistics: "bg-sky-500",
+  Stock: "bg-amber-500",
+};
+
+const managementStatCards: StatCardConfig[] = [
   {
+    key: "registeredUsers",
     title: "Registered Users",
-    value: "1,234",
     description: "Authorized individuals or organizations",
     icon: "users",
-    // text classes
-    valueColor: "text-emerald-900",
+    cardClass:
+      "border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100 text-emerald-900",
+    valueClass: "text-emerald-900",
     titleClass: "text-emerald-900",
-    descriptionClass: "text-emerald-800",
-    // border + layout class only (background provided via bgStyle)
-    cardClass: "border-emerald-100",
+    descriptionClass: "text-emerald-700",
     iconClass: "bg-white text-emerald-600",
-    accentClass: "bg-emerald-700",
-    decorColor: "#16A34A",
-    badgeIconColor: "#16A34A",
-    bgStyle: "linear-gradient(135deg,#ECFDF5 0%, #6EE7B7 100%)",
-    footnote: "+3.2% vs last week",
-    footnoteClass: "text-emerald-700",
+    chipClass: "text-emerald-700",
+    defaultFootnote: "System-wide total",
   },
   {
+    key: "userPermits",
     title: "User Permits",
-    value: "84",
     description: "Official approvals for imports and export permits",
     icon: "security-user",
-    valueColor: "text-amber-900",
+    cardClass:
+      "border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-100 text-amber-900",
+    valueClass: "text-amber-900",
     titleClass: "text-amber-900",
-    descriptionClass: "text-amber-800",
-    cardClass: "border-amber-100",
+    descriptionClass: "text-amber-700",
     iconClass: "bg-white text-amber-600",
-    accentClass: "bg-amber-500",
-    decorColor: "#F59E0B",
-    badgeIconColor: "#F59E0B",
-    bgStyle: "linear-gradient(135deg,#FFFBEB 0%, #FDE68A 100%)",
-    footnote: "+11 pending reviews",
-    footnoteClass: "text-amber-700",
+    chipClass: "text-amber-700",
+    getFootnote: (stats) =>
+      stats && stats.pendingPermits != null
+        ? `${formatNumber(stats.pendingPermits)} pending reviews`
+        : "Pending reviews",
   },
   {
+    key: "cropDeclarations",
     title: "Crop Declarations",
-    value: "712",
     description: "Crop declarations from seed producers",
-    icon: "richtext-box",
-    valueColor: "text-sky-900",
+    icon: "leaf",
+    cardClass:
+      "border-sky-100 bg-gradient-to-br from-sky-50 via-white to-sky-100 text-sky-900",
+    valueClass: "text-sky-900",
     titleClass: "text-sky-900",
     descriptionClass: "text-sky-700",
-    cardClass: "border-sky-100",
     iconClass: "bg-white text-sky-600",
-    accentClass: "bg-sky-500",
-    decorColor: "#0EA5E9",
-    badgeIconColor: "#0EA5E9",
-    bgStyle: "linear-gradient(135deg,#ECFEFF 0%, #7DD3FC 100%)",
-    footnote: "64 awaiting validation",
-    footnoteClass: "text-sky-700",
+    chipClass: "text-sky-700",
+    defaultFootnote: "Includes active QDS filings",
   },
   {
+    key: "printedLabels",
     title: "Printed Labels",
-    value: "20",
     description: "Approved and pending seed labels",
     icon: "printer",
-    valueColor: "text-white",
+    cardClass:
+      "border-emerald-600 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-100",
+    valueClass: "text-white",
     titleClass: "text-white/90",
     descriptionClass: "text-white/80",
-    cardClass: "border-emerald-600",
     iconClass: "bg-white/20 text-white",
-    accentClass: "bg-white/60",
-    decorColor: "#059669",
-    badgeIconColor: "#059669",
-    bgStyle: "linear-gradient(135deg,#10B981 0%, #059669 100%)",
-    footnote: "4 queued for print",
-    footnoteClass: "text-white",
+    chipClass: "text-white/90",
+    getFootnote: (stats) =>
+      stats && stats.pendingLabels != null
+        ? `${formatNumber(stats.pendingLabels)} awaiting print`
+        : "Awaiting print",
   },
 ];
 
-const inspectionsBreakdown = [
-  { label: "Completed", value: 72, color: "#00A651" },
-  { label: "Skipped", value: 10, color: "#6CC24A" },
-  { label: "Pending", value: 18, color: "#C5DA4B" },
+const printedLabelsCard = managementStatCards.find(
+  (card) => card.key === "printedLabels",
+)!;
+
+const ownStatCards: StatCardConfig[] = [
+  {
+    key: "myActiveForms",
+    title: "My Active Forms",
+    description: "Forms submitted that are awaiting review",
+    icon: "document",
+    cardClass:
+      "border-sky-100 bg-gradient-to-br from-sky-50 via-white to-sky-100 text-sky-900",
+    valueClass: "text-sky-900",
+    titleClass: "text-sky-900",
+    descriptionClass: "text-sky-700",
+    iconClass: "bg-white text-sky-600",
+    chipClass: "text-sky-700",
+    defaultFootnote: "Pending commissioner action",
+  },
+  {
+    key: "myActivePermits",
+    title: "My Active Permits",
+    description: "Import or export permits still in progress",
+    icon: "security-user",
+    cardClass:
+      "border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-100 text-amber-900",
+    valueClass: "text-amber-900",
+    titleClass: "text-amber-900",
+    descriptionClass: "text-amber-700",
+    iconClass: "bg-white text-amber-600",
+    chipClass: "text-amber-700",
+    defaultFootnote: "Awaiting QA decision",
+  },
+  {
+    key: "myApprovedPlantingReturns",
+    title: "Approved SR8 Returns",
+    description: "Planting returns cleared by QA",
+    icon: "badge",
+    cardClass:
+      "border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100 text-emerald-900",
+    valueClass: "text-emerald-900",
+    titleClass: "text-emerald-900",
+    descriptionClass: "text-emerald-700",
+    iconClass: "bg-white text-emerald-600",
+    chipClass: "text-emerald-700",
+    defaultFootnote: "SR8 approvals",
+  },
+  { ...printedLabelsCard },
 ];
 
-const recentActivities = [
+const assignedStatCards: StatCardConfig[] = [
   {
-    title: "SR4 Application Submitted",
-    entity: "ABC Seeds Ltd",
-    time: "Just now",
-    color: "#00A651",
+    key: "assignedForms",
+    title: "Assigned Forms",
+    description: "Application forms awaiting your action",
+    icon: "task",
+    cardClass:
+      "border-purple-100 bg-gradient-to-br from-purple-50 via-white to-purple-100 text-purple-900",
+    valueClass: "text-purple-900",
+    titleClass: "text-purple-900",
+    descriptionClass: "text-purple-700",
+    iconClass: "bg-white text-purple-600",
+    chipClass: "text-purple-700",
+    defaultFootnote: "SR4 / SR6 / QDS",
   },
   {
-    title: "Crop Inspection Completed",
-    entity: "John Farmer",
-    time: "12 mins ago",
-    color: "#24C08A",
+    key: "assignedPermits",
+    title: "Assigned Permits",
+    description: "Permit inspections delegated to you",
+    icon: "shield-search",
+    cardClass:
+      "border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-200 text-amber-900",
+    valueClass: "text-amber-900",
+    titleClass: "text-amber-900",
+    descriptionClass: "text-amber-700",
+    iconClass: "bg-white text-amber-600",
+    chipClass: "text-amber-700",
+    defaultFootnote: "QA pending",
   },
   {
-    title: "Stock Updated",
-    entity: "Green Valley Farm",
-    time: "Today 09:24",
-    color: "#F6B73C",
+    key: "assignedPlantingReturns",
+    title: "Assigned SR8s",
+    description: "Planting returns queued for inspection",
+    icon: "chart-line",
+    cardClass:
+      "border-lime-100 bg-gradient-to-br from-lime-50 via-white to-lime-100 text-lime-900",
+    valueClass: "text-lime-900",
+    titleClass: "text-lime-900",
+    descriptionClass: "text-lime-700",
+    iconClass: "bg-white text-lime-600",
+    chipClass: "text-lime-700",
+    defaultFootnote: "Schedule visits",
   },
   {
-    title: "Export Permit Approved",
-    entity: "Global Seeds Co",
-    time: "Yesterday",
-    color: "#2BB5F6",
+    key: "pendingInspections",
+    title: "Pending Inspections",
+    description: "Stock examinations not yet submitted",
+    icon: "information-3",
+    cardClass:
+      "border-slate-200 bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900",
+    valueClass: "text-slate-900",
+    titleClass: "text-slate-900",
+    descriptionClass: "text-slate-600",
+    iconClass: "bg-white text-slate-500",
+    chipClass: "text-slate-600",
+    defaultFootnote: "Awaiting reports",
   },
 ];
 
-const seedStockSeries = [18, 54, 42, 60];
-const seedStockCategories = ["Q1", "Q2", "Q3", "Q4"];
-
-const heroHighlights = [
-  { label: "Inspections in field", value: "42", meta: "+5 vs yesterday" },
-  { label: "Permits pending review", value: "18", meta: "SLA 3 days" },
-  { label: "Seed lots tracked", value: "312", meta: "24 new batches" },
-];
-
-const heroFilters = ["Facilities", "Permits", "Inspectors"];
-
-const inspectionQuickStats = [
+const labStatCards: StatCardConfig[] = [
   {
-    label: "Total visits scheduled",
-    value: "128",
-    meta: "42 districts covered",
+    key: "receivedLabRequests",
+    title: "Received Lab Requests",
+    description: "Samples logged at the laboratory",
+    icon: "flask",
+    cardClass:
+      "border-sky-100 bg-gradient-to-br from-sky-50 via-white to-sky-100 text-sky-900",
+    valueClass: "text-sky-900",
+    titleClass: "text-sky-900",
+    descriptionClass: "text-sky-700",
+    iconClass: "bg-white text-sky-600",
+    chipClass: "text-sky-700",
+    defaultFootnote: "Awaiting testing",
   },
   {
-    label: "Pending corrective actions",
-    value: "9",
-    meta: "High priority farms",
+    key: "haltedLabRequests",
+    title: "Halted Lab Requests",
+    description: "Samples flagged or rejected",
+    icon: "shield-cross",
+    cardClass:
+      "border-red-100 bg-gradient-to-br from-red-50 via-white to-red-100 text-red-900",
+    valueClass: "text-red-900",
+    titleClass: "text-red-900",
+    descriptionClass: "text-red-700",
+    iconClass: "bg-white text-red-600",
+    chipClass: "text-red-700",
+    defaultFootnote: "Requires attention",
+  },
+  {
+    key: "marketableSeed",
+    title: "Marketable Seed",
+    description: "Lots cleared as marketable",
+    icon: "leaf",
+    cardClass:
+      "border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100 text-emerald-900",
+    valueClass: "text-emerald-900",
+    titleClass: "text-emerald-900",
+    descriptionClass: "text-emerald-700",
+    iconClass: "bg-white text-emerald-600",
+    chipClass: "text-emerald-700",
+    defaultFootnote: "Ready for release",
+  },
+  {
+    key: "nonMarketableSeed",
+    title: "Non Marketable Seed",
+    description: "Lots flagged as non compliant",
+    icon: "close-circle",
+    cardClass:
+      "border-amber-100 bg-gradient-to-br from-amber-50 via-white to-amber-100 text-amber-900",
+    valueClass: "text-amber-900",
+    titleClass: "text-amber-900",
+    descriptionClass: "text-amber-700",
+    iconClass: "bg-white text-amber-600",
+    chipClass: "text-amber-700",
+    defaultFootnote: "Requires remediation",
   },
 ];
+
+type DashboardVariant = "management" | "own" | "assigned" | "lab";
+
+const determineDashboardVariant = (
+  permissions: Record<string, boolean>,
+): DashboardVariant => {
+  const hasLabScope =
+    permissions?.can_receive_seed_lab_inspections ||
+    // permissions?.can_view_seed_lab_inspections ||
+    // permissions?.can_manage_seed_lab_inspection ||
+    permissions?.can_perform_seed_lab_tests;
+
+  const hasAssignedScope =
+    permissions?.can_view_specific_assigned_forms ||
+    permissions?.can_view_only_assigned_permits ||
+    permissions?.can_view_only_assigned_planting_returns ||
+    permissions?.can_view_only_assigned_seed_stock;
+
+  const canSeeOwnForms =
+    permissions?.can_view_only_own_created_forms &&
+    (permissions?.can_view_import_permits ||
+      permissions?.can_manage_import_permits) &&
+    !hasAssignedScope;
+
+  if (hasLabScope) return "lab";
+  if (hasAssignedScope) return "assigned";
+  if (canSeeOwnForms) return "own";
+  return "management";
+};
+
+const STAT_CARD_VARIANT_MAP: Record<DashboardVariant, StatCardConfig[]> = {
+  management: managementStatCards,
+  own: ownStatCards,
+  assigned: assignedStatCards,
+  lab: labStatCards,
+};
 
 const seedStockTags = [
   { label: "Foundation seed", value: "22k bags", color: "#047857" },
@@ -162,539 +456,455 @@ const calendarMeta = {
   selectedDay: 13,
 };
 
-type CalendarCell = {
-  value: number;
-  isCurrentMonth: boolean;
-  key: string;
-};
-
-const buildCalendarCells = (year: number, month: number): CalendarCell[] => {
-  const firstDay = new Date(year, month, 1);
-  const startWeekday = firstDay.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const daysInPreviousMonth = new Date(year, month, 0).getDate();
-  const cells: CalendarCell[] = [];
-
-  for (let index = 0; index < 42; index++) {
-    const dayOffset = index - startWeekday + 1;
-    if (dayOffset < 1) {
-      const value = daysInPreviousMonth + dayOffset;
-      cells.push({
-        value,
-        isCurrentMonth: false,
-        key: `prev-${value}-${index}`,
-      });
-    } else if (dayOffset > daysInMonth) {
-      const value = dayOffset - daysInMonth;
-      cells.push({
-        value,
-        isCurrentMonth: false,
-        key: `next-${value}-${index}`,
-      });
-    } else {
-      cells.push({
-        value: dayOffset,
-        isCurrentMonth: true,
-        key: `curr-${dayOffset}`,
-      });
-    }
-  }
-
-  return cells;
-};
-
-const InspectionDonut = () => {
-  const options: ApexOptions = {
-    chart: {
-      type: "donut",
-      sparkline: { enabled: true },
-    },
-    labels: inspectionsBreakdown.map((x) => x.label),
-    colors: inspectionsBreakdown.map((x) => x.color),
-    stroke: { width: 0 },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "78%",
-          labels: {
-            show: true,
-            name: { offsetY: 12, color: "#64748B", fontSize: "12px" },
-            value: {
-              offsetY: -12,
-              color: "#0F172A",
-              fontSize: "28px",
-              fontWeight: 600,
-              formatter: (val) => `${Math.round(Number(val))}`,
-            },
-            total: {
-              show: true,
-              label: "inspections",
-              fontSize: "12px",
-              color: "#94A3B8",
-              formatter: () => "100",
-            },
-          },
-        },
-      },
-    },
-    dataLabels: { enabled: false },
-    legend: { show: false },
-  };
+const StatCard = ({
+  config,
+  stats,
+  loading,
+}: {
+  config: StatCardConfig;
+  stats?: DashboardStatsResponse;
+  loading: boolean;
+}) => {
+  const value = stats?.[config.key];
+  const footnote = config.getFootnote?.(stats) ?? config.defaultFootnote;
 
   return (
-    <ApexChart
-      options={options}
-      series={inspectionsBreakdown.map((x) => x.value)}
-      type="donut"
-      height={250}
-    />
-  );
-};
-
-const SeedStockBar = () => {
-  const options: ApexOptions = {
-    chart: {
-      type: "bar",
-      toolbar: { show: false },
-      fontFamily: "Inter, sans-serif",
-    },
-    series: [
-      {
-        name: "Seed stock",
-        data: seedStockSeries,
-      },
-    ],
-    xaxis: {
-      categories: seedStockCategories,
-      axisBorder: { color: "#E5E7EB" },
-      axisTicks: { color: "#E5E7EB" },
-    },
-    yaxis: {
-      tickAmount: 4,
-      labels: {
-        formatter: (val) => `${val}`,
-      },
-    },
-    colors: ["#00A651"],
-    plotOptions: {
-      bar: {
-        borderRadius: 8,
-        columnWidth: "38%",
-      },
-    },
-    grid: {
-      borderColor: "#E5E7EB",
-      strokeDashArray: 4,
-      padding: { left: 10 },
-    },
-    dataLabels: { enabled: false },
-  };
-
-  return (
-    <ApexChart
-      options={options}
-      series={options.series as any}
-      type="bar"
-      height={240}
-    />
+    <div
+      className={cn(
+        "rounded-2xl border p-5 shadow-sm transition hover:shadow-md",
+        config.cardClass,
+      )}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p
+            className={cn(
+              "text-xs font-semibold uppercase tracking-wide",
+              config.titleClass,
+            )}
+          >
+            {config.title}
+          </p>
+          <p
+            className={cn("mt-2 text-sm leading-snug", config.descriptionClass)}
+          >
+            {config.description}
+          </p>
+        </div>
+        <span
+          className={cn("rounded-full p-3 text-lg", config.iconClass)}
+          aria-hidden="true"
+        >
+          <KeenIcon icon={config.icon} />
+        </span>
+      </div>
+      <div
+        className={cn(
+          "mt-5 text-4xl font-semibold leading-none",
+          config.valueClass,
+        )}
+      >
+        {loading ? (
+          <Skeleton className="h-10 w-24 bg-white/60" />
+        ) : (
+          formatNumber(value)
+        )}
+      </div>
+      {footnote && (
+        <p className={cn("mt-4 text-xs font-medium", config.chipClass)}>
+          {footnote}
+        </p>
+      )}
+    </div>
   );
 };
 
 const SttsDashboardPage = () => {
-  const calendarDays = buildCalendarCells(
-    calendarMeta.year,
-    calendarMeta.monthIndex
+  const {
+    data: statsData,
+    loading: statsLoading,
+    error: statsError,
+    refetch,
+  } = useQuery<DashboardStatsQuery>(DASHBOARD_STATS, {
+    fetchPolicy: "cache-and-network",
+  });
+  const { data: meData } = useQuery<MeQuery>(ME, {
+    fetchPolicy: "cache-first",
+  });
+  const { auth } = useAuthContext();
+  const perms = getPermissionsFromToken(auth?.access_token);
+
+  console.log("User permissions:", perms);
+
+  const dashboardVariant = determineDashboardVariant(perms);
+  const visibleStatCards =
+    STAT_CARD_VARIANT_MAP[dashboardVariant] ?? managementStatCards;
+
+  const stats = statsData?.dashboardStats;
+  const welcomeName =
+    meData?.me?.name || meData?.me?.username || "Commissioner";
+  const inspectionSlices = stats?.inspections?.length
+    ? stats.inspections
+    : fallbackInspectionSlices;
+  const seedStockPoints = stats?.seedStock?.length
+    ? stats.seedStock
+    : fallbackSeedStock;
+  const inspectionTotal = inspectionSlices.reduce(
+    (sum, slice) => sum + slice.value,
+    0,
+  );
+  const selectedDate = useMemo(
+    () =>
+      new Date(
+        calendarMeta.year,
+        calendarMeta.monthIndex,
+        calendarMeta.selectedDay,
+      ),
+    [],
   );
 
-  return (
-    <Fragment>
-      <Container>
-        <div className="space-y-8 pb-12">
-          {/* <div className="relative overflow-hidden rounded-[32px] border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-emerald-100 p-6 shadow-sm lg:p-10">
-            <span className="pointer-events-none absolute -right-16 top-10 h-48 w-48 rounded-full bg-emerald-200/60 blur-3xl" />
-            <span className="pointer-events-none absolute left-12 -bottom-10 h-32 w-32 rounded-full bg-emerald-300/40 blur-2xl" />
+  const inspectionChartOptions: ApexOptions = {
+    chart: { type: "donut", sparkline: { enabled: true } },
+    labels: inspectionSlices.map((slice) => slice.label),
+    colors: inspectionSlices.map(
+      (slice) => inspectionColors[slice.label] ?? "#047857",
+    ),
+    dataLabels: { enabled: false },
+    legend: { show: false },
+    stroke: { width: 0 },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "68%",
+          labels: { show: false },
+        },
+      },
+    },
+  };
 
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              <div className="relative z-0 flex-1 space-y-6">
-                <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.4em] text-emerald-700">
-                  <span className="rounded-full bg-white/70 px-3 py-1 text-[10px] tracking-[0.2em] text-emerald-600">
-                    Live Dashboard
-                  </span>
-                  National Seed Tracking & Tracing System
+  const seedStockChartOptions: ApexOptions = {
+    chart: { type: "bar", sparkline: { enabled: true } },
+    colors: ["#16a34a"],
+    stroke: { show: true, width: 2, colors: ["transparent"] },
+    grid: { strokeDashArray: 4 },
+    plotOptions: {
+      bar: {
+        borderRadius: 6,
+        columnWidth: "40%",
+      },
+    },
+    xaxis: {
+      categories: seedStockPoints.map((point) => point.label),
+      labels: { style: { colors: "#94a3b8" } },
+    },
+    yaxis: {
+      labels: { style: { colors: "#94a3b8" } },
+    },
+    dataLabels: { enabled: false },
+    tooltip: { y: { formatter: (val) => `${val} tons` } },
+  };
+
+  const activityList = stats?.recentActivities ?? [];
+  const showActivitiesEmpty = !statsLoading && activityList.length === 0;
+
+  return (
+    <>
+      <Container>
+        <Toolbar>
+          <ToolbarHeading
+            title="NATIONAL SEED TRACKING AND TRACING SYSTEM"
+            description={`Welcome, ${welcomeName}. Real-time monitoring of seed movement from production to distribution.`}
+          />
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+            {/* <div className="relative flex-1 sm:w-72">
+              <KeenIcon
+                icon="search-list"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+              />
+              <Input
+                type="search"
+                placeholder="Search dashboard"
+                aria-label="Search dashboard"
+                className="pl-10"
+              />
+            </div> */}
+            <Button type="button" variant="outline" className="gap-2">
+              <FolderInput />
+              Export files
+            </Button>
+          </div>
+        </Toolbar>
+      </Container>
+      <Container>
+        <div className="space-y-8">
+          {statsError && (
+            <div className="flex items-start gap-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <KeenIcon
+                icon="information-3"
+                className="text-red-500"
+                aria-hidden="true"
+              />
+              <div className="flex-1">
+                Unable to load the dashboard summary right now. Please try
+                again.
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                type="button"
+                onClick={() => refetch()}
+              >
+                Retry
+              </Button>
+            </div>
+          )}
+
+          <section className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+            {visibleStatCards.map((config) => (
+              <StatCard
+                key={config.key}
+                config={config}
+                stats={stats}
+                loading={statsLoading}
+              />
+            ))}
+          </section>
+
+          <section className="grid gap-6 xl:grid-cols-12">
+            <Card className="xl:col-span-5">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  Farm inspections this month
+                </CardTitle>
+                <CardDescription>
+                  {formatNumber(stats?.scheduledVisits)} scheduled ·{" "}
+                  {formatNumber(stats?.totalInspections)} completed
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-6">
+                {statsLoading && !stats ? (
+                  <Skeleton className="h-48 w-full" />
+                ) : (
+                  <ApexChart
+                    type="donut"
+                    options={inspectionChartOptions}
+                    series={inspectionSlices.map((slice) => slice.value)}
+                    height={220}
+                  />
+                )}
+                <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                  {inspectionSlices.map((slice) => {
+                    const percentage = inspectionTotal
+                      ? Math.round((slice.value / inspectionTotal) * 100)
+                      : 0;
+                    const color = inspectionColors[slice.label] ?? "#16a34a";
+                    return (
+                      <div key={slice.label} className="space-y-1">
+                        <span className="block text-xs font-medium text-gray-500">
+                          {slice.label}
+                        </span>
+                        <span
+                          className="text-2xl font-semibold"
+                          style={{ color }}
+                        >
+                          {percentage}%
+                        </span>
+                        <span className="block text-xs text-gray-500">
+                          {formatNumber(slice.value)} visits
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="space-y-3">
-                  <p className="text-3xl font-semibold text-gray-900 md:text-4xl">
-                    Welcome, Commissioner
-                  </p>
-                  <p className="text-sm text-gray-600 md:text-base">
-                    Stay ahead of inspections, permits, and stock status with
-                    proactive alerts and instant traceability across the
-                    national supply chain.
-                  </p>
-                </div>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {heroHighlights.map((item) => (
+              </CardContent>
+            </Card>
+
+            <Card className="xl:col-span-7">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  Seed stock per quarter
+                </CardTitle>
+                <CardDescription>
+                  Monitoring pipeline quantity and certified stock
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {statsLoading && !stats ? (
+                  <Skeleton className="h-48 w-full" />
+                ) : (
+                  <ApexChart
+                    type="bar"
+                    options={seedStockChartOptions}
+                    series={[
+                      {
+                        name: "Stock level",
+                        data: seedStockPoints.map((point) => point.total),
+                      },
+                    ]}
+                    height={240}
+                  />
+                )}
+                <div className="grid gap-4 md:grid-cols-3">
+                  {seedStockTags.map((tag) => (
                     <div
-                      key={item.label}
-                      className="rounded-2xl border border-white/70 bg-white/80 p-4 text-sm shadow-sm backdrop-blur"
+                      key={tag.label}
+                      className="rounded-xl border border-gray-100 px-4 py-3"
                     >
-                      <p className="text-xs font-medium uppercase text-emerald-500">
-                        {item.label}
+                      <p className="text-xs font-medium text-gray-500">
+                        {tag.label}
                       </p>
-                      <p className="mt-1 text-2xl font-bold text-gray-900">
-                        {item.value}
+                      <p
+                        className="mt-1 text-lg font-semibold"
+                        style={{ color: tag.color }}
+                      >
+                        {tag.value}
                       </p>
-                      <p className="text-xs text-gray-500">{item.meta}</p>
                     </div>
                   ))}
                 </div>
-              </div>
-              <div className="relative z-0 w-full max-w-md space-y-4">
-                <div className="rounded-[28px] border border-white/60 bg-white/80 p-4 shadow-inner backdrop-blur">
-                  <div className="relative">
-                    <KeenIcon
-                      icon="search"
-                      className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-gray-400"
-                    />
-                    <Input
-                      className="h-12 rounded-2xl border-0 bg-transparent pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-500 focus-visible:ring-emerald-500"
-                      placeholder="Search facilities, permits, or inspectors"
-                    />
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="grid gap-6 xl:grid-cols-12">
+            <Card className="xl:col-span-7">
+              <CardHeader className="flex flex-col gap-4 border-b pb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-lg font-semibold text-gray-900">
+                      Recent activities
+                    </CardTitle>
+                    <CardDescription>
+                      Latest updates from permits, inspections, and stock
+                    </CardDescription>
                   </div>
-                  <div className="flex flex-wrap gap-2 pt-3 text-sm">
-                    {heroFilters.map((filter) => (
-                      <button
-                        key={filter}
-                        className="rounded-full border border-emerald-200/80 bg-white px-3 py-1 text-xs font-medium text-emerald-700 shadow-sm"
-                        type="button"
-                      >
-                        {filter}
-                      </button>
-                    ))}
-                  </div>
+                  <Button
+                    variant="ghost"
+                    className="text-sm text-primary"
+                    type="button"
+                  >
+                    View all
+                  </Button>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <Button className="flex-1 rounded-full" size="lg">
-                    <KeenIcon icon="chart" className="mr-2" /> Open Command
-                    Center
-                  </Button>
-                  <Button className="rounded-full px-6" variant="light">
-                    <KeenIcon icon="export" className="mr-2" /> Export Files
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {statCards.map((card) => (
-              <div
-                key={card.title}
-                className={`relative overflow-hidden rounded-3xl border p-6 shadow-sm transition-transform duration-200 hover:shadow-lg hover:-translate-y-1 ${card.cardClass}`}
-                style={
-                  card.bgStyle
-                    ? ({ background: card.bgStyle, minHeight: 140 } as any)
-                    : { minHeight: 140 }
-                }
-              >
-                {/* decorative blurred circle */}
-                <span
-                  aria-hidden
-                  className="absolute -right-10 -top-10 h-44 w-44 rounded-full opacity-25 blur-2xl"
-                  style={{ backgroundColor: card.decorColor }}
-                />
-
-                {/* top-right white icon badge */}
-                <div className="absolute right-5 top-4 z-0">
-                  <div
-                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm"
-                    style={{ boxShadow: "0 6px 18px rgba(16,24,40,0.06)" }}
-                  >
+                  {activityFilters.map((filter, index) => (
                     <span
-                      style={{ color: card.badgeIconColor || card.decorColor }}
+                      key={filter.label}
+                      className={cn(
+                        "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold text-gray-600",
+                        index === 0 &&
+                          "border-primary/30 bg-primary/5 text-primary",
+                      )}
                     >
-                      <KeenIcon icon={card.icon} className="size-5" />
+                      {filter.label}
+                      <span className="ml-2 rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-semibold text-gray-500">
+                        {filter.value}
+                      </span>
                     </span>
-                  </div>
+                  ))}
                 </div>
-
-                <div className="flex items-start gap-4 relative z-0">
-                  <div className="flex-1">
-                    <p
-                      className={`text-xs font-semibold uppercase tracking-wide ${card.titleClass}`}
-                    >
-                      {card.title}
-                    </p>
-                    <p
-                      className={`mt-2 text-4xl font-extrabold ${card.valueColor}`}
-                    >
-                      {card.value}
-                    </p>
-                    <p className={`mt-2 text-sm ${card.descriptionClass}`}>
-                      {card.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 relative z-0">
-                  <p className={`text-sm font-semibold ${card.footnoteClass}`}>
-                    {card.footnote}
-                  </p>
-                  <div className="mt-3 flex">
-                    <span
-                      className={`block h-2 w-20 rounded-full ${card.accentClass}`}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-            <div className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-                  <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        Farm inspections this month
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Real-time progress overview
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                      <KeenIcon icon="activity" className="size-3.5" /> +8% vs
-                      last month
-                    </div>
-                  </div>
-                  <InspectionDonut />
-                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {inspectionQuickStats.map((stat) => (
-                      <div
-                        key={stat.label}
-                        className="rounded-2xl bg-gray-50 p-4"
-                      >
-                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                          {stat.label}
-                        </p>
-                        <p className="mt-2 text-2xl font-bold text-gray-900">
-                          {stat.value}
-                        </p>
-                        <p className="text-xs text-gray-500">{stat.meta}</p>
+              </CardHeader>
+              <CardContent className="px-0">
+                {statsLoading && !stats ? (
+                  <div className="space-y-4 px-6">
+                    {[1, 2, 3, 4].map((item) => (
+                      <div key={item} className="flex items-center gap-4">
+                        <Skeleton className="h-3 w-3 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-1/2" />
+                          <Skeleton className="h-3 w-1/3" />
+                        </div>
+                        <Skeleton className="h-4 w-16" />
                       </div>
                     ))}
                   </div>
-                  <div className="mt-5 grid grid-cols-1 gap-3 text-center text-sm sm:grid-cols-2">
-                    {inspectionsBreakdown.map((item) => (
-                      <div
-                        key={item.label}
-                        className="rounded-2xl border border-gray-100 p-3"
-                      >
-                        <p
-                          className="font-semibold"
-                          style={{ color: item.color }}
+                ) : showActivitiesEmpty ? (
+                  <div className="px-6 py-8 text-sm text-gray-500">
+                    No recent activities found.
+                  </div>
+                ) : (
+                  <ol className="divide-y">
+                    {activityList.map((activity) => {
+                      const categoryColor = activity.category
+                        ? activityCategoryColors[activity.category] ||
+                          "bg-gray-300"
+                        : "bg-gray-300";
+                      return (
+                        <li
+                          key={activity.id}
+                          className="flex items-start gap-4 px-6 py-4"
                         >
-                          {item.value}%
-                        </p>
-                        <p className="text-xs text-gray-500">{item.label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-                  <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        Seed stock per quarter
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Projected stock ready for distribution
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs font-medium text-gray-500">
-                        2025 Forecast
-                      </p>
-                      <p className="text-[11px] uppercase tracking-wide text-gray-400">
-                        Updated 10 mins ago
-                      </p>
-                    </div>
-                  </div>
-                  <SeedStockBar />
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    {seedStockTags.map((tag) => (
-                      <div
-                        key={tag.label}
-                        className="flex items-center gap-2 rounded-full border border-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
-                      >
-                        <span
-                          className="inline-flex size-2 rounded-full"
-                          style={{ backgroundColor: tag.color }}
-                        />
-                        <span>{tag.label}</span>
-                        <span className="text-gray-900">{tag.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-                <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      Recent activities
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Synced 2 minutes ago
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2 text-xs font-medium text-gray-500">
-                    {activityFilters.map((filter) => (
-                      <button
-                        key={filter.label}
-                        type="button"
-                        className="rounded-full border border-gray-200 px-3 py-1 text-[11px] text-gray-600 transition hover:border-emerald-200 hover:text-emerald-700"
-                      >
-                        {filter.label}
-                        <span className="ml-1 text-gray-400">
-                          {filter.value}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {recentActivities.map((item) => (
-                    <div
-                      key={item.title}
-                      className="flex items-start gap-3 rounded-2xl border border-gray-100 p-3"
-                    >
-                      <span
-                        className="mt-1 inline-flex size-3 rounded-full"
-                        style={{ backgroundColor: item.color }}
-                      ></span>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-900">
-                          {item.title}
-                        </p>
-                        <p className="text-xs text-gray-500">{item.entity}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-400 whitespace-nowrap">
-                          {item.time}
-                        </p>
-                        <button className="mt-1 inline-flex items-center text-[11px] font-medium text-emerald-600">
-                          Details
-                          <KeenIcon
-                            icon="arrow-up-right"
-                            className="ml-1 size-3"
+                          <span
+                            className={cn(
+                              "mt-1 size-3 rounded-full",
+                              categoryColor,
+                            )}
+                            aria-hidden="true"
                           />
-                        </button>
-                      </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-gray-900">
+                              {activity.title}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {activity.entity || "—"}
+                            </p>
+                          </div>
+                          <div className="text-right text-xs text-gray-500">
+                            <p>
+                              {activity.status || activity.category || "Update"}
+                            </p>
+                            <p>{formatRelativeTime(activity.timestamp)}</p>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="xl:col-span-5">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  Operations calendar
+                </CardTitle>
+                <CardDescription>
+                  {calendarMeta.monthLabel} {calendarMeta.year}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  defaultMonth={selectedDate}
+                  showOutsideDays={false}
+                  className="rounded-xl border"
+                  style={{
+                    width: "100%",
+                  }}
+                />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {calendarInsights.map((insight) => (
+                    <div
+                      key={insight.label}
+                      className="rounded-2xl border border-gray-100 bg-gray-50/60 px-4 py-3"
+                    >
+                      <p className="text-xs font-medium text-gray-500">
+                        {insight.label}
+                      </p>
+                      <p className="text-2xl font-semibold text-gray-900">
+                        {insight.value}
+                      </p>
+                      <p className="text-xs text-gray-500">{insight.meta}</p>
                     </div>
                   ))}
                 </div>
-                <div className="pt-4 text-right">
-                  <button className="inline-flex items-center text-xs font-semibold text-emerald-700">
-                    View all updates
-                    <KeenIcon icon="chevron-right" className="ml-1 size-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-                <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      {calendarMeta.monthLabel}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {calendarMeta.year} · Operations calendar
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
-                      <KeenIcon icon="calendar" className="size-4" /> Add task
-                    </button>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <button className="rounded-full border border-gray-200 p-2">
-                        <KeenIcon icon="arrow-left" className="size-4" />
-                      </button>
-                      <button className="rounded-full border border-gray-200 p-2">
-                        <KeenIcon icon="arrow-right" className="size-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mx-auto w-full max-w-[320px] space-y-3">
-                  <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-400">
-                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                      (day) => (
-                        <div key={day} className="py-1">
-                          {day}
-                        </div>
-                      )
-                    )}
-                  </div>
-                  <div className="grid grid-cols-7 gap-1 text-sm">
-                    {calendarDays.map((cell) => {
-                      const isSelected =
-                        cell.isCurrentMonth &&
-                        cell.value === calendarMeta.selectedDay;
-                      return (
-                        <div
-                          key={cell.key}
-                          className={`flex h-10 items-center justify-center rounded-2xl border text-sm ${
-                            isSelected
-                              ? "border-emerald-500 bg-emerald-500 font-semibold text-white"
-                              : cell.isCurrentMonth
-                                ? "border-gray-100 text-gray-900"
-                                : "border-transparent text-gray-300"
-                          }`}
-                        >
-                          {cell.value}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="rounded-2xl bg-gray-50 p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500">
-                      <span>Focus for day {calendarMeta.selectedDay}</span>
-                      <span className="inline-flex items-center gap-1 text-emerald-600">
-                        <KeenIcon icon="shield-tick" className="size-3.5" />{" "}
-                        Compliance ready
-                      </span>
-                    </div>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                      {calendarInsights.map((insight) => (
-                        <div
-                          key={insight.label}
-                          className="rounded-xl border border-white bg-white p-3 shadow-sm"
-                        >
-                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            {insight.label}
-                          </p>
-                          <p className="mt-1 text-lg font-semibold text-gray-900">
-                            {insight.value}
-                          </p>
-                          <p className="text-[11px] text-gray-500">
-                            {insight.meta}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              </CardContent>
+            </Card>
+          </section>
         </div>
       </Container>
-    </Fragment>
+    </>
   );
 };
 

@@ -1,9 +1,17 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatars, CommonRating } from '../common';
-import { ITeamProps } from './CardTeam';
+import { CommonAvatars, CommonRating } from "../common";
+import { ITeamProps } from "./CardTeam";
 
-const CardTeamRow = ({ icon, title, description, labels, rating, team, connected }: ITeamProps) => {
+const CardTeamRow = ({
+  icon,
+  title,
+  description,
+  labels,
+  rating,
+  team,
+  connected,
+}: ITeamProps) => {
   const renderItem = (label: string, index: number) => {
     return (
       <span key={index} className="badge badge-sm badge-outline">
@@ -32,7 +40,9 @@ const CardTeamRow = ({ icon, title, description, labels, rating, team, connected
 
         <div className="flex flex-wrap items-center gap-6 lg:gap-12">
           <div className="grid gap-5 justify-end lg:text-end">
-            <span className="text-2xs font-normal text-gray-500 uppercase">skills</span>
+            <span className="text-2xs font-normal text-gray-500 uppercase">
+              skills
+            </span>
             <div className="flex gap-1.5">
               {labels.map((label, index) => {
                 return renderItem(label, index);

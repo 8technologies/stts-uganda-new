@@ -34,7 +34,7 @@ type Subgrowers = {
     id: string | number;
     companyName: string;
   };
-  status: 'Pending' | 'Approved' | 'Rejected';
+  status: "Pending" | "Approved" | "Rejected";
 };
 
 const SubgrowerDetails = ({
@@ -51,7 +51,6 @@ const SubgrowerDetails = ({
       <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto">
         <SheetHeader className="flex justify-between items-center">
           <SheetTitle>Subgrower Details</SheetTitle>
-          
         </SheetHeader>
 
         <div className="p-2 sm:p-4">
@@ -61,7 +60,9 @@ const SubgrowerDetails = ({
                 <label className="block text-sm font-medium text-gray-500 mb-1">
                   Responsible Person
                 </label>
-                <p className="text-gray-900">{application?.responsiblePerson}</p>
+                <p className="text-gray-900">
+                  {application?.responsiblePerson}
+                </p>
               </div>
 
               <div>
@@ -119,7 +120,9 @@ const SubgrowerDetails = ({
                 <label className="block text-sm font-medium text-gray-500 mb-1">
                   Foundation Seed Source
                 </label>
-                <p className="text-gray-900">{application?.foundationSeedSource}</p>
+                <p className="text-gray-900">
+                  {application?.foundationSeedSource}
+                </p>
               </div>
 
               <div>
@@ -133,7 +136,9 @@ const SubgrowerDetails = ({
                 <label className="block text-sm font-medium text-gray-500 mb-1">
                   Subcounty
                 </label>
-                <p className="text-gray-900">{application?.subcounty || 'N/A'}</p>
+                <p className="text-gray-900">
+                  {application?.subcounty || "N/A"}
+                </p>
               </div>
 
               <div>
@@ -147,21 +152,27 @@ const SubgrowerDetails = ({
                 <label className="block text-sm font-medium text-gray-500 mb-1">
                   Planting Date
                 </label>
-                <p className="text-gray-900">{application?.plantingDate || 'N/A'}</p>
+                <p className="text-gray-900">
+                  {application?.plantingDate || "N/A"}
+                </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1">
                   Quantity
                 </label>
-                <p className="text-gray-900">{application?.quantity || 'N/A'}</p>
+                <p className="text-gray-900">
+                  {application?.quantity || "N/A"}
+                </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1">
                   Expected Yield
                 </label>
-                <p className="text-gray-900">{application?.expectedYield || 'N/A'}</p>
+                <p className="text-gray-900">
+                  {application?.expectedYield || "N/A"}
+                </p>
               </div>
             </div>
           </div>
@@ -171,21 +182,21 @@ const SubgrowerDetails = ({
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Latitude
               </label>
-              <p className="text-gray-900">{application?.latitude || 'N/A'}</p>
+              <p className="text-gray-900">{application?.latitude || "N/A"}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Longitude
               </label>
-              <p className="text-gray-900">{application?.longitude || 'N/A'}</p>
+              <p className="text-gray-900">{application?.longitude || "N/A"}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Details
               </label>
-              <p className="text-gray-900">{application?.details || 'N/A'}</p>
+              <p className="text-gray-900">{application?.details || "N/A"}</p>
             </div>
 
             <div>
@@ -204,8 +215,8 @@ const SubgrowerDetails = ({
                   application?.status === "Approved"
                     ? "bg-success-light text-success"
                     : application?.status === "Rejected"
-                    ? "bg-danger-light text-danger"
-                    : "bg-warning-light text-warning"
+                      ? "bg-danger-light text-danger"
+                      : "bg-warning-light text-warning"
                 }`}
               >
                 {application?.status}

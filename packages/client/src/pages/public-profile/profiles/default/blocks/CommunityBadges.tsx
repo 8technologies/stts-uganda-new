@@ -1,6 +1,6 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonHexagonBadge } from '@/partials/common';
+import { CommonHexagonBadge } from "@/partials/common";
 
 interface ICommunityBadgesItem {
   stroke: string;
@@ -17,29 +17,29 @@ interface ICommunityBadgesProps {
 const CommunityBadges = ({ title }: ICommunityBadgesProps) => {
   const items: ICommunityBadgesItems = [
     {
-      stroke: 'stroke-primary-clarity',
-      fill: 'fill-primary-light',
-      icon: 'abstract-39',
-      iconColor: 'text-primary'
+      stroke: "stroke-primary-clarity",
+      fill: "fill-primary-light",
+      icon: "abstract-39",
+      iconColor: "text-primary",
     },
     {
-      stroke: 'stroke-brand-clarity',
-      fill: 'fill-brand-light',
-      icon: 'abstract-44',
-      iconColor: 'text-brand'
+      stroke: "stroke-brand-clarity",
+      fill: "fill-brand-light",
+      icon: "abstract-44",
+      iconColor: "text-brand",
     },
     {
-      stroke: 'stroke-success-clarity',
-      fill: 'fill-success-light',
-      icon: 'abstract-25',
-      iconColor: 'text-success'
+      stroke: "stroke-success-clarity",
+      fill: "fill-success-light",
+      icon: "abstract-25",
+      iconColor: "text-success",
     },
     {
-      stroke: 'stroke-info-clarity',
-      fill: 'fill-info-light',
-      icon: 'delivery-24',
-      iconColor: 'text-info'
-    }
+      stroke: "stroke-info-clarity",
+      fill: "fill-info-light",
+      icon: "delivery-24",
+      iconColor: "text-info",
+    },
   ];
 
   const renderItem = (item: ICommunityBadgesItem, index: number) => {
@@ -49,7 +49,12 @@ const CommunityBadges = ({ title }: ICommunityBadgesProps) => {
         stroke={item.stroke}
         fill={item.fill}
         size="size-[50px]"
-        badge={<KeenIcon icon={item.icon} className={`text-1.5xl ps-px ${item.iconColor}`} />}
+        badge={
+          <KeenIcon
+            icon={item.icon}
+            className={`text-1.5xl ps-px ${item.iconColor}`}
+          />
+        }
       />
     );
   };
@@ -75,5 +80,5 @@ export {
   CommunityBadges,
   type ICommunityBadgesItem,
   type ICommunityBadgesItems,
-  type ICommunityBadgesProps
+  type ICommunityBadgesProps,
 };

@@ -8,19 +8,19 @@ import { useNavigate } from "react-router-dom";
 import { LOAD_SEED_LABELS } from "@/gql/queries";
 import { CREATE_SEED_LABEL, DELETE_SEED_LABEL } from "@/gql/mutations";
 import SeedLabelForm from "./SeedLabelForm";
-import SeedLabelDetailSheet from './SeedLabelDetails';
+import SeedLabelDetailSheet from "./SeedLabelDetails";
 import { toast } from "sonner";
-import { KeenIcon } from '@/components';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
+import { KeenIcon } from "@/components";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Plus,
+  Search,
+  Filter,
   Download,
   MoreVertical,
   Eye,
@@ -38,28 +38,27 @@ import { useAuthContext } from "@/auth";
 import { getPermissionsFromToken } from "@/utils/permissions";
 
 const SeedLabelManagementPage = () => {
-
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  const canManageSeedLabels = !!perms['can_manage_seed_labels'];
-  const canPrintLabels = !!perms['can_print_seed_labels'];
-  const canDeleteLabels = !!perms['can_edit_seed_labels'];
+  const canManageSeedLabels = !!perms["can_manage_seed_labels"];
+  const canPrintLabels = !!perms["can_print_seed_labels"];
 
-  const userEditPermissions = canDeleteLabels;
-  
   const { data, loading, error } = useQuery(LOAD_SEED_LABELS, {
     fetchPolicy: "cache-and-network",
   });
-  
-  const [createSeedLabel, { loading: saving }] = useMutation(CREATE_SEED_LABEL, {
-    refetchQueries: [{ query: LOAD_SEED_LABELS }],
-    awaitRefetchQueries: true
-  });
+
+  const [createSeedLabel, { loading: saving }] = useMutation(
+    CREATE_SEED_LABEL,
+    {
+      refetchQueries: [{ query: LOAD_SEED_LABELS }],
+      awaitRefetchQueries: true,
+    },
+  );
   const [deleteSeedLabel] = useMutation(DELETE_SEED_LABEL, {
     refetchQueries: [{ query: LOAD_SEED_LABELS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
-  
+
   const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
   const [selectedSeedLabel, setSelectedSeedLabel] = useState<any>(null);
@@ -85,43 +84,52 @@ const SeedLabelManagementPage = () => {
 
     try {
       await createSeedLabel({ variables: { input } });
-      toast.success('Seed label created successfully');
+      toast.success("Seed label created successfully");
       setIsCreateSheetOpen(false);
     } catch (e: any) {
-      toast.error('Failed to create seed label', { description: e?.message ?? 'Unknown error' });
+      toast.error("Failed to create seed label", {
+        description: e?.message ?? "Unknown error",
+      });
     }
   };
 
   const handleEdit = (id: string) => {
-    const seedLabelToEdit = data.getSeedLabels?.find((label: any) => label.id === id);
+    const seedLabelToEdit = data.getSeedLabels?.find(
+      (label: any) => label.id === id,
+    );
     setSelectedSeedLabel(seedLabelToEdit);
     setIsEditSheetOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this seed label?')) {
+    if (window.confirm("Are you sure you want to delete this seed label?")) {
       try {
         await deleteSeedLabel({ variables: { id } });
-        toast.success('Seed label deleted successfully');
+        toast.success("Seed label deleted successfully");
       } catch (e: any) {
-        toast.error('Failed to delete seed label', { description: e?.message ?? 'Unknown error' });
+        toast.error("Failed to delete seed label", {
+          description: e?.message ?? "Unknown error",
+        });
       }
     }
   };
 
   const getStatusBadge = (status: string) => {
-    const configs: Record<string, { icon: any; bg: string; text: string; label: string }> = {
+    const configs: Record<
+      string,
+      { icon: any; bg: string; text: string; label: string }
+    > = {
       approved: {
         icon: <CheckCircle className="w-3.5 h-3.5" />,
         bg: "bg-emerald-100",
         text: "text-emerald-700",
-        label: "Approved"
+        label: "Approved",
       },
       pending: {
         icon: <Clock className="w-3.5 h-3.5" />,
         bg: "bg-amber-100",
         text: "text-amber-700",
-        label: "Pending"
+        label: "Pending",
       },
       rejected: {
         icon: <XCircle className="w-3.5 h-3.5" />,
@@ -141,33 +149,45 @@ const SeedLabelManagementPage = () => {
       icon: <AlertCircle className="w-3.5 h-3.5" />,
       bg: "bg-gray-100",
       text: "text-gray-700",
-      label: status || "Unknown"
+      label: status || "Unknown",
     };
 
     return (
-      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+      <span
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}
+      >
         {config.icon}
         {config.label}
       </span>
     );
   };
 
-  const filteredLabels = data?.getSeedLabels?.filter((label: any) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      label.id?.toLowerCase().includes(query) ||
-      label.label_number?.toLowerCase().includes(query) ||
-      label.createdBy?.username?.toLowerCase().includes(query) ||
-      label.status?.toLowerCase().includes(query)
-    );
-  }) || [];
+  const filteredLabels =
+    data?.getSeedLabels?.filter((label: any) => {
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        label.id?.toLowerCase().includes(query) ||
+        label.label_number?.toLowerCase().includes(query) ||
+        label.createdBy?.username?.toLowerCase().includes(query) ||
+        label.status?.toLowerCase().includes(query)
+      );
+    }) || [];
 
   const stats = {
     total: data?.getSeedLabels?.length || 0,
-    approved: data?.getSeedLabels?.filter((l: any) => l.status?.toLowerCase() === 'approved')?.length || 0,
-    pending: data?.getSeedLabels?.filter((l: any) => l.status?.toLowerCase() === 'pending')?.length || 0,
-    rejected: data?.getSeedLabels?.filter((l: any) => l.status?.toLowerCase() === 'rejected')?.length || 0
+    approved:
+      data?.getSeedLabels?.filter(
+        (l: any) => l.status?.toLowerCase() === "approved",
+      )?.length || 0,
+    pending:
+      data?.getSeedLabels?.filter(
+        (l: any) => l.status?.toLowerCase() === "pending",
+      )?.length || 0,
+    rejected:
+      data?.getSeedLabels?.filter(
+        (l: any) => l.status?.toLowerCase() === "rejected",
+      )?.length || 0,
   };
 
   return (
@@ -190,16 +210,15 @@ const SeedLabelManagementPage = () => {
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button> */}
-              { !canManageSeedLabels && (
-                <Button 
-                  onClick={handleCreate} 
+              {!canManageSeedLabels && (
+                <Button
+                  onClick={handleCreate}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
                 >
-                <Plus className="w-4 h-4 mr-2" />
+                  <Plus className="w-4 h-4 mr-2" />
                   Create Label
                 </Button>
               )}
-              
             </div>
           </div>
         </div>
@@ -210,8 +229,12 @@ const SeedLabelManagementPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Labels</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Total Labels
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                    {stats.total}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
                   <Package className="w-6 h-6 text-blue-600" />
@@ -225,7 +248,9 @@ const SeedLabelManagementPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Approved</p>
-                  <p className="text-2xl font-bold text-emerald-600 mt-1">{stats.approved}</p>
+                  <p className="text-2xl font-bold text-emerald-600 mt-1">
+                    {stats.approved}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
                   <CheckCircle className="w-6 h-6 text-emerald-600" />
@@ -239,7 +264,9 @@ const SeedLabelManagementPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-amber-600 mt-1">{stats.pending}</p>
+                  <p className="text-2xl font-bold text-amber-600 mt-1">
+                    {stats.pending}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
                   <Clock className="w-6 h-6 text-amber-600" />
@@ -253,7 +280,9 @@ const SeedLabelManagementPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Rejected</p>
-                  <p className="text-2xl font-bold text-red-600 mt-1">{stats.rejected}</p>
+                  <p className="text-2xl font-bold text-red-600 mt-1">
+                    {stats.rejected}
+                  </p>
                 </div>
                 <div className="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center">
                   <XCircle className="w-6 h-6 text-red-600" />
@@ -267,7 +296,9 @@ const SeedLabelManagementPage = () => {
         <Card className="border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-200 bg-white">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <CardTitle className="text-lg font-semibold text-gray-900">All Seed Labels</CardTitle>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                All Seed Labels
+              </CardTitle>
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -316,7 +347,9 @@ const SeedLabelManagementPage = () => {
                       <td colSpan={5} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-                          <p className="mt-3 text-sm text-gray-600">Loading seed labels...</p>
+                          <p className="mt-3 text-sm text-gray-600">
+                            Loading seed labels...
+                          </p>
                         </div>
                       </td>
                     </tr>
@@ -325,8 +358,12 @@ const SeedLabelManagementPage = () => {
                       <td colSpan={5} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <AlertCircle className="w-12 h-12 text-red-500 mb-3" />
-                          <p className="text-sm font-medium text-gray-900">Error loading data</p>
-                          <p className="text-sm text-gray-600 mt-1">{error.message}</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            Error loading data
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {error.message}
+                          </p>
                         </div>
                       </td>
                     </tr>
@@ -335,17 +372,21 @@ const SeedLabelManagementPage = () => {
                       <td colSpan={5} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center justify-center">
                           <Package className="w-12 h-12 text-gray-400 mb-3" />
-                          <p className="text-sm font-medium text-gray-900">No seed labels found</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            No seed labels found
+                          </p>
                           <p className="text-sm text-gray-600 mt-1">
-                            {searchQuery ? "Try adjusting your search" : "Get started by creating a new label"}
+                            {searchQuery
+                              ? "Try adjusting your search"
+                              : "Get started by creating a new label"}
                           </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
                     filteredLabels.map((label: any) => (
-                      <tr 
-                        key={label.id} 
+                      <tr
+                        key={label.id}
                         className="hover:bg-gray-50 transition-colors cursor-pointer"
                         onClick={() => setDetailsItem(label)}
                       >
@@ -368,7 +409,9 @@ const SeedLabelManagementPage = () => {
                           <div className="flex items-center">
                             <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center mr-3">
                               <span className="text-xs font-medium text-emerald-700">
-                                {label.createdBy?.username?.charAt(0).toUpperCase() || "?"}
+                                {label.createdBy?.username
+                                  ?.charAt(0)
+                                  .toUpperCase() || "?"}
                               </span>
                             </div>
                             <span className="text-sm text-gray-900">
@@ -379,18 +422,24 @@ const SeedLabelManagementPage = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           {getStatusBadge(label.status)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right" onClick={(e) => e.stopPropagation()}>
+                        <td
+                          className="px-6 py-4 whitespace-nowrap text-right"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 className="h-8 w-8 p-0 hover:bg-gray-100"
                               >
                                 <MoreVertical className="h-4 w-4 text-gray-600" />
                                 <span className="sr-only">Open menu</span>
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-[160px]">
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-[160px]"
+                            >
                               <DropdownMenuItem
                                 onClick={() => setDetailsItem(label)}
                                 className="cursor-pointer"
@@ -455,7 +504,7 @@ const SeedLabelManagementPage = () => {
 
       {/* Details Sheet */}
       {detailsItem && (
-        <SeedLabelDetailSheet 
+        <SeedLabelDetailSheet
           open={!!detailsItem}
           onOpenChange={() => setDetailsItem(null)}
           data={detailsItem}

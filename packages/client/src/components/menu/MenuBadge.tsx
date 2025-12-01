@@ -1,9 +1,11 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-import { IMenuBadgeProps } from './';
+import { IMenuBadgeProps } from "./";
 
 const MenuBadge = ({ className, children }: IMenuBadgeProps) => {
-  return <div className={clsx('menu-badge', className && className)}>{children}</div>;
+  return (
+    <div className={clsx("menu-badge", className && className)}>{children}</div>
+  );
 };
 
 export { MenuBadge };

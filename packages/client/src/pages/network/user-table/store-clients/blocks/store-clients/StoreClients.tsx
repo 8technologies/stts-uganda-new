@@ -1,35 +1,37 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
 import {
   DataGrid,
   DataGridColumnHeader,
   KeenIcon,
   useDataGrid,
   DataGridRowSelectAll,
-  DataGridRowSelect
-} from '@/components';
-import { ColumnDef, Column, RowSelectionState } from '@tanstack/react-table';
-import { toAbsoluteUrl } from '@/utils';
+  DataGridRowSelect,
+} from "@/components";
+import { ColumnDef, Column, RowSelectionState } from "@tanstack/react-table";
+import { toAbsoluteUrl } from "@/utils";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { StoreClientsData, IStoreClientsData } from '.';
-import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
+  SelectValue,
+} from "@/components/ui/select";
+import { StoreClientsData, IStoreClientsData } from ".";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
 }
 
 const StoreClients = () => {
-  const ColumnInputFilter = <TData, TValue>({ column }: IColumnFilterProps<TData, TValue>) => {
+  const ColumnInputFilter = <TData, TValue>({
+    column,
+  }: IColumnFilterProps<TData, TValue>) => {
     return (
       <Input
         placeholder="Filter..."
-        value={(column.getFilterValue() as string) ?? ''}
+        value={(column.getFilterValue() as string) ?? ""}
         onChange={(event) => column.setFilterValue(event.target.value)}
         className="h-9 w-full max-w-40"
       />
@@ -39,18 +41,18 @@ const StoreClients = () => {
   const columns = useMemo<ColumnDef<IStoreClientsData>[]>(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: "id",
         header: () => <DataGridRowSelectAll />,
         cell: ({ row }) => <DataGridRowSelect row={row} />,
         enableSorting: false,
         enableHiding: false,
         meta: {
-          headerClassName: 'w-0'
-        }
+          headerClassName: "w-0",
+        },
       },
       {
         accessorFn: (row) => row.user,
-        id: 'user',
+        id: "user",
         header: ({ column }) => (
           <DataGridColumnHeader
             title="Member"
@@ -62,7 +64,9 @@ const StoreClients = () => {
         cell: (info: any) => (
           <div className="flex items-center gap-2.5">
             <img
-              src={toAbsoluteUrl(`/media/avatars/${info.row.original.user.avatar}`)}
+              src={toAbsoluteUrl(
+                `/media/avatars/${info.row.original.user.avatar}`,
+              )}
               className="size-7 rounded-full shrink-0"
               alt=""
             />
@@ -73,81 +77,98 @@ const StoreClients = () => {
               >
                 {info.row.original.user.name}
               </a>
-              <a className="text-2sm text-gray-700 font-normal hover:text-primary-active" href="#">
+              <a
+                className="text-2sm text-gray-700 font-normal hover:text-primary-active"
+                href="#"
+              >
                 {info.row.original.user.email}
               </a>
             </div>
           </div>
         ),
         meta: {
-          headerClassName: 'min-w-[300px]'
-        }
+          headerClassName: "min-w-[300px]",
+        },
       },
       {
         accessorFn: (row) => row.clientId,
-        id: 'clientId',
-        header: ({ column }) => <DataGridColumnHeader title="Client ID" column={column} />,
+        id: "clientId",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Client ID" column={column} />
+        ),
         enableSorting: true,
         cell: (info: any) => info.row.original.clientId,
         meta: {
-          headerClassName: 'min-w-[150px]',
-          cellClassName: 'text-gray-800 font-normal'
-        }
+          headerClassName: "min-w-[150px]",
+          cellClassName: "text-gray-800 font-normal",
+        },
       },
       {
         accessorFn: (row) => row.ordersValue,
-        id: 'ordersValue',
-        header: ({ column }) => <DataGridColumnHeader title="Orders Value" column={column} />,
+        id: "ordersValue",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Orders Value" column={column} />
+        ),
         enableSorting: true,
         cell: (info: any) => info.row.original.ordersValue,
         meta: {
-          headerClassName: 'min-w-[150px]',
-          cellClassName: 'text-gray-800 font-normal'
-        }
+          headerClassName: "min-w-[150px]",
+          cellClassName: "text-gray-800 font-normal",
+        },
       },
       {
         accessorFn: (row) => row.location,
-        id: 'location',
-        header: ({ column }) => <DataGridColumnHeader title="Location" column={column} />,
+        id: "location",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Location" column={column} />
+        ),
         enableSorting: true,
         cell: (info) => (
           <div className="flex items-center gap-1.5">
             <img
-              src={toAbsoluteUrl(`/media/flags/${info.row.original.location.flag}`)}
+              src={toAbsoluteUrl(
+                `/media/flags/${info.row.original.location.flag}`,
+              )}
               className="size-4 rounded-full shrink-0"
               alt=""
             />
-            <span className="text-gray-800 font-normal">{info.row.original.location.name}</span>
+            <span className="text-gray-800 font-normal">
+              {info.row.original.location.name}
+            </span>
           </div>
         ),
         meta: {
-          headerClassName: 'min-w-[150px]'
-        }
+          headerClassName: "min-w-[150px]",
+        },
       },
       {
         accessorFn: (row) => row.activity,
-        id: 'activity',
-        header: ({ column }) => <DataGridColumnHeader title="Activity" column={column} />,
+        id: "activity",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Activity" column={column} />
+        ),
         enableSorting: true,
         cell: (info: any) => info.row.original.activity,
         meta: {
-          headerClassName: 'min-w-[150px]',
-          cellClassName: 'text-gray-800 font-normal'
-        }
+          headerClassName: "min-w-[150px]",
+          cellClassName: "text-gray-800 font-normal",
+        },
       },
       {
-        id: 'actions',
-        header: ({ column }) => <DataGridColumnHeader title="Invoices" column={column} />,
+        id: "actions",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Invoices" column={column} />
+        ),
         enableSorting: true,
         cell: () => <button className="btn btn-link">View</button>,
         meta: {
-          headerClassName: 'min-w-[100px]',
-          cellClassName: 'text-center'
-        }
+          headerClassName: "min-w-[100px]",
+          cellClassName: "text-center",
+        },
       },
       {
-        id: 'dots',
-        header: () => '',
+        id: "dots",
+        header: () => "",
         enableSorting: false,
         cell: () => {
           return (
@@ -157,11 +178,11 @@ const StoreClients = () => {
           );
         },
         meta: {
-          headerClassName: 'w-[60px]'
-        }
-      }
+          headerClassName: "w-[60px]",
+        },
+      },
     ],
-    []
+    [],
   );
 
   const data: IStoreClientsData[] = useMemo(() => StoreClientsData, []);
@@ -173,20 +194,22 @@ const StoreClients = () => {
       toast(`Total ${selectedRowIds.length} are selected.`, {
         description: `Selected row IDs: ${selectedRowIds}`,
         action: {
-          label: 'Undo',
-          onClick: () => console.log('Undo')
-        }
+          label: "Undo",
+          onClick: () => console.log("Undo"),
+        },
       });
     }
   };
 
   const Toolbar = () => {
     const { table } = useDataGrid();
-    const [searchInput, setSearchInput] = useState('');
+    const [searchInput, setSearchInput] = useState("");
 
     return (
       <div className="card-header flex-wrap gap-2 border-b-0 px-5">
-        <h3 className="card-title font-medium text-sm">Showing 10 of 49,053 users</h3>
+        <h3 className="card-title font-medium text-sm">
+          Showing 10 of 49,053 users
+        </h3>
 
         <div className="flex flex-wrap gap-2 lg:gap-5">
           <div className="flex">
@@ -240,7 +263,7 @@ const StoreClients = () => {
       rowSelection={true}
       onRowSelectionChange={handleRowSelection}
       pagination={{ size: 5 }}
-      sorting={[{ id: 'user', desc: false }]}
+      sorting={[{ id: "user", desc: false }]}
       toolbar={<Toolbar />}
       layout={{ card: true }}
     />

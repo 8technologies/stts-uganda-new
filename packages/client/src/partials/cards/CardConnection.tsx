@@ -1,6 +1,6 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
-import { CommonAvatar, CommonAvatars } from '../common';
+import { CommonAvatar, CommonAvatars } from "../common";
 
 interface IConnectionItem {
   total: string;
@@ -38,7 +38,7 @@ const CardConnection = ({
   email,
   team,
   statistics,
-  connected
+  connected,
 }: IConnectionProps) => {
   const renderItem = (statistic: IConnectionItem, index: number) => {
     return (
@@ -46,7 +46,9 @@ const CardConnection = ({
         key={index}
         className="grid grid-cols-1 gap-1.5 border-[0.5px] border-dashed border-gray-400 rounded-md px-2.5 py-2 shrink-0 min-w-24 max-w-auto"
       >
-        <span className="text-gray-900 text-2sm leading-none font-medium">{statistic.total}</span>
+        <span className="text-gray-900 text-2sm leading-none font-medium">
+          {statistic.total}
+        </span>
         <span className="text-gray-700 text-xs">{statistic.description}</span>
       </div>
     );
@@ -105,7 +107,9 @@ const CardConnection = ({
         </div>
 
         <div className="grid justify-center gap-1.5 mb-7.5">
-          <span className="text-2xs uppercase text-gray-600 text-center">team</span>
+          <span className="text-2xs uppercase text-gray-600 text-center">
+            team
+          </span>
           <CommonAvatars group={team.group} more={team.more} size={team.size} />
         </div>
 
@@ -131,4 +135,9 @@ const CardConnection = ({
   );
 };
 
-export { CardConnection, type IConnectionItem, type IConnectionItems, type IConnectionProps };
+export {
+  CardConnection,
+  type IConnectionItem,
+  type IConnectionItems,
+  type IConnectionProps,
+};

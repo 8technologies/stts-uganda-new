@@ -1,8 +1,8 @@
-import { KeenIcon } from '@/components';
-import { Container } from '@/components/container';
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
-import { useDemo6Layout } from '../';
+import { KeenIcon } from "@/components";
+import { Container } from "@/components/container";
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
+import { useDemo6Layout } from "../";
 
 const Header = () => {
   const { setMobileSidebarOpen } = useDemo6Layout();
@@ -16,11 +16,11 @@ const Header = () => {
       <Container className="flex items-center justify-between flex-wrap gap-3">
         <Link to="/">
           <img
-            src={toAbsoluteUrl('/media/app/mini-logo-gray.svg')}
+            src={toAbsoluteUrl("/media/app/mini-logo-gray.svg")}
             className="dark:hidden min-h-[30px]"
           />
           <img
-            src={toAbsoluteUrl('/media/app/mini-logo-gray-dark.svg')}
+            src={toAbsoluteUrl("/media/app/mini-logo-gray-dark.svg")}
             className="hidden dark:block min-h-[30px]"
           />
         </Link>

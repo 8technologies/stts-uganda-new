@@ -1,10 +1,10 @@
 export type Pad2 = number | `0${number}`;
 export type IsoDate = `${number}-${Pad2}-${Pad2}`;
-export type URL = null | `${'http://' | 'https://'}${string}`;
+export type URL = null | `${"http://" | "https://"}${string}`;
 
 export type Link = {
   url: URL;
-  label: '&laquo; Previous' | `${number}` | `Next &raquo;`;
+  label: "&laquo; Previous" | `${number}` | `Next &raquo;`;
   active: boolean;
 };
 

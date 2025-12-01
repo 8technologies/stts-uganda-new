@@ -1,3 +1,3 @@
-export * from './AboutMe';
-export * from './GettingStarted';
-export * from './OpenToWork';
+export * from "./AboutMe";
+export * from "./GettingStarted";
+export * from "./OpenToWork";

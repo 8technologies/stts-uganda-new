@@ -1,12 +1,12 @@
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
 
 const DropdownNotificationsItem12 = () => {
   return (
     <div className="flex grow gap-2.5 px-5">
       <div className="relative shrink-0 mt-0.5">
         <img
-          src={toAbsoluteUrl('/media/avatars/300-34.png')}
+          src={toAbsoluteUrl("/media/avatars/300-34.png")}
           className="rounded-full size-8"
           alt="Ava Peterson"
         />
@@ -16,7 +16,10 @@ const DropdownNotificationsItem12 = () => {
       <div className="flex flex-col gap-3.5 grow">
         <div className="flex flex-col gap-1">
           <div className="text-2sm font-medium mb-px">
-            <Link to="#" className="hover:text-primary-active text-gray-900 font-semibold me-1">
+            <Link
+              to="#"
+              className="hover:text-primary-active text-gray-900 font-semibold me-1"
+            >
               Ava Peterson
             </Link>
             <span className="text-gray-700">uploaded attachment</span>
@@ -30,10 +33,17 @@ const DropdownNotificationsItem12 = () => {
 
         <div className="card shadow-none flex items-center justify-between flex-row gap-1.5 p-2.5 rounded-lg bg-light-active">
           <div className="flex items-center gap-1.5">
-            <img src={toAbsoluteUrl('/media/file-types/xls.svg')} className="h-6" alt="" />
+            <img
+              src={toAbsoluteUrl("/media/file-types/xls.svg")}
+              className="h-6"
+              alt=""
+            />
 
             <div className="flex flex-col gap-0.5">
-              <Link to="#" className="hover:text-primary-active font-medium text-gray-700 text-xs">
+              <Link
+                to="#"
+                className="hover:text-primary-active font-medium text-gray-700 text-xs"
+              >
                 Redesign-2024.xls
               </Link>
               <span className="font-medium text-gray-500 text-2xs">2.6 MB</span>

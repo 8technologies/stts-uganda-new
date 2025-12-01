@@ -43,10 +43,8 @@ interface StockExam {
   reportUrl?: string;
 }
 
-
-
 const relativeTime = (iso?: string) => {
-  if (!iso) return '-';
+  if (!iso) return "-";
   const then = new Date(iso).getTime();
   const now = Date.now();
   const diff = Math.max(0, now - then);
@@ -54,32 +52,58 @@ const relativeTime = (iso?: string) => {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
   const months = Math.floor(days / 30);
-  if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
-  if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
-  if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-  if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-  return 'just now';
+  if (months > 0) return `${months} month${months > 1 ? "s" : ""} ago`;
+  if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`;
+  if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+  return "just now";
 };
 
 export const statusBadge = (s: string) => {
-  const base = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium';
-  if (/approved/i.test(s)) return <span className={`${base} bg-green-100 text-green-700`}><span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>Accepted</span>;
-  if (/inspector_assigned/i.test(s)) return <span className={`${base} bg-yellow-100 text-yellow-700`}><span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>Inspector assigned</span>;
-  if (/rejected/i.test(s)) return <span className={`${base} bg-red-100 text-red-700`}><span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>Rejected</span>;
-  if (/halt/i.test(s)) return <span className={`${base} bg-orange-100 text-orange-700`}><span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>Halted</span>;
-  return <span className={`${base} bg-orange-100 text-orange-700`}><span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>{s}</span>;
+  const base =
+    "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium";
+  if (/approved/i.test(s))
+    return (
+      <span className={`${base} bg-green-100 text-green-700`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>Accepted
+      </span>
+    );
+  if (/inspector_assigned/i.test(s))
+    return (
+      <span className={`${base} bg-yellow-100 text-yellow-700`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
+        Inspector assigned
+      </span>
+    );
+  if (/rejected/i.test(s))
+    return (
+      <span className={`${base} bg-red-100 text-red-700`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>Rejected
+      </span>
+    );
+  if (/halt/i.test(s))
+    return (
+      <span className={`${base} bg-orange-100 text-orange-700`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>Halted
+      </span>
+    );
+  return (
+    <span className={`${base} bg-orange-100 text-orange-700`}>
+      <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+      {s}
+    </span>
+  );
 };
 
 export const seedCategory = (s: string) => {
-  console.log('seedCategory input:', s);
-  if(s =='Grower_seed'){
-    return 'Grower seed';
-  }else if(s=='Import_seed'){
-    return 'Import seed';
-  }
-  else if(s=='QDS_seed'){
-    return 'QDS seed';
-  }else{
+  console.log("seedCategory input:", s);
+  if (s == "Grower_seed") {
+    return "Grower seed";
+  } else if (s == "Import_seed") {
+    return "Import seed";
+  } else if (s == "QDS_seed") {
+    return "QDS seed";
+  } else {
     return s;
   }
 };
@@ -87,15 +111,22 @@ export const seedCategory = (s: string) => {
 const StockExamination: React.FC = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  const canAssignInspector = !!perms['qa_can_assign_inspector'];
+  const canAssignInspector = !!perms["qa_can_assign_inspector"];
 
-  const { data:examinations, loading:examinationsLoading, error:examErrors, refetch } = useQuery(LOAD_STOCK_EXAMINATIONS);
+  const {
+    data: examinations,
+    loading: examinationsLoading,
+    error: examErrors,
+    refetch,
+  } = useQuery(LOAD_STOCK_EXAMINATIONS);
 
   // const [items, setItems] = useState<StockExam[]>(examinations?.stockExaminations || []);
-  const items = useMemo(() => (examinations?.stockExaminations ?? []) as any[], [examinations]);
-    
-  
-  console.log('StockExaminations data:', examinations, items);
+  const items = useMemo(
+    () => (examinations?.stockExaminations ?? []) as any[],
+    [examinations],
+  );
+
+  console.log("StockExaminations data:", examinations, items);
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null);
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -104,19 +135,22 @@ const StockExamination: React.FC = () => {
   const [inspectionItem, setInspectionItem] = useState<string | null>(null);
   const [isInspectionOpen, setIsInspectionOpen] = useState(false);
 
-  const [searchInput, setSearchInput] = useState('');
-  const [inspector, setInspector] = useState('');
+  const [searchInput, setSearchInput] = useState("");
+  const [inspector, setInspector] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  
-  const { data: inspectorsData, loading: inspectorsLoading, error: inspectorsError } = useQuery(LOAD_INSPECTORS);
+  const {
+    data: inspectorsData,
+    loading: inspectorsLoading,
+    error: inspectorsError,
+  } = useQuery(LOAD_INSPECTORS);
 
   const [assignInspector, { loading: assigning }] = useMutation(
     ASSIGN_STOCK_EXAMINATION_INSPECTOR,
     {
-      refetchQueries:[{query: LOAD_STOCK_EXAMINATIONS}],
-      awaitRefetchQueries: true
-    }
+      refetchQueries: [{ query: LOAD_STOCK_EXAMINATIONS }],
+      awaitRefetchQueries: true,
+    },
   );
 
   const filteredItems = useMemo(() => {
@@ -124,9 +158,15 @@ const StockExamination: React.FC = () => {
     if (!q) return items;
     return items.filter(
       (it) =>
-        String(it.mother_lot || '').toLowerCase().includes(q) ||
-        String(it.createdBy || '').toLowerCase().includes(q) ||
-        String(it.category || '').toLowerCase().includes(q)
+        String(it.mother_lot || "")
+          .toLowerCase()
+          .includes(q) ||
+        String(it.createdBy || "")
+          .toLowerCase()
+          .includes(q) ||
+        String(it.category || "")
+          .toLowerCase()
+          .includes(q),
     );
   }, [items, searchInput]);
 
@@ -136,36 +176,42 @@ const StockExamination: React.FC = () => {
   };
 
   const toggleSelect = (id: string) => {
-    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
   };
 
- 
-
   const handleAssign = async () => {
-        // setErrorMsg(null);
-        if (!inspector || selectedIds.length === 0) return;
-        try {
-          const res = await assignInspector({ variables: { input: { ids: selectedIds, inspectorId: inspector } } });
-          const ok = res?.data?.assignStockExaminationInspector?.success;
-          if (!ok) throw new Error(res?.data?.assignStockExaminationInspector?.message || 'Failed to assign inspector');
-          toast('Inspector assigned');
-          setInspector('');
-          // Clear selection after success
-          // table.toggleAllRowsSelected(false);
-        } catch (e: any) {
-          const msg = e?.message || 'Failed to assign inspector';
-          // setErrorMsg(msg);
-          toast('Failed to assign inspector', { description: msg });
-        }
-      };
+    // setErrorMsg(null);
+    if (!inspector || selectedIds.length === 0) return;
+    try {
+      const res = await assignInspector({
+        variables: { input: { ids: selectedIds, inspectorId: inspector } },
+      });
+      const ok = res?.data?.assignStockExaminationInspector?.success;
+      if (!ok)
+        throw new Error(
+          res?.data?.assignStockExaminationInspector?.message ||
+            "Failed to assign inspector",
+        );
+      toast("Inspector assigned");
+      setInspector("");
+      // Clear selection after success
+      // table.toggleAllRowsSelected(false);
+    } catch (e: any) {
+      const msg = e?.message || "Failed to assign inspector";
+      // setErrorMsg(msg);
+      toast("Failed to assign inspector", { description: msg });
+    }
+  };
 
   const handleCreateSaved = async () => {
     try {
       await refetch(); // <-- This refreshes the table data
-      toast.success('Stock examination added successfully');
+      toast.success("Stock examination added successfully");
     } catch (error) {
-      console.error('Error refetching:', error);
-      toast.error('Failed to refresh data');
+      console.error("Error refetching:", error);
+      toast.error("Failed to refresh data");
     } finally {
       setCreateOpen(false);
     }
@@ -174,16 +220,15 @@ const StockExamination: React.FC = () => {
   const handleinspectionOpen = (item: string) => {
     setInspectionItem(item);
     setIsInspectionOpen(true);
-
   };
 
-  const handleInspection = async(data: any) => {
+  const handleInspection = async (data: any) => {
     try {
       await refetch(); // <-- This refreshes the table data
-      toast.success('Stock examination inspection recorded successfully');
+      toast.success("Stock examination inspection recorded successfully");
     } catch (error) {
-      console.error('Error refetching:', error);
-      toast.error('Failed to refresh data');
+      console.error("Error refetching:", error);
+      toast.error("Failed to refresh data");
     } finally {
       setIsInspectionOpen(false);
     }
@@ -395,14 +440,22 @@ const StockExamination: React.FC = () => {
       <div className="bg-white border-b px-6 py-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Stock Examination</h1>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Stock Examination
+            </h1>
             <p className="text-sm text-gray-500 mt-1">
-              Returns: <span className="font-medium text-gray-900">{filteredItems.length}</span> · Showing latest
+              Returns:{" "}
+              <span className="font-medium text-gray-900">
+                {filteredItems.length}
+              </span>{" "}
+              · Showing latest
             </p>
           </div>
           <div className="flex items-center gap-3">
-            
-            <Button onClick={() => setCreateOpen(true)} className="gap-2 bg-green-600 hover:bg-green-700">
+            <Button
+              onClick={() => setCreateOpen(true)}
+              className="gap-2 bg-green-600 hover:bg-green-700"
+            >
               <KeenIcon icon="plus" />
               Add Return
             </Button>
@@ -419,7 +472,10 @@ const StockExamination: React.FC = () => {
 
           <div className="flex-1 max-w-md">
             <div className="relative">
-              <KeenIcon icon="magnifier" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <KeenIcon
+                icon="magnifier"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
               <input
                 type="text"
                 placeholder="Search returns"
@@ -434,21 +490,35 @@ const StockExamination: React.FC = () => {
             {selectedIds.length > 0 && (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">
-                  Selected: <strong className="text-gray-900">{selectedIds.length}</strong>
+                  Selected:{" "}
+                  <strong className="text-gray-900">
+                    {selectedIds.length}
+                  </strong>
                 </span>
                 <div className="w-px h-6 bg-gray-300"></div>
               </div>
             )}
 
-            <Select value={inspector} onValueChange={setInspector} disabled={inspectorsLoading || !!inspectorsError}>
+            <Select
+              value={inspector}
+              onValueChange={setInspector}
+              disabled={inspectorsLoading || !!inspectorsError}
+            >
               <SelectTrigger className="w-56 h-9 rounded-lg border-gray-300">
-                <SelectValue placeholder={inspectorsLoading ? 'Loading…' : 'Choose inspector'} />
+                <SelectValue
+                  placeholder={
+                    inspectorsLoading ? "Loading…" : "Choose inspector"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {inspectorsData?.inspectors?.map((ins: any) => (
                   <SelectItem key={ins.id} value={ins.id}>
-                    {ins.name || ins.username || ins.company_initials || 'Unknown'}
-                    {ins.district ? ` (${ins.district})` : ''}
+                    {ins.name ||
+                      ins.username ||
+                      ins.company_initials ||
+                      "Unknown"}
+                    {ins.district ? ` (${ins.district})` : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -478,7 +548,10 @@ const StockExamination: React.FC = () => {
                     <input
                       type="checkbox"
                       aria-label="select all"
-                      checked={selectedIds.length > 0 && selectedIds.length === filteredItems.length}
+                      checked={
+                        selectedIds.length > 0 &&
+                        selectedIds.length === filteredItems.length
+                      }
                       onChange={(e) => toggleSelectAll(e.target.checked)}
                       className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                     />
@@ -530,7 +603,10 @@ const StockExamination: React.FC = () => {
 
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredItems.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+                  <tr
+                    key={row.id}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
                     <td className="px-4 py-4">
                       <input
                         type="checkbox"
@@ -540,12 +616,22 @@ const StockExamination: React.FC = () => {
                         className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                     </td>
-                    <td className="px-4 py-4 text-sm text-gray-900">{relativeTime(row.created_at)}</td>
-                    <td className="px-4 py-4 text-sm text-gray-900">{row.user?.username}</td>
-                    <td className="px-4 py-4 text-sm text-gray-900">{seedCategory(row.category)}</td>
+                    <td className="px-4 py-4 text-sm text-gray-900">
+                      {relativeTime(row.created_at)}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-900">
+                      {row.user?.username}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-900">
+                      {seedCategory(row.category)}
+                    </td>
                     <td className="px-4 py-4">{statusBadge(row.status)}</td>
-                    <td className="px-4 py-4 text-sm font-medium text-gray-900">{row.mother_lot}</td>
-                    <td className="px-4 py-4 text-sm text-gray-600">{row?.inspector?.username || '—'}</td>
+                    <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                      {row.mother_lot}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-600">
+                      {row?.inspector?.username || "—"}
+                    </td>
                     <td className="px-4 py-4">
                       {row.status === 'approved' &&  (
                         <button 
@@ -567,7 +653,9 @@ const StockExamination: React.FC = () => {
                     <td className="px-4 py-4 relative">
                       <button
                         aria-label="actions"
-                        onClick={() => setOpenMenuFor(openMenuFor === row.id ? null : row.id)}
+                        onClick={() =>
+                          setOpenMenuFor(openMenuFor === row.id ? null : row.id)
+                        }
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900"
                       >
                         <KeenIcon icon="dots-vertical" />
@@ -616,10 +704,17 @@ const StockExamination: React.FC = () => {
                     <td colSpan={9} className="px-4 py-12 text-center">
                       <div className="flex flex-col items-center gap-2">
                         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                          <KeenIcon icon="file-search" className="text-gray-400 text-xl" />
+                          <KeenIcon
+                            icon="file-search"
+                            className="text-gray-400 text-xl"
+                          />
                         </div>
-                        <div className="text-sm font-medium text-gray-900">No records found</div>
-                        <div className="text-xs text-gray-500">Try adjusting your search criteria</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          No records found
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Try adjusting your search criteria
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -647,20 +742,31 @@ const StockExamination: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1">
-            <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <button
+              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
               <KeenIcon icon="arrow-left" className="text-gray-600" />
             </button>
             <button className="px-3 py-1.5 rounded-lg bg-primary-600 text-white text-sm font-medium">
               1
             </button>
-            <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <button
+              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
               <KeenIcon icon="arrow-right" className="text-gray-600" />
             </button>
           </div>
         </div>
       </div>
 
-      <StockExaminationFormSheet open={createOpen} onOpenChange={setCreateOpen} mode="create" onSaved={handleCreateSaved} />
+      <StockExaminationFormSheet
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        mode="create"
+        onSaved={handleCreateSaved}
+      />
 
       {editItem && (
         <StockExaminationFormSheet
@@ -671,16 +777,14 @@ const StockExamination: React.FC = () => {
           onSaved={handleCreateSaved}
         />
       )}
-      
 
       {detailsItem && (
-        <StockExaminationDetailsSheet 
-          open={!!detailsItem} 
-          onOpenChange={() => setDetailsItem(null)} 
-          onInspectionOpen= {handleinspectionOpen}
-          data={detailsItem} 
+        <StockExaminationDetailsSheet
+          open={!!detailsItem}
+          onOpenChange={() => setDetailsItem(null)}
+          onInspectionOpen={handleinspectionOpen}
+          data={detailsItem}
         />
-
       )}
 
       {inspectionItem && (

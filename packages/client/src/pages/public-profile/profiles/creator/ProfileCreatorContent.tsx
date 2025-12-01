@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { CommunityBadges, Tags } from '../default';
+import { CommunityBadges, Tags } from "../default";
 import {
   Activities,
   FeaturesHighlight,
@@ -12,24 +12,24 @@ import {
   Summary,
   UpcomingEvents,
   Users,
-  Works
-} from './blocks';
+  Works,
+} from "./blocks";
 
 const ProfileCreatorContent = () => {
   const data: IStatisticsItems = [
-    { title: 'Releases', value: '397' },
-    { title: 'Earnigns', value: '89k' }
+    { title: "Releases", value: "397" },
+    { title: "Earnigns", value: "89k" },
   ];
 
   const items: IUsersItems = [
-    { image: '300-1.png' },
-    { image: '300-2.png' },
-    { image: '300-3.png' },
-    { image: '300-5.png' },
-    { image: '300-6.png' },
-    { image: '300-11.png' },
-    { image: '300-7.png' },
-    { image: '300-12.png' }
+    { image: "300-1.png" },
+    { image: "300-2.png" },
+    { image: "300-3.png" },
+    { image: "300-5.png" },
+    { image: "300-6.png" },
+    { image: "300-11.png" },
+    { image: "300-7.png" },
+    { image: "300-12.png" },
   ];
 
   return (
@@ -54,12 +54,12 @@ const ProfileCreatorContent = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/18.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/18.svg")}
                   className="dark:hidden max-h-[200px]"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/18-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/18-dark.svg")}
                   className="light:hidden max-h-[200px]"
                   alt=""
                 />
@@ -67,10 +67,10 @@ const ProfileCreatorContent = () => {
             }
             title="Restyle Your Space:<br>Soft Goods Makeover Ideas"
             description="Transform your living space beautifully with our Restyle Your Space: Soft Goods Makeover Ideas tutorial"
-            more={{ title: 'Get Started', url: '/network/get-started' }}
+            more={{ title: "Get Started", url: "/network/get-started" }}
             features={[
-              ['Time-Saving', 'Easy Revamp'],
-              ['Budget-Friendly', 'Fresh Look']
+              ["Time-Saving", "Easy Revamp"],
+              ["Budget-Friendly", "Fresh Look"],
             ]}
           />
 

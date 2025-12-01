@@ -1,30 +1,36 @@
-import { IHighlightedPostsItems, MiscHighlightedPosts } from '@/partials/misc';
+import { IHighlightedPostsItems, MiscHighlightedPosts } from "@/partials/misc";
 
-import { AccountSettings, Branding, DataImport, GeneralInfo, Members } from './blocks';
+import {
+  AccountSettings,
+  Branding,
+  DataImport,
+  GeneralInfo,
+  Members,
+} from "./blocks";
 
 const AccountCompanyProfileContent = () => {
   const posts: IHighlightedPostsItems = [
     {
-      icon: 'note-2',
-      title: 'User Guidelines for a Safe and Respectful Workspace',
+      icon: "note-2",
+      title: "User Guidelines for a Safe and Respectful Workspace",
       summary:
-        'Understand the importance of safety and respect in our work environment through our user guidelines.',
-      path: '#'
+        "Understand the importance of safety and respect in our work environment through our user guidelines.",
+      path: "#",
     },
     {
-      icon: 'compass',
-      title: 'Comprehensive Guide to Navigating Our Digital Platform',
+      icon: "compass",
+      title: "Comprehensive Guide to Navigating Our Digital Platform",
       summary:
-        'A detailed walkthrough to help you understand and use our digital platform for maximum efficiency.',
-      path: '#'
+        "A detailed walkthrough to help you understand and use our digital platform for maximum efficiency.",
+      path: "#",
     },
     {
-      icon: 'graph-up',
+      icon: "graph-up",
       title: "Stay Updated with Platform's Latest Features and Improvements",
       summary:
-        'Keep abreast of the newest enhancements and features on our platform to enhance your user experience.',
-      path: '#'
-    }
+        "Keep abreast of the newest enhancements and features on our platform to enhance your user experience.",
+      path: "#",
+    },
   ];
 
   return (

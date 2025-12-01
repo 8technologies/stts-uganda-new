@@ -1,12 +1,12 @@
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
 
 const DropdownNotificationsItem2 = () => {
   return (
     <div className="flex grow gap-2.5 px-5">
       <div className="relative shrink-0 mt-0.5">
         <img
-          src={toAbsoluteUrl('/media/avatars/300-5.png')}
+          src={toAbsoluteUrl("/media/avatars/300-5.png")}
           className="rounded-full size-8"
           alt="Leslie Alexander avatar"
         />
@@ -16,7 +16,10 @@ const DropdownNotificationsItem2 = () => {
       <div className="flex flex-col gap-3.5">
         <div className="flex flex-col gap-1">
           <div className="text-2sm font-medium mb-px">
-            <Link to="#" className="hover:text-primary-active text-gray-900 font-semibold">
+            <Link
+              to="#"
+              className="hover:text-primary-active text-gray-900 font-semibold"
+            >
               Leslie Alexander
             </Link>
             <span className="text-gray-700"> added new tags to </span>
@@ -32,9 +35,15 @@ const DropdownNotificationsItem2 = () => {
         </div>
 
         <div className="flex flex-wrap gap-2.5">
-          <span className="badge badge-sm badge-info badge-outline">Client-Request</span>
-          <span className="badge badge-sm badge-warning badge-outline">Figma</span>
-          <span className="badge badge-sm badge-light badge-outline">Redesign</span>
+          <span className="badge badge-sm badge-info badge-outline">
+            Client-Request
+          </span>
+          <span className="badge badge-sm badge-warning badge-outline">
+            Figma
+          </span>
+          <span className="badge badge-sm badge-light badge-outline">
+            Redesign
+          </span>
         </div>
       </div>
     </div>

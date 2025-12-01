@@ -1,5 +1,5 @@
-import { Container } from '@/components/container';
-import { generalSettings } from '@/config';
+import { Container } from "@/components/container";
+import { generalSettings } from "@/config";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -19,19 +19,39 @@ const Footer = () => {
             </a>
           </div>
           <nav className="flex order-1 md:order-2 gap-4 font-normal text-2sm text-gray-600">
-            <a href={generalSettings.docsLink} target="_blank" className="hover:text-primary">
+            <a
+              href={generalSettings.docsLink}
+              target="_blank"
+              className="hover:text-primary"
+            >
               Docs
             </a>
-            <a href={generalSettings.purchaseLink} target="_blank" className="hover:text-primary">
+            <a
+              href={generalSettings.purchaseLink}
+              target="_blank"
+              className="hover:text-primary"
+            >
               Purchase
             </a>
-            <a href={generalSettings.faqLink} target="_blank" className="hover:text-primary">
+            <a
+              href={generalSettings.faqLink}
+              target="_blank"
+              className="hover:text-primary"
+            >
               FAQ
             </a>
-            <a href="https://keenthemes.com" target="_blank" className="hover:text-primary">
+            <a
+              href="https://keenthemes.com"
+              target="_blank"
+              className="hover:text-primary"
+            >
               Support
             </a>
-            <a href={generalSettings.licenseLink} target="_blank" className="hover:text-primary">
+            <a
+              href={generalSettings.licenseLink}
+              target="_blank"
+              className="hover:text-primary"
+            >
               License
             </a>
           </nav>

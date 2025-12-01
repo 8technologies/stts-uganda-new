@@ -1,6 +1,6 @@
-import React from 'react';
-import { useDataGrid } from '.';
-import { Checkbox } from '@/components/ui/checkbox';
+import React from "react";
+import { useDataGrid } from ".";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const DataGridRowSelectAll = () => {
   const { table } = useDataGrid();
@@ -8,7 +8,8 @@ const DataGridRowSelectAll = () => {
   return (
     <Checkbox
       checked={
-        table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
+        table.getIsAllPageRowsSelected() ||
+        (table.getIsSomePageRowsSelected() && "indeterminate")
       }
       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
       aria-label="Select all"

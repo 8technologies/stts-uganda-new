@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { DropdownCardItem1 } from '../dropdowns/general';
-import { CommonAvatar } from '../common';
-import { IAvatar } from './CardAuthor';
+import { DropdownCardItem1 } from "../dropdowns/general";
+import { CommonAvatar } from "../common";
+import { IAvatar } from "./CardAuthor";
 
 interface INFT2Item {
   total: string;
@@ -22,7 +22,14 @@ interface INFT2Props {
   statistics: INFT2Item[];
 }
 
-const CardNFT2 = ({ avatar, bgImage, name, email, info, statistics }: INFT2Props) => {
+const CardNFT2 = ({
+  avatar,
+  bgImage,
+  name,
+  email,
+  info,
+  statistics,
+}: INFT2Props) => {
   const { isRTL } = useLanguage();
 
   const renderItem = (statistic: INFT2Item, index: number) => {
@@ -31,7 +38,9 @@ const CardNFT2 = ({ avatar, bgImage, name, email, info, statistics }: INFT2Props
         key={index}
         className="grid grid-cols-1 gap-1.5 border-[0.5px] border-dashed border-gray-400 rounded-md px-2.5 py-2 shrink-0 max-w-auto"
       >
-        <span className="text-gray-900 text-sm leading-none font-medium">{statistic.total}</span>
+        <span className="text-gray-900 text-sm leading-none font-medium">
+          {statistic.total}
+        </span>
         <span className="text-gray-700 text-xs">{statistic.description}</span>
       </div>
     );
@@ -41,7 +50,9 @@ const CardNFT2 = ({ avatar, bgImage, name, email, info, statistics }: INFT2Props
     <div className="card">
       <div
         className="card-header card-rounded-t flex justify-end items-start relative p-0 bg-no-repeat bg-cover bg-center h-[120px]"
-        style={{ backgroundImage: `url(${toAbsoluteUrl(`/media/images/2600x1200/${bgImage}`)})` }}
+        style={{
+          backgroundImage: `url(${toAbsoluteUrl(`/media/images/2600x1200/${bgImage}`)})`,
+        }}
       >
         <div className="menu mt-2.5 me-2.5" data-menu="true">
           <Menu className="items-stretch">
@@ -49,15 +60,15 @@ const CardNFT2 = ({ avatar, bgImage, name, email, info, statistics }: INFT2Props
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                placement: isRTL() ? "bottom-start" : "bottom-end",
                 modifiers: [
                   {
-                    name: 'offset',
+                    name: "offset",
                     options: {
-                      offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                    }
-                  }
-                ]
+                      offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                    },
+                  },
+                ],
               }}
             >
               <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -104,7 +115,10 @@ const CardNFT2 = ({ avatar, bgImage, name, email, info, statistics }: INFT2Props
         </div>
 
         <div className="flex flex-wrap justify-center items-center gap-3.5 mb-7">
-          <a href="#" className="text-xs text-gray-700 hover:text-primary-active">
+          <a
+            href="#"
+            className="text-xs text-gray-700 hover:text-primary-active"
+          >
             {email}
           </a>
           <div className="flex items-center text-xs font-medium text-success">

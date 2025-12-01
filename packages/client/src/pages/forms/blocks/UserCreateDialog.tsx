@@ -1,23 +1,23 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { KeenIcon } from '@/components';
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { KeenIcon } from "@/components";
 
 interface IUserEditDialogProps<T = any> {
   open: boolean;
@@ -27,38 +27,46 @@ interface IUserEditDialogProps<T = any> {
 }
 
 const defaultCreateValues = {
-  applicationCategory: 'seed_merchant',
-  registrationNumber: '',
-  applicantName: '',
-  address: '',
-  phone: '',
-  initials: '',
-  premises: '',
-  experienceIn: '',
-  yearsOfExperience: '',
-  dealersIn: 'Agricultural crops',
-  marketingOf: 'Agricultural crops',
-  otherDealersIn: '',
-  otherMarketingOf: '',
-  adequateLand: 'Yes',
-  adequateStorage: 'Yes',
-  landSize: '',
-  adequateEquipment: 'No',
-  contractualAgreement: 'Yes',
-  fieldOfficers: 'Yes',
-  conversantSeedMatters: 'Yes',
-  sourceOfSeed: '',
-  adequateLandForProduction: 'Yes',
-  internalQualityProgram: 'Yes',
-  receipt: '',
-  statusComment: '',
-  acceptDeclaration: false
+  applicationCategory: "seed_merchant",
+  registrationNumber: "",
+  applicantName: "",
+  address: "",
+  phone: "",
+  initials: "",
+  premises: "",
+  experienceIn: "",
+  yearsOfExperience: "",
+  dealersIn: "Agricultural crops",
+  marketingOf: "Agricultural crops",
+  otherDealersIn: "",
+  otherMarketingOf: "",
+  adequateLand: "Yes",
+  adequateStorage: "Yes",
+  landSize: "",
+  adequateEquipment: "No",
+  contractualAgreement: "Yes",
+  fieldOfficers: "Yes",
+  conversantSeedMatters: "Yes",
+  sourceOfSeed: "",
+  adequateLandForProduction: "Yes",
+  internalQualityProgram: "Yes",
+  receipt: "",
+  statusComment: "",
+  acceptDeclaration: false,
 };
 
-const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialogProps) => {
-  const [values, setValues] = useState<Record<string, any>>({ ...defaultCreateValues });
+const UserCreateDialog = ({
+  open,
+  onOpenChange,
+  onSave,
+  saving,
+}: IUserEditDialogProps) => {
+  const [values, setValues] = useState<Record<string, any>>({
+    ...defaultCreateValues,
+  });
 
-  const handleChange = (key: string, value: any) => setValues((v) => ({ ...v, [key]: value }));
+  const handleChange = (key: string, value: any) =>
+    setValues((v) => ({ ...v, [key]: value }));
 
   const handleSubmit = async () => {
     await onSave?.(values);
@@ -79,25 +87,30 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
           {/* Application Category */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-              Application Category 
+              Application Category
             </h3>
             <div className="max-w-sm">
-              <label className="form-label">Application Category<span className="text-red-500">*</span></label>
+              <label className="form-label">
+                Application Category<span className="text-red-500">*</span>
+              </label>
               <Select
                 value={values.applicationCategory}
-                onValueChange={(v) => handleChange('applicationCategory', v)}
+                onValueChange={(v) => handleChange("applicationCategory", v)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="seed_merchant">Seed Merchant/Company</SelectItem>
-                  <SelectItem value="seed_exporter_or_importer">Seed Exporter/Importer</SelectItem>
+                  <SelectItem value="seed_merchant">
+                    Seed Merchant/Company
+                  </SelectItem>
+                  <SelectItem value="seed_exporter_or_importer">
+                    Seed Exporter/Importer
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-
 
           {/* Experience & Business Details Section */}
           <div className="space-y-4">
@@ -106,36 +119,51 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="flex flex-col gap-1">
-                <label className="form-label">Experience in<span className="text-red-500">*</span></label>
+                <label className="form-label">
+                  Experience in<span className="text-red-500">*</span>
+                </label>
                 <Input
                   value={values.experienceIn}
-                  onChange={(e) => handleChange('experienceIn', e.target.value)}
+                  onChange={(e) => handleChange("experienceIn", e.target.value)}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="form-label">Years of experience<span className="text-red-500">*</span></label>
+                <label className="form-label">
+                  Years of experience<span className="text-red-500">*</span>
+                </label>
                 <Input
                   value={values.yearsOfExperience}
-                  onChange={(e) => handleChange('yearsOfExperience', e.target.value)}
+                  onChange={(e) =>
+                    handleChange("yearsOfExperience", e.target.value)
+                  }
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">Land size (In Acres)</label>
                 <Input
                   value={values.landSize}
-                  onChange={(e) => handleChange('landSize', e.target.value)}
+                  onChange={(e) => handleChange("landSize", e.target.value)}
                 />
               </div>
-              
+
               <div className="flex flex-col gap-1">
-                <label className="form-label">Dealers in<span className="text-red-500">*</span></label>
-                <Select value={values.dealersIn} onValueChange={(e) => handleChange('dealersIn', e)}>
+                <label className="form-label">
+                  Dealers in<span className="text-red-500">*</span>
+                </label>
+                <Select
+                  value={values.dealersIn}
+                  onValueChange={(e) => handleChange("dealersIn", e)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select an Option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="agricultural">Agricultural crops</SelectItem>
-                    <SelectItem value="horticultural">Horticultural crops</SelectItem>
+                    <SelectItem value="agricultural">
+                      Agricultural crops
+                    </SelectItem>
+                    <SelectItem value="horticultural">
+                      Horticultural crops
+                    </SelectItem>
                     <SelectItem value="Both">Both crops</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
@@ -144,44 +172,60 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
 
               <div className="flex flex-col gap-1">
                 <label className="form-label">Marketing of</label>
-                <Select value={values.marketingOf} onValueChange={(e) => handleChange('marketingOf', e)}>
+                <Select
+                  value={values.marketingOf}
+                  onValueChange={(e) => handleChange("marketingOf", e)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select an Option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="agricultural">Agricultural crops</SelectItem>
-                    <SelectItem value="horticultural">Horticultural crops</SelectItem>
+                    <SelectItem value="agricultural">
+                      Agricultural crops
+                    </SelectItem>
+                    <SelectItem value="horticultural">
+                      Horticultural crops
+                    </SelectItem>
                     <SelectItem value="Both">Both crops</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              
-              
+
               <div className="flex flex-col gap-1">
-                <label className="form-label">Source of seed<span className="text-red-500">*</span></label>
+                <label className="form-label">
+                  Source of seed<span className="text-red-500">*</span>
+                </label>
                 <Input
                   value={values.sourceOfSeed}
-                  onChange={(e) => handleChange('sourceOfSeed', e.target.value)}
+                  onChange={(e) => handleChange("sourceOfSeed", e.target.value)}
                 />
               </div>
-              {values.dealersIn === 'other' && (
+              {values.dealersIn === "other" && (
                 <div className="flex flex-col gap-1">
-                  <label className="form-label">Please specify<span className="text-red-500">*</span></label>
+                  <label className="form-label">
+                    Please specify<span className="text-red-500">*</span>
+                  </label>
                   <Input
-                    value={values.otherDealersIn || ''}
-                    onChange={(e) => handleChange('otherDealersIn', e.target.value)}
+                    value={values.otherDealersIn || ""}
+                    onChange={(e) =>
+                      handleChange("otherDealersIn", e.target.value)
+                    }
                     placeholder="Please specify what you are producing"
                   />
                 </div>
               )}
 
-              {values.marketingOf === 'other' && (
+              {values.marketingOf === "other" && (
                 <div className="flex flex-col gap-1">
-                  <label className="form-label">Please specify<span className="text-red-500">*</span></label>
+                  <label className="form-label">
+                    Please specify<span className="text-red-500">*</span>
+                  </label>
                   <Input
-                    value={values.otherMarketingOf || ''}
-                    onChange={(e) => handleChange('otherMarketingOf', e.target.value)}
+                    value={values.otherMarketingOf || ""}
+                    onChange={(e) =>
+                      handleChange("otherMarketingOf", e.target.value)
+                    }
                     placeholder="Please specify what you are producing"
                   />
                 </div>
@@ -196,36 +240,48 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
             </h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {[
-                ['adequateLand', 'Do you have adequate land to handle basic seed?'],
                 [
-                  'adequateStorage',
-                  'I/We have adequate storage facilities to handle the resultant seed'
+                  "adequateLand",
+                  "Do you have adequate land to handle basic seed?",
                 ],
                 [
-                  'adequateEquipment',
-                  'Do you have adequate equipment to process and repackage seed?'
+                  "adequateStorage",
+                  "I/We have adequate storage facilities to handle the resultant seed",
                 ],
                 [
-                  'contractualAgreement',
-                  'Do you have contractual agreement with the growers you have recruited?'
+                  "adequateEquipment",
+                  "Do you have adequate equipment to process and repackage seed?",
                 ],
                 [
-                  'fieldOfficers',
-                  'Do you have adequate field officers to supervise and advise growers on all operation of seed production?'
+                  "contractualAgreement",
+                  "Do you have contractual agreement with the growers you have recruited?",
                 ],
                 [
-                  'conversantSeedMatters',
-                  'Do you have adequate and knowledgeable personnel who are conversant with seed matters?'
+                  "fieldOfficers",
+                  "Do you have adequate field officers to supervise and advise growers on all operation of seed production?",
                 ],
                 [
-                  'adequateLandForProduction',
-                  'Do you have adequate land for production of basic seed?'
+                  "conversantSeedMatters",
+                  "Do you have adequate and knowledgeable personnel who are conversant with seed matters?",
                 ],
-                ['internalQualityProgram', 'Do you have an internal quality program?']
+                [
+                  "adequateLandForProduction",
+                  "Do you have adequate land for production of basic seed?",
+                ],
+                [
+                  "internalQualityProgram",
+                  "Do you have an internal quality program?",
+                ],
               ].map(([key, label]) => (
                 <div key={key} className="flex flex-col gap-1">
-                  <label className="form-label text-sm">{label}<span className="text-red-500">*</span></label>
-                  <Select value={values[key]} onValueChange={(v) => handleChange(key, v)}>
+                  <label className="form-label text-sm">
+                    {label}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <Select
+                    value={values[key]}
+                    onValueChange={(v) => handleChange(key, v)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
@@ -241,10 +297,14 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
 
           {/* Receipt Upload Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Receipt Upload</h3>
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Receipt Upload
+            </h3>
             <div className="max-w-md">
               <div className="flex flex-col gap-2">
-                <label className="form-label text-gray-700 font-medium">Receipt<span className="text-red-500">*</span></label>
+                <label className="form-label text-gray-700 font-medium">
+                  Receipt<span className="text-red-500">*</span>
+                </label>
 
                 <label
                   htmlFor="receipt-upload"
@@ -264,27 +324,34 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
                         d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l-4-4m4 4l4-4"
                       />
                     </svg>
-                    <span className="text-sm text-gray-500">Click to upload or drag & drop</span>
-                    <span className="text-xs text-gray-400">PNG, JPG, PDF (max 5MB)</span>
+                    <span className="text-sm text-gray-500">
+                      Click to upload or drag & drop
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      PNG, JPG, PDF (max 5MB)
+                    </span>
                   </div>
                   <input
                     id="receipt-upload"
                     type="file"
                     className="hidden"
                     accept=".png,.jpg,.jpeg,.pdf"
-                    onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
+                    onChange={(e) =>
+                      handleChange("receipt", e.target.files?.[0] || null)
+                    }
                   />
                 </label>
 
                 {/* Show file name */}
                 {values.receipt && (
                   <p className="text-sm text-gray-600 mt-1">
-                    Selected file: <span className="font-medium">{values.receipt.name}</span>
+                    Selected file:{" "}
+                    <span className="font-medium">{values.receipt.name}</span>
                   </p>
                 )}
 
                 {/* Image preview if it's an image */}
-                {values.receipt && values.receipt.type.startsWith('image/') && (
+                {values.receipt && values.receipt.type.startsWith("image/") && (
                   <img
                     src={URL.createObjectURL(values.receipt)}
                     alt="Receipt preview"
@@ -297,15 +364,19 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
 
           {/* Declaration Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">Declaration</h3>
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              Declaration
+            </h3>
             <div className="bg-gray-50 p-4 rounded-lg space-y-3">
               <p className="text-sm text-gray-700 leading-relaxed">
-                I/WE* AT ANY TIME DURING OFFICIAL WORKING HOURS EVEN WITHOUT previous appointment
-                will allow the inspectors entry to the seed stores and thereby provide them with the
-                facilities necessary to carry out their inspection work as laid out in the seed and
-                plant regulations, 2015. I/We further declare that I/We am/are conversant with the
-                Regulations. In addition I/We will send a list of all seed lots in our stores on a
-                given date and/or at such a date as can be mutually agreed upon between the National
+                I/WE* AT ANY TIME DURING OFFICIAL WORKING HOURS EVEN WITHOUT
+                previous appointment will allow the inspectors entry to the seed
+                stores and thereby provide them with the facilities necessary to
+                carry out their inspection work as laid out in the seed and
+                plant regulations, 2015. I/We further declare that I/We am/are
+                conversant with the Regulations. In addition I/We will send a
+                list of all seed lots in our stores on a given date and/or at
+                such a date as can be mutually agreed upon between the National
                 Seed Certification Service and ourselves.
               </p>
               <div className="flex items-center gap-2">
@@ -315,7 +386,10 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
                   name="declaration"
                   className="text-blue-600"
                 />
-                <label htmlFor="accept-declaration" className="form-label text-sm cursor-pointer">
+                <label
+                  htmlFor="accept-declaration"
+                  className="form-label text-sm cursor-pointer"
+                >
                   I Accept
                 </label>
               </div>
@@ -327,7 +401,11 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
 
         <DialogFooter className="flex items-center justify-between border-t pt-4">
           <div className="flex gap-2">
-            <Button variant="light" className='hover:bg-red-800' onClick={() => onOpenChange(false)}>
+            <Button
+              variant="light"
+              className="hover:bg-red-800"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
           </div>
@@ -335,12 +413,13 @@ const UserCreateDialog = ({ open, onOpenChange, onSave, saving }: IUserEditDialo
             <Button
               variant="outline"
               disabled={!!saving}
-              onClick={() => console.log('Save draft', values)}
+              onClick={() => console.log("Save draft", values)}
             >
               <KeenIcon icon="task" /> Save Draft
             </Button>
             <Button onClick={handleSubmit} disabled={!!saving}>
-              <KeenIcon icon="tick-square" /> {saving ? 'Submiting' : 'Submit Application'}
+              <KeenIcon icon="tick-square" />{" "}
+              {saving ? "Submiting" : "Submit Application"}
             </Button>
           </div>
         </DialogFooter>

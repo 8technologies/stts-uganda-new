@@ -1,9 +1,13 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-import { IMenuBulletProps } from './';
+import { IMenuBulletProps } from "./";
 
 const MenuBullet = ({ className, children }: IMenuBulletProps) => {
-  return <div className={clsx('menu-bullet', className && className)}>{children}</div>;
+  return (
+    <div className={clsx("menu-bullet", className && className)}>
+      {children}
+    </div>
+  );
 };
 
 export { MenuBullet };

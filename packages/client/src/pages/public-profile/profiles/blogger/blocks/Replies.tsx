@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface IRepliesItem {
   borderColor: string;
@@ -13,35 +13,35 @@ interface IRepliesItems extends Array<IRepliesItem> {}
 const Replies = () => {
   const items: IRepliesItems = [
     {
-      borderColor: 'border-brand',
-      date: '10 Jan',
+      borderColor: "border-brand",
+      date: "10 Jan",
       comments: 24,
-      text: 'Experienced UI/UX designer seeking new opportunities.'
+      text: "Experienced UI/UX designer seeking new opportunities.",
     },
     {
-      borderColor: 'border-primary',
-      date: '23 Jan',
+      borderColor: "border-primary",
+      date: "23 Jan",
       comments: 3,
-      text: 'Include the name of the author of the blog post. This helps to build trust and credibility with readers.'
+      text: "Include the name of the author of the blog post. This helps to build trust and credibility with readers.",
     },
     {
-      borderColor: 'border-warning',
-      date: '4 Feb',
+      borderColor: "border-warning",
+      date: "4 Feb",
       comments: 89,
-      text: 'Avoid using all caps or excessive punctuation.'
+      text: "Avoid using all caps or excessive punctuation.",
     },
     {
-      borderColor: 'border-success',
-      date: '17 Mar',
+      borderColor: "border-success",
+      date: "17 Mar",
       comments: 32,
-      text: 'You can use this example as a starting point to design your own blog post cards. Be sure to experiment with different layouts, fonts, and colors both visually appealing and informative.'
+      text: "You can use this example as a starting point to design your own blog post cards. Be sure to experiment with different layouts, fonts, and colors both visually appealing and informative.",
     },
     {
-      borderColor: 'border-danger',
-      date: '9 Apr',
+      borderColor: "border-danger",
+      date: "9 Apr",
       comments: 57,
-      text: 'Use high-quality images and graphics to capture the visual appeal of your cards.'
-    }
+      text: "Use high-quality images and graphics to capture the visual appeal of your cards.",
+    },
   ];
 
   const renderItem = (item: IRepliesItem, index: number) => {

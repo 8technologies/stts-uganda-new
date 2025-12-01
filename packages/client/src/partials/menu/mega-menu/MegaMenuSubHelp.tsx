@@ -1,5 +1,5 @@
-import { TMenuConfig, MenuSub } from '@/components/menu';
-import { MegaMenuSubDropdown } from './components';
+import { TMenuConfig, MenuSub } from "@/components/menu";
+import { MegaMenuSubDropdown } from "./components";
 
 const MegaMenuSubHelp = (items: TMenuConfig) => {
   const helpItem = items[5];

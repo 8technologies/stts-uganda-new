@@ -1,5 +1,5 @@
-import { TMenuConfig, IMenuItemConfig, MenuSub } from '@/components/menu';
-import { MegaMenuSubDefault, MegaMenuFooter } from './components';
+import { TMenuConfig, IMenuItemConfig, MenuSub } from "@/components/menu";
+import { MegaMenuSubDefault, MegaMenuFooter } from "./components";
 
 const MegaMenuSubProfiles = (items: TMenuConfig) => {
   const publicProfilesItem = items[1];
@@ -10,7 +10,10 @@ const MegaMenuSubProfiles = (items: TMenuConfig) => {
         <div className="grid lg:grid-cols-2 gap-5 lg:gap-10">
           {publicProfilesItem.children?.map((item: IMenuItemConfig, index) => {
             return (
-              <div key={`item-${index}`} className="menu menu-default menu-fit flex-col">
+              <div
+                key={`item-${index}`}
+                className="menu menu-default menu-fit flex-col"
+              >
                 <h3 className="text-sm text-gray-800 font-semibold leading-none ps-2.5 mb-2 lg:mb-5">
                   {item.title}
                 </h3>

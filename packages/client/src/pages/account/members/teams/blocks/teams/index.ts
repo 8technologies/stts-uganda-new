@@ -1,2 +1,2 @@
-export * from './Teams';
-export * from './TeamsData';
+export * from "./Teams";
+export * from "./TeamsData";

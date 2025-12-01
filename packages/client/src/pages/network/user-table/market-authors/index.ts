@@ -1,2 +1,2 @@
-export * from './NetworkMarketAuthorsContent';
-export * from './NetworkMarketAuthorsPage';
+export * from "./NetworkMarketAuthorsContent";
+export * from "./NetworkMarketAuthorsPage";

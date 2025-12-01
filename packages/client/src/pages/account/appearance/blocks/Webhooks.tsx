@@ -6,20 +6,30 @@ const Webhooks = () => {
       </div>
       <div className="card-body grid gap-5">
         <p className="text-2sm font-medium text-gray-700">
-          Set up Webhooks to trigger actions on external services in real-time. Stay informed on
-          updates and changes to <br />
+          Set up Webhooks to trigger actions on external services in real-time.
+          Stay informed on updates and changes to <br />
           ensure seamless integration.
         </p>
 
         <div className="flex items-center flex-wrap lg:flex-nowrap gap-2.5">
-          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">Webhook URL</span>
+          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">
+            Webhook URL
+          </span>
           <div className="grow min-w-48">
-            <input type="text" className="input w-full" placeholder="Enter URL" value="" readOnly />
+            <input
+              type="text"
+              className="input w-full"
+              placeholder="Enter URL"
+              value=""
+              readOnly
+            />
           </div>
         </div>
 
         <div className="flex items-center flex-wrap lg:flex-nowrap gap-2.5">
-          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">Webhook Name</span>
+          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">
+            Webhook Name
+          </span>
           <div className="grow min-w-48">
             <input
               type="text"
@@ -32,7 +42,9 @@ const Webhooks = () => {
         </div>
 
         <div className="flex items-center flex-wrap lg:flex-nowrap gap-2.5">
-          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">Event Type</span>
+          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">
+            Event Type
+          </span>
           <div className="grow min-w-48">
             <select className="select w-full">
               <option>All Events</option>
@@ -43,7 +55,9 @@ const Webhooks = () => {
         </div>
 
         <div className="flex items-center flex-wrap lg:flex-nowrap gap-2.5 mb-2.5">
-          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">Custom Headers</span>
+          <span className="text-2sm font-medium text-gray-700 max-w-56 w-full">
+            Custom Headers
+          </span>
           <div className="grow min-w-48">
             <label className="switch">
               <span className="switch-label">Use Custom Header</span>

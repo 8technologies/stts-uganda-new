@@ -1,5 +1,5 @@
-import useBodyClasses from '@/hooks/useBodyClasses';
-import { Demo10LayoutProvider, Main } from '.';
+import useBodyClasses from "@/hooks/useBodyClasses";
+import { Demo10LayoutProvider, Main } from ".";
 
 const Demo10Layout = () => {
   useBodyClasses(`

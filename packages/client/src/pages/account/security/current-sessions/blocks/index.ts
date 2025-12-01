@@ -1,1 +1,1 @@
-export * from './current-sessions';
+export * from "./current-sessions";

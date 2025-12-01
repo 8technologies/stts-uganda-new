@@ -49,21 +49,36 @@ console.log('labs', labs);
   }, [data]);
 
   const uniqueStatuses = useMemo(
-    () => Array.from(new Set((items ?? []).map((i) => i.is_deposit).filter(Boolean))),
-    [items]
+    () =>
+      Array.from(
+        new Set((items ?? []).map((i) => i.is_deposit).filter(Boolean)),
+      ),
+    [items],
   );
 
   const uniqueCategories = useMemo(
     () =>
       Array.from(
-        new Set((items ?? []).map((i) => i.seed_class).filter(Boolean))
+        new Set((items ?? []).map((i) => i.seed_class).filter(Boolean)),
       ),
-    [items]
+    [items],
   );
   const inStockBadge = (is_deposit: boolean) => {
-    const base = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium';
-    if(is_deposit) return <span className={`${base} bg-green-100 text-green-700`}><span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>In Stock</span>;
-    return <span className={`${base} bg-red-100 text-red-700`}><span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>Out of stock</span>;
+    const base =
+      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium";
+    if (is_deposit)
+      return (
+        <span className={`${base} bg-green-100 text-green-700`}>
+          <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>In
+          Stock
+        </span>
+      );
+    return (
+      <span className={`${base} bg-red-100 text-red-700`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>Out of
+        stock
+      </span>
+    );
   };
 
   const filtered = useMemo(() => {
@@ -73,7 +88,7 @@ console.log('labs', labs);
       rows = rows.filter(
         (r) =>
           r.lot_number?.toLowerCase().includes(needle) ||
-          r.location?.toLowerCase().includes(needle)
+          r.location?.toLowerCase().includes(needle),
       );
     }
     if (statusFilter !== "all") {
@@ -102,7 +117,10 @@ console.log('labs', labs);
           {[...Array(6)].map((_, i) => (
             <div key={i} className="grid grid-cols-6 gap-4 p-4 border-b">
               {[...Array(6)].map((__, j) => (
-                <div key={j} className="h-4 bg-gray-100 rounded animate-pulse" />
+                <div
+                  key={j}
+                  className="h-4 bg-gray-100 rounded animate-pulse"
+                />
               ))}
             </div>
           ))}
@@ -116,7 +134,10 @@ console.log('labs', labs);
       <div className="p-6 text-red-600">
         <div className="mb-3 font-semibold">Failed to load stock records</div>
         <div className="mb-4 text-sm">{error.message}</div>
-        <Button onClick={handleRefresh} className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button
+          onClick={handleRefresh}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
           <KeenIcon icon="refresh" /> Try again
         </Button>
       </div>
@@ -139,7 +160,10 @@ console.log('labs', labs);
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={handleRefresh} className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button
+            onClick={handleRefresh}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             <KeenIcon icon="refresh" /> Refresh
           </Button>
         </div>
@@ -212,14 +236,19 @@ console.log('labs', labs);
           filtered.map((row) => (
             <div key={row.id} className="bg-white shadow rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <div className="font-semibold text-gray-900">Lot {row.lot_number}</div>
-                <div className="text-xs text-gray-500">{formatDate(row.created_at)}</div>
+                <div className="font-semibold text-gray-900">
+                  Lot {row.lot_number}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {formatDate(row.created_at)}
+                </div>
               </div>
               <div className="text-sm text-gray-700 mb-2">{row.seed_class}</div>
               <div className="text-sm text-gray-600">Owner: {row.Owner.name || "—"}</div>
               <div className="mt-2">{inStockBadge(row.is_deposit)}</div>
               <div className="mt-1 text-sm text-gray-700">
-                Decision: <span className="capitalize">{row.quantity || "—"}</span>
+                Decision:{" "}
+                <span className="capitalize">{row.quantity || "—"}</span>
               </div>
             </div>
           ))
@@ -245,8 +274,13 @@ console.log('labs', labs);
             </thead>
             <tbody>
               {filtered.map((row) => (
-                <tr key={row.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="px-4 py-3 font-medium text-gray-900">{row.lot_number}</td>
+                <tr
+                  key={row.id}
+                  className="border-b hover:bg-gray-50 transition"
+                >
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    {row.lot_number}
+                  </td>
                   <td className="px-4 py-3">{row.seed_class}</td>
                   <td className="px-4 py-3">{row.Owner.name || "—"}</td>
                   <td className="px-4 py-3">{inStockBadge(row.is_deposit)}</td>
@@ -293,11 +327,16 @@ const EmptyState = ({ onRefresh }: { onRefresh: () => void }) => (
     <div className="mx-auto h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
       <KeenIcon icon="package-open" />
     </div>
-    <div className="text-gray-900 font-semibold mb-1">No stock records found</div>
+    <div className="text-gray-900 font-semibold mb-1">
+      No stock records found
+    </div>
     <div className="text-gray-500 text-sm mb-4">
       Try adjusting your filters or refresh to fetch the latest data.
     </div>
-    <Button onClick={onRefresh} className="bg-blue-600 hover:bg-blue-700 text-white">
+    <Button
+      onClick={onRefresh}
+      className="bg-blue-600 hover:bg-blue-700 text-white"
+    >
       <KeenIcon icon="refresh" /> Refresh
     </Button>
   </div>

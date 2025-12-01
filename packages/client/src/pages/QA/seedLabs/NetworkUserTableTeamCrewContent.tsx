@@ -1,5 +1,5 @@
-import { SeedLabs } from './blocks/SeedLab';
-import { MiscFaq, MiscHelp2 } from '@/partials/misc';
+import { SeedLabs } from "./blocks/SeedLab";
+import { MiscFaq, MiscHelp2 } from "@/partials/misc";
 
 const NetworkUserTableTeamCrewContent = () => {
   return (

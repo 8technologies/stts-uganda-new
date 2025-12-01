@@ -1,21 +1,28 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-import { IMenuToggleProps } from './';
+import { IMenuToggleProps } from "./";
 
 const MenuToggle = ({
   className,
   hasItemSub = false,
   handleToggle,
-  children
+  children,
 }: IMenuToggleProps) => {
   if (hasItemSub) {
     return (
-      <div className={clsx('menu-toggle', className && className)} onClick={handleToggle}>
+      <div
+        className={clsx("menu-toggle", className && className)}
+        onClick={handleToggle}
+      >
         {children}
       </div>
     );
   } else {
-    return <div className={clsx('menu-toggle', className && className)}>{children}</div>;
+    return (
+      <div className={clsx("menu-toggle", className && className)}>
+        {children}
+      </div>
+    );
   }
 };
 

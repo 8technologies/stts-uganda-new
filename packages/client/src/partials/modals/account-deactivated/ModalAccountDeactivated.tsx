@@ -1,20 +1,23 @@
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogBody,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface IModalAccountDeactivatedProps {
   open: boolean;
   onOpenChange: () => void;
 }
 
-const ModalAccountDeactivated = ({ open, onOpenChange }: IModalAccountDeactivatedProps) => {
+const ModalAccountDeactivated = ({
+  open,
+  onOpenChange,
+}: IModalAccountDeactivatedProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-full max-w-[500px] max-h-[95%] scrollable-y-auto">
@@ -25,11 +28,11 @@ const ModalAccountDeactivated = ({ open, onOpenChange }: IModalAccountDeactivate
         <DialogBody className="flex flex-col items-center pt-0 pb-10">
           <div className="mb-9">
             <img
-              src={toAbsoluteUrl('/media/illustrations/23.svg')}
+              src={toAbsoluteUrl("/media/illustrations/23.svg")}
               className="dark:hidden max-h-[150px]"
             />
             <img
-              src={toAbsoluteUrl('/media/illustrations/23-dark.svg')}
+              src={toAbsoluteUrl("/media/illustrations/23-dark.svg")}
               className="light:hidden max-h-[150px]"
             />
           </div>

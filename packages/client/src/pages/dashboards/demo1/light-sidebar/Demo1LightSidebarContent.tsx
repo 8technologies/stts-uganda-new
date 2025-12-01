@@ -4,8 +4,8 @@ import {
   EntryCallout,
   Highlights,
   TeamMeeting,
-  Teams
-} from './blocks';
+  Teams,
+} from "./blocks";
 
 const Demo1LightSidebarContent = () => {
   return (

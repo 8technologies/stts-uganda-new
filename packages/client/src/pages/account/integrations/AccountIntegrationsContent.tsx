@@ -1,10 +1,10 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { MiscFaq, MiscHelp2, MiscStarter } from '@/partials/misc';
+import { MiscFaq, MiscHelp2, MiscStarter } from "@/partials/misc";
 
-import { Integrations } from './blocks';
+import { Integrations } from "./blocks";
 
 const AccountIntegrationsContent = () => {
   return (
@@ -15,12 +15,12 @@ const AccountIntegrationsContent = () => {
         image={
           <Fragment>
             <img
-              src={toAbsoluteUrl('/media/illustrations/28.svg')}
+              src={toAbsoluteUrl("/media/illustrations/28.svg")}
               className="dark:hidden max-h-[230px]"
               alt=""
             />
             <img
-              src={toAbsoluteUrl('/media/illustrations/28-dark.svg')}
+              src={toAbsoluteUrl("/media/illustrations/28-dark.svg")}
               className="light:hidden max-h-[230px]"
               alt=""
             />
@@ -31,13 +31,14 @@ const AccountIntegrationsContent = () => {
           <Fragment>
             Explore New Integration: Expand Your Toolkit with Cutting-Edge,
             <br />
-            User-Friendly Solutions Tailored for Efficient and Innovative Project Management.
+            User-Friendly Solutions Tailored for Efficient and Innovative
+            Project Management.
           </Fragment>
         }
         engage={{
-          path: '/network/user-cards/mini-cards',
-          label: 'Start Now',
-          btnColor: 'btn-primary'
+          path: "/network/user-cards/mini-cards",
+          label: "Start Now",
+          btnColor: "btn-primary",
         }}
       />
 

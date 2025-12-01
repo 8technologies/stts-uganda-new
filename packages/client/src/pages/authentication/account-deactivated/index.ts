@@ -1,1 +1,1 @@
-export * from './AuthenticationAccountDeactivatedPage';
+export * from "./AuthenticationAccountDeactivatedPage";

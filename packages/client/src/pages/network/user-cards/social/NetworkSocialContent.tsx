@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { KeenIcon } from '@/components';
-import { CardUserSocial, CardUserSocialRow } from '@/partials/cards';
-import { IAvatarProps } from '@/partials/common';
+import { useState } from "react";
+import { KeenIcon } from "@/components";
+import { CardUserSocial, CardUserSocialRow } from "@/partials/cards";
+import { IAvatarProps } from "@/partials/common";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ISocialContentItem {
   avatar: IAvatarProps;
@@ -19,122 +19,122 @@ interface ISocialContentItem {
 interface ISocialContentItems extends Array<ISocialContentItem> {}
 
 const NetworkSocialContent = () => {
-  const [activeTab, setActiveTab] = useState<'cards' | 'list'>('cards');
-  const [searchInput, setSearchInput] = useState('');
+  const [activeTab, setActiveTab] = useState<"cards" | "list">("cards");
+  const [searchInput, setSearchInput] = useState("");
 
-  const handleTabClick = (tab: 'cards' | 'list') => {
+  const handleTabClick = (tab: "cards" | "list") => {
     setActiveTab(tab);
   };
 
   const items: ISocialContentItems = [
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-1.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-1.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Jenny Klabber',
-      description: 'San Antonio, TX',
-      verify: true
+      name: "Jenny Klabber",
+      description: "San Antonio, TX",
+      verify: true,
     },
     {
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-danger size-20 ring-1 ring-danger-clarity bg-danger-light rounded-full',
-        fallback: 'K',
+          "flex items-center justify-center relative text-2.5xl text-danger size-20 ring-1 ring-danger-clarity bg-danger-light rounded-full",
+        fallback: "K",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Kevin Warren',
-      description: 'Fort Wayne, IN',
-      verify: true
+      name: "Kevin Warren",
+      description: "Fort Wayne, IN",
+      verify: true,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-9.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-9.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Brian Davis',
-      description: 'Reno, NV',
-      verify: false
+      name: "Brian Davis",
+      description: "Reno, NV",
+      verify: false,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-11.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-11.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Guy Hawkins',
-      description: 'Irving, TX',
-      verify: true
+      name: "Guy Hawkins",
+      description: "Irving, TX",
+      verify: true,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-30.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-30.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Albert Flores',
-      description: 'Boise, ID',
-      verify: false
-    },
-    {
-      avatar: {
-        className:
-          'flex items-center justify-center relative text-2.5xl text-info size-20 ring-1 ring-info-clarity bg-info-light rounded-full',
-        fallback: 'S',
-        badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
-      },
-      name: 'Savannah Nguyen',
-      description: 'Spokane, WA',
-      verify: true
+      name: "Albert Flores",
+      description: "Boise, ID",
+      verify: false,
     },
     {
       avatar: {
         className:
-          'flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full',
-        fallback: 'M',
+          "flex items-center justify-center relative text-2.5xl text-info size-20 ring-1 ring-info-clarity bg-info-light rounded-full",
+        fallback: "S",
         badgeClass:
-          'flex size-2.5 bg-gray-400 rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Marvin McKinney',
-      description: 'Richmond, VA',
-      verify: false
+      name: "Savannah Nguyen",
+      description: "Spokane, WA",
+      verify: true,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-3.png',
-        imageClass: 'rounded-full',
+        className:
+          "flex items-center justify-center relative text-2.5xl text-success size-20 ring-1 ring-success-clarity bg-success-light rounded-full",
+        fallback: "M",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-gray-400 rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Darrell Steward',
-      description: 'Baton Rouge, LA',
-      verify: true
+      name: "Marvin McKinney",
+      description: "Richmond, VA",
+      verify: false,
     },
     {
       avatar: {
-        className: 'size-20 relative',
-        image: '300-5.png',
-        imageClass: 'rounded-full',
+        className: "size-20 relative",
+        image: "300-3.png",
+        imageClass: "rounded-full",
         badgeClass:
-          'flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2'
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
       },
-      name: 'Eleanor Pena',
-      description: 'Des Moines, IA',
-      verify: true
-    }
+      name: "Darrell Steward",
+      description: "Baton Rouge, LA",
+      verify: true,
+    },
+    {
+      avatar: {
+        className: "size-20 relative",
+        image: "300-5.png",
+        imageClass: "rounded-full",
+        badgeClass:
+          "flex size-2.5 bg-success rounded-full ring-2 ring-light absolute bottom-0.5 start-16 transform -translate-y-1/2",
+      },
+      name: "Eleanor Pena",
+      description: "Des Moines, IA",
+      verify: true,
+    },
   ];
 
   const renderItem = (item: ISocialContentItem, index: number) => (
@@ -160,7 +160,9 @@ const NetworkSocialContent = () => {
   return (
     <div className="flex flex-col items-stretch gap-5 lg:gap-7.5">
       <div className="flex flex-wrap items-center gap-5 justify-between">
-        <h3 className="text-md text-gray-900 font-medium">Showing {items.length} Users</h3>
+        <h3 className="text-md text-gray-900 font-medium">
+          Showing {items.length} Users
+        </h3>
 
         <div className="flex items-center flex-wrap gap-5">
           <div className="flex items-center flex-wrap gap-2.5">
@@ -206,16 +208,16 @@ const NetworkSocialContent = () => {
           <div className="btn-tabs btn-tabs-sm" data-tabs="true">
             <a
               href="#"
-              className={`btn btn-icon ${activeTab === 'cards' ? 'active' : ''}`}
-              onClick={() => handleTabClick('cards')}
+              className={`btn btn-icon ${activeTab === "cards" ? "active" : ""}`}
+              onClick={() => handleTabClick("cards")}
               data-tab-toggle="#social_card"
             >
               <KeenIcon icon="category" />
             </a>
             <a
               href="#"
-              className={`btn btn-icon ${activeTab === 'list' ? 'active' : ''}`}
-              onClick={() => handleTabClick('list')}
+              className={`btn btn-icon ${activeTab === "list" ? "active" : ""}`}
+              onClick={() => handleTabClick("list")}
               data-tab-toggle="#social_list"
             >
               <KeenIcon icon="row-horizontal" />
@@ -224,7 +226,7 @@ const NetworkSocialContent = () => {
         </div>
       </div>
 
-      {activeTab === 'cards' ? (
+      {activeTab === "cards" ? (
         <div id="social_card" className="flex flex-col gap-5 lg:gap-7.5">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-7.5">
             {items.map((item, index) => {
@@ -257,4 +259,8 @@ const NetworkSocialContent = () => {
   );
 };
 
-export { NetworkSocialContent, type ISocialContentItem, type ISocialContentItems };
+export {
+  NetworkSocialContent,
+  type ISocialContentItem,
+  type ISocialContentItems,
+};

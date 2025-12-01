@@ -1,28 +1,36 @@
-import { toAbsoluteUrl } from '@/utils';
-import { Menu, MenuItem, MenuLink, MenuTitle, MenuIcon } from '@/components/menu';
+import { toAbsoluteUrl } from "@/utils";
+import {
+  Menu,
+  MenuItem,
+  MenuLink,
+  MenuTitle,
+  MenuIcon,
+} from "@/components/menu";
 
 const items = [
   {
-    logo: 'x-dark.svg',
-    title: '@keenthemes',
-    path: 'https://keenthemes.com/metronic/tailwind/docs/'
+    logo: "x-dark.svg",
+    title: "@keenthemes",
+    path: "https://keenthemes.com/metronic/tailwind/docs/",
   },
   {
-    logo: 'slack.svg',
-    title: '@keenthemes_hub',
-    path: 'https://github.com/keenthemes/'
+    logo: "slack.svg",
+    title: "@keenthemes_hub",
+    path: "https://github.com/keenthemes/",
   },
   {
-    logo: 'figma.svg',
-    title: 'metronic',
-    path: 'https://keenthemes.com/metronic/tailwind/docs/'
-  }
+    logo: "figma.svg",
+    title: "metronic",
+    path: "https://keenthemes.com/metronic/tailwind/docs/",
+  },
 ];
 
 const SidebarMenuSecondary = () => {
   return (
     <div>
-      <h3 className="text-sm text-gray-500 uppercase ps-5 inline-block mb-3">Outline</h3>
+      <h3 className="text-sm text-gray-500 uppercase ps-5 inline-block mb-3">
+        Outline
+      </h3>
       <Menu className="flex flex-col w-full gap-1.5 px-3.5">
         {items.map((item, index) => (
           <MenuItem key={index} className="menu-item">

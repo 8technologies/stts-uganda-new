@@ -1,16 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2 } from 'lucide-react';
-import { ModulesPermissions } from './ModulesPermissions';
-import AddRoleDialog from './blocks/AddRoleDialog';
-import { useMutation, useQuery } from '@apollo/client/react';
-import { ROLES } from '@/gql/queries';
-import { ADD_ROLE, DELETE_ROLE } from '@/gql/mutations';
-import { Container } from '@/components/container';
-import { Toolbar, ToolbarActions, ToolbarHeading } from '@/layouts/demo1/toolbar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
+import React, { useEffect, useState } from "react";
+import { Plus, Edit, Trash2 } from "lucide-react";
+import { ModulesPermissions } from "./ModulesPermissions";
+import AddRoleDialog from "./blocks/AddRoleDialog";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { ROLES } from "@/gql/queries";
+import { ADD_ROLE, DELETE_ROLE } from "@/gql/mutations";
+import { Container } from "@/components/container";
+import {
+  Toolbar,
+  ToolbarActions,
+  ToolbarHeading,
+} from "@/layouts/demo1/toolbar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
-type Role = { id: string | number; name: string; description?: string; permissions?: any };
+type Role = {
+  id: string | number;
+  name: string;
+  description?: string;
+  permissions?: any;
+};
 
 const RolesList = ({
   roles,
@@ -19,7 +28,7 @@ const RolesList = ({
   onAddRole,
   onEditRole,
   onDeleteRole,
-  deletingRoleId
+  deletingRoleId,
 }: {
   roles: Role[];
   selectedRole: Role | null;
@@ -47,17 +56,27 @@ const RolesList = ({
               onClick={() => onRoleSelect(role)}
               className={`p-3 rounded-lg border cursor-pointer transition-all ${
                 selectedRole?.id === role.id
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  ? "border-green-500 bg-green-50"
+                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
               }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h5 className="font-semibold text-gray-900 text-md">{role.name}</h5>
-                  <p className="text-sm text-gray-600 font-medium mt-1">{role.description}</p>
+                  <h5 className="font-semibold text-gray-900 text-md">
+                    {role.name}
+                  </h5>
+                  <p className="text-sm text-gray-600 font-medium mt-1">
+                    {role.description}
+                  </p>
                 </div>
-                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                  <button className="btn btn-light btn-sm" onClick={() => onEditRole(role)}>
+                <div
+                  className="flex items-center gap-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    className="btn btn-light btn-sm"
+                    onClick={() => onEditRole(role)}
+                  >
                     <Edit size={14} /> Edit
                   </button>
                   <button
@@ -66,7 +85,9 @@ const RolesList = ({
                     disabled={String(deletingRoleId) === String(role.id)}
                   >
                     <Trash2 size={14} />
-                    {String(deletingRoleId) === String(role.id) ? 'Deleting…' : 'Delete'}
+                    {String(deletingRoleId) === String(role.id)
+                      ? "Deleting…"
+                      : "Delete"}
                   </button>
                 </div>
               </div>
@@ -129,11 +150,11 @@ const RolesListPage = () => {
 
   const [addRole, { loading: savingRole }] = useMutation(ADD_ROLE, {
     refetchQueries: [{ query: ROLES }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
   const [deleteRole] = useMutation(DELETE_ROLE, {
     refetchQueries: [{ query: ROLES }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const roles = (data?.roles || []) as Role[];
@@ -149,7 +170,10 @@ const RolesListPage = () => {
       <div className="min-h-screen bg-gray-50">
         <Container>
           <Toolbar>
-            <ToolbarHeading title="Roles" description="Manage system roles and their permission" />
+            <ToolbarHeading
+              title="Roles"
+              description="Manage system roles and their permission"
+            />
             <ToolbarActions></ToolbarActions>
           </Toolbar>
         </Container>
@@ -184,32 +208,39 @@ const RolesListPage = () => {
       setDeletingRoleId(String(role.id));
       await deleteRole({
         variables: {
-          roleId: role.id
-        }
+          roleId: role.id,
+        },
       });
-      toast('Role deleted');
+      toast("Role deleted");
       if (String(selectedRole?.id) === String(role.id)) setSelectedRole(null);
     } catch (e: any) {
-      toast('Failed to delete role', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to delete role", {
+        description: e?.message ?? "Unknown error",
+      });
     } finally {
       setDeletingRoleId(null);
     }
   };
 
-  const handleAddRoleSubmit = async (roleData: { name: string; description: string }) => {
+  const handleAddRoleSubmit = async (roleData: {
+    name: string;
+    description: string;
+  }) => {
     try {
       const payload: any = {
         role_name: roleData.name,
-        description: roleData.description
+        description: roleData.description,
       };
       if (editingRole?.id) payload.id = String(editingRole.id);
 
       await addRole({ variables: { payload } });
-      toast(editingRole ? 'Role updated' : 'Role added');
+      toast(editingRole ? "Role updated" : "Role added");
       setIsAddRoleDialogOpen(false);
       setEditingRole(null);
     } catch (e: any) {
-      toast('Failed to save role', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to save role", {
+        description: e?.message ?? "Unknown error",
+      });
       setIsAddRoleDialogOpen(false);
     }
   };
@@ -218,7 +249,10 @@ const RolesListPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Container>
         <Toolbar>
-          <ToolbarHeading title="Roles" description="Manage system roles and their permission" />
+          <ToolbarHeading
+            title="Roles"
+            description="Manage system roles and their permission"
+          />
           <ToolbarActions></ToolbarActions>
         </Toolbar>
       </Container>
@@ -244,10 +278,12 @@ const RolesListPage = () => {
         loading={savingRole}
         resetForm={resetForm}
         initialValues={
-          editingRole ? { name: editingRole.name, description: editingRole.description } : null
+          editingRole
+            ? { name: editingRole.name, description: editingRole.description }
+            : null
         }
-        title={editingRole ? 'Edit Role' : 'Add New Role'}
-        submitLabel={editingRole ? 'Save Changes' : 'Add Role'}
+        title={editingRole ? "Edit Role" : "Add New Role"}
+        submitLabel={editingRole ? "Save Changes" : "Add Role"}
       />
     </div>
   );

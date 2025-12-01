@@ -1,8 +1,8 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import { ErrorsLayout } from '@/layouts/errors';
-import { Error404Page } from './Error404Page';
-import { Error500Page } from './Error500Page';
+import { ErrorsLayout } from "@/layouts/errors";
+import { Error404Page } from "./Error404Page";
+import { Error500Page } from "./Error500Page";
 
 const ErrorsRouting = () => (
   <Routes>

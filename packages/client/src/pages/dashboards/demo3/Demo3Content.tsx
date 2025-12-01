@@ -1,9 +1,9 @@
-import { toAbsoluteUrl } from '@/utils';
-import { MiscCreateTeam } from '@/partials/misc';
-import { BlockList } from '@/pages/account/security/privacy-settings';
-import { Highlights, Teams } from '@/pages/dashboards/demo1';
-import { ManageData } from '@/pages/dashboards/demo2/blocks';
-import { Integrations } from './blocks';
+import { toAbsoluteUrl } from "@/utils";
+import { MiscCreateTeam } from "@/partials/misc";
+import { BlockList } from "@/pages/account/security/privacy-settings";
+import { Highlights, Teams } from "@/pages/dashboards/demo1";
+import { ManageData } from "@/pages/dashboards/demo2/blocks";
+import { Integrations } from "./blocks";
 
 const Demo3Content = () => {
   return (
@@ -14,12 +14,12 @@ const Demo3Content = () => {
             image={
               <>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/32.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/32.svg")}
                   className="dark:hidden max-h-[180px]"
                   alt="image"
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/32-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/32-dark.svg")}
                   className="light:hidden max-h-[180px]"
                   alt="image"
                 />
@@ -29,15 +29,16 @@ const Demo3Content = () => {
             title="Swift Setup for New Teams"
             subTitle={
               <>
-                Enhance team formation and management with easy-to-use tools for communication,
+                Enhance team formation and management with easy-to-use tools for
+                communication,
                 <br />
                 task organization, and progress tracking, all in one place.
               </>
             }
             engage={{
-              path: '/public-profile/teams',
-              label: 'Create Team',
-              btnColor: 'btn-dark'
+              path: "/public-profile/teams",
+              label: "Create Team",
+              btnColor: "btn-dark",
             }}
           />
         </div>

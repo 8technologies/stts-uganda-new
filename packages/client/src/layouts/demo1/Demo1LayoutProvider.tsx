@@ -1,15 +1,21 @@
 /* eslint-disable no-unused-vars */
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
-import { useMenuChildren } from '@/components/menu';
-import { MENU_SIDEBAR } from '@/config/menu.config';
-import { useAuthContext } from '@/auth';
-import { getPermissionsFromToken } from '@/utils/permissions';
-import { useScrollPosition } from '@/hooks/useScrollPosition';
-import { useMenus } from '@/providers';
-import { ILayoutConfig, useLayout } from '@/providers';
-import { deepMerge } from '@/utils';
-import { demo1LayoutConfig } from './';
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useLocation } from "react-router";
+import { useMenuChildren } from "@/components/menu";
+import { MENU_SIDEBAR } from "@/config/menu.config";
+import { useAuthContext } from "@/auth";
+import { getPermissionsFromToken } from "@/utils/permissions";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { useMenus } from "@/providers";
+import { ILayoutConfig, useLayout } from "@/providers";
+import { deepMerge } from "@/utils";
+import { demo1LayoutConfig } from "./";
 
 // Interface defining the structure for layout provider properties
 export interface IDemo1LayoutProviderProps {
@@ -52,11 +58,12 @@ const initalLayoutProps: IDemo1LayoutProviderProps = {
   },
   setSidebarTheme: (mode: string) => {
     console.log(`${mode}`);
-  }
+  },
 };
 
 // Creating context for the layout provider with initial properties
-const Demo1LayoutContext = createContext<IDemo1LayoutProviderProps>(initalLayoutProps);
+const Demo1LayoutContext =
+  createContext<IDemo1LayoutProviderProps>(initalLayoutProps);
 
 // Custom hook to access the layout context
 const useDemo1Layout = () => useContext(Demo1LayoutContext);
@@ -73,16 +80,16 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
     perms: Record<string, boolean>,
     user: any,
     underMyApps = false,
-    underQA = false
+    underQA = false,
   ): any[] => {
     const result: any[] = [];
-    const hasManageAllForms = !!perms['can_manage_all_forms'];
+    const hasManageAllForms = !!perms["can_manage_all_forms"];
 
     for (const rawItem of items) {
       const item = { ...rawItem };
 
-      const isMyAppsParent = item?.title === 'My Application Forms';
-      const isQAParent = item?.title === 'Quality Assurance';
+      const isMyAppsParent = item?.title === "My Application Forms";
+      const isQAParent = item?.title === "Quality Assurance";
 
       // Check requiredPermissions on the item itself, but when inside QA and user is not QA admin,
       // we ignore permissions and rely on attribute-based rules.
@@ -106,7 +113,7 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
           perms,
           user,
           nextUnderMyApps,
-          nextUnderQA
+          nextUnderQA,
         );
 
         // My Application Forms: do NOT apply attribute-based control.
@@ -141,23 +148,32 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
       }
 
       // Keep parent if it passes self check and either has no children or children remain
-      const keepChildren = filteredChildren ? filteredChildren.length > 0 : true;
+      const keepChildren = filteredChildren
+        ? filteredChildren.length > 0
+        : true;
       const keep = keepSelf && keepChildren;
 
       if (keep) {
-        result.push({ ...item, ...(filteredChildren && { children: filteredChildren }) });
+        result.push({
+          ...item,
+          ...(filteredChildren && { children: filteredChildren }),
+        });
       }
     }
     return result;
   };
 
   const perms = getPermissionsFromToken(auth?.access_token);
-  const filteredPrimary = filterMenuWithVisibilityRules(MENU_SIDEBAR, perms, currentUser);
+  const filteredPrimary = filterMenuWithVisibilityRules(
+    MENU_SIDEBAR,
+    perms,
+    currentUser,
+  );
   const secondaryMenu = useMenuChildren(pathname, filteredPrimary, 0); // Retrieves the secondary menu from filtered
 
   // Sets the primary and secondary menu configurations
-  setMenuConfig('primary', filteredPrimary);
-  setMenuConfig('secondary', secondaryMenu);
+  setMenuConfig("primary", filteredPrimary);
+  setMenuConfig("secondary", secondaryMenu);
 
   const { getLayout, updateLayout, setCurrentLayout } = useLayout(); // Layout management methods
 
@@ -190,9 +206,9 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
     const updatedLayout = {
       options: {
         sidebar: {
-          collapse
-        }
-      }
+          collapse,
+        },
+      },
     };
 
     updateLayout(demo1LayoutConfig.name, updatedLayout); // Updates the layout with the collapsed state
@@ -204,9 +220,9 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
     const updatedLayout = {
       options: {
         sidebar: {
-          theme: mode
-        }
-      }
+          theme: mode,
+        },
+      },
     };
 
     setLayout(deepMerge(layout, updatedLayout)); // Merges and sets the updated layout
@@ -227,7 +243,7 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
         setSidebarMouseLeave,
         setMobileMegaMenuOpen,
         setSidebarCollapse,
-        setSidebarTheme
+        setSidebarTheme,
       }}
     >
       {children}

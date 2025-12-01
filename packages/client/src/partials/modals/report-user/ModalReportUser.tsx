@@ -1,13 +1,13 @@
-import React, { forwardRef } from 'react';
-import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+import React, { forwardRef } from "react";
+import { toAbsoluteUrl } from "@/utils";
+import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface IModalReportUserProps {
   open: boolean;
@@ -21,7 +21,7 @@ const ModalReportUser = forwardRef<HTMLDivElement, IModalReportUserProps>(
         <div className="grid place-items-center gap-1 px-5">
           <div className="flex justify-center items-center rounded-full">
             <img
-              src={toAbsoluteUrl('/media/avatars/300-1.png')}
+              src={toAbsoluteUrl("/media/avatars/300-1.png")}
               className="rounded-full max-h-[55px] max-w-full"
               alt=""
             />
@@ -55,17 +55,19 @@ const ModalReportUser = forwardRef<HTMLDivElement, IModalReportUserProps>(
     const buildOptions = () => {
       const items = [
         {
-          name: 'Impersonation',
-          description: 'It looks like this profile might be impersonating someone else'
+          name: "Impersonation",
+          description:
+            "It looks like this profile might be impersonating someone else",
         },
         {
-          name: 'Off bumble behavior',
-          description: 'This person has engaged in behavior that is abusive, bullying'
+          name: "Off bumble behavior",
+          description:
+            "This person has engaged in behavior that is abusive, bullying",
         },
         {
-          name: 'Something else',
-          description: 'None of the reasons listed above are suitable'
-        }
+          name: "Something else",
+          description: "None of the reasons listed above are suitable",
+        },
       ];
 
       return (
@@ -75,7 +77,10 @@ const ModalReportUser = forwardRef<HTMLDivElement, IModalReportUserProps>(
           </div>
           <div className="flex flex-col gap-3.5">
             {items.map((item, index) => (
-              <label key={index} className="form-label flex items-center gap-2.5">
+              <label
+                key={index}
+                className="form-label flex items-center gap-2.5"
+              >
                 <input
                   className="radio radio-sm"
                   name="report-option"
@@ -83,8 +88,12 @@ const ModalReportUser = forwardRef<HTMLDivElement, IModalReportUserProps>(
                   value="{{ loop.index }}"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <div className="text-sm font-semibold text-gray-900">{item.name}</div>
-                  <div className="text-2sm font-medium text-gray-600">{item.description}</div>
+                  <div className="text-sm font-semibold text-gray-900">
+                    {item.name}
+                  </div>
+                  <div className="text-2sm font-medium text-gray-600">
+                    {item.description}
+                  </div>
                 </div>
               </label>
             ))}
@@ -96,7 +105,8 @@ const ModalReportUser = forwardRef<HTMLDivElement, IModalReportUserProps>(
     const buildFooter = () => {
       return (
         <div className="text-2sm font-medium text-center text-gray-800 p-x">
-          Don't worry, your report is completely anonymous; the person you're <br />
+          Don't worry, your report is completely anonymous; the person you're{" "}
+          <br />
           reporting will not be informed that you've submitted it
         </div>
       );
@@ -130,7 +140,7 @@ const ModalReportUser = forwardRef<HTMLDivElement, IModalReportUserProps>(
         </DialogContent>
       </Dialog>
     );
-  }
+  },
 );
 
 export { ModalReportUser };

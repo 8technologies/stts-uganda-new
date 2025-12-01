@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 interface IAttributesItem {
   label: string;
@@ -8,18 +8,20 @@ interface IAttributesItems extends Array<IAttributesItem> {}
 
 const Attributes = () => {
   const items: IAttributesItems = [
-    { label: 'customer_id:', info: 'CUST567' },
-    { label: 'c_name:', info: 'jenny' },
-    { label: 'license_id:', info: 'LIC123' },
-    { label: 'log_id:', info: 'CUST567' },
-    { label: 'resv_code:', info: 'CS345' },
-    { label: 'orders_io:', info: 'JENNYTIME ' }
+    { label: "customer_id:", info: "CUST567" },
+    { label: "c_name:", info: "jenny" },
+    { label: "license_id:", info: "LIC123" },
+    { label: "log_id:", info: "CUST567" },
+    { label: "resv_code:", info: "CS345" },
+    { label: "orders_io:", info: "JENNYTIME " },
   ];
 
   const renderItem = (item: IAttributesItem, index: number) => {
     return (
       <tr key={index}>
-        <td className="text-sm text-gray-600 pb-3.5 pe-4 lg:pe-6">{item.label}</td>
+        <td className="text-sm text-gray-600 pb-3.5 pe-4 lg:pe-6">
+          {item.label}
+        </td>
         <td className="text-sm text-gray-900 pb-3">{item.info}</td>
       </tr>
     );

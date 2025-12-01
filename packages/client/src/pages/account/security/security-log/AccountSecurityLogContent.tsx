@@ -1,6 +1,6 @@
-import { MiscHelp } from '@/partials/misc';
+import { MiscHelp } from "@/partials/misc";
 
-import { SecurityLog } from './blocks';
+import { SecurityLog } from "./blocks";
 
 const AccountSecurityLogContent = () => {
   return (

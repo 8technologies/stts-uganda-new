@@ -1,9 +1,9 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonHexagonBadge } from '@/partials/common';
+import { CommonHexagonBadge } from "@/partials/common";
 
 const Upgrade = () => {
   return (
@@ -11,10 +11,10 @@ const Upgrade = () => {
       <style>
         {`
           .upgrade-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-14.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-14.png")}');
           }
           .dark .upgrade-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1200/bg-14-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1200/bg-14-dark.png")}');
           }
         `}
       </style>
@@ -26,7 +26,9 @@ const Upgrade = () => {
               stroke="stroke-primary-clarity"
               fill="fill-primary-light"
               size="size-[50px]"
-              badge={<KeenIcon icon="cheque" className="text-1.5xl text-primary" />}
+              badge={
+                <KeenIcon icon="cheque" className="text-1.5xl text-primary" />
+              }
             />
 
             <div className="flex flex-col gap-2">
@@ -43,8 +45,8 @@ const Upgrade = () => {
               </div>
 
               <div className="text-2sm text-gray-700">
-                Enterprise Components.io is a website offering high-quality, advanced UI components
-                designed for developers, enhancing <br />
+                Enterprise Components.io is a website offering high-quality,
+                advanced UI components designed for developers, enhancing <br />
                 efficiency and aesthetics in web and mobile app development.
               </div>
             </div>

@@ -1,7 +1,7 @@
-import { useViewport } from '@/hooks';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
-import { SidebarMenuDashboard, SidebarMenuDefault } from '.';
+import { useViewport } from "@/hooks";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { SidebarMenuDashboard, SidebarMenuDefault } from ".";
 
 const SidebarSecondary = () => {
   const { pathname } = useLocation();
@@ -19,10 +19,10 @@ const SidebarSecondary = () => {
       <div
         className="scrollable-y-auto grow"
         style={{
-          ...(scrollableHeight > 0 && { height: `${scrollableHeight}px` })
+          ...(scrollableHeight > 0 && { height: `${scrollableHeight}px` }),
         }}
       >
-        {pathname === '/' ? <SidebarMenuDashboard /> : <SidebarMenuDefault />}
+        {pathname === "/" ? <SidebarMenuDashboard /> : <SidebarMenuDefault />}
       </div>
     </div>
   );

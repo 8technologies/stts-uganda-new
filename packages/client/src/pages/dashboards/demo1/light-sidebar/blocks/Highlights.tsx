@@ -1,6 +1,6 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { useLanguage } from '@/i18n';
-import { DropdownCard1 } from '@/partials/dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { useLanguage } from "@/i18n";
+import { DropdownCard1 } from "@/partials/dropdowns/general";
 
 interface IHighlightsRow {
   icon: string;
@@ -25,22 +25,43 @@ const Highlights = ({ limit }: IHighlightsProps) => {
   const { isRTL } = useLanguage();
 
   const rows: IHighlightsRows = [
-    { icon: 'shop', text: 'Online Store', total: 172, stats: 3.9, increase: true },
-    { icon: 'facebook', text: 'Facebook', total: 85, stats: 0.7, increase: false },
-    { icon: 'instagram', text: 'Instagram', total: 36, stats: 8.2, increase: true },
-    { icon: 'google', text: 'Google', total: 26, stats: 8.2, increase: true },
-    { icon: 'shop', text: 'Retail', total: 7, stats: 0.7, increase: false }
+    {
+      icon: "shop",
+      text: "Online Store",
+      total: 172,
+      stats: 3.9,
+      increase: true,
+    },
+    {
+      icon: "facebook",
+      text: "Facebook",
+      total: 85,
+      stats: 0.7,
+      increase: false,
+    },
+    {
+      icon: "instagram",
+      text: "Instagram",
+      total: 36,
+      stats: 8.2,
+      increase: true,
+    },
+    { icon: "google", text: "Google", total: 26, stats: 8.2, increase: true },
+    { icon: "shop", text: "Retail", total: 7, stats: 0.7, increase: false },
   ];
 
   const items: IHighlightsItems = [
-    { badgeColor: 'badge-success', lebel: 'Metronic' },
-    { badgeColor: 'badge-danger', lebel: 'Bundle' },
-    { badgeColor: 'badge-info', lebel: 'MetronicNest' }
+    { badgeColor: "badge-success", lebel: "Metronic" },
+    { badgeColor: "badge-danger", lebel: "Bundle" },
+    { badgeColor: "badge-info", lebel: "MetronicNest" },
   ];
 
   const renderRow = (row: IHighlightsRow, index: number) => {
     return (
-      <div key={index} className="flex items-center justify-between flex-wrap gap-2">
+      <div
+        key={index}
+        className="flex items-center justify-between flex-wrap gap-2"
+      >
         <div className="flex items-center gap-1.5">
           <KeenIcon icon={row.icon} className="text-base text-gray-500" />
           <span className="text-sm font-normal text-gray-900">{row.text}</span>
@@ -80,15 +101,15 @@ const Highlights = ({ limit }: IHighlightsProps) => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -101,11 +122,17 @@ const Highlights = ({ limit }: IHighlightsProps) => {
 
       <div className="card-body flex flex-col gap-4 p-5 lg:p-7.5 lg:pt-4">
         <div className="flex flex-col gap-0.5">
-          <span className="text-sm font-normal text-gray-700">All time sales</span>
+          <span className="text-sm font-normal text-gray-700">
+            All time sales
+          </span>
 
           <div className="flex items-center gap-2.5">
-            <span className="text-3xl font-semibold text-gray-900">$295.7k</span>
-            <span className="badge badge-outline badge-success badge-sm">+2.7%</span>
+            <span className="text-3xl font-semibold text-gray-900">
+              $295.7k
+            </span>
+            <span className="badge badge-outline badge-success badge-sm">
+              +2.7%
+            </span>
           </div>
         </div>
 
@@ -135,5 +162,5 @@ export {
   type IHighlightsRows,
   type IHighlightsItem,
   type IHighlightsItems,
-  type IHighlightsProps
+  type IHighlightsProps,
 };

@@ -1,13 +1,13 @@
-import { Fragment } from 'react';
-import { KeenIcon, useMenuBreadcrumbs } from '@/components';
-import { Link } from 'react-router-dom';
-import { useMenus } from '@/providers';
-import { useLocation } from 'react-router';
+import { Fragment } from "react";
+import { KeenIcon, useMenuBreadcrumbs } from "@/components";
+import { Link } from "react-router-dom";
+import { useMenus } from "@/providers";
+import { useLocation } from "react-router";
 
 const ToolbarBreadcrumbs = () => {
   const { getMenuConfig } = useMenus();
   const { pathname } = useLocation();
-  const items = useMenuBreadcrumbs(pathname, getMenuConfig('primary'));
+  const items = useMenuBreadcrumbs(pathname, getMenuConfig("primary"));
 
   return (
     <div className="flex [.header_&]:below-lg:hidden items-center gap-1.25 text-xs lg:text-sm font-medium mb-2.5 lg:mb-0">
@@ -22,7 +22,11 @@ const ToolbarBreadcrumbs = () => {
                 {item.title}
               </Link>
             ) : (
-              <span className={index === items.length - 1 ? 'text-gray-700' : 'text-gray-700'}>
+              <span
+                className={
+                  index === items.length - 1 ? "text-gray-700" : "text-gray-700"
+                }
+              >
                 {item.title}
               </span>
             )}

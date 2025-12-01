@@ -1,6 +1,14 @@
-import { RecentUploads } from '@/pages/public-profile/profiles/default';
-import { BasicSettings, CalendarAccounts, CommunityBadges, Connections, PersonalInfo, StartNow, Work } from './blocks';
-import { AccountDetailsEditor } from './blocks/AccountDetailsEditor';
+import { RecentUploads } from "@/pages/public-profile/profiles/default";
+import {
+  BasicSettings,
+  CalendarAccounts,
+  CommunityBadges,
+  Connections,
+  PersonalInfo,
+  StartNow,
+  Work,
+} from "./blocks";
+import { AccountDetailsEditor } from "./blocks/AccountDetailsEditor";
 
 const AccountUserProfileContent = () => {
   return (

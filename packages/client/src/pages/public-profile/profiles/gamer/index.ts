@@ -1,3 +1,3 @@
-export * from './ProfileGamerContent';
-export * from './ProfileGamerPage';
-export * from './blocks';
+export * from "./ProfileGamerContent";
+export * from "./ProfileGamerPage";
+export * from "./blocks";

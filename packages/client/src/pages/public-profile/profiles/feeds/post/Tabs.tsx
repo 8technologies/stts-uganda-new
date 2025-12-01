@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { KeenIcon } from '@/components';
+import { KeenIcon } from "@/components";
 
 interface ITabsProps {
   postId: number;
@@ -18,7 +18,7 @@ const Tabs = ({
   comments,
   likes,
   saves,
-  className
+  className,
 }: ITabsProps) => {
   return (
     <div
@@ -26,9 +26,9 @@ const Tabs = ({
       className={`flex flex-col sm:flex-row items-stretch sm:items-center flex-wrap gap-2.5 border-gray-300 border-t border-b border-dashed py-3 mb-4 ${className}`}
     >
       <button
-        className={`${activeTab === 'comments' ? 'active' : ''} group btn px-3 text-gray-700 hover:text-primary tab-active:bg-primary-light tab-active:border-primary-clarity tab-active:text-primary`}
+        className={`${activeTab === "comments" ? "active" : ""} group btn px-3 text-gray-700 hover:text-primary tab-active:bg-primary-light tab-active:border-primary-clarity tab-active:text-primary`}
         onClick={() => {
-          setActiveTab('comments');
+          setActiveTab("comments");
         }}
         data-tab-toggle={`#post_${postId}_comments`}
       >
@@ -39,9 +39,9 @@ const Tabs = ({
         {comments} Comments
       </button>
       <button
-        className={`${activeTab === 'likes' ? 'active' : ''} group btn px-3 text-gray-700 hover:text-primary tab-active:bg-primary-light tab-active:border-primary-clarity tab-active:text-primary`}
+        className={`${activeTab === "likes" ? "active" : ""} group btn px-3 text-gray-700 hover:text-primary tab-active:bg-primary-light tab-active:border-primary-clarity tab-active:text-primary`}
         onClick={() => {
-          setActiveTab('likes');
+          setActiveTab("likes");
         }}
         data-tab-toggle={`#post_${postId}_likes`}
       >
@@ -52,9 +52,9 @@ const Tabs = ({
         {likes} Likes
       </button>
       <button
-        className={`${activeTab === 'saves' ? 'active' : ''} group btn px-3 text-gray-700 hover:text-primary tab-active:bg-primary-light tab-active:border-primary-clarity tab-active:text-primary`}
+        className={`${activeTab === "saves" ? "active" : ""} group btn px-3 text-gray-700 hover:text-primary tab-active:bg-primary-light tab-active:border-primary-clarity tab-active:text-primary`}
         onClick={() => {
-          setActiveTab('saves');
+          setActiveTab("saves");
         }}
         data-tab-toggle={`#post_${postId}_saves`}
       >

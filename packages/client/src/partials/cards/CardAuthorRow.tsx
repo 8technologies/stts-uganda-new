@@ -1,8 +1,8 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonAvatar } from '../common';
-import { IAuthorProps, IWork } from './CardAuthor';
+import { CommonAvatar } from "../common";
+import { IAuthorProps, IWork } from "./CardAuthor";
 
 const CardAuthorRow = ({ avatar, name, location, works }: IAuthorProps) => {
   const renderItem = (work: IWork, index: number) => {
@@ -11,7 +11,7 @@ const CardAuthorRow = ({ avatar, name, location, works }: IAuthorProps) => {
         <div
           className="rounded-md bg-no-repeat bg-cover min-w-24 max-w-24 h-12 shrink-0"
           style={{
-            backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${work.image}`)})`
+            backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${work.image}`)})`,
           }}
         ></div>
 
@@ -24,7 +24,9 @@ const CardAuthorRow = ({ avatar, name, location, works }: IAuthorProps) => {
           </a>
           <div className="text-2sm text-gray-700">
             Token ID:&nbsp;
-            <span className="text-2sm font-medium text-gray-800">{work.id}</span>
+            <span className="text-2sm font-medium text-gray-800">
+              {work.id}
+            </span>
           </div>
         </div>
       </div>
@@ -66,7 +68,10 @@ const CardAuthorRow = ({ avatar, name, location, works }: IAuthorProps) => {
               </svg>
             </div>
             <span className="flex items-center text-gray-700 text-sm">
-              <KeenIcon icon="geolocation" className="me-1.5 text-mdtext-gray-500" />
+              <KeenIcon
+                icon="geolocation"
+                className="me-1.5 text-mdtext-gray-500"
+              />
               {location}
             </span>
           </div>

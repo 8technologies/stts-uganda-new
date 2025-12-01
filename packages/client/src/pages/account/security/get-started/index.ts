@@ -1,2 +1,2 @@
-export * from './AccountSecurityGetStartedContent';
-export * from './AccountSecurityGetStartedPage';
+export * from "./AccountSecurityGetStartedContent";
+export * from "./AccountSecurityGetStartedPage";

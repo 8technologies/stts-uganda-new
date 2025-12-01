@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 const LOAD_USERS = gql`
   query Users {
@@ -69,7 +69,10 @@ const LOAD_CROP = gql`
 `;
 
 const LOAD_IMPORT_PERMITS = gql`
-  query ImportPermits($filter: ImportPermitFilter, $pagination: PaginationInput) {
+  query ImportPermits(
+    $filter: ImportPermitFilter
+    $pagination: PaginationInput
+  ) {
     importPermits(filter: $filter, pagination: $pagination) {
       total
       items {
@@ -384,7 +387,10 @@ const LOAD_INSPECTORS = gql`
 
 // Planting Returns (SR8)
 const LOAD_PLANTING_RETURNS = gql`
-  query PlantingReturns($filter: PlantingReturnFilter, $pagination: PaginationInput) {
+  query PlantingReturns(
+    $filter: PlantingReturnFilter
+    $pagination: PaginationInput
+  ) {
     plantingReturns(filter: $filter, pagination: $pagination) {
       total
       items {
@@ -498,7 +504,10 @@ const LOAD_PLANTING_RETURN = gql`
 `;
 
 const LOAD_CROP_DECLARATIONS = gql`
-  query CropDeclarations($filter: CropDeclarationFilter, $pagination: PaginationInput) {
+  query CropDeclarations(
+    $filter: CropDeclarationFilter
+    $pagination: PaginationInput
+  ) {
     cropDeclarations(filter: $filter, pagination: $pagination) {
       items {
         id
@@ -579,8 +588,14 @@ const LOAD_CROP_DECLARATION = gql`
 `;
 
 const LOAD_QDS_INSPECTION = gql`
-  query CropDecalrationInspection($cropDecalrationInspectionId: ID!, $cropId: ID!) {
-    CropDecalrationInspection(id: $cropDecalrationInspectionId, cropId: $cropId) {
+  query CropDecalrationInspection(
+    $cropDecalrationInspectionId: ID!
+    $cropId: ID!
+  ) {
+    CropDecalrationInspection(
+      id: $cropDecalrationInspectionId
+      cropId: $cropId
+    ) {
       id
       CropDecalrationId
       stages {
@@ -803,6 +818,86 @@ const LOAD_SEED_LABEL_BY_ID = gql`
   }
 `;
 
+const DASHBOARD_STATS = gql`
+  query DashboardStats {
+    dashboardStats {
+      registeredUsers
+      userPermits
+      pendingPermits
+      cropDeclarations
+      printedLabels
+      pendingLabels
+      myActiveForms
+      myActivePermits
+      myApprovedPlantingReturns
+      assignedForms
+      assignedPermits
+      assignedPlantingReturns
+      pendingInspections
+      receivedLabRequests
+      haltedLabRequests
+      marketableSeed
+      nonMarketableSeed
+      totalInspections
+      scheduledVisits
+      pendingCorrectiveActions
+      inspections {
+        label
+        value
+      }
+      seedStock {
+        label
+        total
+      }
+      recentActivities {
+        id
+        title
+        entity
+        status
+        category
+        timestamp
+      }
+    }
+  }
+`;
+
+const TRACK_TRACE = gql`
+  query TrackTrace($lotNumber: String!) {
+    trackTrace(lotNumber: $lotNumber) {
+      lotNumber
+      seedDetails {
+        id
+        status
+        crop
+        variety
+        quantity
+        labelPackage
+        applicant
+        createdAt
+      }
+      seedLab {
+        id
+        lotNumber
+        status
+        labTestNumber
+        inspector
+        collectedAt
+        receivedAt
+      }
+      motherLot {
+        id
+        lotNumber
+        seedClass
+        yieldAmount
+        fieldSize
+        inspector
+        status
+        createdAt
+      }
+    }
+  }
+`;
+
 export {
   LOAD_USERS,
   ME,
@@ -830,7 +925,9 @@ export {
   // -------------------------
   LOAD_SEED_LABS,
   LOAD_SEED_LABELS,
-  LOAD_SEED_LABEL_BY_ID
+  LOAD_SEED_LABEL_BY_ID,
+  DASHBOARD_STATS,
+  TRACK_TRACE,
 };
 
 // ---- Plant Inspection (SR10) placeholder queries ----

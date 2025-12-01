@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { CommonHexagonBadge } from '@/partials/common';
-import { useLanguage } from '@/i18n';
-import { DropdownCrud1 } from '@/partials/dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { CommonHexagonBadge } from "@/partials/common";
+import { useLanguage } from "@/i18n";
+import { DropdownCrud1 } from "@/partials/dropdowns/general";
 
 interface ICommunityBadgesItem {
   title: string;
@@ -17,33 +17,33 @@ const CommunityBadges = () => {
 
   const items: ICommunityBadgesItems = [
     {
-      title: 'Expert Contributor Badge',
-      stroke: 'stroke-primary-clarity',
-      fill: 'fill-primary-light',
-      icon: 'abstract-39',
-      iconColor: 'text-primary'
+      title: "Expert Contributor Badge",
+      stroke: "stroke-primary-clarity",
+      fill: "fill-primary-light",
+      icon: "abstract-39",
+      iconColor: "text-primary",
     },
     {
-      title: 'Innovation Trailblazer',
-      stroke: 'stroke-brand-clarity',
-      fill: 'fill-brand-light',
-      icon: 'abstract-44',
-      iconColor: 'text-brand'
+      title: "Innovation Trailblazer",
+      stroke: "stroke-brand-clarity",
+      fill: "fill-brand-light",
+      icon: "abstract-44",
+      iconColor: "text-brand",
     },
     {
-      title: 'Impact Recognition',
-      stroke: 'stroke-success-clarity',
-      fill: 'fill-success-light',
-      icon: 'abstract-25',
-      iconColor: 'text-success'
+      title: "Impact Recognition",
+      stroke: "stroke-success-clarity",
+      fill: "fill-success-light",
+      icon: "abstract-25",
+      iconColor: "text-success",
     },
     {
-      title: 'Performance Honor',
-      stroke: 'stroke-info-clarity',
-      fill: 'fill-info-light',
-      icon: 'delivery-24',
-      iconColor: 'text-info'
-    }
+      title: "Performance Honor",
+      stroke: "stroke-info-clarity",
+      fill: "fill-info-light",
+      icon: "delivery-24",
+      iconColor: "text-info",
+    },
   ];
 
   const renderItem = (item: ICommunityBadgesItem, index: number) => {
@@ -55,12 +55,19 @@ const CommunityBadges = () => {
         <div className="flex items-center flex-wrap gap-2.5">
           <CommonHexagonBadge
             size="size-[50px]"
-            badge={<KeenIcon icon={item.icon} className={`text-1.5xl ps-px ${item.iconColor}`} />}
+            badge={
+              <KeenIcon
+                icon={item.icon}
+                className={`text-1.5xl ps-px ${item.iconColor}`}
+              />
+            }
             stroke={item.stroke}
             fill={item.fill}
           />
 
-          <span className="text-gray-900 text-sm font-medium">{item.title}</span>
+          <span className="text-gray-900 text-sm font-medium">
+            {item.title}
+          </span>
         </div>
 
         <div className="btn btn-sm btn-icon text-gray-300 group-hover:text-primary-active">
@@ -70,8 +77,22 @@ const CommunityBadges = () => {
             viewBox="0 0 24 24"
             fill="none"
           >
-            <rect x="3" y="14.5" width="18" height="3" rx="1.5" fill="currentColor" />
-            <rect x="3" y="6.5" width="18" height="3" rx="1.5" fill="currentColor" />
+            <rect
+              x="3"
+              y="14.5"
+              width="18"
+              height="3"
+              rx="1.5"
+              fill="currentColor"
+            />
+            <rect
+              x="3"
+              y="6.5"
+              width="18"
+              height="3"
+              rx="1.5"
+              fill="currentColor"
+            />
           </svg>
         </div>
       </div>
@@ -88,15 +109,15 @@ const CommunityBadges = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: isRTL() ? [0, 10] : [0, -10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: isRTL() ? [0, 10] : [0, -10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-icon-lg text-gray-500 hover:text-primary-active">
@@ -118,4 +139,8 @@ const CommunityBadges = () => {
   );
 };
 
-export { CommunityBadges, type ICommunityBadgesItem, type ICommunityBadgesItems };
+export {
+  CommunityBadges,
+  type ICommunityBadgesItem,
+  type ICommunityBadgesItems,
+};

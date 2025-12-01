@@ -1,9 +1,9 @@
-import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from "@/utils/Assets";
 
-import { CommonAvatars } from '@/partials/common';
+import { CommonAvatars } from "@/partials/common";
 
 interface IEntryCalloutProps {
   className: string;
@@ -15,10 +15,10 @@ const EntryCallout = ({ className }: IEntryCalloutProps) => {
       <style>
         {`
           .entry-callout-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/2.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1600/2.png")}');
           }
           .dark .entry-callout-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/2-dark.png')}');
+            background-image: url('${toAbsoluteUrl("/media/images/2600x1600/2-dark.png")}');
           }
         `}
       </style>
@@ -29,19 +29,20 @@ const EntryCallout = ({ className }: IEntryCalloutProps) => {
             <CommonAvatars
               size="size-10"
               group={[
-                { filename: '300-4.png' },
-                { filename: '300-1.png' },
-                { filename: '300-2.png' },
+                { filename: "300-4.png" },
+                { filename: "300-1.png" },
+                { filename: "300-2.png" },
                 {
-                  fallback: 'S',
-                  variant: 'text-success-inverse text-xs ring-success-light bg-success'
-                }
+                  fallback: "S",
+                  variant:
+                    "text-success-inverse text-xs ring-success-light bg-success",
+                },
               ]}
             />
 
             <h2 className="text-1.5xl font-semibold text-gray-900">
               Connect Today & Join <br />
-              the{' '}
+              the{" "}
               <a href="#" className="link">
                 KeenThemes Network
               </a>

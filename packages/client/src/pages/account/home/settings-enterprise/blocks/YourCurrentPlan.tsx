@@ -1,7 +1,7 @@
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
-import { useLanguage } from '@/i18n';
-import { DropdownCard1 } from '@/partials/dropdowns/general';
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
+import { useLanguage } from "@/i18n";
+import { DropdownCard1 } from "@/partials/dropdowns/general";
 
 interface IYourCurrentPlanItem {
   title: string;
@@ -16,29 +16,33 @@ const YourCurrentPlan = () => {
 
   const items: IYourCurrentPlanItems = [
     {
-      title: 'DevOps Integration',
-      summary: 'Achieve faster releases, continuous integration & deployment',
-      link: 'DevOps Features',
-      path: '#'
+      title: "DevOps Integration",
+      summary: "Achieve faster releases, continuous integration & deployment",
+      link: "DevOps Features",
+      path: "#",
     },
     {
-      title: 'Data Encryption',
-      summary: 'End-to-end encryption, protecting info from unauthorized access',
-      link: 'Setup Encryption',
-      path: '#'
+      title: "Data Encryption",
+      summary:
+        "End-to-end encryption, protecting info from unauthorized access",
+      link: "Setup Encryption",
+      path: "#",
     },
     {
-      title: 'API Integration',
-      summary: 'Integrate your systems with our robust API capabilities.',
-      link: 'Get API Key',
-      path: '#'
-    }
+      title: "API Integration",
+      summary: "Integrate your systems with our robust API capabilities.",
+      link: "Get API Key",
+      path: "#",
+    },
   ];
 
   const renderItem = (item: IYourCurrentPlanItem, index: number) => {
     return (
       <div key={index} className="flex flex-col items-start gap-2.5">
-        <a href={item.path} className="text-md text-gray-900 font-medium hover:text-primary">
+        <a
+          href={item.path}
+          className="text-md text-gray-900 font-medium hover:text-primary"
+        >
           {item.title}
         </a>
 
@@ -61,15 +65,15 @@ const YourCurrentPlan = () => {
             toggle="dropdown"
             trigger="click"
             dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
+              placement: isRTL() ? "bottom-start" : "bottom-end",
               modifiers: [
                 {
-                  name: 'offset',
+                  name: "offset",
                   options: {
-                    offset: [0, 10] // [skid, distance]
-                  }
-                }
-              ]
+                    offset: [0, 10], // [skid, distance]
+                  },
+                },
+              ],
             }}
           >
             <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -84,11 +88,16 @@ const YourCurrentPlan = () => {
           <div className="md:flex-1 grid content-between border border-gray-200 rounded-xl">
             <div
               className="bg-cover bg-no-repeat rounded-t-lg h-48"
-              style={{ backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/22.jpg`)})` }}
+              style={{
+                backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/22.jpg`)})`,
+              }}
             ></div>
 
             <div className="flex flex-col gap-2 p-5 pt-4">
-              <a href="#" className="text-base text-gray-900 font-medium hover:text-primary">
+              <a
+                href="#"
+                className="text-base text-gray-900 font-medium hover:text-primary"
+              >
                 Premium Plan
               </a>
 
@@ -121,4 +130,8 @@ const YourCurrentPlan = () => {
   );
 };
 
-export { YourCurrentPlan, type IYourCurrentPlanItem, type IYourCurrentPlanItems };
+export {
+  YourCurrentPlan,
+  type IYourCurrentPlanItem,
+  type IYourCurrentPlanItems,
+};

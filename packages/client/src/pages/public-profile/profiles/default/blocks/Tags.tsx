@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
 interface ITagsItem {
   label: string;
@@ -12,14 +12,14 @@ interface ITagsProps {
 
 const Tags = ({ title, className }: ITagsProps) => {
   const items: ITagsItems = [
-    { label: 'Web Design' },
-    { label: 'Code Review' },
-    { label: 'Figma' },
-    { label: 'Product Development' },
-    { label: 'Webflow' },
-    { label: 'AI' },
-    { label: 'noCode' },
-    { label: 'Management' }
+    { label: "Web Design" },
+    { label: "Code Review" },
+    { label: "Figma" },
+    { label: "Product Development" },
+    { label: "Webflow" },
+    { label: "AI" },
+    { label: "noCode" },
+    { label: "Management" },
   ];
 
   const renderItem = (item: ITagsItem, index: number) => {
@@ -31,7 +31,7 @@ const Tags = ({ title, className }: ITagsProps) => {
   };
 
   return (
-    <div className={clsx('card', className && className)}>
+    <div className={clsx("card", className && className)}>
       <div className="card-header">
         <h3 className="card-title">{title}</h3>
       </div>

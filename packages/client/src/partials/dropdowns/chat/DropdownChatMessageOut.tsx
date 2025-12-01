@@ -1,6 +1,6 @@
-import { toAbsoluteUrl } from '@/utils';
-import { KeenIcon } from '@/components';
-import clsx from 'clsx';
+import { toAbsoluteUrl } from "@/utils";
+import { KeenIcon } from "@/components";
+import clsx from "clsx";
 
 interface IDropdownChatMessageOutProps {
   text: string;
@@ -8,7 +8,11 @@ interface IDropdownChatMessageOutProps {
   read: boolean;
 }
 
-const DropdownChatMessageOut = ({ text, time, read }: IDropdownChatMessageOutProps) => {
+const DropdownChatMessageOut = ({
+  text,
+  time,
+  read,
+}: IDropdownChatMessageOutProps) => {
   return (
     <div className="flex items-end justify-end gap-3.5 px-5">
       <div className="flex flex-col gap-1.5">
@@ -18,17 +22,22 @@ const DropdownChatMessageOut = ({ text, time, read }: IDropdownChatMessageOutPro
         />
 
         <div className="flex items-center justify-end relative">
-          <span className="text-2xs font-medium text-gray-600 me-6">{time}</span>
+          <span className="text-2xs font-medium text-gray-600 me-6">
+            {time}
+          </span>
           <KeenIcon
             icon="double-check"
-            className={clsx('text-lg absolute', read ? 'text-success' : 'text-gray-400')}
+            className={clsx(
+              "text-lg absolute",
+              read ? "text-success" : "text-gray-400",
+            )}
           />
         </div>
       </div>
 
       <div className="relative shrink-0">
         <img
-          src={toAbsoluteUrl('/media/avatars/300-2.png')}
+          src={toAbsoluteUrl("/media/avatars/300-2.png")}
           className="rounded-full size-9"
           alt=""
         />

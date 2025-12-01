@@ -1,5 +1,5 @@
-import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { KeenIcon } from "@/components";
+import { toAbsoluteUrl } from "@/utils/Assets";
 
 interface INFTProps {
   image: string;
@@ -14,7 +14,9 @@ const CardNFT = ({ image, id, title, info, date }: INFTProps) => {
     <div className="card shadow-none border-0 mb-5">
       <div
         className="rounded-t-xl w-[280px] h-[240px] bg-cover bg-center"
-        style={{ backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${image}`)})` }}
+        style={{
+          backgroundImage: `url(${toAbsoluteUrl(`/media/images/600x600/${image}`)})`,
+        }}
       ></div>
 
       <div className="card-border card-rounded-b px-3.5 pt-5 pb-3.5">
@@ -35,7 +37,10 @@ const CardNFT = ({ image, id, title, info, date }: INFTProps) => {
             <span className="text-2sm text-gray-700">Current bid</span>
 
             <div className="flex items-center gap-1">
-              <KeenIcon icon="xmr" className="text-lg text-brand leading-none" />
+              <KeenIcon
+                icon="xmr"
+                className="text-lg text-brand leading-none"
+              />
               <span className="text-sm font-semibold text-gray-900 leading-none tracking-tight">
                 {info}
               </span>

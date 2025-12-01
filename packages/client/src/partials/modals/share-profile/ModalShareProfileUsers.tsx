@@ -1,35 +1,35 @@
-import { toAbsoluteUrl } from '@/utils';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { toAbsoluteUrl } from "@/utils";
+import React from "react";
+import { Link } from "react-router-dom";
 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
+  SelectValue,
+} from "@/components/ui/select";
 
 const ModalShareProfileUsers = () => {
   const items = [
     {
-      avatar: '300-3.png',
-      userName: 'Tyler Hero',
-      email: 'tyler.hero@gmail.com',
-      role: 'owner'
+      avatar: "300-3.png",
+      userName: "Tyler Hero",
+      email: "tyler.hero@gmail.com",
+      role: "owner",
     },
     {
-      avatar: '300-1.png',
-      userName: 'Esther Howard',
-      email: 'esther.howard@gmail.com',
-      role: 'editor'
+      avatar: "300-1.png",
+      userName: "Esther Howard",
+      email: "esther.howard@gmail.com",
+      role: "editor",
     },
     {
-      avatar: '300-11.png',
-      userName: 'Jacob Jones',
-      email: 'jacob.jones@gmail.com',
-      role: 'viewer'
-    }
+      avatar: "300-11.png",
+      userName: "Jacob Jones",
+      email: "jacob.jones@gmail.com",
+      role: "viewer",
+    },
   ];
 
   return (
@@ -49,7 +49,10 @@ const ModalShareProfileUsers = () => {
               >
                 {item.userName}
               </Link>
-              <Link to="#" className="hover:text-primary-active text-2sm font-medium text-gray-600">
+              <Link
+                to="#"
+                className="hover:text-primary-active text-2sm font-medium text-gray-600"
+              >
                 {item.email}
               </Link>
             </div>

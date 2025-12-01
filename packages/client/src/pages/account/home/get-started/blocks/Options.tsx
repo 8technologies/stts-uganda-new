@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/i18n";
+import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
 
-import { DropdownCard2 } from '@/partials/dropdowns/general';
+import { DropdownCard2 } from "@/partials/dropdowns/general";
 
 interface IOptionsItem {
   icon: string;
@@ -33,15 +33,15 @@ const Options = ({ items, dropdown }: IOptionsProps) => {
                   toggle="dropdown"
                   trigger="click"
                   dropdownProps={{
-                    placement: isRTL() ? 'bottom-start' : 'bottom-end',
+                    placement: isRTL() ? "bottom-start" : "bottom-end",
                     modifiers: [
                       {
-                        name: 'offset',
+                        name: "offset",
                         options: {
-                          offset: isRTL() ? [0, -10] : [0, 10] // [skid, distance]
-                        }
-                      }
-                    ]
+                          offset: isRTL() ? [0, -10] : [0, 10], // [skid, distance]
+                        },
+                      },
+                    ],
                   }}
                 >
                   <MenuToggle className="btn btn-sm btn-icon btn-light btn-clear">
@@ -60,7 +60,9 @@ const Options = ({ items, dropdown }: IOptionsProps) => {
             >
               {item.title}
             </Link>
-            <span className="text-2sm text-gray-700 leading-5">{item.desc}</span>
+            <span className="text-2sm text-gray-700 leading-5">
+              {item.desc}
+            </span>
           </div>
         </div>
       </div>

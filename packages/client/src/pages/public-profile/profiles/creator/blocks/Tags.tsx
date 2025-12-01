@@ -9,14 +9,14 @@ interface ITagsProps {
 
 const Tags = ({ title }: ITagsProps) => {
   const items: ITagsItems = [
-    { label: 'Web Design' },
-    { label: 'Code Review' },
-    { label: 'Figma' },
-    { label: 'Product Development' },
-    { label: 'Webflow' },
-    { label: 'AI' },
-    { label: 'noCode' },
-    { label: 'Management' }
+    { label: "Web Design" },
+    { label: "Code Review" },
+    { label: "Figma" },
+    { label: "Product Development" },
+    { label: "Webflow" },
+    { label: "AI" },
+    { label: "noCode" },
+    { label: "Management" },
   ];
 
   const renderItem = (item: ITagsItem, index: number) => {

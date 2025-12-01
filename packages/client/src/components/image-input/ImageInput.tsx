@@ -1,8 +1,15 @@
 /* eslint-disable no-unused-vars */
-import { ChangeEvent, DragEvent, FC, useCallback, useRef, useState } from 'react';
-import { getAcceptTypeString, getListFiles, openFileDialog } from './utils';
+import {
+  ChangeEvent,
+  DragEvent,
+  FC,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
+import { getAcceptTypeString, getListFiles, openFileDialog } from "./utils";
 
-import React from 'react';
+import React from "react";
 
 interface IImageInputFile {
   dataURL?: string;
@@ -40,7 +47,7 @@ interface IImageInputExport {
 }
 
 export const DEFAULT_NULL_INDEX = -1;
-export const DEFAULT_DATA_URL_KEY = 'dataURL';
+export const DEFAULT_DATA_URL_KEY = "dataURL";
 
 const ImageInput: FC<IImageInputProps> = ({
   value,
@@ -48,7 +55,7 @@ const ImageInput: FC<IImageInputProps> = ({
   inputProps,
   multiple,
   children,
-  onChange
+  onChange,
 }) => {
   const inValue = value || [];
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,9 +74,11 @@ const ImageInput: FC<IImageInputProps> = ({
     handleClickInput();
   }, [handleClickInput]);
 
-  const onInputChange = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const onInputChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+  ): Promise<void> => {
     await handleChange(e.target.files);
-    if (inputRef.current) inputRef.current.value = '';
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   const handleChange = async (files: FileList | null) => {
@@ -156,7 +165,7 @@ const ImageInput: FC<IImageInputProps> = ({
         onChange={(e) => {
           onInputChange(e);
         }}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         {...inputProps}
       />
       {children?.({
@@ -170,12 +179,17 @@ const ImageInput: FC<IImageInputProps> = ({
           onDragEnter: handleDragIn,
           onDragLeave: handleDragOut,
           onDragOver: handleDrag,
-          onDragStart: handleDragStart
+          onDragStart: handleDragStart,
         },
-        isDragging
+        isDragging,
       })}
     </>
   );
 };
 
-export { ImageInput, type IImageInputProps, type TImageInputFiles, type IImageInputFile };
+export {
+  ImageInput,
+  type IImageInputProps,
+  type TImageInputFiles,
+  type IImageInputFile,
+};

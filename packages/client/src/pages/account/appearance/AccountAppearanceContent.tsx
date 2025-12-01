@@ -1,43 +1,48 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import { toAbsoluteUrl } from '@/utils';
+import { toAbsoluteUrl } from "@/utils";
 
-import { MiscEngage, MiscFaq, MiscHighlightedPosts, IHighlightedPostsItems } from '@/partials/misc';
+import {
+  MiscEngage,
+  MiscFaq,
+  MiscHighlightedPosts,
+  IHighlightedPostsItems,
+} from "@/partials/misc";
 
-import { Branding } from '../home/company-profile';
-import { AdvancedSettingsAppearance } from '../home/settings-sidebar';
-import { Accessibility, DisableDefaultBrand } from './blocks';
+import { Branding } from "../home/company-profile";
+import { AdvancedSettingsAppearance } from "../home/settings-sidebar";
+import { Accessibility, DisableDefaultBrand } from "./blocks";
 
 const AccountAppearanceContent = () => {
   const posts: IHighlightedPostsItems = [
     {
-      icon: 'emoji-happy',
-      title: 'Enhancing Usability: Adaptive Shortcut Controls',
+      icon: "emoji-happy",
+      title: "Enhancing Usability: Adaptive Shortcut Controls",
       summary:
-        'Integrate modifier keys for activating shortcuts to streamline your navigation and enhance productivity without disrupting your typing flow.',
-      path: '#'
+        "Integrate modifier keys for activating shortcuts to streamline your navigation and enhance productivity without disrupting your typing flow.",
+      path: "#",
     },
     {
-      icon: 'picture',
-      title: 'Visual Accessibility: High Contrast Theme Activation',
+      icon: "picture",
+      title: "Visual Accessibility: High Contrast Theme Activation",
       summary:
-        'Switch to a high-contrast color scheme to improve on-screen text readability, reduce eye strain, and facilitate better visual ergonomics for long work sessions.',
-      path: '#'
+        "Switch to a high-contrast color scheme to improve on-screen text readability, reduce eye strain, and facilitate better visual ergonomics for long work sessions.",
+      path: "#",
     },
     {
-      icon: 'mouse-square',
-      title: 'Media Handling: Autoplay Videos Customization Options',
+      icon: "mouse-square",
+      title: "Media Handling: Autoplay Videos Customization Options",
       summary:
-        'Customize your video engagement experience with user-centric autoplay settings that align with your system preferences or manual selection for a tailored approach.',
-      path: '#'
+        "Customize your video engagement experience with user-centric autoplay settings that align with your system preferences or manual selection for a tailored approach.",
+      path: "#",
     },
     {
-      icon: 'route',
-      title: 'Navigation Preferences: Desktop App Link Integration Features',
+      icon: "route",
+      title: "Navigation Preferences: Desktop App Link Integration Features",
       summary:
-        'Enhance your workflow integration by configuring external links to open seamlessly within the desktop application, providing a unified and efficient user experience.',
-      path: '#'
-    }
+        "Enhance your workflow integration by configuring external links to open seamlessly within the desktop application, providing a unified and efficient user experience.",
+      path: "#",
+    },
   ];
 
   return (
@@ -58,20 +63,20 @@ const AccountAppearanceContent = () => {
             image={
               <Fragment>
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/31.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/31.svg")}
                   className="dark:hidden max-h-[150px]"
                   alt=""
                 />
                 <img
-                  src={toAbsoluteUrl('/media/illustrations/31-dark.svg')}
+                  src={toAbsoluteUrl("/media/illustrations/31-dark.svg")}
                   className="light:hidden max-h-[150px]"
                   alt=""
                 />
               </Fragment>
             }
             more={{
-              title: 'Contact Support',
-              url: ''
+              title: "Contact Support",
+              url: "",
             }}
           />
         </div>

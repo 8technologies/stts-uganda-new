@@ -1,40 +1,49 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
-import { LOAD_USERS, ROLES } from '@/gql/queries';
-import { CREATE_USER, DELETE_USER } from '@/gql/mutations';
-import { Container } from '@/components/container';
-import { Toolbar, ToolbarActions, ToolbarHeading } from '@/layouts/demo1/toolbar';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { LOAD_USERS, ROLES } from "@/gql/queries";
+import { CREATE_USER, DELETE_USER } from "@/gql/mutations";
+import { Container } from "@/components/container";
+import {
+  Toolbar,
+  ToolbarActions,
+  ToolbarHeading,
+} from "@/layouts/demo1/toolbar";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogBody,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toAbsoluteUrl } from '@/utils';
-import { toast } from 'sonner';
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toAbsoluteUrl } from "@/utils";
+import { toast } from "sonner";
 import {
   DataGrid,
   DataGridColumnHeader,
   DataGridRowSelect,
   DataGridRowSelectAll,
   useDataGrid,
-  KeenIcon
-} from '@/components';
-import { Column, ColumnDef } from '@tanstack/react-table';
+  KeenIcon,
+} from "@/components";
+import { Column, ColumnDef } from "@tanstack/react-table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { MAIN_URL, URL_2 } from '@/config/urls';
+  SelectValue,
+} from "@/components/ui/select";
+import { MAIN_URL, URL_2 } from "@/config/urls";
 
 type User = {
   id: string | number;
@@ -57,7 +66,7 @@ const UserFormDialog = ({
   onSubmit,
   loading,
   initialValues,
-  rolesOptions
+  rolesOptions,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -67,37 +76,40 @@ const UserFormDialog = ({
   rolesOptions: { id: string | number; name: string }[];
 }) => {
   const [form, setForm] = useState({
-    id: '',
-    username: '',
-    name: '',
-    company_initials: '',
-    phone_number: '',
-    premises_location: '',
-    email: '',
-    district: '',
+    id: "",
+    username: "",
+    name: "",
+    company_initials: "",
+    phone_number: "",
+    premises_location: "",
+    email: "",
+    district: "",
     imageFile: null as File | null,
-    previewUrl: '',
-    password: '',
-    roleId: ''
+    previewUrl: "",
+    password: "",
+    roleId: "",
   });
 
   useEffect(() => {
     if (open) {
       setForm({
-        id: String(initialValues?.id ?? ''),
-        username: initialValues?.username ?? '',
-        name: initialValues?.name ?? '',
-        company_initials: initialValues?.company_initials ?? '',
-        phone_number: initialValues?.phone_number ?? '',
-        premises_location: initialValues?.premises_location ?? '',
-        email: initialValues?.email ?? '',
-        district: initialValues?.district ?? '',
+        id: String(initialValues?.id ?? ""),
+        username: initialValues?.username ?? "",
+        name: initialValues?.name ?? "",
+        company_initials: initialValues?.company_initials ?? "",
+        phone_number: initialValues?.phone_number ?? "",
+        premises_location: initialValues?.premises_location ?? "",
+        email: initialValues?.email ?? "",
+        district: initialValues?.district ?? "",
         imageFile: null,
-        previewUrl: initialValues?.image ? `${URL_2}/imgs/${initialValues.image}` : '',
-        password: '',
-        roleId: ''
+        previewUrl: initialValues?.image
+          ? `${URL_2}/imgs/${initialValues.image}`
+          : "",
+        password: "",
+        roleId: "",
       });
-      const initRoles = (initialValues as any)?.role_name || (initialValues as any)?.roles;
+      const initRoles =
+        (initialValues as any)?.role_name || (initialValues as any)?.roles;
       if (Array.isArray(initRoles) && initRoles.length > 0) {
         const match = rolesOptions.find((r) => r.name === initRoles[0]);
         if (match) setForm((prev) => ({ ...prev, roleId: String(match.id) }));
@@ -116,7 +128,7 @@ const UserFormDialog = ({
       premises_location: form.premises_location,
       email: form.email,
       district: form.district,
-      password: form.password || undefined
+      password: form.password || undefined,
     };
     if (form.imageFile) {
       payload.image = form.imageFile;
@@ -131,21 +143,26 @@ const UserFormDialog = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-[840px] lg:max-w-[800px]">
+      <SheetContent
+        side="right"
+        className="w-full sm:max-w-[840px] lg:max-w-[800px]"
+      >
         <SheetHeader className="mb-4">
-          <SheetTitle>{isEditing ? 'Edit User' : 'Create User'}</SheetTitle>
+          <SheetTitle>{isEditing ? "Edit User" : "Create User"}</SheetTitle>
         </SheetHeader>
         <form
           onSubmit={handleSubmit}
           className="h-full flex flex-col"
           style={{
-            height: 'calc(100vh - 75px)',
-            overflow: 'auto'
+            height: "calc(100vh - 75px)",
+            overflow: "auto",
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Username</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Username
+              </label>
               <Input
                 value={form.username}
                 onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -153,7 +170,9 @@ const UserFormDialog = ({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Name</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Name
+              </label>
               <Input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -166,12 +185,16 @@ const UserFormDialog = ({
               </label>
               <Input
                 value={form.company_initials}
-                onChange={(e) => setForm({ ...form, company_initials: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, company_initials: e.target.value })
+                }
                 required={!isEditing}
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Email</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Email
+              </label>
               <Input
                 type="email"
                 value={form.email}
@@ -180,16 +203,22 @@ const UserFormDialog = ({
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Phone Number</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Phone Number
+              </label>
               <Input
                 type="phone_number"
                 value={form.phone_number}
-                onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, phone_number: e.target.value })
+                }
                 required={!isEditing}
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">District</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                District
+              </label>
               <Input
                 value={form.district}
                 onChange={(e) => setForm({ ...form, district: e.target.value })}
@@ -202,13 +231,17 @@ const UserFormDialog = ({
               </label>
               <Input
                 value={form.premises_location}
-                onChange={(e) => setForm({ ...form, premises_location: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, premises_location: e.target.value })
+                }
                 required={!isEditing}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Upload Image</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Upload Image
+              </label>
               <input
                 type="file"
                 accept="image/*"
@@ -216,7 +249,11 @@ const UserFormDialog = ({
                   const file = e.target.files?.[0];
                   if (!file) return;
                   const url = URL.createObjectURL(file);
-                  setForm((prev) => ({ ...prev, imageFile: file, previewUrl: url }));
+                  setForm((prev) => ({
+                    ...prev,
+                    imageFile: file,
+                    previewUrl: url,
+                  }));
                 }}
                 className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                 required={!isEditing}
@@ -230,10 +267,14 @@ const UserFormDialog = ({
               )}
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Role</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Role
+              </label>
               <Select
                 value={form.roleId}
-                onValueChange={(v) => setForm((prev) => ({ ...prev, roleId: v }))}
+                onValueChange={(v) =>
+                  setForm((prev) => ({ ...prev, roleId: v }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
@@ -250,14 +291,18 @@ const UserFormDialog = ({
                 <div className="mt-1 text-xs text-gray-600">
                   Selected role:
                   <span className="badge badge-sm ml-2">
-                    {rolesOptions.find((r) => String(r.id) === String(form.roleId))?.name || '—'}
+                    {rolesOptions.find(
+                      (r) => String(r.id) === String(form.roleId),
+                    )?.name || "—"}
                   </span>
                 </div>
               )}
             </div>
             {/* {!isEditing && ( */}
             <div className="md:col-span-2">
-              <label className="text-sm font-medium text-gray-700 mb-1 block">Password</label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Password
+              </label>
               <Input
                 type="password"
                 value={form.password}
@@ -268,11 +313,19 @@ const UserFormDialog = ({
             {/* )} */}
           </div>
           <div className="mt-6 flex justify-end gap-3 border-t pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Please wait…' : isEditing ? 'Save Changes' : 'Create User'}
+              {loading
+                ? "Please wait…"
+                : isEditing
+                  ? "Save Changes"
+                  : "Create User"}
             </Button>
           </div>
         </form>
@@ -284,7 +337,7 @@ const UserFormDialog = ({
 const UserPreviewDialog = ({
   open,
   onOpenChange,
-  user
+  user,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -303,13 +356,15 @@ const UserPreviewDialog = ({
               src={
                 user.image
                   ? `${URL_2}/imgs/${user.image}`
-                  : toAbsoluteUrl('/media/avatars/blank.png')
+                  : toAbsoluteUrl("/media/avatars/blank.png")
               }
               alt={user.username}
               className="size-14 rounded-full object-cover"
             />
             <div className="space-y-1">
-              <div className="text-base font-semibold text-gray-900">{user.username}</div>
+              <div className="text-base font-semibold text-gray-900">
+                {user.username}
+              </div>
               <div className="text-sm text-gray-700">
                 {user.name} {user.company_initials}
               </div>
@@ -322,7 +377,7 @@ const UserPreviewDialog = ({
                         <span key={idx} className="badge badge-sm">
                           {r}
                         </span>
-                      )
+                      ),
                     )
                   : null}
               </div>
@@ -339,17 +394,21 @@ const UsersListPage = () => {
   const { data: rolesData } = useQuery(ROLES);
   const [createUser, { loading: saving }] = useMutation(CREATE_USER, {
     refetchQueries: [{ query: LOAD_USERS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
   const [deleteUser] = useMutation(DELETE_USER, {
     refetchQueries: [{ query: LOAD_USERS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const users = (data?.users || []) as User[];
   const rolesOptions = useMemo(
-    () => ((rolesData?.roles || []) as any[]).map((r) => ({ id: r.id, name: r.name })),
-    [rolesData?.roles]
+    () =>
+      ((rolesData?.roles || []) as any[]).map((r) => ({
+        id: r.id,
+        name: r.name,
+      })),
+    [rolesData?.roles],
   );
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -369,9 +428,11 @@ const UsersListPage = () => {
     try {
       setDeletingId(String(user.id));
       await deleteUser({ variables: { userId: String(user.id) } });
-      toast('User deleted');
+      toast("User deleted");
     } catch (e: any) {
-      toast('Failed to delete user', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to delete user", {
+        description: e?.message ?? "Unknown error",
+      });
     } finally {
       setDeletingId(null);
     }
@@ -380,10 +441,12 @@ const UsersListPage = () => {
   const handleFormSubmit = async ({ payload }: { payload: any }) => {
     try {
       await createUser({ variables: { payload } });
-      toast(payload?.id ? 'User updated' : 'User created');
+      toast(payload?.id ? "User updated" : "User created");
       setIsFormOpen(false);
     } catch (e: any) {
-      toast('Failed to save user', { description: e?.message ?? 'Unknown error' });
+      toast("Failed to save user", {
+        description: e?.message ?? "Unknown error",
+      });
     }
   };
 
@@ -391,9 +454,16 @@ const UsersListPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Container>
         <Toolbar>
-          <ToolbarHeading title="Users" description="Manage users and their roles" />
+          <ToolbarHeading
+            title="Users"
+            description="Manage users and their roles"
+          />
           <ToolbarActions>
-            <a href="#" className="btn btn-sm btn-primary" onClick={handleCreate}>
+            <a
+              href="#"
+              className="btn btn-sm btn-primary"
+              onClick={handleCreate}
+            >
               New User
             </a>
           </ToolbarActions>
@@ -413,7 +483,9 @@ const UsersListPage = () => {
             ))}
           </div>
         ) : error ? (
-          <div className="p-6 text-danger bg-white rounded-lg border">Failed to load users</div>
+          <div className="p-6 text-danger bg-white rounded-lg border">
+            Failed to load users
+          </div>
         ) : (
           <UsersDataGrid
             users={users}
@@ -448,7 +520,7 @@ const UsersDataGrid = ({
   onPreview,
   onEdit,
   onDelete,
-  deletingId
+  deletingId,
 }: {
   users: User[];
   onPreview: (u: User) => void;
@@ -456,10 +528,14 @@ const UsersDataGrid = ({
   onDelete: (u: User) => void;
   deletingId: string | null;
 }) => {
-  const ColumnInputFilter = <TData, TValue>({ column }: { column: Column<TData, TValue> }) => (
+  const ColumnInputFilter = <TData, TValue>({
+    column,
+  }: {
+    column: Column<TData, TValue>;
+  }) => (
     <Input
       placeholder="Filter..."
-      value={(column.getFilterValue() as string) ?? ''}
+      value={(column.getFilterValue() as string) ?? ""}
       onChange={(event) => column.setFilterValue(event.target.value)}
       className="h-9 w-full max-w-40"
     />
@@ -468,16 +544,16 @@ const UsersDataGrid = ({
   const columns = useMemo<ColumnDef<User>[]>(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: "id",
         header: () => <DataGridRowSelectAll />,
         cell: ({ row }) => <DataGridRowSelect row={row} />,
         enableSorting: false,
         enableHiding: false,
-        meta: { headerClassName: 'w-0' }
+        meta: { headerClassName: "w-0" },
       },
       {
         accessorFn: (row: User) => row.username,
-        id: 'user',
+        id: "user",
         header: ({ column }) => (
           <DataGridColumnHeader
             title="Users"
@@ -491,7 +567,7 @@ const UsersDataGrid = ({
               src={
                 row.original.image
                   ? `${URL_2}/imgs/${row.original.image}`
-                  : toAbsoluteUrl('/media/avatars/blank.png')
+                  : toAbsoluteUrl("/media/avatars/blank.png")
               }
               className="rounded-full size-8 shrink-0 object-cover"
               alt={row.original.username}
@@ -502,44 +578,62 @@ const UsersDataGrid = ({
             </div>
           </div>
         ),
-        meta: { className: 'min-w-[240px]' }
+        meta: { className: "min-w-[240px]" },
       },
       {
         accessorFn: (row: User) => row.role_name || (row as any).roles,
-        id: 'role',
-        header: ({ column }) => <DataGridColumnHeader title="Role" column={column} />,
+        id: "role",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Role" column={column} />
+        ),
         cell: ({ row }) => (
           <span className="badge badge-success shrink-0 badge-outline rounded-[30px]">
             {row.original.role_name}
           </span>
         ),
-        meta: { className: 'min-w-[300px]' }
+        meta: { className: "min-w-[300px]" },
       },
       {
         accessorFn: (row: User) => row.email,
-        id: 'email',
-        header: ({ column }) => <DataGridColumnHeader title="Email" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row.original.email}</span>,
-        meta: { className: 'min-w-[180px]' }
+        id: "email",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Email" column={column} />
+        ),
+        cell: ({ row }) => (
+          <span className="text-gray-800">{row.original.email}</span>
+        ),
+        meta: { className: "min-w-[180px]" },
       },
       {
         accessorFn: (row: User) => row.district,
-        id: 'district',
-        header: ({ column }) => <DataGridColumnHeader title="District" column={column} />,
-        cell: ({ row }) => <span className="text-gray-800">{row.original.district || '-'}</span>,
-        meta: { className: 'min-w-[160px]' }
+        id: "district",
+        header: ({ column }) => (
+          <DataGridColumnHeader title="District" column={column} />
+        ),
+        cell: ({ row }) => (
+          <span className="text-gray-800">{row.original.district || "-"}</span>
+        ),
+        meta: { className: "min-w-[160px]" },
       },
       {
-        id: 'actions',
-        header: () => '',
+        id: "actions",
+        header: () => "",
         enableSorting: false,
         cell: ({ row }) => (
           <div className="flex justify-end">
             <div className="inline-flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => onPreview(row.original)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPreview(row.original)}
+              >
                 Preview
               </Button>
-              <Button variant="outline" size="sm" onClick={() => onEdit(row.original)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(row.original)}
+              >
                 Edit
               </Button>
               <Button
@@ -548,23 +642,27 @@ const UsersDataGrid = ({
                 onClick={() => onDelete(row.original)}
                 disabled={String(deletingId) === String(row.original.id)}
               >
-                {String(deletingId) === String(row.original.id) ? 'Deleting…' : 'Delete'}
+                {String(deletingId) === String(row.original.id)
+                  ? "Deleting…"
+                  : "Delete"}
               </Button>
             </div>
           </div>
         ),
-        meta: { headerClassName: 'w-[220px]' }
-      }
+        meta: { headerClassName: "w-[220px]" },
+      },
     ],
-    [deletingId]
+    [deletingId],
   );
 
   const HeaderToolbar = () => {
     const { table } = useDataGrid();
-    const [searchInput, setSearchInput] = useState('');
+    const [searchInput, setSearchInput] = useState("");
     return (
       <div className="card-header flex-wrap gap-2 border-b-0 px-5">
-        <h3 className="card-title font-medium text-sm">Showing {users.length} users</h3>
+        <h3 className="card-title font-medium text-sm">
+          Showing {users.length} users
+        </h3>
         <div className="flex flex-wrap gap-2 lg:gap-5">
           <div className="flex">
             <label className="input input-sm">
@@ -576,7 +674,7 @@ const UsersDataGrid = ({
                 onChange={(e) => {
                   const val = e.target.value;
                   setSearchInput(val);
-                  table.getColumn('user')?.setFilterValue(val);
+                  table.getColumn("user")?.setFilterValue(val);
                 }}
               />
             </label>
@@ -591,9 +689,9 @@ const UsersDataGrid = ({
       columns={columns}
       data={users}
       rowSelection={true}
-      layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
+      layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
       toolbar={<HeaderToolbar />}
-      messages={{ loading: 'Loading...', empty: 'No users found' }}
+      messages={{ loading: "Loading...", empty: "No users found" }}
     />
   );
 };
