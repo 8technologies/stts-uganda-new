@@ -177,7 +177,6 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: 'can_view_only_own_orders', label: 'Can view only own orders' },
 
     ]
-    permissions: [],
   },
   {
     id: "system_configuration",

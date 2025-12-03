@@ -1,17 +1,8 @@
 import React, { ChangeEvent, forwardRef, useEffect, useState } from "react";
-import { KeenIcon, Menu, MenuItem, MenuToggle } from "@/components";
 import { Tab, TabPanel, Tabs, TabsList } from "@/components/tabs";
-import { DropdownCrud2 } from "@/partials/dropdowns/general";
 import { useViewport } from "@/hooks";
 import { useLanguage } from "@/i18n";
 import {
-  ModalSearchDocs,
-  ModalSearchMixed,
-  ModalSearchSettings,
-  ModalSearchIntegrations,
-  ModalSearchUsers,
-  ModalSearchEmpty,
-  ModalSearchNoResults,
   IModalSearchDocsItem,
   IModalSearchUsersItem,
   IModalSearchSettingsItem,
@@ -21,11 +12,12 @@ import {
   Dialog,
   DialogBody,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@mui/material";
+import { useQuery } from "@apollo/client/react";
+import { TRACK_TRACE } from "@/gql/queries";
+import { _formatDate } from "@/utils/Date";
+import { StatusBadge } from "@/pages/QA/seedLabs/blocks/SeedLabDetailsDialog";
+
 interface IModalSearchProps {
   open: boolean;
   onOpenChange: () => void;
@@ -37,6 +29,11 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
   ({ open, onOpenChange, track, lotNumber }, ref) => {
     const [scrollableHeight, setScrollableHeight] = useState<number>(0);
     const [viewportHeight] = useViewport();
+    
+    const [seedDetails, setSeedDetails] = useState<any | null>(null);
+    const [seedLab, setSeedLab] = useState<any | null>(null);
+    const [motherLot, setMotherLot] = useState<any | null>(null);
+
     const { isRTL } = useLanguage();
     const offset = 300;
     const [searchInput, setSearchInput] = useState("");
@@ -45,202 +42,20 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
       setScrollableHeight(viewportHeight - offset);
     }, [viewportHeight]);
 
-    const mixedSettingsItems: IModalSearchSettingsItem[] = [
-      { icon: "badge", info: "Public Profile" },
-      { icon: "setting-2", info: "My Account" },
-      { icon: "message-programming", info: "Devs Forum" },
-    ];
+    console.log("lotNumber", lotNumber);
+    const { data, loading, error, refetch } = useQuery(TRACK_TRACE, {
+      variables: { lotNumber: String(lotNumber) }
+    });
 
-    const mixedUsersItems: IModalSearchUsersItem[] = [
-      {
-        avatar: "300-3.png",
-        name: "Tyler Hero",
-        email: "tyler.hero@gmail.com",
-        label: "In Office",
-        color: "badge-success",
-      },
-      {
-        avatar: "300-1.png",
-        name: "Esther Howard",
-        email: "esther.howard@gmail.com",
-        label: "On Leave",
-        color: "badge-danger",
-      },
-    ];
-
-    const mixedIntegrationsItems: IModalSearchIntegrationsItem[] = [
-      {
-        logo: "jira.svg",
-        name: "Jira",
-        description: "Project management",
-        team: [
-          { filename: "300-4.png", variant: "size-6" },
-          { filename: "300-1.png", variant: "size-6" },
-          { filename: "300-2.png", variant: "size-6" },
-          {
-            fallback: "+3",
-            variant:
-              "text-success-inverse size-6 ring-success-light bg-success",
-          },
-        ],
-      },
-      {
-        logo: "inferno.svg",
-        name: "Inferno",
-        description: "Real-time photo sharing app",
-        team: [
-          { filename: "300-14.png", variant: "size-6" },
-          { filename: "300-12.png", variant: "size-6" },
-          { filename: "300-9.png", variant: "size-6" },
-        ],
-      },
-    ];
-
-    const docsItems: IModalSearchDocsItem[] = [
-      {
-        image: "pdf.svg",
-        desc: "Project-pitch.pdf",
-        date: "4.7 MB 26 Sep 2024 3:20 PM",
-      },
-      {
-        image: "doc.svg",
-        desc: "Report-v1.docx",
-        date: "2.3 MB 1 Oct 2024 12:00 PM",
-      },
-      {
-        image: "javascript.svg",
-        desc: "Framework-App.js",
-        date: "0.8 MB 17 Oct 2024 6:46 PM",
-      },
-      {
-        image: "ai.svg",
-        desc: "Framework-App.js",
-        date: "0.8 MB 17 Oct 2024 6:46 PM",
-      },
-      {
-        image: "php.svg",
-        desc: "appController.js",
-        date: "0.1 MB 21 Nov 2024 3:20 PM",
-      },
-    ];
-
-    const settingsItems = [
-      {
-        title: "Shortcuts",
-        children: [
-          { icon: "home-2", info: "Go to Dashboard" },
-          { icon: "badge", info: "Public Profile" },
-          { icon: "profile-circle", info: "My Profile" },
-          { icon: "setting-2", info: "My Account" },
-          { icon: "message-programming", info: "Devs Forum" },
-        ],
-      },
-      {
-        title: "Actions",
-        children: [
-          { icon: "user", info: "Create User" },
-          { icon: "user-edit", info: "Create Team" },
-          { icon: "subtitle", info: "Change Plan" },
-          { icon: "setting", info: "Setup Branding" },
-        ],
-      },
-    ];
-
-    const integrationsItems = [
-      {
-        logo: "jira.svg",
-        name: "Jira",
-        description: "Project management",
-        team: [
-          { filename: "300-4.png", variant: "size-6" },
-          { filename: "300-1.png", variant: "size-6" },
-          { filename: "300-2.png", variant: "size-6" },
-          {
-            fallback: "+3",
-            variant:
-              "text-success-inverse size-6 ring-success-light bg-success",
-          },
-        ],
-      },
-      {
-        logo: "inferno.svg",
-        name: "Inferno",
-        description: "Real-time photo sharing app",
-        team: [
-          { filename: "300-14.png", variant: "size-6" },
-          { filename: "300-12.png", variant: "size-6" },
-          { filename: "300-9.png", variant: "size-6" },
-        ],
-      },
-      {
-        logo: "evernote.svg",
-        name: "Evernote",
-        description: "Notes management app",
-        team: [
-          { filename: "300-6.png", variant: "size-6" },
-          { filename: "300-3.png", variant: "size-6" },
-          { filename: "300-1.png", variant: "size-6" },
-          { filename: "300-8.png", variant: "size-6" },
-        ],
-      },
-      {
-        logo: "gitlab.svg",
-        name: "Gitlab",
-        description: "Version control and CI/CD platform",
-        team: [
-          { filename: "300-18.png", variant: "size-6" },
-          { filename: "300-17.png", variant: "size-6" },
-        ],
-      },
-      {
-        logo: "google-webdev.svg",
-        name: "Google Webdev",
-        description: "Building web experiences",
-        team: [
-          { filename: "300-14.png", variant: "size-6" },
-          { filename: "300-20.png", variant: "size-6" },
-          { filename: "300-21.png", variant: "size-6" },
-        ],
-      },
-    ];
-
-    const usersItems = [
-      {
-        avatar: "300-3.png",
-        name: "Tyler Hero",
-        email: "tyler.hero@gmail.com",
-        label: "In Office",
-        color: "badge-success",
-      },
-      {
-        avatar: "300-1.png",
-        name: "Esther Howard",
-        email: "esther.howard@gmail.com",
-        label: "On Leave",
-        color: "badge-danger",
-      },
-      {
-        avatar: "300-11.png",
-        name: "Jacob Jones",
-        email: "jacob.jones@gmail.com",
-        label: "Remote",
-        color: "badge-primary",
-      },
-      {
-        avatar: "300-5.png",
-        name: "Leslie Alexander",
-        email: "leslie.alexander@gmail.com",
-        label: "In Office",
-        color: "badge-success",
-      },
-      {
-        avatar: "300-2.png",
-        name: "Cody Fisher",
-        email: "cody.fisher@gmail.com",
-        label: "Remote",
-        color: "badge-primary",
-      },
-    ];
+    useEffect(() => {
+        if (data?.trackTrace) {
+          setSeedDetails(data.trackTrace.seedDetails);
+          setSeedLab(data.trackTrace.seedLab);
+          setMotherLot(data.trackTrace.motherLot);
+          // if (!lastRefreshedAt) setLastRefreshedAt(new Date());
+        }
+      }, [data]);
+ 
 
     return !track ? (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -302,7 +117,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                 style={{ maxHeight: `${scrollableHeight}px` }}
               >
                 <TabPanel value={1}>
-                  <div className="menu-item" style={{ padding: "12px 25px" }}>
+                  <div className="menu-item" style={{ padding: "8px 25px" }}>
                     <div className="menu-link flex items-center justify-between gap-10 py-1">
                       <div className="flex items-center grow gap-2 ">
                         <div className="flex flex-col gap-0.5">
@@ -320,7 +135,70 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                       <div className="flex justify-end shrink-0">
                         {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
                         <span className="text-2sm text-gray-900 hover:text-primary-active">
-                          Soybeans
+                          {seedDetails?.crop || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-10 py-1 border-t">
+                      <div className="flex items-center grow gap-2 ">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Crop Variety
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {seedDetails?.variety || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-10 py-1 border-t">
+                      <div className="flex items-center grow gap-2 ">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Seed Class
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          Certified
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-10 py-1 border-t">
+                      <div className="flex items-center grow gap-2 ">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Lot Number:
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {data?.trackTrace?.lotNumber || "N/A"}
                         </span>
                       </div>
                     </div>
@@ -329,7 +207,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                 <TabPanel value={2}>
                   {/* <ModalSearchSettings items={settingsItems} /> */}
                   <div className="menu-item" style={{ padding: "12px 25px" }}>
-                    <div className="menu-link flex items-center justify-between gap-10 py-1">
+                    <div className="menu-link flex items-center justify-between gap-10 py-1 border-t">
                       <div className="flex items-center grow gap-2 ">
                         <div className="flex flex-col gap-0.5">
                           <a
@@ -346,11 +224,11 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                       <div className="flex justify-end shrink-0">
                         {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
                         <span className="text-2sm text-gray-900 hover:text-primary-active">
-                          lab_test/2025/58937871
+                          {seedLab?.labTestNumber || "N/A"}
                         </span>
                       </div>
                     </div>
-                    <div className="menu-link flex items-center justify-between gap-2 py-1">
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
                       <div className="flex items-center grow gap-2">
                         <div className="flex flex-col gap-0.5">
                           <a
@@ -369,7 +247,147 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                       <div className="flex justify-end shrink-0">
                         {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
                         <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {seedLab?.testResults?.germination?.capacity || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Purity
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {seedLab?.testResults?.purity?.pure_seed || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            P_x_G
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
                           80
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Testing Method
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {seedLab?.testResults?.testingMethod || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Moisture content
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {seedLab?.testResults?.moisture?.moisture || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Test date
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {_formatDate(seedLab?.receivedAt) || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Status
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {/* {get(seedLab?.status) || "N/A"} */}
+                          <StatusBadge s={seedLab?.status} />
                         </span>
                       </div>
                     </div>
@@ -400,7 +418,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                       <div className="flex justify-end shrink-0">
                         {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
                         <span className="text-2sm font-semibold text-gray-900 hover:text-primary-active">
-                          Quamar/2023-07-03/32
+                          {motherLot?.motherLot || "N/A"}
                         </span>
                       </div>
                     </div>

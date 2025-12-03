@@ -8,6 +8,7 @@ import { fetchSeedLabs } from "../seed_lab/resolvers.js";
 import { fetchVarietyById } from "../crop/resolvers.js";
 import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const mapLabelsRow = (row) => {
   return {
@@ -301,6 +302,9 @@ const seedLabelResolvers = {
                     applicant_remark,
                 }
                 console.log("data.........", data)
+                if (!id) {
+                  data.id = uuidv4();
+                }
 
                 const save_id = await saveData({
                 table: "seed_labels",
@@ -337,7 +341,7 @@ const seedLabelResolvers = {
                     await saveData({
                     table: "seed_labels",
                     data: { receipt_id: savedReceiptInfo.filename, image_id: savedImageInfo.filename },
-                    id: save_id,
+                    id: id? id : data.id,
                     connection,
                     });
                 } catch (e) {
@@ -444,11 +448,11 @@ const seedLabelResolvers = {
                 await connection.beginTransaction();
 
                 // check if user has permission to assign an inspector
-                checkPermission(
-                userPermissions,
-                "can_print_seed_labels",
-                "You don't have permissions to print a seed label"
-                );
+                // checkPermission(
+                // userPermissions,
+                // "can_print_seed_labels",
+                // "You don't have permissions to print a seed label"
+                // );
 
                 // fetch the form details
                 const [formDetails] = await fetchSeedLabels({
@@ -481,19 +485,21 @@ const seedLabelResolvers = {
                 // const label = await fetchSeedLabels({ id });
                 const lab_id = formDetails.seed_lab_id;
                 const marketableSeed = await fetchSeedLabs({ id:lab_id });
+                console.log("marketableSeed:", marketableSeed[0], formDetails);
+
                 const packages = formDetails.quantity/ formDetails.label_package;
                 const product ={
-                    user_id: formDetails.user_id,
-                    crop_variety_id : formDetails.crop_variety_id,
-                    seed_lab_id : formDetails.seed_lab_id,
-                    seed_label_id : formDetails.id,
+                    user_id: formDetails.user_id?? null,
+                    crop_variety_id : formDetails.crop_variety_id ?? null,
+                    seed_lab_id : formDetails.seed_lab_id ?? null,
+                    seed_label_id : formDetails.id ?? null,
 
-                    quantity : formDetails.label_package,
-                    available_stock : packages,
-                    lab_test_number : marketableSeed[0].lab_test_number,
-                    lot_number : marketableSeed[0].lot_number,
-                    seed_class : marketableSeed[0].lot_number,
-                    image_url : marketableSeed[0].lot_number,
+                    quantity : formDetails.label_package ?? null,
+                    available_stock : packages ?? null,
+                    lab_test_number : marketableSeed[0].lab_test_number ?? null,
+                    lot_number : marketableSeed[0].lot_number ?? null,
+                    seed_class : marketableSeed[0].lot_number ?? null,
+                    image_url : marketableSeed[0].lot_number ?? null,
                 }
 
                 await saveData({

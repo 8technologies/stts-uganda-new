@@ -1,7 +1,8 @@
 import mysql from "mysql2/promise";
 
 const port = 9000;
-const host = "localhost";
+// const host = "localhost";
+const host = "192.168.100.110";
 const baseUrl = `http://${host}:${port}/logos/`;
 const imagesUrl = `http://${host}:2222`;
 const test = "testing123";

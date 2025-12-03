@@ -16,12 +16,14 @@ const trackTraceTypeDefs = `#graphql
     status: String
     labTestNumber: String
     inspector: String
+    testResults: JSON
     collectedAt: String
     receivedAt: String
   }
 
   type TrackTraceMotherLot {
     id: ID
+    motherLot: String
     lotNumber: String
     seedClass: String
     yieldAmount: String

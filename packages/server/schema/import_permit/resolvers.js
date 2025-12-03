@@ -270,7 +270,36 @@ const importPermitsResolvers = {
           permit_type: input.type,
         };
 
-        const permitId = await saveData({
+          const existingForms =await listImportPermits({
+            // filter,
+            // pagination,
+            // inspector_id: canViewAssignedPermits ? userId : null,
+            user_id: user_id ,
+          });
+        
+        // const existingForms = await getForms({ user_id, 
+        // form_type: "sr6", status: "approved" });
+        console.log("existingForms", existingForms.items, input.applicantCategory, );
+        const today = new Date();
+
+        const activeForm = existingForms.items.find((form) => {
+          return (
+            console.log("Checking form:", form.applicantCategory, today) &&
+            form.applicantCategory == input.applicantCategory &&
+            new Date(form.validUntil) >= today
+          );
+        });
+
+        if (activeForm) {
+          // A matching and still-valid form exists
+          console.log("Found valid form:", activeForm);
+          throw new GraphQLError("You already have an active Import permit of the type "+input.applicantCategory);
+        } else {
+          // No active form of this type exists
+          console.log("No valid form found");
+        }
+
+        const permitId = await saveData({ 
           table: "permits",
           data: permitData,
           id: null,
