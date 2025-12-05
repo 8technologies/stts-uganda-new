@@ -436,6 +436,27 @@ const applicationFormsResolvers = {
 
           if (form.status !== "pending")
             throw new GraphQLError("Editing this form is no longer allowed");
+        } else {
+          const existingForms = await getForms({ user_id, 
+          form_type: "sr4", status: "approved" });
+          console.log("existingForms", existingForms);
+          const today = new Date();
+
+          const activeForm = existingForms.find((form) => {
+            return (
+              form.type === type &&
+              new Date(form.valid_until) >= today
+            );
+          });
+
+          if (activeForm) {
+            // A matching and still-valid form exists
+            console.log("Found valid form:", activeForm);
+            throw new GraphQLError("You already have an active form of the type "+type);
+          } else {
+            // No active form of this type exists
+            console.log("No valid form found");
+          }
         }
 
         // construct the data object for application forms
@@ -592,6 +613,27 @@ const applicationFormsResolvers = {
 
           if (form.status !== "pending")
             throw new GraphQLError("Editing this form is no longer allowed");
+        }else {
+          const existingForms = await getForms({ user_id, 
+          form_type: "sr6", status: "approved" });
+          console.log("existingForms", existingForms);
+          const today = new Date();
+
+          const activeForm = existingForms.find((form) => {
+            return (
+              form.type === type &&
+              new Date(form.valid_until) >= today
+            );
+          });
+
+          if (activeForm) {
+            // A matching and still-valid form exists
+            console.log("Found valid form:", activeForm);
+            throw new GraphQLError("You already have an active form of the type "+type);
+          } else {
+            // No active form of this type exists
+            console.log("No valid form found");
+          }
         }
         // construct the data object for application forms
         let data = {

@@ -21,14 +21,13 @@ const mapExamRow = (row) => {
   const meta = parseJSON(row.report);
   const decision = meta?.decision || null;
   const status = decision || "pending"; // UI expects: pending |inspector_assigned | accepted | rejected
-  const submittedAt = decision ? row.updated_at : null;
+  // const submittedAt = decision ? row.updated_at : null;
 
   console.log("Mapping exam row:", row);
   return {
     id: String(row.id),
-
     created_at: row.created_at,
-    submittedAt,
+    submittedAt: row.updated_at,
     user_id: row.user_id,
     variety_id: row.crop_variety_id,
     import_export_permit_id: row.import_export_permit_id,
@@ -359,6 +358,7 @@ const stockExaminationResolvers = {
                 inspector_id: inspectorId,
                 // scheduled_visit_date: scheduledVisitDate || null,
                 status: "inspector_assigned",
+                updated_at: new Date(),
                 // status_comment: comment || null,
               },
               id: fid,
@@ -447,6 +447,7 @@ const stockExaminationResolvers = {
             seed_class: report.seed_class || null,
             remarks: remarks || null,
             lot_number : lot_number,
+            updated_at: new Date(),
             status: decision, // accepted or rejected
           },
           id,

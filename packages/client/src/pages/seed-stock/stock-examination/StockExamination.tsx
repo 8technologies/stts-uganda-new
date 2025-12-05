@@ -1,22 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client/react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { KeenIcon } from "@/components";
-import { toast } from "sonner";
-import { useAuthContext } from "@/auth";
-import { getPermissionsFromToken } from "@/utils/permissions";
-import StockExaminationFormSheet from "./StockExaminationFormSheet";
-import StockExaminationDetailsSheet from "./StockExaminationDetailsSheet";
-import { LOAD_INSPECTORS, LOAD_STOCK_EXAMINATIONS } from "@/gql/queries";
-import { ASSIGN_STOCK_EXAMINATION_INSPECTOR } from "@/gql/mutations";
-import StockInspectionSheet from "./StockExamInspection";
+import React, { useMemo, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { KeenIcon } from '@/components';
+import { toast } from 'sonner';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
+import StockExaminationFormSheet from './StockExaminationFormSheet';
+import StockExaminationDetailsSheet from './StockExaminationDetailsSheet';
+import { LOAD_INSPECTORS, LOAD_STOCK_EXAMINATIONS } from '@/gql/queries';
+import { ASSIGN_STOCK_EXAMINATION_INSPECTOR } from '@/gql/mutations';
+import StockInspectionSheet from './StockExamInspection';
+import { URL_2 } from '@/config/urls';
+import { _formatDate } from '@/utils/Date';
 
 interface StockExam {
   id: string;
@@ -238,6 +234,206 @@ const StockExamination: React.FC = () => {
     }
   };
 
+  const handlePrint = (formDetails: any) => {
+    console.log('Printing form details:', formDetails);
+    
+  const serialNo = String(Math.floor(1000 + Math.random() * 9000));
+  const verifyUrl = `${URL_2}/certificates/qds/${String(formDetails?.id ?? '')}`;
+    const user = formDetails.user?.username || 'N/A';
+    const purity = formDetails.report.purity || 'N/A';
+    const germination = formDetails.report.germination || 'N/A';
+    const moistureContent = formDetails.report.moisture_content || 'N/A';
+    const insectDamage = formDetails.report.insect_damage || 'N/A';
+    const mouldiness = formDetails.report.mouldiness || 'N/A';
+    const weeds = formDetails.report.noxious_seeds_observable || 'N/A';
+    const submittedAt = _formatDate(formDetails.submittedAt) || '';
+
+    const formHTML = `
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificate of Registration</title>
+    <style>
+      :root {
+        --text: #0f172a;
+        --muted: #475569;
+        --border: #e2e8f0;
+        --brand: #14532d;
+        --accent: #16a34a;
+        --bg: #ffffff;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      .page {
+        max-width: 900px;
+        margin: 24px auto;
+        padding: 32px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+        background: #fff;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+      }
+      .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .brand h1 {
+        font-size: 20px;
+        margin: 0;
+        letter-spacing: .2px;
+      }
+      .brand p { margin: 0; color: var(--muted); font-size: 12px; }
+      .title {
+        margin: 8px 0 0;
+        font-size: 28px;
+        text-align: center;
+        letter-spacing: .4px;
+      }
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .badge {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        color: var(--brand);
+        background: #f0fdf4;
+      }
+      .details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 24px;
+        margin-top: 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .field { display: flex; gap: 8px; }
+      .label { color: var(--muted); width: 48%; font-size: 13px; }
+      .value { font-weight: 600; font-size: 14px; }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px dashed var(--border);
+      }
+      .sign {
+        display: flex; flex-direction: column; gap: 6px; max-width: 60%;
+      }
+      .sign .line { width: 260px; height: 1px; background: var(--border); }
+      .qr { text-align: right; }
+      .qr small { display: block; color: var(--muted); margin-top: 6px; }
+      @media print {
+        body { background: #fff; }
+        .page { box-shadow: none; border: none; margin: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="header">
+        <img src="${URL_2}/imgs/coat.png" alt="logo" style="width:84px;height:auto;" />
+        <div class="brand">
+          <h1>Ministry of Agriculture, Animal Industry and Fisheries</h1>
+          <p>P.O. Box 102, Entebbe</p>
+          <div class="meta">
+            <span>Serial No: <strong>${serialNo}</strong></span>
+            <span class="badge">[R.20(1)(c)]</span>
+          </div>
+        </div>
+      </div>
+      <h2 class="title">Stock Examination Report</h2>
+      <div  style=" margin-top:4px; font-weight:600;">
+        To: ${user}
+        
+      </div>
+      <div style="justify-content: center;">
+        Your Pre-Basic seed which was inspected and finalized on ${submittedAt} of weight ${formDetails.yield} kgs
+        of seeds and whose sample for stock approval analysis was taken on ${_formatDate(formDetails.created_at)} has been
+        Accepted
+      </div>
+
+      <div class="details">
+        <div class="field"><div class="label">Purity</div><div class="value">${purity}%</div></div>
+        <div class="field"><div class="label">Germination</div><div class="value">${germination}%</div></div>
+        <div class="field"><div class="label">Moisture Content</div><div class="value">${moistureContent}%</div></div>
+        <div class="field"><div class="label">Insect Damage</div><div class="value">${insectDamage}%</div></div>
+        <div class="field"><div class="label">Mouldiness</div><div class="value">${mouldiness}</div></div>
+        <div class="field"><div class="label">Noxious weeds observable</div><div class="value">${weeds}</div></div>
+      </div>
+
+      <div class="footer">
+        <div class="sign">
+          <div class="line"></div>
+          <div><strong>National Seed Certification Service</strong></div>
+          <small>Inspector's Signature</small>
+          <small>${submittedAt}</small>
+        </div>
+        <div class="qr">
+          <div id="qrcode"></div>
+          <small>Scan to verify: ${verifyUrl}</small>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load QRCode library from CDN and render QR
+      (function() {
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        s.onload = function() {
+          try {
+            var el = document.getElementById('qrcode');
+            if (el && window.QRCode) {
+              new window.QRCode(el, { text: '${verifyUrl}', width: 120, height: 120 });
+            }
+          } catch (_) {
+            var el2 = document.getElementById('qrcode');
+            if (el2) el2.innerHTML = '<div style="font-size:12px;color:#64748b">QR code unavailable</div>';
+          }
+        };
+        s.onerror = function() {
+          var el = document.getElementById('qrcode');
+          if (el) el.innerHTML = '<div style="font-size:12px;color:#64748b">QR code unavailable</div>';
+        };
+        document.head.appendChild(s);
+      })();
+    </script>
+  </body>
+</html>`;
+
+  
+    const popup = window.open('', '_blank', 'width=1000,height=800,scrollbars=yes,resizable=yes');
+    if (popup) {
+      popup.document.open();
+      popup.document.write(formHTML);
+      popup.document.close();
+    }
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-50">
       {/* Page Header */}
@@ -437,18 +633,21 @@ const StockExamination: React.FC = () => {
                       {row?.inspector?.username || "—"}
                     </td>
                     <td className="px-4 py-4">
-                      {row.reportAvailable ? (
-                        <a
-                          href={`/stock/examination/${row.id}/report`}
+                      {row.status === 'approved' &&  (
+                        <button 
+                          // href={handlePrint(row)}
+                          // onClick={handlePrint(row)}
+                          onClick={() => {
+                                      handlePrint(row);
+                                    }}
                           className="inline-flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700 hover:underline"
                         >
                           Print Report
                           <KeenIcon icon="printer" className="text-xs" />
-                        </a>
-                      ) : (
-                        <span className="text-sm text-gray-400">
-                          Unavailable
-                        </span>
+                        </button>
+                      )}
+                      {row.status != 'approved' && (
+                        <span className="text-sm text-gray-400">Unavailable</span>
                       )}
                     </td>
                     <td className="px-4 py-4 relative">

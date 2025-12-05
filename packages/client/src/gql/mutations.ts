@@ -823,3 +823,21 @@ export const CREATE_ORDER = gql`
     }
   }
 `;
+
+export const PROCESS_ORDER = gql`
+mutation OrderProcessing($input: OrderProcessingInput!) {
+  orderProcessing(input: $input) {
+    success
+    message
+    order {
+      id
+      product_id
+      quantity
+      buyer_id
+      seller_id
+      comment
+      status
+      created_at
+    }
+  }
+}`;

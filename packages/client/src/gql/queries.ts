@@ -699,6 +699,14 @@ const LOAD_STOCK_RECORDS = gql`
       created_at
       updated_at
       lot_number
+      Owner{
+        username
+        name
+      }
+
+      CropVariety {
+        name
+      }
     }
   }
 `;
@@ -854,40 +862,42 @@ const DASHBOARD_STATS = gql`
 `;
 
 const TRACK_TRACE = gql`
-  query TrackTrace($lotNumber: String!) {
-    trackTrace(lotNumber: $lotNumber) {
+ query TrackTrace($lotNumber: String!) {
+  trackTrace(lotNumber: $lotNumber) {
+    lotNumber
+    seedDetails {
+      id
+      status
+      crop
+      variety
+      quantity
+      labelPackage
+      applicant
+      createdAt
+    }
+    seedLab {
+      id
       lotNumber
-      seedDetails {
-        id
-        status
-        crop
-        variety
-        quantity
-        labelPackage
-        applicant
-        createdAt
-      }
-      seedLab {
-        id
-        lotNumber
-        status
-        labTestNumber
-        inspector
-        collectedAt
-        receivedAt
-      }
-      motherLot {
-        id
-        lotNumber
-        seedClass
-        yieldAmount
-        fieldSize
-        inspector
-        status
-        createdAt
-      }
+      status
+      labTestNumber
+      inspector
+      collectedAt
+      receivedAt
+      testResults
+    }
+    motherLot {
+      id
+      lotNumber
+      seedClass
+      motherLot
+      yieldAmount
+      fieldSize
+      inspector
+      status
+      createdAt
     }
   }
+}
 `;
 
 export {
@@ -998,5 +1008,4 @@ export const ORDERS = gql`
       id
     }
   }
-}
-`;
+}`;

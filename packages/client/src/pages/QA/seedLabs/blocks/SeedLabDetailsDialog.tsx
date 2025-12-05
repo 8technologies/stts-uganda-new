@@ -76,7 +76,7 @@ const timeAgo = (iso?: string | null) => {
 };
 
 /* --- Status styles (emerald palette) --- */
-const STATUS = {
+export const STATUS = {
   ACCEPTED: {
     label: 'Accepted',
     icon: 'check-circle',
@@ -86,8 +86,7 @@ const STATUS = {
   RECOMMENDED: {
     label: 'Recommended',
     icon: 'verify',
-    badge:
-      'text-white bg-gradient-to-r from-green-500 to-emerald-600 shadow-sm ring-1 ring-emerald-300/70',
+    badge:'text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-sm ring-1 ring-blue-300/70',
   },
   REJECTED: {
     label: 'Rejected',
@@ -121,23 +120,22 @@ const STATUS = {
   MARKETABLE: {
     label: 'Marketable',
     icon: 'user-tick',
-    badge:'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
-  
+    badge:'text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-sm ring-1 ring-blue-300/70',
   },
   NON_MARKETABLE: {
     label: 'Non-Marketable',
     icon: 'block',
-    badge:'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
+    badge:'text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm ring-1 ring-red-300/70',
   
   },
 } as const;
 
-const getStatusCfg = (s?: string | null) => {
+export const getStatusCfg = (s?: string | null) => {
   const key = (s || 'PENDING').toUpperCase() as keyof typeof STATUS;
   return STATUS[key] || STATUS.PENDING;
 };
 
-const StatusBadge = ({ s }: { s?: string | null }) => {
+export const StatusBadge = ({ s }: { s?: string | null }) => {
   const cfg = getStatusCfg(s);
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${cfg.badge}`}>

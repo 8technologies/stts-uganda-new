@@ -41,7 +41,8 @@ const SeedLabelManagementPage = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canManageSeedLabels = !!perms["can_manage_seed_labels"];
-  const canPrintLabels = !!perms["can_print_seed_labels"];
+  const canPrintLabels = !!perms["can_pran_manage_seed_labels"];
+  const canEditSeedLabels = !!perms["can_edit_seed_labels"];
 
   const { data, loading, error } = useQuery(LOAD_SEED_LABELS, {
     fetchPolicy: "cache-and-network",
@@ -321,9 +322,9 @@ const SeedLabelManagementPage = () => {
               <Table>
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       ID
-                    </th>
+                    </th> */}
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Crop
                     </th>
@@ -390,11 +391,11 @@ const SeedLabelManagementPage = () => {
                         className="hover:bg-gray-50 transition-colors cursor-pointer"
                         onClick={() => setDetailsItem(label)}
                       >
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        {/* <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-medium text-gray-900">
                             {label.id}
                           </span>
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm text-gray-900">
                             {label.Crop?.name || "—"}
@@ -447,7 +448,7 @@ const SeedLabelManagementPage = () => {
                                 <Eye className="mr-2 h-4 w-4 text-gray-600" />
                                 <span>View Details</span>
                               </DropdownMenuItem>
-                              {canDeleteLabels && label.status ==='pending' && (
+                              {canEditSeedLabels && label.status ==='pending' && (
                                 <>
                                 {console.log('userEditPermissions', label.status ==='pending')}
                                 <DropdownMenuItem
@@ -465,7 +466,7 @@ const SeedLabelManagementPage = () => {
                                 <span>Delete</span>
                               </DropdownMenuItem>
                                 </>
-                              )}
+                               )}
                               
                             </DropdownMenuContent>
                           </DropdownMenu>

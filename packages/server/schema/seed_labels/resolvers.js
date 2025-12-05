@@ -8,6 +8,7 @@ import { fetchSeedLabs } from "../seed_lab/resolvers.js";
 import { fetchVarietyById } from "../crop/resolvers.js";
 import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const mapLabelsRow = (row) => {
   return {
@@ -17,18 +18,19 @@ export const mapLabelsRow = (row) => {
     seed_label_package: row.label_package,
 
     seed_lab_id: row.seed_lab_id,
-    quantity: row.quantity?.toString(),
-    available_stock: row.available_stock,
+    quantity:row.quantity?.toString(),
+    available_stock:row.available_stock,
     status_comment: row.available_stock,
     image_id: row.image_id,
     receipt_id: row.receipt_id || null,
     applicant_remark: row.applicant_remark || null,
-    inspector_id: row.inspector_id?.toString() || null, // cast to string for GraphQL ID consistency
+    inspector_id: row.inspector_id?.toString() || null,   // cast to string for GraphQL ID consistency
     // status: row.status?.toUpperCase(),
     status: row.status,
-
+    
     deleted: Boolean(row.deleted),
     created_at: row.created_at ? new Date(row.created_at) : null,
+   
   };
 };
 
@@ -177,73 +179,81 @@ const seedLabelResolvers = {
             }
         },
 
-    getSeedLabel: async (_parent, _args, context) => {
-      try {
-        const { id } = _args;
-        const user = context?.req?.user;
-        const userPermissions = user?.permissions || [];
-        console.log("ID here:", id);
-
-        checkPermission(
-          userPermissions,
-          "can_view_seed_labels", // consider a more specific permission, e.g., "can_view_seed_labels"
-          "You dont have permissions to view seed labels"
-        );
-
-        const can_manage_all_forms = hasPermission(
-          userPermissions,
-          "can_manage_seed_labels"
-        );
-
-        const can_view_only_assigned_seed_stock = hasPermission(
-          userPermissions,
-          "can_view_only_assigned_seed_lab_inspection"
-        );
-
-        const can_print_seed_labels = hasPermission(
-          userPermissions,
-          "can_print_seed_labels"
-        );
-
-        const can_approve_seed_labels = hasPermission(
-          userPermissions,
-          "can_approve_seed_labels"
-        );
-
-        const status = (() => {
-          if (can_print_seed_labels) return "approved";
-          return null;
-        })();
-
-        const labs = await fetchSeedLabels({
-          id,
-          // user_id: can_manage_all_forms ? null : user?.id ?? null,
-          // status: status,
-        });
-
-        return labs;
-      } catch (error) {
-        throw new Error(`Failed to fetch seed labels: ${error.message}`);
-      }
     },
-  },
-  SeedLabel: {
-    createdBy: async (parent) => {
-      try {
-        const user_id = parent.user_id;
+    SeedLabel: {
+        createdBy: async (parent) => {
+            try {
+                const user_id = parent.user_id;
+        
+                const [user] = await getUsers({
+                  id: user_id,
+                });
+                return user;
+            } catch (error) {
+                throw new GraphQLError(error.message);
+            }
+        },
+            // Resolve variety field
+        CropVariety: async (parent) => {
+            try {
+            
+            const variety_id = parent.crop_variety_id;
+    
+            if (!variety_id) return null;
+    
+            const variety = await fetchVarietyById(variety_id);
+    
+            return variety;
+            } catch (error) {
+                console.error("Error fetching crop variety:", error);
+                throw new GraphQLError(error.message);
+            }
+        },
+        Crop: async (parent) => {
+            try {
+                // 1️⃣ Get the variety based on crop_variety_id
+                const [varietyRows] = await db.execute(
+                "SELECT * FROM crop_varieties WHERE id = ?",
+                [parent.crop_variety_id]
+                );
 
-        const [user] = await getUsers({
-          id: user_id,
-        });
-        return user;
-      } catch (error) {
-        throw new GraphQLError(error.message);
-      }
+                if (!varietyRows || varietyRows.length === 0) {
+                return null; // no variety found
+                }
+
+                const variety = varietyRows[0];
+
+                // 2️⃣ Get the crop based on the variety’s crop_id
+                const [cropRows] = await db.execute(
+                "SELECT * FROM crops WHERE id = ?",
+                [variety.crop_id]
+                );
+
+                if (!cropRows || cropRows.length === 0) {
+                return null; // no crop found
+                }
+
+                return cropRows[0];
+            } catch (error) {
+                console.error("Error fetching crop:", error);
+                throw new Error("Failed to load crop.");
+            }
+        },
+
+
+        SeedLab: async (parent) => {
+            try {
+                const seed_lab_id = parent.seed_lab_id;
+        
+                const [seedLab] = await fetchSeedLabs({
+                  id: seed_lab_id,
+                });
+                return seedLab;
+            } catch (error) {
+                throw new GraphQLError(error.message);
+            }
+        },
     },
-    // Resolve variety field
-    CropVariety: async (parent) => {
-      try {
-        const variety_id = parent.crop_variety_id;
 
     Mutation: {
         saveSeedLabelRequest: async (_parent, args, context) => {
@@ -292,6 +302,9 @@ const seedLabelResolvers = {
                     applicant_remark,
                 }
                 console.log("data.........", data)
+                if (!id) {
+                  data.id = uuidv4();
+                }
 
                 const save_id = await saveData({
                 table: "seed_labels",
@@ -328,7 +341,7 @@ const seedLabelResolvers = {
                     await saveData({
                     table: "seed_labels",
                     data: { receipt_id: savedReceiptInfo.filename, image_id: savedImageInfo.filename },
-                    id: save_id,
+                    id: id? id : data.id,
                     connection,
                     });
                 } catch (e) {
@@ -435,11 +448,11 @@ const seedLabelResolvers = {
                 await connection.beginTransaction();
 
                 // check if user has permission to assign an inspector
-                checkPermission(
-                userPermissions,
-                "can_print_seed_labels",
-                "You don't have permissions to print a seed label"
-                );
+                // checkPermission(
+                // userPermissions,
+                // "can_print_seed_labels",
+                // "You don't have permissions to print a seed label"
+                // );
 
                 // fetch the form details
                 const [formDetails] = await fetchSeedLabels({
@@ -472,19 +485,21 @@ const seedLabelResolvers = {
                 // const label = await fetchSeedLabels({ id });
                 const lab_id = formDetails.seed_lab_id;
                 const marketableSeed = await fetchSeedLabs({ id:lab_id });
+                console.log("marketableSeed:", marketableSeed[0], formDetails);
+
                 const packages = formDetails.quantity/ formDetails.label_package;
                 const product ={
-                    user_id: formDetails.user_id,
-                    crop_variety_id : formDetails.crop_variety_id,
-                    seed_lab_id : formDetails.seed_lab_id,
-                    seed_label_id : formDetails.id,
+                    user_id: formDetails.user_id?? null,
+                    crop_variety_id : formDetails.crop_variety_id ?? null,
+                    seed_lab_id : formDetails.seed_lab_id ?? null,
+                    seed_label_id : formDetails.id ?? null,
 
-                    quantity : formDetails.label_package,
-                    available_stock : packages,
-                    lab_test_number : marketableSeed[0].lab_test_number,
-                    lot_number : marketableSeed[0].lot_number,
-                    seed_class : marketableSeed[0].lot_number,
-                    image_url : marketableSeed[0].lot_number,
+                    quantity : formDetails.label_package ?? null,
+                    available_stock : packages ?? null,
+                    lab_test_number : marketableSeed[0].lab_test_number ?? null,
+                    lot_number : marketableSeed[0].lot_number ?? null,
+                    seed_class : marketableSeed[0].lot_number ?? null,
+                    image_url : marketableSeed[0].lot_number ?? null,
                 }
 
                 await saveData({

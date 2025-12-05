@@ -134,19 +134,19 @@ export const MENU_SIDEBAR: TMenuConfig = [
     title: "Seed stock",
     icon: "questionnaire-tablet",
     children: [
-      { title: "Stock examination", path: "/stock/examination" },
-      { title: "My Stock", path: "/stock/mystock" },
-      { title: "Marketable seed", path: "/stock/marketable" },
-    ],
+      { title: 'Stock examination', path: '/stock/examination' },
+      { title: 'My Stock', path: '/stock/mystock' },
+      // { title: 'Marketable seed', path: '/stock/marketable' }
+    ]
   },
   {
     title: "Market place",
     icon: "purchase",
     children: [
-      { title: "Products", path: "/market/products" },
-      { title: "Orders", path: "/market/orders" },
-      { title: "Quotations", path: "/market/quotations" },
-    ],
+      { title: 'Products', path: '/market/products' },
+      { title: 'Orders', path: '/market/orders' },
+      // { title: 'Quotations', path: '/market/quotations' }
+    ]
   },
   {
     title: "System Configuration",

@@ -67,7 +67,10 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       awaitRefetchQueries: true,
     },
   );
-  const [printSeedLabel] = useMutation(PRINT_SEED_LABEL);
+  const [printSeedLabel, { loading: printing }] = useMutation(PRINT_SEED_LABEL, {
+    refetchQueries: [{ query: LOAD_SEED_LABELS }],
+    awaitRefetchQueries: true
+  });
   const [status, setStatus] = useState("pending");
 
   console.log("Seed Label Details data:", d);
@@ -89,7 +92,14 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
     }
   };
 
-  const handlePrint1 = async (formDetails: any) => {
+  const [printedOnce, setPrintedOnce] = useState<boolean>(() => {
+    // initialize from server data if available (adapt field to your API)
+    if (!data) return false;
+    return Boolean((data as any).printed || (data as any).printed_count > 0);
+  });
+
+  const handlePrint = async (formDetails: any) => {
+    console.log("nnnnnnnnnnn:", formDetails.id);
     if (printedOnce) {
       // already printed once - block further printing
       alert("This label has already been printed once and cannot be printed again.");
@@ -108,7 +118,266 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
         return;
       }
 
-  const handlePrint1 = (formDetails: any) => {
+      // mark locally to prevent double printing in UI; server should also enforce
+      setPrintedOnce(true);
+      // optional toast
+      // try { toast?.success({ title: "Print recorded", description: payload?.message || "Proceeding to print…" }); } catch {}
+      try { toast?.success( "Proceeding to print…" ); } catch {}
+
+      const verifyUrl = `${URL_2}/verify/seed-label/${String(formDetails?.id ?? '')}`;
+  
+      const crop = formDetails?.Crop?.name || '';
+      const variety = formDetails?.CropVariety?.name || '';
+      const lot_number = formDetails?.SeedLab?.lot_number || '';
+      const cert_date = _formatDate(formDetails?.created_at) || "";
+    const applicantName = formDetails?.createdBy?.name || "";
+    const address =
+      formDetails?.createdBy?.district ||
+      formDetails?.createdBy?.premises_location ||
+      "";
+    const season = formDetails?.season || "";
+    const expiry = formDetails?.expiry || "";
+    const germination =
+      formDetails?.SeedLab?.lab_test_report?.germination?.capacity || "";
+    const purity =
+      formDetails?.SeedLab?.lab_test_report?.purity?.pure_seed || "";
+    const weight = formDetails?.seed_label_package || "";
+    const seedClass = formDetails?.SeedLab?.seed_class || "CERTIFIED SEED";
+    const labelNumber = String(formDetails?.id ?? "").padStart(6, "0");
+
+    const labelCard = (index: number) => `
+      <section class="tag">
+        <div class="dotmatrix">
+          <div class="header">${seedClass}</div>
+          <div class="main-grid">
+            <div class="left-col">
+              <div class="row"><div class="label">CROP:</div><div class="value">${crop}</div></div>
+              <div class="row"><div class="label">VARIETY:</div><div class="value">${variety}</div></div>
+              <div class="row"><div class="label">LOT No.:</div><div class="value">${lot_number}</div></div>
+              <div class="row"><div class="label">INSPECTION No.:</div><div class="value">${labelNumber}</div></div>
+              <div class="row"><div class="label">CERT DATE:</div><div class="value">${cert_date}</div></div>
+              <div class="row"><div class="label">COMPANY:</div><div class="value">${applicantName}</div></div>
+              <div class="row"><div class="label">PHYSICAL ADDRESS:</div><div class="value">${address}</div></div>
+            </div>
+            <div class="right-col">
+              <div class="right-item"><span>SEASON:</span><span>${season}</span></div>
+              <div class="right-item"><span>EXPIRY:</span><span>${expiry}</span></div>
+              <div class="right-item"><span>GERM%:</span><span>${germination}</span></div>
+              <div class="right-item"><span>PURITY%:</span><span>${purity}</span></div>
+              <div class="right-item"><span>WEIGHT:</span><span>${weight}</span></div>
+            </div>
+            <div class="qr-col">
+              <div class="qr-wrap" data-qr-payload="${verifyUrl}"></div>
+              <small>Scan to verify</small>
+            </div>
+          </div>
+          <div class="bottom">TREATED SEED, NOT FOR HUMAN CONSUMPTION</div>
+        </div>
+      </section>`;
+
+    const quantity = Number(formDetails?.quantity) || 0;
+    const packageSize = parsePackageSize(formDetails?.seed_label_package);
+    const labelCount = packageSize > 0 ? Math.floor(quantity / packageSize) : 0;
+
+    const labelMarkup = Array.from({ length: Math.max(1, labelCount) })
+      .map((_, idx) => labelCard(idx))
+      .join("");
+
+    const formHTML = `<!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <title>Certified Seed Tags</title>
+        <style>
+          body {
+            margin: 0;
+            padding: 12px;
+            background: #e0e7ff;
+            font-family: 'Courier New', Courier, monospace;
+          }
+
+          .sheet {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+          }
+
+          .tag {
+            width: 720px;
+            height: 320px;
+            background: #f5f0e1;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f5f0e1"/><path d="M0,0 Q50,20 100,0 L100,100 L0,100 Z" fill="%23e8e0d5" opacity="0.3"/></svg>');
+            background-size: 100px 100px;
+            padding: 16px 28px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border-radius: 8px;
+            page-break-inside: avoid;
+          }
+
+          @font-face {
+            font-family: "DotMatrix";
+            src: url("https://cdn.jsdelivr.net/gh/danhongtang/dot-matrix-font@master/OCR-A.ttf");
+          }
+
+          .dotmatrix {
+            font-family: "DotMatrix", "Courier New", Courier, monospace;
+            letter-spacing: 1.5px;
+            line-height: 1.35;
+            font-weight: bold;
+          }
+
+          .header {
+            font-size: 32px;
+            text-align: center;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+          }
+
+          .tag-number {
+            position: absolute;
+            top: 28px;
+            right: 80px;
+            font-size: 18px;
+          }
+
+          .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 180px 110px;
+            align-items: start;
+            margin-top: 12px;
+            column-gap: 12px;
+          }
+
+          .left-col {
+            font-size: 18px;
+          }
+
+          .row {
+            display: flex;
+            margin: 6px 0;
+          }
+
+          .label {
+            width: 200px;
+          }
+
+          .value {
+            font-weight: normal;
+          }
+
+          .right-col {
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 2px;
+          }
+
+          .right-item span:first-child {
+            font-weight: bold;
+          }
+
+          .right-item span:nth-child(2) {
+            font-weight: normal;
+          }
+
+          .qr-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-start;
+            text-align: center;
+            padding-top: 6px;
+          }
+
+          .qr-wrap {
+            width: 85px;
+            height: 85px;
+            overflow: hidden;
+          }
+
+          .qr-col small {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+
+          .bottom {
+            position: absolute;
+            bottom: 18px;
+            width: 100%;
+            left: 0;
+            text-align: center;
+            font-size: 20px;
+            letter-spacing: 2px;
+            transform: translateY(6px);
+          }
+
+          @media print {
+            body {
+              background: #fff;
+              padding: 6px;
+            }
+
+            @page {
+              margin: 8mm;
+            }
+
+            .tag {
+              box-shadow: none;
+            }
+          }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script>
+          window.addEventListener('load', function () {
+            const nodes = document.querySelectorAll('[data-qr-payload]');
+            nodes.forEach(function (node) {
+              var payload = node.getAttribute('data-qr-payload');
+              if (!payload || !window.QRCode) return;
+              node.innerHTML = '';
+              new window.QRCode(node, {
+                text: payload,
+                width: 85,
+                height: 85,
+                margin: 0,
+              });
+            });
+
+            setTimeout(function () {
+              window.print();
+            }, 400);
+          });
+        </script>
+      </head>
+      <body>
+        <div class="sheet">
+          ${labelMarkup}
+        </div>
+      </body>
+    </html>`;
+
+    const popup = window.open(
+      "",
+      "_blank",
+      "width=1200,height=1000,scrollbars=yes,resizable=yes",
+    );
+    if (popup) {
+      popup.document.open();
+      popup.document.write(formHTML);
+      popup.document.close();
+    }
+
+    } catch (err) {
+    console.error("Print failed", err);
+    alert("Failed to record print. Try again or contact admin.");
+    }
+  }; 
+
+  /* const handlePrint1 = (formDetails: any) => {
     console.log("Printing Seed Label:", formDetails);
     const verifyUrl = `${URL_2}/verify/seed-label/${String(
       formDetails?.id ?? "",
@@ -173,181 +442,181 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       .join("");
 
     const formHTML = `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Certified Seed Tags</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 12px;
-        background: #e0e7ff;
-        font-family: 'Courier New', Courier, monospace;
-      }
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <title>Certified Seed Tags</title>
+        <style>
+          body {
+            margin: 0;
+            padding: 12px;
+            background: #e0e7ff;
+            font-family: 'Courier New', Courier, monospace;
+          }
 
-      .sheet {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
-      }
+          .sheet {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+          }
 
-      .tag {
-        width: 720px;
-        height: 320px;
-        background: #f5f0e1;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f5f0e1"/><path d="M0,0 Q50,20 100,0 L100,100 L0,100 Z" fill="%23e8e0d5" opacity="0.3"/></svg>');
-        background-size: 100px 100px;
-        padding: 16px 28px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-        position: relative;
-        border-radius: 8px;
-        page-break-inside: avoid;
-      }
+          .tag {
+            width: 720px;
+            height: 320px;
+            background: #f5f0e1;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f5f0e1"/><path d="M0,0 Q50,20 100,0 L100,100 L0,100 Z" fill="%23e8e0d5" opacity="0.3"/></svg>');
+            background-size: 100px 100px;
+            padding: 16px 28px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border-radius: 8px;
+            page-break-inside: avoid;
+          }
 
-      @font-face {
-        font-family: "DotMatrix";
-        src: url("https://cdn.jsdelivr.net/gh/danhongtang/dot-matrix-font@master/OCR-A.ttf");
-      }
+          @font-face {
+            font-family: "DotMatrix";
+            src: url("https://cdn.jsdelivr.net/gh/danhongtang/dot-matrix-font@master/OCR-A.ttf");
+          }
 
-      .dotmatrix {
-        font-family: "DotMatrix", "Courier New", Courier, monospace;
-        letter-spacing: 1.5px;
-        line-height: 1.35;
-        font-weight: bold;
-      }
+          .dotmatrix {
+            font-family: "DotMatrix", "Courier New", Courier, monospace;
+            letter-spacing: 1.5px;
+            line-height: 1.35;
+            font-weight: bold;
+          }
 
-      .header {
-        font-size: 32px;
-        text-align: center;
-        letter-spacing: 4px;
-        margin-bottom: 8px;
-      }
+          .header {
+            font-size: 32px;
+            text-align: center;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+          }
 
-      .tag-number {
-        position: absolute;
-        top: 28px;
-        right: 80px;
-        font-size: 18px;
-      }
+          .tag-number {
+            position: absolute;
+            top: 28px;
+            right: 80px;
+            font-size: 18px;
+          }
 
-      .main-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 180px 110px;
-        align-items: start;
-        margin-top: 12px;
-        column-gap: 12px;
-      }
+          .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 180px 110px;
+            align-items: start;
+            margin-top: 12px;
+            column-gap: 12px;
+          }
 
-      .left-col {
-        font-size: 18px;
-      }
+          .left-col {
+            font-size: 18px;
+          }
 
-      .row {
-        display: flex;
-        margin: 6px 0;
-      }
+          .row {
+            display: flex;
+            margin: 6px 0;
+          }
 
-      .label {
-        width: 200px;
-      }
+          .label {
+            width: 200px;
+          }
 
-      .value {
-        font-weight: normal;
-      }
+          .value {
+            font-weight: normal;
+          }
 
-      .right-col {
-        font-size: 18px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 2px;
-      }
+          .right-col {
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 2px;
+          }
 
-      .right-item span:first-child {
-        font-weight: bold;
-      }
+          .right-item span:first-child {
+            font-weight: bold;
+          }
 
-      .right-item span:nth-child(2) {
-        font-weight: normal;
-      }
+          .right-item span:nth-child(2) {
+            font-weight: normal;
+          }
 
-      .qr-col {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        justify-content: flex-start;
-        text-align: center;
-        padding-top: 6px;
-      }
+          .qr-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-start;
+            text-align: center;
+            padding-top: 6px;
+          }
 
-      .qr-wrap {
-        width: 85px;
-        height: 85px;
-        overflow: hidden;
-      }
+          .qr-wrap {
+            width: 85px;
+            height: 85px;
+            overflow: hidden;
+          }
 
-      .qr-col small {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
+          .qr-col small {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
 
-      .bottom {
-        position: absolute;
-        bottom: 18px;
-        width: 100%;
-        left: 0;
-        text-align: center;
-        font-size: 20px;
-        letter-spacing: 2px;
-        transform: translateY(6px);
-      }
+          .bottom {
+            position: absolute;
+            bottom: 18px;
+            width: 100%;
+            left: 0;
+            text-align: center;
+            font-size: 20px;
+            letter-spacing: 2px;
+            transform: translateY(6px);
+          }
 
-      @media print {
-        body {
-          background: #fff;
-          padding: 6px;
-        }
+          @media print {
+            body {
+              background: #fff;
+              padding: 6px;
+            }
 
-        @page {
-          margin: 8mm;
-        }
+            @page {
+              margin: 8mm;
+            }
 
-        .tag {
-          box-shadow: none;
-        }
-      }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-      window.addEventListener('load', function () {
-        const nodes = document.querySelectorAll('[data-qr-payload]');
-        nodes.forEach(function (node) {
-          var payload = node.getAttribute('data-qr-payload');
-          if (!payload || !window.QRCode) return;
-          node.innerHTML = '';
-          new window.QRCode(node, {
-            text: payload,
-            width: 85,
-            height: 85,
-            margin: 0,
+            .tag {
+              box-shadow: none;
+            }
+          }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script>
+          window.addEventListener('load', function () {
+            const nodes = document.querySelectorAll('[data-qr-payload]');
+            nodes.forEach(function (node) {
+              var payload = node.getAttribute('data-qr-payload');
+              if (!payload || !window.QRCode) return;
+              node.innerHTML = '';
+              new window.QRCode(node, {
+                text: payload,
+                width: 85,
+                height: 85,
+                margin: 0,
+              });
+            });
+
+            setTimeout(function () {
+              window.print();
+            }, 400);
           });
-        });
-
-        setTimeout(function () {
-          window.print();
-        }, 400);
-      });
-    </script>
-  </head>
-  <body>
-    <div class="sheet">
-      ${labelMarkup}
-    </div>
-  </body>
-</html>`;
+        </script>
+      </head>
+      <body>
+        <div class="sheet">
+          ${labelMarkup}
+        </div>
+      </body>
+    </html>`;
 
     const popup = window.open(
       "",
@@ -359,11 +628,9 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       popup.document.write(formHTML);
       popup.document.close();
     }
-  } catch (err) {
-    console.error("Print failed", err);
-    alert("Failed to record print. Try again or contact admin.");
-  }
-   }; 
+  } */
+
+   
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -582,8 +849,9 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
               </>
             )}
 
-            <Button
-              onClick={() => handlePrint1(d)}
+            {canPrintLabels && status === "approved" && (
+              <Button
+              onClick={() => handlePrint(d)}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white h-11 font-medium shadow-sm transition-all duration-200"
               disabled={!canPrintLabels || printing || printedOnce}
               title={!canPrintLabels ? "You don't have permission to print" : printedOnce ? "Already printed" : undefined}
@@ -591,6 +859,8 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
                <Printer className="w-4 h-4 mr-2" />
                Print Label
              </Button>
+            )}
+            
             {/* )} */}
           </div>
 

@@ -9,7 +9,7 @@ import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
 import generateLabTestNo from "../../helpers/generateLabTestNo.js";
 
-const parseJSON = (text) => {
+export const parseJSON = (text) => {
   if (!text) return null;                // return null instead of {}
   try {
     return typeof text === "string" ? JSON.parse(text) : text;

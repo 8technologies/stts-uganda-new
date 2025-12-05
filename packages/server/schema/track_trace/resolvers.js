@@ -1,4 +1,5 @@
 import { db } from "../../config/config.js";
+import { parseJSON } from "../seed_lab/resolvers.js";
 
 const normalizeDate = (value) =>
   value ? new Date(value).toISOString() : null;
@@ -92,6 +93,7 @@ const trackTraceResolvers = {
               status: seedLabRow.status,
               labTestNumber: seedLabRow.lab_test_number,
               inspector: seedLabRow.inspector_name,
+              testResults: seedLabRow ? parseJSON(seedLabRow.lab_test_report ): null,
               collectedAt: normalizeDate(seedLabRow.collection_date),
               receivedAt: normalizeDate(seedLabRow.created_at),
             }
@@ -99,6 +101,7 @@ const trackTraceResolvers = {
         motherLot: motherLotRow
           ? {
               id: motherLotRow.id?.toString(),
+              motherLot:motherLotRow.mother_lot,
               lotNumber: motherLotRow.lot_number,
               seedClass: motherLotRow.seed_class,
               yieldAmount: motherLotRow.yield,

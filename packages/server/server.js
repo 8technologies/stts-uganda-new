@@ -32,7 +32,7 @@ const buildVerificationPage = ({ isValid, message, label }) => {
   const statusClass = isValid ? "status-valid" : "status-invalid";
   const details = label
     ? [
-        ["Label ID", label.id],
+        // ["Label ID", label.id],
         ["Status", label.status?.toUpperCase() ?? "—"],
         ["Crop", label.crop_name ?? "—"],
         ["Variety", label.variety_name ?? "—"],

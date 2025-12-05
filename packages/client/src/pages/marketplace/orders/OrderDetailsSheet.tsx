@@ -20,6 +20,9 @@ import {
   Loader2Icon,
   Loader
 } from 'lucide-react';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { ORDERS } from '@/gql/queries';
+import { PROCESS_ORDER } from '@/gql/mutations';
 
 interface Props {
   open: boolean;
@@ -30,6 +33,11 @@ interface Props {
 
 const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderType = 'made' }) => {
   const o = order || {};
+  const { data, loading, error, refetch } = useQuery(ORDERS);
+  const [updateOrder, { loading: savingOrder }] = useMutation(PROCESS_ORDER, {
+    refetchQueries: [{ query: ORDERS }],
+    awaitRefetchQueries: true
+ });
 
   const formatDate = (isoDate?: string) => {
     if (!isoDate) return '-';
@@ -50,7 +58,7 @@ const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderTy
           icon: <CheckCircle className="w-4 h-4" />,
           bg: 'bg-emerald-100',
           text: 'text-emerald-700',
-          label: 'Completed',
+          label: 'Delivered',
           borderColor: 'border-emerald-200'
         };
       case 'pending':
@@ -63,7 +71,7 @@ const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderTy
         };
       case 'canceled':
         return {
-          icon: <Loader className="w-4 h-4" />,
+          icon: <XCircle className="w-4 h-4" />,
           bg: 'bg-red-100',
           text: 'text-red-700',
           label: 'Cancelled',
@@ -71,10 +79,10 @@ const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderTy
         };
       case 'processing':
         return {
-            icon: <XCircle className="w-4 h-4" />,
+            icon: <Loader className="w-4 h-4" />,
             bg: 'bg-blue-100',
             text: 'text-blue-700',
-            label: 'Cancelled',
+            label: 'Processing',
             borderColor: 'border-blue-200'
         };
       default:
@@ -87,6 +95,28 @@ const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderTy
         };
     }
   };
+
+  // Action handlers (placeholders)
+    const handleAction = async(status: string) => {
+        // Implement action handling logic here
+        console.log(`Action triggered: ${status}`);
+        try {
+            const input = {
+                orderId: o.id,
+                status: status
+            };
+            const d = await updateOrder({ variables: { input } });
+            console.log("Order updated:", d);
+            onOpenChange(false);
+            //
+            // await updateOrder({ variables: { approveSeedLabelRequestId: d.id } });
+            // setStatus("approved");
+        } catch (error) {
+            console.error("Error updating order:", error);
+        }
+
+    }
+
 
   const statusConfig = getStatusConfig(o.status);
   const isPurchaseOrder = orderType === 'made';
@@ -305,12 +335,18 @@ const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderTy
               <>
                 <Button 
                   className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={()=> handleAction('processing')}
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Confirm Order
                 </Button>
-                <Button 
+                </>
+            )}
+            {o.status?.toLowerCase() === 'processing' && orderType === 'received' && (
+              <>
+                 <Button 
                   className="flex-1 h-11 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  onClick={()=> handleAction('delivered')}
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Delivered
@@ -318,12 +354,15 @@ const OrderDetailsSheet: React.FC<Props> = ({ open, onOpenChange, order, orderTy
                 <Button 
                   variant="outline"
                   className="flex-1 h-11 border-red-300 text-red-600 hover:bg-red-50"
+                    onClick={()=> handleAction('canceled')}
                 >
                   <XCircle className="w-4 h-4 mr-2" />
                   Cancel Order
                 </Button>
               </>
             )}
+                
+              
           </div>
 
           {/* Status Information Notice */}

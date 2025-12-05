@@ -4,6 +4,8 @@ import { ME, ORDERS } from '@/gql/queries';
 import { KeenIcon } from '@/components';
 import OrderDetailsSheet from './OrderDetailsSheet';
 import { useAuthContext, UserModel } from '@/auth';
+import { toast } from 'sonner';
+import { AlertCircle, CheckCircle, Clock, Loader, XCircle } from 'lucide-react';
 
 const OrdersPage: React.FC = () => {
   const { auth } = useAuthContext();
@@ -83,6 +85,51 @@ const OrdersPage: React.FC = () => {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusConfig = (status?: string) => {
+    switch (status?.toLowerCase()) {
+      case 'delivered':
+        return {
+          icon: <CheckCircle className="w-4 h-4" />,
+          bg: 'bg-emerald-100',
+          text: 'text-emerald-700',
+          label: 'Delivered',
+          borderColor: 'border-emerald-200'
+        };
+      case 'pending':
+        return {
+          icon: <Clock className="w-4 h-4" />,
+          bg: 'bg-amber-100',
+          text: 'text-amber-700',
+          label: 'Pending',
+          borderColor: 'border-amber-200'
+        };
+      case 'canceled':
+        return {
+          icon: <XCircle className="w-4 h-4" />,
+          bg: 'bg-red-100',
+          text: 'text-red-700',
+          label: 'Cancelled',
+          borderColor: 'border-red-200'
+        };
+      case 'processing':
+        return {
+            icon: <Loader className="w-4 h-4" />,
+            bg: 'bg-blue-100',
+            text: 'text-blue-700',
+            label: 'Processing',
+            borderColor: 'border-blue-200'
+        };
+      default:
+        return {
+          icon: <AlertCircle className="w-4 h-4" />,
+          bg: 'bg-gray-100',
+          text: 'text-gray-700',
+          label: status || 'Unknown',
+          borderColor: 'border-gray-200'
+        };
     }
   };
 
@@ -212,9 +259,11 @@ const OrdersPage: React.FC = () => {
                     <td className="px-4 py-3 text-gray-600">{formatDate(order.created_at)}</td>
                     
                     <td className="px-4 py-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                        {order.status || 'Pending'}
-                      </span>
+                     <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${getStatusConfig(order.status).bg} ${getStatusConfig(order.status).text} font-medium text-sm border ${getStatusConfig(order.status).borderColor}`}>
+        
+                      {getStatusConfig(order.status).icon}
+                      {getStatusConfig(order.status).label}
+                    </div>
                     </td>
                     
                     <td className="px-4 py-3">
@@ -246,7 +295,10 @@ const OrdersPage: React.FC = () => {
       {detailsOrder && (
         <OrderDetailsSheet
           open={!!detailsOrder}
-          onOpenChange={() => setDetailsOrder(null)}
+          onOpenChange={() => {setDetailsOrder(null)
+            toast.success('Order status updated successfully');
+            }
+          }
           order={detailsOrder}
           orderType={orderType}
         />

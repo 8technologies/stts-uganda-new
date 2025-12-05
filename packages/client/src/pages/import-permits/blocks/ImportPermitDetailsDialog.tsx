@@ -1,55 +1,40 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { KeenIcon } from "@/components";
+import { useEffect, useMemo, useState } from 'react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { KeenIcon } from '@/components';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useAuthContext } from "@/auth";
-import { getPermissionsFromToken } from "@/utils/permissions";
-import { useMutation, useQuery } from "@apollo/client/react";
-import {
-  LOAD_INSPECTORS,
-  LOAD_IMPORT_PERMITS,
-  LOAD_IMPORT_PERMIT,
-} from "@/gql/queries";
+  SelectValue
+} from '@/components/ui/select';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { LOAD_INSPECTORS, LOAD_IMPORT_PERMITS, LOAD_IMPORT_PERMIT } from '@/gql/queries';
 import {
   ASSIGN_PERMIT_INSPECTOR,
   HALT_PERMIT,
   REJECT_PERMIT,
-  APPROVE_PERMIT,
-} from "@/gql/mutations";
-import { Skeleton } from "@/components/ui/skeleton";
-import { _formatDate } from "@/utils/Date";
+  APPROVE_PERMIT
+} from '@/gql/mutations';
+import { Skeleton } from '@/components/ui/skeleton';
+import { _formatDate } from '@/utils/Date';
 import {
   Table,
   TableBody,
   TableHeader,
   TableHead,
   TableRow,
-  TableCell,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { toAbsoluteUrl } from "@/utils";
-import { URL_2 } from "@/config/urls";
+  TableCell
+} from '@/components/ui/table';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
+import { toAbsoluteUrl } from '@/utils';
+import { URL_2 } from '@/config/urls';
 
-const LabeledRow = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) => (
+const LabeledRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-6 md:gap-y-4 md:gap-x-8 items-start">
     <div className="text-sm text-gray-700 font-medium pt-1">{label}</div>
     <div className="md:col-span-2">
@@ -62,7 +47,7 @@ const LabeledRow = ({
 const ActionRadioGroup = ({
   options,
   value,
-  onChange,
+  onChange
 }: {
   options: { value: string; label: string; disabled?: boolean }[];
   value: string;
@@ -70,10 +55,7 @@ const ActionRadioGroup = ({
 }) => (
   <div className="flex flex-wrap gap-4">
     {options.map((option) => (
-      <label
-        key={option.value}
-        className="flex items-center space-x-2 cursor-pointer"
-      >
+      <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
         <input
           type="radio"
           value={option.value}
@@ -82,9 +64,7 @@ const ActionRadioGroup = ({
           disabled={option.disabled}
           className="h-4 w-4 text-primary border-gray-300 focus:ring-primary"
         />
-        <span
-          className={`text-sm ${option.disabled ? "text-gray-400" : "text-gray-700"}`}
-        >
+        <span className={`text-sm ${option.disabled ? 'text-gray-400' : 'text-gray-700'}`}>
           {option.label}
         </span>
       </label>
@@ -104,18 +84,8 @@ type ImportPermitDetails = {
   countryOfOrigin: string;
   supplierName: string;
   supplierAddress?: string;
-  inspector?: {
-    id: string;
-    name?: string;
-    email?: string;
-    image?: string;
-  } | null;
-  createdBy?: {
-    id: string;
-    username?: string;
-    name?: string;
-    email?: string;
-  } | null;
+  inspector?: { id: string; name?: string; email?: string; image?: string } | null;
+  createdBy?: { id: string; username?: string; name?: string; email?: string } | null;
   consignment?: string[];
   items?: {
     id: string;
@@ -141,7 +111,7 @@ type ImportPermitDetails = {
 const ImportPermitDetailsDialog = ({
   open,
   onOpenChange,
-  data,
+  data
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -150,162 +120,129 @@ const ImportPermitDetailsDialog = ({
   const d = data || ({} as ImportPermitDetails);
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  const canAssignInspector = !!perms["qa_can_assign_inspector"];
-  const canHalt = !!perms["qa_can_halt"];
-  const canReject = !!perms["qa_can_reject"];
-  const canApprove = !!perms["qa_can_approve"];
+  const canAssignInspector = !!perms['qa_can_assign_inspector'];
+  const canHalt = !!perms['qa_can_halt'];
+  const canReject = !!perms['qa_can_reject'];
+  const canApprove = !!perms['qa_can_approve'];
 
-  const [action, setAction] = useState<
-    "assign_inspector" | "halt" | "reject" | "approve" | ""
-  >("");
-  const [inspector, setInspector] = useState("");
-  const [comment, setComment] = useState("");
+  const [action, setAction] = useState<'assign_inspector' | 'halt' | 'reject' | 'approve' | ''>('');
+  const [inspector, setInspector] = useState('');
+  const [comment, setComment] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const {
     data: inspectorsData,
     loading: inspectorsLoading,
     error: inspectorsError,
-    refetch,
+    refetch
   } = useQuery(LOAD_INSPECTORS, { skip: !open });
 
   useEffect(() => {
     if (open) {
-      setAction("");
-      setInspector("");
-      setComment("");
+      setAction('');
+      setInspector('');
+      setComment('');
       setErrorMsg(null);
     }
   }, [open, d?.id]);
 
-  const [assignInspector, { loading: assigning }] = useMutation(
-    ASSIGN_PERMIT_INSPECTOR,
-    {
-      refetchQueries: [
-        {
-          query: LOAD_IMPORT_PERMITS,
-          variables: { filter: {}, pagination: { page: 1, size: 200 } },
-        },
-      ],
-      awaitRefetchQueries: true,
-    },
-  );
+  const [assignInspector, { loading: assigning }] = useMutation(ASSIGN_PERMIT_INSPECTOR, {
+    refetchQueries: [
+      { query: LOAD_IMPORT_PERMITS, variables: { filter: {}, pagination: { page: 1, size: 200 } } }
+    ],
+    awaitRefetchQueries: true
+  });
 
   const [approvePermit, { loading: approving }] = useMutation(APPROVE_PERMIT, {
     refetchQueries: [
-      {
-        query: LOAD_IMPORT_PERMITS,
-        variables: { filter: {}, pagination: { page: 1, size: 200 } },
-      },
+      { query: LOAD_IMPORT_PERMITS, variables: { filter: {}, pagination: { page: 1, size: 200 } } },
       {
         query: LOAD_IMPORT_PERMIT,
-        variables: { id: d?.id },
-      },
+        variables: { id: d?.id }
+      }
     ],
-    awaitRefetchQueries: true,
+    awaitRefetchQueries: true
   });
 
   const [haltPermit, { loading: halting }] = useMutation(HALT_PERMIT, {
     refetchQueries: [
-      {
-        query: LOAD_IMPORT_PERMITS,
-        variables: { filter: {}, pagination: { page: 1, size: 200 } },
-      },
+      { query: LOAD_IMPORT_PERMITS, variables: { filter: {}, pagination: { page: 1, size: 200 } } }
     ],
-    awaitRefetchQueries: true,
+    awaitRefetchQueries: true
   });
 
   const [rejectPermit, { loading: rejecting }] = useMutation(REJECT_PERMIT, {
     refetchQueries: [
-      {
-        query: LOAD_IMPORT_PERMITS,
-        variables: { filter: {}, pagination: { page: 1, size: 200 } },
-      },
+      { query: LOAD_IMPORT_PERMITS, variables: { filter: {}, pagination: { page: 1, size: 200 } } }
     ],
-    awaitRefetchQueries: true,
+    awaitRefetchQueries: true
   });
 
   const actionOptions = useMemo(
     () => [
-      {
-        value: "assign_inspector",
-        label: "Assign Inspector",
-        disabled: !canAssignInspector,
-      },
-      { value: "halt", label: "Halt", disabled: !canHalt },
-      { value: "reject", label: "Reject", disabled: !canReject },
-      { value: "approve", label: "Approve", disabled: !canApprove },
+      { value: 'assign_inspector', label: 'Assign Inspector', disabled: !canAssignInspector },
+      { value: 'halt', label: 'Halt', disabled: !canHalt },
+      { value: 'reject', label: 'Reject', disabled: !canReject },
+      { value: 'approve', label: 'Approve', disabled: !canApprove }
     ],
-    [canAssignInspector, canHalt, canReject, canApprove],
+    [canAssignInspector, canHalt, canReject, canApprove]
   );
 
   const handleConfirm = async () => {
     setErrorMsg(null);
-    const id = String(d?.id ?? "");
+    const id = String(d?.id ?? '');
     try {
-      if (action === "assign_inspector") {
+      if (action === 'assign_inspector') {
         const res = await assignInspector({
-          variables: { payload: { form_id: id, inspector_id: inspector } },
+          variables: { payload: { form_id: id, inspector_id: inspector } }
         });
         const ok = res?.data?.assignPermitInspector?.success;
         if (!ok)
           throw new Error(
-            res?.data?.assignPermitInspector?.message ||
-              "Failed to assign inspector",
+            res?.data?.assignPermitInspector?.message || 'Failed to assign inspector'
           );
-        toast("Inspector assigned");
+        toast('Inspector assigned');
         onOpenChange(false);
         return;
       }
-      if (action === "approve") {
-        const res = await approvePermit({
-          variables: { payload: { form_id: id } },
-        });
+      if (action === 'approve') {
+        const res = await approvePermit({ variables: { payload: { form_id: id } } });
         const ok = res?.data?.approvePermit?.success;
-        if (!ok)
-          throw new Error(
-            res?.data?.approvePermit?.message || "Failed to approve",
-          );
-        toast("Permit approved");
+        if (!ok) throw new Error(res?.data?.approvePermit?.message || 'Failed to approve');
+        toast('Permit approved');
         onOpenChange(false);
         return;
       }
-      if (action === "halt") {
-        const res = await haltPermit({
-          variables: { payload: { form_id: id, reason: comment } },
-        });
+      if (action === 'halt') {
+        const res = await haltPermit({ variables: { payload: { form_id: id, reason: comment } } });
         const ok = res?.data?.haltPermit?.success;
-        if (!ok)
-          throw new Error(res?.data?.haltForm?.message || "Failed to halt");
-        toast("Permit halted");
+        if (!ok) throw new Error(res?.data?.haltForm?.message || 'Failed to halt');
+        toast('Permit halted');
         onOpenChange(false);
         return;
       }
-      if (action === "reject") {
+      if (action === 'reject') {
         const res = await rejectPermit({
-          variables: { payload: { form_id: id, reason: comment } },
+          variables: { payload: { form_id: id, reason: comment } }
         });
         const ok = res?.data?.rejectPermit?.success;
-        if (!ok)
-          throw new Error(res?.data?.rejectForm?.message || "Failed to reject");
-        toast("Permit rejected");
+        if (!ok) throw new Error(res?.data?.rejectForm?.message || 'Failed to reject');
+        toast('Permit rejected');
         onOpenChange(false);
         return;
       }
     } catch (e: any) {
-      setErrorMsg(e?.message || "Action failed");
-      toast("Action failed", { description: e?.message || "Unknown error" });
+      setErrorMsg(e?.message || 'Action failed');
+      toast('Action failed', { description: e?.message || 'Unknown error' });
     }
   };
 
   const consignmentList = useMemo(
     () =>
       (d?.consignment || []).map((c) =>
-        c === "ISTA_CERTIFICATE"
-          ? "ISTA Certificate"
-          : "Phytosanitary certificate",
+        c === 'ISTA_CERTIFICATE' ? 'ISTA Certificate' : 'Phytosanitary certificate'
       ),
-    [d?.consignment],
+    [d?.consignment]
   );
 
   // const handlePrint = () => {
@@ -433,41 +370,39 @@ const ImportPermitDetailsDialog = ({
   // };
   const handlePrint = () => {
     try {
-      const win = window.open("", "_blank");
+      const win = window.open('', '_blank');
       if (!win) {
-        console.error("Popup blocked. Please allow popups for this site.");
+        console.error('Popup blocked. Please allow popups for this site.');
         return;
       }
 
       // Data validation and fallbacks
-      const number = d.permitNumber || "—";
-      const validFrom = d.validFrom ? _formatDate(d.validFrom) : "—";
-      const validUntil = d.validUntil ? _formatDate(d.validUntil) : "—";
-      const applicant = d.createdBy?.name || d.createdBy?.username || "—";
-      const applicantAddress = d.applicantAddress || "—";
-      const inspectorName = d.inspector?.name || "—";
+      const number = d.permitNumber || '—';
+      const validFrom = d.validFrom ? _formatDate(d.validFrom) : '—';
+      const validUntil = d.validUntil ? _formatDate(d.validUntil) : '—';
+      const applicant = d.createdBy?.name || d.createdBy?.username || '—';
+      const applicantAddress = d.applicantAddress || '—';
+      const inspectorName = d.inspector?.name || '—';
       const today = _formatDate(new Date().toISOString());
-      const supplierName = d.supplierName || "—";
-      const supplierAddress = d.supplierAddress || "—";
-      const countryOfOrigin = d.countryOfOrigin || "—";
-      const additionalConditions = d.additionalConditions || "None";
+      const supplierName = d.supplierName || '—';
+      const supplierAddress = d.supplierAddress || '—';
+      const countryOfOrigin = d.countryOfOrigin || '—';
+      const additionalConditions = d.additionalConditions || 'None';
 
       // Safely handle items data
       const itemsRows = (d.items || [])
         .map(
           (it, index) => `
         <tr>
-          <td style="padding:8px;border:1px solid #000;">${it.crop?.name || it.crop?.id || it.cropId || "—"}</td>
-          <td style="padding:8px;border:1px solid #000;">${it.variety?.name || it.variety?.id || it.varietyId || "—"}</td>
-          <td style="padding:8px;border:1px solid #000;">${it.category || "—"}</td>
-          <td style="padding:8px;border:1px solid #000;">${it.weight || "—"} ${it.measure || ""}</td>
-        </tr>`,
+          <td style="padding:8px;border:1px solid #000;">${it.crop?.name || it.crop?.id || it.cropId || '—'}</td>
+          <td style="padding:8px;border:1px solid #000;">${it.variety?.name || it.variety?.id || it.varietyId || '—'}</td>
+          <td style="padding:8px;border:1px solid #000;">${it.category || '—'}</td>
+          <td style="padding:8px;border:1px solid #000;">${it.weight || '—'} ${it.measure || ''}</td>
+        </tr>`
         )
-        .join("");
+        .join('');
 
-      const consignmentItems = (consignmentList || [])
-        .map((item) => `<li>${item}</li>`)
-        .join("");
+      const consignmentItems = (consignmentList || []).map((item) => `<li>${item}</li>`).join('');
 
       const logo = `${URL_2}/imgs/coat.png`;
 
@@ -617,7 +552,7 @@ const ImportPermitDetailsDialog = ({
             <li>
               The consignment of seed shall be accompanied by:
               <ul>
-                ${consignmentItems || "<li>No specific requirements</li>"}
+                ${consignmentItems || '<li>No specific requirements</li>'}
               </ul>
             </li>
             <li>
@@ -689,17 +624,14 @@ const ImportPermitDetailsDialog = ({
       win.document.write(html);
       win.document.close();
     } catch (error) {
-      console.error("Error generating print document:", error);
-      alert("Error generating print document. Please try again.");
+      console.error('Error generating print document:', error);
+      alert('Error generating print document. Please try again.');
     }
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-full sm:max-w-[750px] lg:max-w-[710px]"
-      >
+      <SheetContent side="right" className="w-full sm:max-w-[750px] lg:max-w-[710px]">
         <SheetHeader className="mb-2">
           <SheetTitle>Import Permit Details</SheetTitle>
         </SheetHeader>
@@ -712,17 +644,15 @@ const ImportPermitDetailsDialog = ({
         ) : (
           <div
             className="px-2 space-y-6"
-            style={{ height: "calc(100vh - 75px)", overflow: "auto" }}
+            style={{ height: 'calc(100vh - 75px)', overflow: 'auto' }}
           >
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <LabeledRow label="Applicant">
                 <div className="leading-tight">
                   <div className="text-sm font-medium text-gray-800">
-                    {d.createdBy?.name || d.createdBy?.username || "—"}
+                    {d.createdBy?.name || d.createdBy?.username || '—'}
                   </div>
-                  <div className="text-[12px] text-gray-600">
-                    {d.createdBy?.email || ""}
-                  </div>
+                  <div className="text-[12px] text-gray-600">{d.createdBy?.email || ''}</div>
                 </div>
               </LabeledRow>
               <LabeledRow label="Applicant Category">
@@ -730,38 +660,32 @@ const ImportPermitDetailsDialog = ({
               </LabeledRow>
               <LabeledRow label="Status">
                 {(() => {
-                  const s = String(d.status || "pending");
+                  const s = String(d.status || 'pending');
                   const color =
-                    s === "approved" || s === "recommended"
-                      ? "success"
-                      : s === "rejected" || s === "halted"
-                        ? "danger"
-                        : s === "assigned_inspector"
-                          ? "orange"
-                          : "primary";
+                    s === 'approved' || s === 'recommended'
+                      ? 'success'
+                      : s === 'rejected' || s === 'halted'
+                        ? 'danger'
+                        : s === 'assigned_inspector'
+                          ? 'orange'
+                          : 'primary';
                   return (
-                    <span
-                      className={`badge badge-${color} badge-outline rounded-[30px]`}
-                    >
-                      <span
-                        className={`size-1.5 rounded-full bg-${color} me-1.5`}
-                      ></span>
+                    <span className={`badge badge-${color} badge-outline rounded-[30px]`}>
+                      <span className={`size-1.5 rounded-full bg-${color} me-1.5`}></span>
                       {s}
                     </span>
                   );
                 })()}
               </LabeledRow>
               <LabeledRow label="Permit Number">
-                <div className="text-gray-800">{d.permitNumber || "—"}</div>
+                <div className="text-gray-800">{d.permitNumber || '—'}</div>
               </LabeledRow>
               <LabeledRow label="Valid From">
-                <div className="text-gray-800">
-                  {d.validFrom ? _formatDate(d.validFrom) : "—"}
-                </div>
+                <div className="text-gray-800">{d.validFrom ? _formatDate(d.validFrom) : '—'}</div>
               </LabeledRow>
               <LabeledRow label="Valid Until">
                 <div className="text-gray-800">
-                  {d.validUntil ? _formatDate(d.validUntil) : "—"}
+                  {d.validUntil ? _formatDate(d.validUntil) : '—'}
                 </div>
               </LabeledRow>
               <LabeledRow label="Stock Quantity">
@@ -774,18 +698,14 @@ const ImportPermitDetailsDialog = ({
                       src={
                         d.inspector.image
                           ? `${URL_2}/imgs/${d.inspector.image}`
-                          : toAbsoluteUrl("/media/avatars/blank.png")
+                          : toAbsoluteUrl('/media/avatars/blank.png')
                       }
                       className="rounded-full size-8 shrink-0 object-cover"
-                      alt={d.inspector.name || "Inspector"}
+                      alt={d.inspector.name || 'Inspector'}
                     />
                     <div className="leading-tight">
-                      <div className="text-sm font-medium text-gray-800">
-                        {d.inspector.name}
-                      </div>
-                      <div className="text-[11px] text-gray-600">
-                        {d.inspector.email}
-                      </div>
+                      <div className="text-sm font-medium text-gray-800">{d.inspector.name}</div>
+                      <div className="text-[11px] text-gray-600">{d.inspector.email}</div>
                     </div>
                   </div>
                 ) : (
@@ -799,16 +719,13 @@ const ImportPermitDetailsDialog = ({
                 <div className="text-gray-800">{d.supplierName}</div>
               </LabeledRow>
               <LabeledRow label="Supplier Address">
-                <div className="text-gray-800">{d.supplierAddress || "-"}</div>
+                <div className="text-gray-800">{d.supplierAddress || '-'}</div>
               </LabeledRow>
               <LabeledRow label="Consignment Documents">
                 <div className="flex flex-wrap gap-1">
                   {consignmentList.length > 0 ? (
                     consignmentList.map((c, i) => (
-                      <span
-                        key={i}
-                        className="badge badge-light badge-outline rounded-[30px]"
-                      >
+                      <span key={i} className="badge badge-light badge-outline rounded-[30px]">
                         {c}
                       </span>
                     ))
@@ -818,21 +735,15 @@ const ImportPermitDetailsDialog = ({
                 </div>
               </LabeledRow>
               <LabeledRow label="Created On">
-                <div className="text-gray-800">
-                  {_formatDate(d.createdAt || "")}
-                </div>
+                <div className="text-gray-800">{_formatDate(d.createdAt || '')}</div>
               </LabeledRow>
               <LabeledRow label="Status Comment">
-                <div className="text-gray-800 whitespace-pre-wrap">
-                  {d.statusComment || "—"}
-                </div>
+                <div className="text-gray-800 whitespace-pre-wrap">{d.statusComment || '—'}</div>
               </LabeledRow>
             </div>
 
             <div>
-              <div className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Items
-              </div>
+              <div className="text-lg font-semibold text-gray-800 border-b pb-2">Items</div>
               <div className="mt-3 rounded-lg border overflow-hidden">
                 <Table className="text-[13px]">
                   <TableHeader className="bg-light">
@@ -858,13 +769,9 @@ const ImportPermitDetailsDialog = ({
                             {it.category}
                           </span>
                         </TableCell>
-                        <TableCell className="text-gray-800">
-                          {it.weight}
-                        </TableCell>
+                        <TableCell className="text-gray-800">{it.weight}</TableCell>
                         <TableCell>
-                          <span className="badge badge-outline rounded-[30px]">
-                            {it.measure}
-                          </span>
+                          <span className="badge badge-outline rounded-[30px]">{it.measure}</span>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -882,9 +789,7 @@ const ImportPermitDetailsDialog = ({
 
             {/* Attachments */}
             <div>
-              <div className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Attachments
-              </div>
+              <div className="text-lg font-semibold text-gray-800 border-b pb-2">Attachments</div>
               <div className="mt-3 rounded-lg border overflow-hidden">
                 <Table className="text-[13px]">
                   <TableHeader className="bg-light">
@@ -893,16 +798,14 @@ const ImportPermitDetailsDialog = ({
                       <TableHead className="min-w-[140px]">Type</TableHead>
                       <TableHead className="min-w-[120px]">Size</TableHead>
                       <TableHead className="min-w-[160px]">Uploaded</TableHead>
-                      <TableHead className="min-w-[120px] text-right">
-                        Action
-                      </TableHead>
+                      <TableHead className="min-w-[120px] text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {(d.attachments || []).map((att) => {
                       const size = (() => {
                         const bytes = Number(att.fileSize || 0);
-                        if (!bytes) return "—";
+                        if (!bytes) return '—';
                         const kb = bytes / 1024;
                         if (kb < 1024) return `${kb.toFixed(1)} KB`;
                         return `${(kb / 1024).toFixed(1)} MB`;
@@ -913,22 +816,13 @@ const ImportPermitDetailsDialog = ({
                           <TableCell className="text-gray-800 font-medium">
                             {att.fileName || att.id}
                           </TableCell>
+                          <TableCell className="text-gray-700">{att.mimeType || '—'}</TableCell>
+                          <TableCell className="text-gray-700">{size}</TableCell>
                           <TableCell className="text-gray-700">
-                            {att.mimeType || "—"}
-                          </TableCell>
-                          <TableCell className="text-gray-700">
-                            {size}
-                          </TableCell>
-                          <TableCell className="text-gray-700">
-                            {att.createdAt ? _formatDate(att.createdAt) : "—"}
+                            {att.createdAt ? _formatDate(att.createdAt) : '—'}
                           </TableCell>
                           <TableCell className="text-right">
-                            <a
-                              href={url}
-                              className="btn btn-sm"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
+                            <a href={url} className="btn btn-sm" target="_blank" rel="noreferrer">
                               <KeenIcon icon="arrow-down" /> Download
                             </a>
                           </TableCell>
@@ -948,12 +842,10 @@ const ImportPermitDetailsDialog = ({
             </div>
 
             {/* Action Section (hidden if already approved) */}
-            {String(d.status || "") !== "approved" && (
+            {String(d.status || '') !== 'approved' && (
               <div className="mt-6 border-t pt-6 space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                    Actions
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Actions</h3>
                   <ActionRadioGroup
                     options={actionOptions}
                     value={action}
@@ -965,24 +857,19 @@ const ImportPermitDetailsDialog = ({
                 </div>
 
                 {/* Dynamic Action Forms */}
-                {action === "assign_inspector" && (
+                {action === 'assign_inspector' && (
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Select Inspector
                     </label>
                     <div className="flex items-center gap-2">
                       {inspectorsLoading && (
-                        <div className="text-xs text-gray-600">
-                          Loading inspectors…
-                        </div>
+                        <div className="text-xs text-gray-600">Loading inspectors…</div>
                       )}
                       {inspectorsError && (
                         <div className="text-xs text-danger flex items-center gap-2">
                           Failed to load inspectors
-                          <button
-                            className="btn btn-xs btn-light"
-                            onClick={() => refetch?.()}
-                          >
+                          <button className="btn btn-xs btn-light" onClick={() => refetch?.()}>
                             Retry
                           </button>
                         </div>
@@ -990,9 +877,7 @@ const ImportPermitDetailsDialog = ({
                       <Select
                         value={inspector}
                         onValueChange={setInspector}
-                        disabled={
-                          inspectorsLoading || !!inspectorsError || assigning
-                        }
+                        disabled={inspectorsLoading || !!inspectorsError || assigning}
                       >
                         <SelectTrigger className="w-full max-w-md">
                           <SelectValue placeholder="Choose inspector" />
@@ -1000,11 +885,8 @@ const ImportPermitDetailsDialog = ({
                         <SelectContent>
                           {inspectorsData?.inspectors?.map((ins: any) => (
                             <SelectItem key={ins.id} value={ins.id}>
-                              {ins.name ||
-                                ins.username ||
-                                ins.company_initials ||
-                                "Unknown"}
-                              {ins.district ? ` (${ins.district})` : ""}
+                              {ins.name || ins.username || ins.company_initials || 'Unknown'}
+                              {ins.district ? ` (${ins.district})` : ''}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1013,16 +895,14 @@ const ImportPermitDetailsDialog = ({
                   </div>
                 )}
 
-                {(action === "halt" || action === "reject") && (
+                {(action === 'halt' || action === 'reject') && (
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {action === "halt"
-                        ? "Reason for Halting"
-                        : "Reason for Rejection"}
+                      {action === 'halt' ? 'Reason for Halting' : 'Reason for Rejection'}
                     </label>
                     <Textarea
                       rows={3}
-                      placeholder={`Enter ${action === "halt" ? "reason for halt" : "reason for rejection"}...`}
+                      placeholder={`Enter ${action === 'halt' ? 'reason for halt' : 'reason for rejection'}...`}
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       className="max-w-2xl"
@@ -1047,9 +927,8 @@ const ImportPermitDetailsDialog = ({
                       onClick={handleConfirm}
                       disabled={
                         !action ||
-                        (action === "assign_inspector" && !inspector) ||
-                        ((action === "halt" || action === "reject") &&
-                          !comment) ||
+                        (action === 'assign_inspector' && !inspector) ||
+                        ((action === 'halt' || action === 'reject') && !comment) ||
                         assigning ||
                         halting ||
                         rejecting ||
@@ -1059,15 +938,15 @@ const ImportPermitDetailsDialog = ({
                     >
                       <KeenIcon icon="tick-square" className="mr-2" />
                       {assigning || halting || rejecting || approving
-                        ? "Processing…"
-                        : "Confirm Action"}
+                        ? 'Processing…'
+                        : 'Confirm Action'}
                     </Button>
                   </div>
                 </div>
               </div>
             )}
 
-            {String(d.status || "") === "approved" && (
+            {String(d.status || '') === 'approved' && (
               <div className="mt-6 border-t pt-4 flex items-center justify-end">
                 <Button onClick={handlePrint}>
                   <KeenIcon icon="printer" /> Print Certificate

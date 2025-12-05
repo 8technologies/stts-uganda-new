@@ -13,6 +13,8 @@ const TrackTracePage = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const rafRef = useRef<number>();
 
+  console.log("lotNumber", lotNumber);
+
   const stopScanner = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (videoRef.current?.srcObject) {
@@ -31,6 +33,7 @@ const TrackTracePage = () => {
 
     const BarcodeDetector = (window as any)?.BarcodeDetector;
     if (!BarcodeDetector) {
+      console.error("BarcodeDetector API not supported,");
       setScanError("QR scanning is not supported in this browser.");
       return;
     }
@@ -131,12 +134,15 @@ const TrackTracePage = () => {
         </div>
       </Container>
 
+      {/* {!lotNumber && ( */}
       <ModalSearch
         open={searchModalOpen}
         onOpenChange={() => setSearchModalOpen(false)}
         track={track}
         lotNumber={lotNumber}
       />
+      {/* )} */}
+       
 
       {isScanning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
