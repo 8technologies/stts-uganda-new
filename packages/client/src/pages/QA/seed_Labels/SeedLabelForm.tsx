@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,8 +16,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { FieldLabel } from "../seedLabs/blocks/SeedLabTest";
-import { useQuery } from "@apollo/client/react";
-import { LOAD_SEED_LABS } from "@/gql/queries";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { LOAD_SEED_LABS, SEEDLABELPACKAGES } from "@/gql/queries";
 import { SeedLabInspection } from "../seedLabs/MySeedLabsForms";
 
 interface SeedLabelFormProps {
@@ -34,7 +34,7 @@ const SeedLabelForm = ({
   initialData,
 }: SeedLabelFormProps) => {
   const [labTestNumber, setLabTestNumber] = useState<string>(
-    initialData?.labTestNumber || "",
+    initialData?.labTestNumber,
   );
   const [seedLabelPackage, setSeedLabelPackage] = useState<string>(
     initialData?.seedLabelPackage || "",
@@ -43,9 +43,74 @@ const SeedLabelForm = ({
   const [thumbnailImage, setThumbnailImage] = useState<File | null>(null);
   const [remarks, setRemarks] = useState<string>(initialData?.remarks || "");
   const [receipt, setReceipt] = useState<File | null>(null);
+  const [cropId, setCropId] = useState<string >("");
 
+  const [loadseedlabelpackages] = useLazyQuery(SEEDLABELPACKAGES);
+  const [packagesStore, setPackageStore] = useState<
+      Record<
+        string,
+        {
+          items: { id: string; crop_id: string, quantity:string, price:string, units:string }[];
+          loading?: boolean;
+          error?: string;
+        }
+      >
+    >
+  ({});
+
+  console.log("packagesStore", packagesStore );
   const { data, loading, error, refetch } = useQuery(LOAD_SEED_LABS);
   const allInspections = (data?.getLabInspections || []) as SeedLabInspection[];
+// const labelpackages = (data?.getSeedLabelPackages || []) as any[];
+
+  const fetchlabelpackages = async (labTestId: string) => {
+    const inspection = allInspections.find(i => i.id === labTestId);
+
+     setCropId(inspection?.variety.cropId);
+    console.log("fetchlabelpackages", labTestId, cropId, inspection);
+    if (!labTestId) return;
+    setPackageStore((prev) => ({
+      ...prev,
+      [cropId]: {
+        ...(prev[cropId] || {}),
+        loading: true,
+        error: undefined,
+        items: prev[cropId]?.items || [],
+      },
+    }));
+    try {
+      const res = await loadseedlabelpackages({ variables: {cropId: cropId } });
+
+      console.log("loadseedlabelpackages", res.data?.getSeedLabelPackages, { crop_id : cropId });
+
+      const items = ((res.data?.getSeedLabelPackages || []) as any[]).map((v) => ({
+        id: String(v.id),
+        crop_id: v.crop_id,
+        quantity: v.quantity,
+        price: v.price,
+        units: v.Crop?.units,
+
+      }));
+      setPackageStore((prev) => ({
+        ...prev,
+        [cropId]: { items, loading: false, error: undefined },
+      }));
+    } catch (e: any) {
+      setPackageStore((prev) => ({
+        ...prev,
+        [cropId]: {
+          items: prev[cropId]?.items || [],
+          loading: false,
+          error: e?.message || "Failed to load varieties",
+        },
+      }));
+    }
+  }
+
+  const labelpackageOptions = useMemo(
+      () => (cropId ? packagesStore[cropId]?.items || [] : []),
+      [cropId, packagesStore],
+    );
 
   const handleSubmit = () => {
     const data = {
@@ -71,7 +136,12 @@ const SeedLabelForm = ({
         <div className="space-y-6">
           <div>
             <FieldLabel required>Lab Test Number</FieldLabel>
-            <Select value={labTestNumber} onValueChange={setLabTestNumber}>
+            <Select value={labTestNumber} //onValueChange={setLabTestNumber}
+                onValueChange={(v) => {
+                    setLabTestNumber(v);
+                    fetchlabelpackages(v);
+                  }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select lab test number" />
               </SelectTrigger>
@@ -93,21 +163,26 @@ const SeedLabelForm = ({
             <FieldLabel required>Seed Label Package</FieldLabel>
             <Select
               value={seedLabelPackage}
-              onValueChange={setSeedLabelPackage}
+              onValueChange={(v) => {setSeedLabelPackage(v)}}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Seed label package" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2kgs">2 Kgs @ 2000 UGX</SelectItem>
-                <SelectItem value="5kgs">5 Kgs @ 5000 UGX</SelectItem>
+                {labelpackageOptions.map((v) => (
+                      <SelectItem key={v.id} value={v.id}>
+                        {v.quantity}{v.units} @ {v.price} UGX
+                      </SelectItem>
+                ))}
+                {/* <SelectItem value="2kgs">2 Kgs @ 2000 UGX</SelectItem>
+                <SelectItem value="5kgs">5 Kgs @ 5000 UGX</SelectItem> */}
                 {/* Add more options dynamically if needed */}
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <FieldLabel required>Quantity (Kgs)</FieldLabel>
+            <FieldLabel required>Total Quantity (Kgs)</FieldLabel>
             <Input
               type="number"
               value={quantity}

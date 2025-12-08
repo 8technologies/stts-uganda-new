@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql";
-import { db } from "../../config/config";
-import { getUsers } from "../user/resolvers";
-import { mapProductRow } from "../marketplace/resolvers";
-import saveData from "../../utils/db/saveData";
+import { db } from "../../config/config.js";
+import { getUsers } from "../user/resolvers.js";
+import { mapProductRow } from "../marketplace/resolvers.js";
+import saveData from "../../utils/db/saveData.js";
 
 const mapOrdersRow = (row) => {
   return {
@@ -193,7 +193,22 @@ const orderResolvers = {
             }catch (err) {
                 return { success: false, message: err.message };
             }
-        }
+        },
+
+        deleteOrder: async (parent, args, context) => {
+            const userPermissions = context.req.user.permissions;
+            checkPermission(
+                userPermissions,
+                "can_delete_order",
+                "You dont have permissions to delete orders"
+            );
+            try {
+                await db.execute("DELETE FROM orders WHERE id = ?", [args.id]);
+                return { success: true, message: "order deleted successfully" };
+            } catch (error) {
+                throw handleSQLError(error, "Failed to delete order");
+            }
+        },
     }
 };
 

@@ -1,13 +1,6 @@
 import xlsx from 'xlsx'; // To read Excel files
 import mysql from 'mysql2'; // MySQL client to connect and query the database
-
-// Set up MySQL connection (adjust connection parameters as needed)
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "stts_uganda_new",
-  password: "",
-});
+import { db } from '../../config/config';
 
 // // Function to insert SubGrower into MySQL
 // async function insertSubGrower(sub) {

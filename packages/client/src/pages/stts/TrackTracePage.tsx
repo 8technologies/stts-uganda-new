@@ -32,6 +32,8 @@ const TrackTracePage = () => {
     }
 
     const BarcodeDetector = (window as any)?.BarcodeDetector;
+    
+
     if (!BarcodeDetector) {
       console.error("BarcodeDetector API not supported,");
       setScanError("QR scanning is not supported in this browser.");

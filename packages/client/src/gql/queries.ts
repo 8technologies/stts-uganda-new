@@ -1009,3 +1009,19 @@ export const ORDERS = gql`
     }
   }
 }`;
+
+export const SEEDLABELPACKAGES = gql`
+  query GetSeedLabelPackages($cropId: ID) {
+    getSeedLabelPackages(crop_id: $cropId) {
+      id
+      crop_id
+      quantity
+      price
+      created_at
+      Crop {
+        name,
+        units
+      }
+    }
+  }
+`;

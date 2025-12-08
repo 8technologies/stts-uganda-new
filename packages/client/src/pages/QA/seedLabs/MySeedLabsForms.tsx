@@ -34,6 +34,7 @@ export type SeedLabInspection = {
   id: string;
   user_id: string | null;
   variety_id: string | null;
+  lab_test_number: string | null;
   stock_examination_id: string | null;
   collection_date: string | null;
   receipt_id: string | null;

@@ -36,6 +36,7 @@ const OrderType = `#graphql
     type Mutation {
         orderProduct(input: OrderProductInput!): OrderResponseMessage
         orderProcessing(input: OrderProcessingInput!): OrderResponseMessage
+        deleteOrder(id: ID): OrderResponseMessage
     }
 
     type OrderResponseMessage {
