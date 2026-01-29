@@ -39,8 +39,8 @@ const HeaderTopbar = () => {
       </button>
       <ModalSearch open={searchModalOpen} onOpenChange={handleClose} />
 
-      <Menu>
-        <MenuItem
+      {/*<Menu>
+         <MenuItem
           ref={itemChatRef}
           onShow={handleShow}
           toggle="dropdown"
@@ -62,10 +62,10 @@ const HeaderTopbar = () => {
           </MenuToggle>
 
           {DropdownChat({ menuTtemRef: itemChatRef })}
-        </MenuItem>
-      </Menu>
+        </MenuItem> 
+      </Menu>*/}
 
-      <Menu>
+      {/* <Menu>
         <MenuItem
           ref={itemAppsRef}
           toggle="dropdown"
@@ -88,7 +88,7 @@ const HeaderTopbar = () => {
 
           {DropdownApps()}
         </MenuItem>
-      </Menu>
+      </Menu> */}
 
       <Menu>
         <MenuItem

@@ -9,6 +9,7 @@ import { fetchVarietyById } from "../crop/resolvers.js";
 import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
 import { v4 as uuidv4 } from "uuid";
+import { fetchSeedLabelPackages } from "../seed_label_packages/resolvers.js";
 
 export const mapLabelsRow = (row) => {
   return {
@@ -239,7 +240,18 @@ const seedLabelResolvers = {
                 throw new Error("Failed to load crop.");
             }
         },
-
+        SeedLabelPackage: async (parent) => {
+            try {
+                const package_id = parent.seed_label_package;
+        
+                const [labelPackage] = await fetchSeedLabelPackages({
+                  id: package_id,
+                });
+                return labelPackage;
+            } catch (error) {
+                throw new GraphQLError(error.message);
+            }
+        },
 
         SeedLab: async (parent) => {
             try {
@@ -456,8 +468,13 @@ const seedLabelResolvers = {
 
                 // fetch the form details
                 const [formDetails] = await fetchSeedLabels({
-                id: form_id,
+                    id: form_id,
                 });
+
+                const labelPackage = await fetchSeedLabelPackages({ 
+                    id: formDetails.seed_label_package 
+                });
+                console.log("labelPackage:", labelPackage);
 
                 if (!formDetails)
                 throw new GraphQLError("Form with the provided id is not found!");
@@ -482,20 +499,21 @@ const seedLabelResolvers = {
                 connection,
                 });
 
-                // const label = await fetchSeedLabels({ id });
                 const lab_id = formDetails.seed_lab_id;
                 const marketableSeed = await fetchSeedLabs({ id:lab_id });
-                console.log("marketableSeed:", marketableSeed[0], formDetails);
+                console.log("marketableSeed:", formDetails);
 
-                const packages = formDetails.quantity/ formDetails.label_package;
+                const packages = formDetails.quantity/ labelPackage[0].quantity;
+                console.log("packages:", formDetails.quantity, labelPackage[0].quantity, packages);
                 const product ={
                     user_id: formDetails.user_id?? null,
                     crop_variety_id : formDetails.crop_variety_id ?? null,
                     seed_lab_id : formDetails.seed_lab_id ?? null,
                     seed_label_id : formDetails.id ?? null,
 
-                    quantity : formDetails.label_package ?? null,
+                    quantity : labelPackage[0].quantity ?? null,
                     available_stock : packages ?? null,
+                    price: labelPackage[0].price ?? null,
                     lab_test_number : marketableSeed[0].lab_test_number ?? null,
                     lot_number : marketableSeed[0].lot_number ?? null,
                     seed_class : marketableSeed[0].lot_number ?? null,

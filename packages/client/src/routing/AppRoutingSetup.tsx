@@ -113,6 +113,7 @@ import SeedLabelManagementPage from '@/pages/QA/seed_Labels/SeedLabels';
 import MarketplacePage from '@/pages/marketplace/products/MarketplacePage';
 import OrdersPage from '@/pages/marketplace/orders/OrdersPage';
 import MarketableSeed from '@/pages/seed-stock/marketable-seed/MarketableSeed';
+import { SeedLabelPackagesList } from "@/pages/seed-label-packages/SeedLabelPackagesList";
 
 
 const AppRoutingSetup = (): ReactElement => {
@@ -217,6 +218,7 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />
+          <Route path="/admin/seed-label-packages" element={<SeedLabelPackagesList />} />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />
           <Route path="/admin/users" element={<UsersListPage />} />
           <Route

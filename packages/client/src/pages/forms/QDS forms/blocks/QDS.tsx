@@ -36,6 +36,8 @@ import { LOAD_QDS_FORMS } from '@/gql/queries';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { SAVE_QDS_FORMS } from '@/gql/mutations';// <-- new unified dialog
 import { QDSFormDialog } from './QDSFormDialog';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
 
 // --- Types ---
 interface IColumnFilterProps<TData, TValue> {
@@ -112,6 +114,11 @@ const QDs = () => {
       className="h-9 w-full max-w-40"
     />
   );
+
+  const { auth } = useAuthContext();
+      const perms = getPermissionsFromToken(auth?.access_token);
+      const canEditSr6Forms = !!perms['can_edit_sr4_forms'];
+  
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingQds, setEditingQds] = useState<Qds | null>(null);
@@ -313,14 +320,17 @@ const QDs = () => {
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setEditingQds(info.row.original.raw as any);
-                  setDialogOpen(true);
-                }}
-              >
-                <KeenIcon icon="note" /> Edit
-              </DropdownMenuItem>
+              {info.row.original.status.label === 'pending' && canEditSr6Forms && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEditingQds(info.row.original.raw as any);
+                    setDialogOpen(true);
+                  }}
+                >
+                  <KeenIcon icon="note" /> Edit
+                </DropdownMenuItem>
+              )}
+              
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedForm(info.row.original.raw as any);

@@ -1,5 +1,6 @@
 import { type TMenuConfig } from "@/components/menu";
 import { MODULES_CONFIG } from "@/pages/roles/permissions.config";
+import { get } from "http";
 
 // Helper: find permission id by module + permission id
 const byModuleId = Object.fromEntries(MODULES_CONFIG.map((m) => [m.id, m]));
@@ -113,7 +114,6 @@ export const MENU_SIDEBAR: TMenuConfig = [
           getPerm("quality_assurance", "can_create_seed_stock"),
         ],
       },
-
       {
         title: "Lab tests",
         path: "/qa/labs",
@@ -174,8 +174,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
         ],
       },
       {
-        title: "Settings",
-        path: "/admin/settings",
+        title: "Seed Label Packages",
+        path: "/admin/seed-label-packages",
         requiredPermissions: [
           getPerm("system_configuration", "can_view_settings"),
         ],

@@ -13,20 +13,20 @@ import { AccountDetailsEditor } from "./blocks/AccountDetailsEditor";
 const AccountUserProfileContent = () => {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 lg:gap-7.5">
-      <div className="col-span-1">
+      <div className="col-span-3">
         <div className="grid gap-5 lg:gap-7.5">
           <AccountDetailsEditor />
-          <PersonalInfo />
+          {/* <PersonalInfo />
 
           <BasicSettings title="Basic Settings" />
 
           <Work />
 
-          <CommunityBadges />
+          <CommunityBadges /> */}
         </div>
       </div>
 
-      <div className="col-span-1">
+      {/* <div className="col-span-1">
         <div className="grid gap-5 lg:gap-7.5">
           <StartNow />
 
@@ -36,7 +36,7 @@ const AccountUserProfileContent = () => {
 
           <RecentUploads title="My Files" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

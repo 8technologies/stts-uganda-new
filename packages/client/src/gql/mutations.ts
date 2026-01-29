@@ -841,3 +841,29 @@ mutation OrderProcessing($input: OrderProcessingInput!) {
     }
   }
 }`;
+
+
+export const SAVESEEDLABELPACKAGE = gql`
+  mutation SeedLabelPackage($input: SeedLabelPackageInput!) {
+  SeedLabelPackage(input: $input) {
+    success
+    message
+    seedLabelPackage {
+      id
+      crop_id
+      quantity
+      price
+      created_at
+    }
+  }
+}
+`;
+
+export const DELETESEEDLABELPACKAGE = gql`
+  mutation DeleteSeedLabelPackage($deleteSeedLabelPackageId: ID!) {
+  deleteSeedLabelPackage(id: $deleteSeedLabelPackageId) {
+    success
+    message
+  }
+}
+`;

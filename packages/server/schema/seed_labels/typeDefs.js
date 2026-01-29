@@ -29,6 +29,7 @@ const seedLabelTypeDefs = `#graphql
         CropVariety: CropVariety
         Crop: Crop
         SeedLab: LabInspection
+        SeedLabelPackage: SeedLabelPackage
     }
 
     type Query {

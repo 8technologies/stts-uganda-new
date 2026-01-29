@@ -134,8 +134,6 @@ const PlantingReturnsListPage = () => {
 
     try {
       // Submit logic here (e.g., API call)
-      console.log("Submitted values:", values);
-      console.log("Submitted input:", input);
 
       await uploadReturns({ variables: { input } });
       toast("Planting return updated");
