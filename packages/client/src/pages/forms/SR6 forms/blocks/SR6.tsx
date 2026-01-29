@@ -35,6 +35,8 @@ import { SR6DetailsDialog } from './SR6DetailsDialog';
 import { LOAD_SR6_FORMS } from '@/gql/queries';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { SAVE_SR6_FORMS } from '@/gql/mutations';
+import { useAuthContext } from '@/auth';
+import { getPermissionsFromToken } from '@/utils/permissions';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -83,6 +85,9 @@ const SR6s = () => {
       />
     );
   };
+  const { auth } = useAuthContext();
+    const perms = getPermissionsFromToken(auth?.access_token);
+    const canEditSr6Forms = !!perms['can_edit_sr4_forms'];
 
   const columns = useMemo<ColumnDef<ISR6Data>[]>(
     () => [
@@ -274,7 +279,7 @@ const SR6s = () => {
                   <DropdownMenuLabel className="font-medium">Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
 
-                  {info.row.original.status.label === 'pending' && (
+                  {info.row.original.status.label === 'pending' && canEditSr6Forms && (
                     <DropdownMenuItem
                       onClick={() => {
                         setSelectedForm((info.row.original as any).raw);

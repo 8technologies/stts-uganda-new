@@ -784,6 +784,10 @@ const LOAD_SEED_LABELS = gql`
         lab_test_report
         lot_number
       }
+      SeedLabelPackage {
+        quantity
+        price
+      }
     }
   }
 `;

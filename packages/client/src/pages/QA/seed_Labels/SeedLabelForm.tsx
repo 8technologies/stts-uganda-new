@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,6 +19,7 @@ import { FieldLabel } from "../seedLabs/blocks/SeedLabTest";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { LOAD_SEED_LABS, SEEDLABELPACKAGES } from "@/gql/queries";
 import { SeedLabInspection } from "../seedLabs/MySeedLabsForms";
+import { URL_2 } from "@/config/urls";
 
 interface SeedLabelFormProps {
   open: boolean;
@@ -34,15 +35,21 @@ const SeedLabelForm = ({
   initialData,
 }: SeedLabelFormProps) => {
   const [labTestNumber, setLabTestNumber] = useState<string>(
-    initialData?.labTestNumber,
+    initialData?.seed_lab_id || "",
   );
   const [seedLabelPackage, setSeedLabelPackage] = useState<string>(
-    initialData?.seedLabelPackage || "",
+    (initialData?.seed_label_package as string) || "",
   );
   const [quantity, setQuantity] = useState<number>(initialData?.quantity || 0);
   const [thumbnailImage, setThumbnailImage] = useState<File | null>(null);
-  const [remarks, setRemarks] = useState<string>(initialData?.remarks || "");
+  const [existingThumbnail, setExistingThumbnail] = useState<string | null>(
+    initialData?.image_url || initialData?.image_id || null
+  );
+  const [remarks, setRemarks] = useState<string>(initialData?.applicant_remark || "");
   const [receipt, setReceipt] = useState<File | null>(null);
+  const [existingReceipt, setExistingReceipt] = useState<string | null>(
+    initialData?.receipt_url || initialData?.receipt_id || null
+  );
   const [cropId, setCropId] = useState<string >("");
 
   const [loadseedlabelpackages] = useLazyQuery(SEEDLABELPACKAGES);
@@ -58,10 +65,13 @@ const SeedLabelForm = ({
     >
   ({});
 
-  console.log("packagesStore", packagesStore );
+  console.log("packagesStore", packagesStore);
+  console.log("initial data ", initialData );
+  console.log("seed label package... ", seedLabelPackage, labTestNumber, initialData?.seed_label_package );
   const { data, loading, error, refetch } = useQuery(LOAD_SEED_LABS);
   const allInspections = (data?.getLabInspections || []) as SeedLabInspection[];
 // const labelpackages = (data?.getSeedLabelPackages || []) as any[];
+
 
   const fetchlabelpackages = async (labTestId: string) => {
     const inspection = allInspections.find(i => i.id === labTestId);
@@ -71,8 +81,8 @@ const SeedLabelForm = ({
     if (!labTestId) return;
     setPackageStore((prev) => ({
       ...prev,
-      [cropId]: {
-        ...(prev[cropId] || {}),
+      [labTestId]: {
+        ...(prev[labTestId] || {}),
         loading: true,
         error: undefined,
         items: prev[cropId]?.items || [],
@@ -80,8 +90,6 @@ const SeedLabelForm = ({
     }));
     try {
       const res = await loadseedlabelpackages({ variables: {cropId: cropId } });
-
-      console.log("loadseedlabelpackages", res.data?.getSeedLabelPackages, { crop_id : cropId });
 
       const items = ((res.data?.getSeedLabelPackages || []) as any[]).map((v) => ({
         id: String(v.id),
@@ -93,12 +101,12 @@ const SeedLabelForm = ({
       }));
       setPackageStore((prev) => ({
         ...prev,
-        [cropId]: { items, loading: false, error: undefined },
+        [labTestId]: { items, loading: false, error: undefined },
       }));
     } catch (e: any) {
       setPackageStore((prev) => ({
         ...prev,
-        [cropId]: {
+        [labTestId]: {
           items: prev[cropId]?.items || [],
           loading: false,
           error: e?.message || "Failed to load varieties",
@@ -107,9 +115,28 @@ const SeedLabelForm = ({
     }
   }
 
+  useEffect(() => {
+    if (open) {
+      setLabTestNumber(initialData?.seed_lab_id || "");
+      setSeedLabelPackage(initialData?.seed_label_package as string || "",)
+      setQuantity(initialData?.quantity || 0);
+      setThumbnailImage(null); // reset new file
+      setExistingThumbnail(initialData?.image_url || initialData?.image_id || null);
+      setRemarks(initialData?.applicant_remark || "");
+      setReceipt(null); // reset new file
+      setExistingReceipt(initialData?.receipt_url || initialData?.receipt_id || null);
+      
+      // If a crop is preselected (edit mode), ensure its varieties are loaded
+      const cid = labTestNumber || initialData?.seed_lab_id;
+      console.log("useEffect open", cid);
+
+      if (cid) fetchlabelpackages(String(cid));
+    }
+  }, [open, initialData]);
+
   const labelpackageOptions = useMemo(
-      () => (cropId ? packagesStore[cropId]?.items || [] : []),
-      [cropId, packagesStore],
+      () => (labTestNumber ? packagesStore[labTestNumber]?.items || [] : []),
+      [labTestNumber, packagesStore],
     );
 
   const handleSubmit = () => {
@@ -117,9 +144,11 @@ const SeedLabelForm = ({
       labTestNumber,
       seedLabelPackage,
       quantity,
-      thumbnailImage,
+      thumbnailImage, // new file or null
+      existingThumbnail, // existing URL or null
       remarks,
-      receipt,
+      receipt, // new file or null
+      existingReceipt, // existing URL or null
     };
     onSave?.(data);
   };
@@ -212,6 +241,25 @@ const SeedLabelForm = ({
                     Attach Image
                   </label>
 
+                  {/* Show existing image if present */}
+                  {existingThumbnail && !thumbnailImage && (
+                    <div className="mb-4">
+                      <p className="text-xs text-gray-600 mb-2">Current Image:</p>
+                      <img
+                        src={`${URL_2}/imgs/${existingThumbnail}`}
+                        alt="Current thumbnail"
+                        className="w-40 h-40 object-cover rounded-lg shadow border"
+                      />
+                      <button
+                        type="button"
+                        className="text-xs text-red-600 hover:text-red-800 mt-2"
+                        onClick={() => setExistingThumbnail(null)}
+                      >
+                        Remove existing image
+                      </button>
+                    </div>
+                  )}
+
                   <label
                     htmlFor="thumbnailImage-upload"
                     className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 transition"
@@ -242,7 +290,6 @@ const SeedLabelForm = ({
                       type="file"
                       className="hidden"
                       accept=".png,.jpg,.jpeg,.pdf"
-                      //   onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
                       onChange={(file) =>
                         setThumbnailImage(file.target.files?.[0] || null)
                       }
@@ -251,7 +298,7 @@ const SeedLabelForm = ({
 
                   {thumbnailImage && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Selected file:{" "}
+                      New file:{" "}
                       <span className="font-medium">{thumbnailImage.name}</span>
                     </p>
                   )}
@@ -294,6 +341,36 @@ const SeedLabelForm = ({
                     Attach Receipt (optional)
                   </label>
 
+                  {/* Show existing receipt if present */}
+                  {existingReceipt && !receipt && (
+                    <div className="mb-4">
+                      <p className="text-xs text-gray-600 mb-2">Current Receipt:</p>
+                      {existingReceipt.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                        <img
+                          src={`${URL_2}/receipts/${existingReceipt}`}
+                          alt="Current receipt"
+                          className="w-40 h-40 object-cover rounded-lg shadow border"
+                        />
+                      ) : (
+                        <a
+                          href={existingReceipt}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline text-sm"
+                        >
+                          View Receipt ({existingReceipt.split('/').pop()})
+                        </a>
+                      )}
+                      <button
+                        type="button"
+                        className="text-xs text-red-600 hover:text-red-800 mt-2"
+                        onClick={() => setExistingReceipt(null)}
+                      >
+                        Remove existing receipt
+                      </button>
+                    </div>
+                  )}
+
                   <label
                     htmlFor="receipt-upload"
                     className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 transition"
@@ -324,7 +401,6 @@ const SeedLabelForm = ({
                       type="file"
                       className="hidden"
                       accept=".png,.jpg,.jpeg,.pdf"
-                      //   onChange={(e) => handleChange('receipt', e.target.files?.[0] || null)}
                       onChange={(file) =>
                         setReceipt(file.target.files?.[0] || null)
                       }
@@ -333,8 +409,7 @@ const SeedLabelForm = ({
 
                   {receipt && (
                     <p className="text-sm text-gray-600 mt-1">
-                      Selected file:{" "}
-                      <span className="font-medium">{receipt.name}</span>
+                      New file: <span className="font-medium">{receipt.name}</span>
                     </p>
                   )}
 

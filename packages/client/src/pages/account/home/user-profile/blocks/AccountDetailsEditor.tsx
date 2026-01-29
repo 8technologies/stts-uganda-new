@@ -260,8 +260,6 @@ const AccountDetailsEditor = () => {
             <img
               src={
                 form.previewUrl
-                  ? form.previewUrl
-                  : form.image
                   ? `${URL_2}/imgs/${form.image}`
                   : toAbsoluteUrl("/media/avatars/blank.png")
               }

@@ -1271,7 +1271,7 @@ const applicationFormsResolvers = {
               table: "application_forms",
               data: { seed_board_registration_number: seedBoardReg },
               id: form_id,
-              idColumn: "application_form_id",
+              idColumn: "id",
               connection,
             });
           }

@@ -74,7 +74,7 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
       <Fragment>
         <MenuSeparator />
         <div className="flex flex-col">
-          <MenuItem>
+          {/* <MenuItem>
             <MenuLink path="/public-profile/profiles/default">
               <MenuIcon className="menu-icon">
                 <KeenIcon icon="badge" />
@@ -83,7 +83,7 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
                 <FormattedMessage id="USER.MENU.PUBLIC_PROFILE" />
               </MenuTitle>
             </MenuLink>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem>
             <MenuLink path="/account/home/user-profile">
               <MenuIcon>
@@ -94,7 +94,7 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
               </MenuTitle>
             </MenuLink>
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             toggle="dropdown"
             trigger="hover"
             dropdownProps={{
@@ -217,8 +217,8 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
                 </MenuLink>
               </MenuItem>
             </MenuSub>
-          </MenuItem>
-          <MenuItem>
+          </MenuItem> */}
+          {/* <MenuItem>
             <MenuLink path="https://devs.keenthemes.com">
               <MenuIcon>
                 <KeenIcon icon="message-programming" />
@@ -227,8 +227,8 @@ const DropdownUser = ({ menuItemRef }: IDropdownUserProps) => {
                 <FormattedMessage id="USER.MENU.DEV_FORUM" />
               </MenuTitle>
             </MenuLink>
-          </MenuItem>
-          <DropdownUserLanguages menuItemRef={menuItemRef} />
+          </MenuItem> */}
+          {/* <DropdownUserLanguages menuItemRef={menuItemRef} /> */}
           <MenuSeparator />
         </div>
       </Fragment>

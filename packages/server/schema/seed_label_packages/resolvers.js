@@ -14,7 +14,7 @@ const mapSeedLabelPackagesRow = (row) => {
     };
 }
 
-const fetchSeedLabelPackages = async ({
+export const fetchSeedLabelPackages = async ({
     crop_id =null,
 }) => {
     try{

@@ -62,8 +62,19 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     fetchPolicy: "network-only",
   });
 
-  const verify = async () => {
-    if (!auth) return;
+  // Sync auth state with localStorage on mount
+  useEffect(() => {
+    const storedAuth = authHelper.getAuth();
+    if (storedAuth && !auth) {
+      setAuth(storedAuth);
+    }
+  }, []);
+
+  const verify = async () => { 
+    // Read token directly from localStorage, not from React state
+    const tokenAuth = authHelper.getAuth();
+    if (!tokenAuth) return;
+
     try {
       const { data } = await loadMe();
       const u = data?.me;
@@ -71,9 +82,23 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
       setCurrentUser(u);
     } catch (e) {
-      // If token is invalid, clear auth so the app redirects
-      saveAuth(undefined);
-      setCurrentUser(undefined);
+      // Only clear auth if it's an authentication error (401, invalid token)
+      // Network errors and other issues should not cause logout
+      const error = e as any;
+      const isAuthError =
+        error?.message?.includes("Invalid") ||
+        error?.message?.includes("Unauthorized") ||
+        error?.message?.includes("UNAUTHENTICATED");
+
+      if (isAuthError) {
+        // If token is explicitly invalid, clear auth so the app redirects
+        saveAuth(undefined);
+        setCurrentUser(undefined);
+      } else {
+        // For other errors (network, etc), keep auth and try to load user data
+        console.warn("Verify error (keeping auth):", error);
+        // Optionally retry or just keep the current user data
+      }
     }
   };
 
