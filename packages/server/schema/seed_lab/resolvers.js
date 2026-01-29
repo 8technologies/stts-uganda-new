@@ -8,6 +8,7 @@ import saveUpload from "../../helpers/saveUpload.js";
 import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
 import generateLabTestNo from "../../helpers/generateLabTestNo.js";
+import { fetchRecords } from "../stock_records/resolvers.js";
 
 export const parseJSON = (text) => {
   if (!text) return null;                // return null instead of {}
@@ -259,6 +260,7 @@ const seedLabResolvers = {
           applicant_remark,
         } = args.input;
 
+        const stock_id = stock_examination_id;
 
         const user = context?.req?.user;
         const userPermissions = user?.permissions || [];
@@ -269,23 +271,23 @@ const seedLabResolvers = {
           "You dont have permissions to request seed lab inspection"
         );
 
-        let stock_examination = {};
+        let stock = {};
         
         
-        if (stock_examination_id) {
+        if (stock_id) {
 
-          stock_examination = await fetchExaminations({
-            id: stock_examination_id,
+          stock = await fetchRecords({
+            id: stock_id,
             user_id: user.id,
           });
-          console.log("Planting return:", stock_examination);
+          console.log("Planting return:", stock[0], stock_id);
         }
 
         const data = {
           user_id: user.id,
-          variety_id: stock_examination[0]?.variety_id || null,
-          stock_examination_id: stock_examination_id,
-          lot_number: stock_examination[0]?.lot_number || null,
+          variety_id: stock[0]?.crop_variety_id || null,
+          stock_examination_id: stock[0]?.stock_examination_id || null,
+          lot_number: stock[0]?.lot_number || null,
           collection_date,
           applicant_remark,
         }
@@ -338,7 +340,7 @@ const seedLabResolvers = {
           message: "Seed Lab Request saved successfully",
           data: {
             id: save_id,
-            status: "PENDING",
+            status: "pending",
             ...data,
           },
         };

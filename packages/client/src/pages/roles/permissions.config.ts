@@ -127,6 +127,10 @@ export const MODULES_CONFIG: ModuleConfig[] = [
         label: "Can Edit Seed Lab Inspections",
       },
       {
+        id: "can_request_seed_lab_inspection",
+        label: "Can Request Seed Lab Inspections",
+      },
+      {
         id: "can_delete_seed_lab_inspections",
         label: "Can Delete Seed Lab Inspections",
       },
