@@ -792,6 +792,21 @@ const LOAD_SEED_LABELS = gql`
   }
 `;
 
+const LOAD_SEED_LABEL_PACKAGES = gql`
+  query SeedLabelPackages($activeOnly: Boolean) {
+    seedLabelPackages(activeOnly: $activeOnly) {
+      id
+      name
+      packageSizeKg
+      labelsPerPackage
+      priceUgx
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 const LOAD_SEED_LABEL_BY_ID = gql`
   query GetSeedLabel($getSeedLabelId: ID!) {
     getSeedLabel(id: $getSeedLabelId) {
@@ -931,6 +946,7 @@ export {
   // -------------------------
   LOAD_SEED_LABS,
   LOAD_SEED_LABELS,
+  LOAD_SEED_LABEL_PACKAGES,
   LOAD_SEED_LABEL_BY_ID,
   DASHBOARD_STATS,
   TRACK_TRACE,

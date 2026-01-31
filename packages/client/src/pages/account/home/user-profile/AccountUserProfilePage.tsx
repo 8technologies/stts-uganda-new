@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { Container } from "@/components/container";
+import { Link } from "react-router-dom";
 import {
   Toolbar,
   ToolbarActions,
@@ -25,16 +26,13 @@ const AccountUserProfilePage = () => {
             <ToolbarHeading>
               <ToolbarPageTitle />
               <ToolbarDescription>
-                Central Hub for Personal Customization
+                Manage your profile details and contact information
               </ToolbarDescription>
             </ToolbarHeading>
             <ToolbarActions>
-              <a href="#" className="btn btn-sm btn-light">
-                Public Profile
-              </a>
-              <a href="#" className="btn btn-sm btn-primary">
-                Account Settings
-              </a>
+              <Link to="/account/security/overview" className="btn btn-sm btn-light">
+                Security
+              </Link>
             </ToolbarActions>
           </Toolbar>
         </Container>
