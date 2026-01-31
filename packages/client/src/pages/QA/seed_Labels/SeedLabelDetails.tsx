@@ -5,7 +5,11 @@ import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { APPROVE_SEED_LABEL, PRINT_SEED_LABEL } from "@/gql/mutations";
-import { LOAD_SEED_LABEL_BY_ID, LOAD_SEED_LABELS } from "@/gql/queries";
+import {
+  LOAD_SEED_LABEL_BY_ID,
+  LOAD_SEED_LABELS,
+  LOAD_SEED_LABEL_PACKAGES,
+} from "@/gql/queries";
 import {
   Sheet,
   SheetContent,
@@ -46,6 +50,38 @@ const parsePackageSize = (value: unknown): number => {
   return 0;
 };
 
+const formatExpiryDate = (date: Date): string => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = months[date.getMonth()] || "";
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
+const getSeasonAndExpiry = (printDate: Date): { season: string; expiry: string } => {
+  const year = printDate.getFullYear();
+  const month = printDate.getMonth();
+  const isSeasonA = month < 6;
+  const season = `${year}${isSeasonA ? "A" : "B"}`;
+  const expiryDate = isSeasonA
+    ? new Date(year, 11, 31)
+    : new Date(year + 1, 5, 30);
+  return { season, expiry: formatExpiryDate(expiryDate) };
+};
+
 const SeedLabelDetailSheet: React.FC<Props> = ({
   open,
   onOpenChange,
@@ -72,6 +108,11 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
     awaitRefetchQueries: true
   });
   const [status, setStatus] = useState("pending");
+  const { data: packagesData } = useQuery(LOAD_SEED_LABEL_PACKAGES, {
+    variables: { activeOnly: false },
+    skip: !open,
+  });
+  const packages = (packagesData?.seedLabelPackages || []) as any[];
 
   console.log("Seed Label Details data:", d);
 
@@ -135,13 +176,22 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       formDetails?.createdBy?.district ||
       formDetails?.createdBy?.premises_location ||
       "";
-    const season = formDetails?.season || "";
-    const expiry = formDetails?.expiry || "";
+    const { season, expiry } = getSeasonAndExpiry(new Date());
     const germination =
       formDetails?.SeedLab?.lab_test_report?.germination?.capacity || "";
     const purity =
       formDetails?.SeedLab?.lab_test_report?.purity?.pure_seed || "";
-    const weight = formDetails?.seed_label_package || "";
+    const packageMatch =
+      packages.find((pkg) => pkg.name === formDetails?.seed_label_package) ||
+      packages.find(
+        (pkg) =>
+          `${pkg.name} - ${pkg.packageSizeKg}kg @ ${pkg.priceUgx} UGX` ===
+          formDetails?.seed_label_package,
+      );
+    const packageSize =
+      packageMatch?.packageSizeKg ||
+      parsePackageSize(formDetails?.seed_label_package);
+    const weight = packageSize ? `${packageSize} kg` : formDetails?.seed_label_package || "";
     const seedClass = formDetails?.SeedLab?.seed_class || "CERTIFIED SEED";
     const labelNumber = String(formDetails?.id ?? "").padStart(6, "0");
 
@@ -149,12 +199,16 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       <section class="tag">
         <div class="dotmatrix">
           <div class="header">${seedClass}</div>
+<<<<<<< Updated upstream
+=======
+          <div class="tag-number">${String(index + 1).padStart(4, "0")}</div>
+>>>>>>> Stashed changes
           <div class="main-grid">
             <div class="left-col">
               <div class="row"><div class="label">CROP:</div><div class="value">${crop}</div></div>
               <div class="row"><div class="label">VARIETY:</div><div class="value">${variety}</div></div>
               <div class="row"><div class="label">LOT No.:</div><div class="value">${lot_number}</div></div>
-              <div class="row"><div class="label">INSPECTION No.:</div><div class="value">${labelNumber}</div></div>
+              <div class="row"><div class="label">INSPECTION No.:</div><div class="value">${String(index + 1).padStart(4, "0")}</div></div>
               <div class="row"><div class="label">CERT DATE:</div><div class="value">${cert_date}</div></div>
               <div class="row"><div class="label">COMPANY:</div><div class="value">${applicantName}</div></div>
               <div class="row"><div class="label">PHYSICAL ADDRESS:</div><div class="value">${address}</div></div>
@@ -176,8 +230,11 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       </section>`;
 
     const quantity = Number(formDetails?.quantity) || 0;
-    const packageSize = parsePackageSize(formDetails?.seed_label_package);
-    const labelCount = packageSize > 0 ? Math.floor(quantity / packageSize) : 0;
+    const labelsPerPackage = packageMatch?.labelsPerPackage || 1;
+    const labelCount =
+      packageSize > 0
+        ? Math.floor(quantity / packageSize) * labelsPerPackage
+        : 0;
 
     const labelMarkup = Array.from({ length: Math.max(1, labelCount) })
       .map((_, idx) => labelCard(idx))
@@ -203,6 +260,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             gap: 16px;
           }
 
+<<<<<<< Updated upstream
           .tag {
             width: 720px;
             height: 320px;
@@ -215,6 +273,20 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             border-radius: 8px;
             page-break-inside: avoid;
           }
+=======
+      .tag {
+        width: 720px;
+        height: 320px;
+        background: #f5f0e1;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f5f0e1"/><path d="M0,0 Q50,20 100,0 L100,100 L0,100 Z" fill="%23e8e0d5" opacity="0.3"/></svg>');
+        background-size: 100px 100px;
+        padding: 16px 28px 52px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        position: relative;
+        border-radius: 8px;
+        page-break-inside: avoid;
+      }
+>>>>>>> Stashed changes
 
           @font-face {
             font-family: "DotMatrix";
@@ -242,6 +314,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             font-size: 18px;
           }
 
+<<<<<<< Updated upstream
           .main-grid {
             display: grid;
             grid-template-columns: minmax(0, 1fr) 180px 110px;
@@ -249,11 +322,22 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             margin-top: 12px;
             column-gap: 12px;
           }
+=======
+      .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 180px 110px;
+        align-items: start;
+        margin-top: 12px;
+        column-gap: 12px;
+        row-gap: 4px;
+      }
+>>>>>>> Stashed changes
 
           .left-col {
             font-size: 18px;
           }
 
+<<<<<<< Updated upstream
           .row {
             display: flex;
             margin: 6px 0;
@@ -282,6 +366,50 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
           .right-item span:nth-child(2) {
             font-weight: normal;
           }
+=======
+      .row {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        column-gap: 10px;
+        margin: 4px 0;
+      }
+
+      .label {
+        white-space: nowrap;
+      }
+
+      .value {
+        font-weight: normal;
+          white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .right-col {
+        font-size: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 2px;
+      }
+
+      .right-item {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        column-gap: 6px;
+        align-items: start;
+      }
+
+      .right-item span:first-child {
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .right-item span:nth-child(2) {
+        font-weight: normal;
+       white-space: normal;
+        overflow-wrap: anywhere;
+      }
+>>>>>>> Stashed changes
 
           .qr-col {
             display: flex;
@@ -305,6 +433,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             letter-spacing: 1px;
           }
 
+<<<<<<< Updated upstream
           .bottom {
             position: absolute;
             bottom: 18px;
@@ -315,6 +444,18 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             letter-spacing: 2px;
             transform: translateY(6px);
           }
+=======
+      .bottom {
+        position: absolute;
+        bottom: 14px;
+        width: 100%;
+        left: 0;
+        text-align: center;
+        font-size: 16px;
+        letter-spacing: 2px;
+        transform: translateY(6px);
+      }
+>>>>>>> Stashed changes
 
           @media print {
             body {

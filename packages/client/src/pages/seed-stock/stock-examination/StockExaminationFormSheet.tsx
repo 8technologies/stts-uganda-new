@@ -7,6 +7,15 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { KeenIcon } from "@/components";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   LOAD_CROP_DECLARATIONS,
   LOAD_IMPORT_PERMITS,
@@ -14,7 +23,6 @@ import {
   LOAD_IMPORT_PERMIT,
   LOAD_STOCK_EXAMINATIONS,
 } from "@/gql/queries";
-import { useAuthContext } from "@/auth";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { CREATE_STOCKEXAMINATION } from "@/gql/mutations";
 import { toast } from "sonner";
@@ -57,32 +65,25 @@ const StockExaminationFormSheet: React.FC<Props> = ({
     null,
   );
   const [saving, setSaving] = useState(false);
+  const seedTypeLabel =
+    seedType === "Import_seed"
+      ? "Imported seed"
+      : seedType === "Grower_seed"
+        ? "Grower seed"
+        : "QDS seed";
 
   const LIST_VARS = { filter: {} } as const;
-  const {
-    data: cropDeclarations,
-    loading,
-    error,
-    refetch,
-  } = useQuery(LOAD_CROP_DECLARATIONS, {
+  const { data: cropDeclarations } = useQuery(LOAD_CROP_DECLARATIONS, {
     variables: LIST_VARS,
   });
 
   const RETURN_VARS = { filter: { status: "approved" } } as const;
-  const {
-    data: returns,
-    loading: returnLoading,
-    error: returnError,
-  } = useQuery(LOAD_PLANTING_RETURNS, {
+  const { data: returns } = useQuery(LOAD_PLANTING_RETURNS, {
     variables: RETURN_VARS,
   });
 
   const PERMIT_VARS = { filter: { type: "import" as const } } as const;
-  const {
-    data: listData,
-    loading: listLoading,
-    error: listError,
-  } = useQuery(LOAD_IMPORT_PERMITS, {
+  const { data: listData } = useQuery(LOAD_IMPORT_PERMITS, {
     variables: PERMIT_VARS,
   });
 
@@ -100,7 +101,6 @@ const StockExaminationFormSheet: React.FC<Props> = ({
     [listData],
   );
 
-  console.log("mockImportPermits:", mockImportPermits, listData);
   // derive the currently selected QDS declaration object and its varieties/crops
   const currentQdsDeclaration = useMemo(
     () =>
@@ -139,8 +139,6 @@ const StockExaminationFormSheet: React.FC<Props> = ({
     },
   );
 
-  console.log("importPermitData:", importPermitData);
-
   // Get varieties from the import permit items
   const importVarieties = useMemo(() => {
     if (!importPermitData?.importPermit?.items) return [];
@@ -153,8 +151,6 @@ const StockExaminationFormSheet: React.FC<Props> = ({
 
   //   const mockVarieties = useMemo(() => (selectedQdsDeclaration?.varieties?.items ?? []) as any[], [cropDeclarations]);
 
-  console.log("mockQdsDeclarations:", mockQdsDeclarations);
-  console.log("selectedQdsDeclaration:", selectedQdsDeclaration);
   //   const mockVarieties = cropDeclarations?.varieties?.items
 
   useEffect(() => {
@@ -375,21 +371,18 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                     icon: "package",
                     label: "Imported",
                     desc: "Foreign seed",
-                    color: "from-blue-500 to-blue-600",
                   },
                   {
                     type: "Grower_seed",
                     icon: "field",
                     label: "Grower",
                     desc: "Local grower",
-                    color: "from-green-500 to-green-600",
                   },
                   {
                     type: "QDS_seed",
                     icon: "file-text",
                     label: "QDS",
                     desc: "Quality declared",
-                    color: "from-amber-500 to-amber-600",
                   },
                 ].map((btn) => {
                   const isActive = seedType === btn.type;
@@ -398,35 +391,36 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                       key={btn.type}
                       type="button"
                       onClick={() => setSeedType(btn.type as SeedType)}
-                      className={`group relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 
-                        ${
-                          isActive
-                            ? `border-transparent bg-gradient-to-r ${btn.color} text-white shadow-lg scale-[1.02]`
-                            : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm text-gray-900"
-                        }`}
+                      className={`group relative flex items-center gap-3 p-4 rounded-xl border transition-all duration-150 ${
+                        isActive
+                          ? "border-primary-300 bg-primary-50 shadow-sm"
+                          : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm"
+                      }`}
                       aria-pressed={isActive}
                     >
                       <div
-                        className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200
-                          ${isActive ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"}
-                        `}
+                        className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-150 ${
+                          isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                        }`}
                       >
                         <KeenIcon icon={btn.icon} />
                       </div>
                       <div className="flex-1 text-left">
                         <div
-                          className={`font-semibold ${isActive ? "text-white" : "text-gray-900"}`}
+                          className={`font-semibold ${isActive ? "text-primary-700" : "text-gray-900"}`}
                         >
                           {btn.label}
                         </div>
                         <div
-                          className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"} mt-0.5`}
+                          className={`text-xs ${isActive ? "text-primary-600" : "text-gray-500"} mt-0.5`}
                         >
                           {btn.desc}
                         </div>
                       </div>
                       {isActive && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-white text-primary-600 rounded-full flex items-center justify-center">
+                        <div className="absolute top-2 right-2 w-5 h-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
                           <KeenIcon icon="check" className="text-sm" />
                         </div>
                       )}
@@ -438,12 +432,22 @@ const StockExaminationFormSheet: React.FC<Props> = ({
 
             {/* Form Fields Card */}
             <div className="bg-white rounded-lg border p-5 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <KeenIcon icon="document" className="text-gray-400" />
-                Examination Details
-              </h3>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                  <KeenIcon icon="document" className="text-gray-400" />
+                  Examination Details
+                </h3>
+                <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  {seedTypeLabel}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mb-4">
+                Provide the details required for the selected examination
+                category.
+              </p>
 
-              <div className="space-y-5">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {/* Imported */}
                 {seedType === "Import_seed" && (
                   <>
@@ -452,32 +456,25 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Import Permit
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="document" />
-                        </div>
-                        <select
-                          className="form-select w-full pl-10 pr-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={selectedImportPermit ?? ""}
-                          onChange={(e) => {
-                            const val = e.target.value || null;
-                            setSelectedImportPermit(val);
-                            // reset selected variety when permit changes
-                            setSelectedVarietyImported(null);
-                          }}
-                          required
-                        >
-                          <option value="">Choose import permit</option>
+                      <Select
+                        value={selectedImportPermit ?? ""}
+                        onValueChange={(value) => {
+                          const next = value || null;
+                          setSelectedImportPermit(next);
+                          setSelectedVarietyImported(null);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose import permit" />
+                        </SelectTrigger>
+                        <SelectContent>
                           {mockImportPermits.map((p) => (
-                            <option key={p.id} value={p.id}>
+                            <SelectItem key={p.id} value={String(p.id)}>
                               {p.countryOfOrigin || p.permitNumber || p.label}
-                            </option>
+                            </SelectItem>
                           ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                          <KeenIcon icon="chevron-down" />
-                        </div>
-                      </div>
+                        </SelectContent>
+                      </Select>
                       <p className="text-xs text-gray-500 mt-1.5 flex items-start gap-1">
                         <KeenIcon icon="information" className="mt-0.5" />
                         <span>
@@ -491,34 +488,30 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Variety
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="category" />
-                        </div>
-                        <select
-                          className="form-select w-full pl-10 pr-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={selectedVarietyImported ?? ""}
-                          onChange={(e) =>
-                            setSelectedVarietyImported(e.target.value || null)
-                          }
-                          disabled={importPermitLoading}
-                          required
-                        >
-                          <option value="">
-                            {importPermitLoading
-                              ? "Loading varieties..."
-                              : "Choose variety"}
-                          </option>
+                      <Select
+                        value={selectedVarietyImported ?? ""}
+                        onValueChange={(value) =>
+                          setSelectedVarietyImported(value || null)
+                        }
+                        disabled={importPermitLoading || !selectedImportPermit}
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={
+                              importPermitLoading
+                                ? "Loading varieties..."
+                                : "Choose variety"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
                           {importVarieties.map((v) => (
-                            <option key={v.id} value={v.id}>
+                            <SelectItem key={v.id} value={String(v.id)}>
                               {v.name} ({v.cropName})
-                            </option>
+                            </SelectItem>
                           ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                          <KeenIcon icon="chevron-down" />
-                        </div>
-                      </div>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div>
@@ -526,19 +519,13 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Mother Lot Number
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="hash" />
-                        </div>
-                        <input
-                          type="text"
-                          className="form-input w-full pl-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={motherLot}
-                          onChange={(e) => setMotherLot(e.target.value)}
-                          placeholder="Enter mother lot number"
-                          required
-                        />
-                      </div>
+                      <Input
+                        type="text"
+                        value={motherLot}
+                        onChange={(e) => setMotherLot(e.target.value)}
+                        placeholder="Enter mother lot number"
+                        required
+                      />
                     </div>
                   </>
                 )}
@@ -551,29 +538,23 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Approved Field
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="field" />
-                        </div>
-                        <select
-                          className="form-select w-full pl-10 pr-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={selectedApprovedField ?? ""}
-                          onChange={(e) =>
-                            setSelectedApprovedField(e.target.value || null)
-                          }
-                          required
-                        >
-                          <option value="">Choose approved field</option>
+                      <Select
+                        value={selectedApprovedField ?? ""}
+                        onValueChange={(value) =>
+                          setSelectedApprovedField(value || null)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose approved field" />
+                        </SelectTrigger>
+                        <SelectContent>
                           {mockApprovedFields.map((f) => (
-                            <option key={f.id} value={f.id}>
+                            <SelectItem key={f.id} value={String(f.id)}>
                               {f.fieldName}
-                            </option>
+                            </SelectItem>
                           ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                          <KeenIcon icon="chevron-down" />
-                        </div>
-                      </div>
+                        </SelectContent>
+                      </Select>
                       <p className="text-xs text-gray-500 mt-1.5 flex items-start gap-1">
                         <KeenIcon icon="information" className="mt-0.5" />
                         <span>Field where the seed sample originated</span>
@@ -585,19 +566,13 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Mother Lot Number
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="hash" />
-                        </div>
-                        <input
-                          type="text"
-                          className="form-input w-full pl-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={motherLot}
-                          onChange={(e) => setMotherLot(e.target.value)}
-                          placeholder="Enter mother lot number"
-                          required
-                        />
-                      </div>
+                      <Input
+                        type="text"
+                        value={motherLot}
+                        onChange={(e) => setMotherLot(e.target.value)}
+                        placeholder="Enter mother lot number"
+                        required
+                      />
                     </div>
                   </>
                 )}
@@ -610,32 +585,25 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         QDS Declaration
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="file-text" />
-                        </div>
-                        <select
-                          className="form-select w-full pl-10 pr-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={selectedQdsDeclaration ?? ""}
-                          onChange={(e) => {
-                            const val = e.target.value || null;
-                            setSelectedQdsDeclaration(val);
-                            // reset selected variety when declaration changes
-                            setSelectedVarietyQds(null);
-                          }}
-                          required
-                        >
-                          <option value="">Choose QDS declaration</option>
+                      <Select
+                        value={selectedQdsDeclaration ?? ""}
+                        onValueChange={(value) => {
+                          const next = value || null;
+                          setSelectedQdsDeclaration(next);
+                          setSelectedVarietyQds(null);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose QDS declaration" />
+                        </SelectTrigger>
+                        <SelectContent>
                           {mockQdsDeclarations.map((q) => (
-                            <option key={q.id} value={q.id}>
+                            <SelectItem key={q.id} value={String(q.id)}>
                               {q.source_of_seed}
-                            </option>
+                            </SelectItem>
                           ))}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                          <KeenIcon icon="chevron-down" />
-                        </div>
-                      </div>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div>
@@ -643,19 +611,17 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Variety
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="category" />
-                        </div>
-                        <select
-                          className="form-select w-full pl-10 pr-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={selectedVarietyQds ?? ""}
-                          onChange={(e) =>
-                            setSelectedVarietyQds(e.target.value || null)
-                          }
-                          required
-                        >
-                          <option value="">Choose variety</option>
+                      <Select
+                        value={selectedVarietyQds ?? ""}
+                        onValueChange={(value) =>
+                          setSelectedVarietyQds(value || null)
+                        }
+                        disabled={!selectedQdsDeclaration}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose variety" />
+                        </SelectTrigger>
+                        <SelectContent>
                           {qdsVarieties.map((v: any) => {
                             const id =
                               v.variety_id ?? v.varietyId ?? v.id ?? v.value;
@@ -666,16 +632,13 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                               v.label ??
                               String(id);
                             return (
-                              <option key={id} value={id}>
+                              <SelectItem key={id} value={String(id)}>
                                 {label}
-                              </option>
+                              </SelectItem>
                             );
                           })}
-                        </select>
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                          <KeenIcon icon="chevron-down" />
-                        </div>
-                      </div>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div>
@@ -683,29 +646,22 @@ const StockExaminationFormSheet: React.FC<Props> = ({
                         <span className="text-red-500 mr-1">*</span>
                         Mother Lot Number
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                          <KeenIcon icon="hash" />
-                        </div>
-                        <input
-                          type="text"
-                          className="form-input w-full pl-10 h-11 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          value={motherLot}
-                          onChange={(e) => setMotherLot(e.target.value)}
-                          placeholder="Enter mother lot number"
-                          required
-                        />
-                      </div>
+                      <Input
+                        type="text"
+                        value={motherLot}
+                        onChange={(e) => setMotherLot(e.target.value)}
+                        placeholder="Enter mother lot number"
+                        required
+                      />
                     </div>
                   </>
                 )}
 
-                <div>
+                <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Remarks
                   </label>
-                  <textarea
-                    className="form-textarea w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+                  <Textarea
                     rows={4}
                     value={remarks}
                     onChange={(e) => setRemarks(e.target.value)}

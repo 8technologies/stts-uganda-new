@@ -82,22 +82,19 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
       setCurrentUser(u);
     } catch (e) {
-      // Only clear auth if it's an authentication error (401, invalid token)
-      // Network errors and other issues should not cause logout
-      const error = e as any;
+      const authErrorCodes = ["UNAUTHENTICATED", "UNAUTHORIZED"];
+      const gqlCodes =
+        (e as any)?.graphQLErrors?.map((err: any) => err?.extensions?.code) ||
+        [];
+      const message = String((e as any)?.message || "");
       const isAuthError =
-        error?.message?.includes("Invalid") ||
-        error?.message?.includes("Unauthorized") ||
-        error?.message?.includes("UNAUTHENTICATED");
+        gqlCodes.some((code: string) => authErrorCodes.includes(code)) ||
+        /invalid|expired|access denied|unauthori/i.test(message);
 
+      // Only clear auth when token is actually invalid; avoid logging out on transient errors.
       if (isAuthError) {
-        // If token is explicitly invalid, clear auth so the app redirects
         saveAuth(undefined);
         setCurrentUser(undefined);
-      } else {
-        // For other errors (network, etc), keep auth and try to load user data
-        console.warn("Verify error (keeping auth):", error);
-        // Optionally retry or just keep the current user data
       }
     }
   };

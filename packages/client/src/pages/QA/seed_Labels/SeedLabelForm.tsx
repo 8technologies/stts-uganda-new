@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,8 +16,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { FieldLabel } from "../seedLabs/blocks/SeedLabTest";
-import { useLazyQuery, useQuery } from "@apollo/client/react";
-import { LOAD_SEED_LABS, SEEDLABELPACKAGES } from "@/gql/queries";
+import { useQuery } from "@apollo/client/react";
+import { LOAD_SEED_LABEL_PACKAGES, LOAD_SEED_LABS } from "@/gql/queries";
 import { SeedLabInspection } from "../seedLabs/MySeedLabsForms";
 import { URL_2 } from "@/config/urls";
 
@@ -52,92 +52,30 @@ const SeedLabelForm = ({
   );
   const [cropId, setCropId] = useState<string >("");
 
-  const [loadseedlabelpackages] = useLazyQuery(SEEDLABELPACKAGES);
-  const [packagesStore, setPackageStore] = useState<
-      Record<
-        string,
-        {
-          items: { id: string; crop_id: string, quantity:string, price:string, units:string }[];
-          loading?: boolean;
-          error?: string;
-        }
-      >
-    >
-  ({});
-
-  console.log("packagesStore", packagesStore);
-  console.log("initial data ", initialData );
-  console.log("seed label package... ", seedLabelPackage, labTestNumber, initialData?.seed_label_package );
-  const { data, loading, error, refetch } = useQuery(LOAD_SEED_LABS);
+  const { data, loading, error } = useQuery(LOAD_SEED_LABS);
   const allInspections = (data?.getLabInspections || []) as SeedLabInspection[];
-// const labelpackages = (data?.getSeedLabelPackages || []) as any[];
-
-
-  const fetchlabelpackages = async (labTestId: string) => {
-    const inspection = allInspections.find(i => i.id === labTestId);
-
-     setCropId(inspection?.variety.cropId);
-    console.log("fetchlabelpackages", labTestId, cropId, inspection);
-    if (!labTestId) return;
-    setPackageStore((prev) => ({
-      ...prev,
-      [labTestId]: {
-        ...(prev[labTestId] || {}),
-        loading: true,
-        error: undefined,
-        items: prev[cropId]?.items || [],
-      },
-    }));
-    try {
-      const res = await loadseedlabelpackages({ variables: {cropId: cropId } });
-
-      const items = ((res.data?.getSeedLabelPackages || []) as any[]).map((v) => ({
-        id: String(v.id),
-        crop_id: v.crop_id,
-        quantity: v.quantity,
-        price: v.price,
-        units: v.Crop?.units,
-
-      }));
-      setPackageStore((prev) => ({
-        ...prev,
-        [labTestId]: { items, loading: false, error: undefined },
-      }));
-    } catch (e: any) {
-      setPackageStore((prev) => ({
-        ...prev,
-        [labTestId]: {
-          items: prev[cropId]?.items || [],
-          loading: false,
-          error: e?.message || "Failed to load varieties",
-        },
-      }));
-    }
-  }
-
-  useEffect(() => {
-    if (open) {
-      setLabTestNumber(initialData?.seed_lab_id || "");
-      setSeedLabelPackage(initialData?.seed_label_package as string || "",)
-      setQuantity(initialData?.quantity || 0);
-      setThumbnailImage(null); // reset new file
-      setExistingThumbnail(initialData?.image_url || initialData?.image_id || null);
-      setRemarks(initialData?.applicant_remark || "");
-      setReceipt(null); // reset new file
-      setExistingReceipt(initialData?.receipt_url || initialData?.receipt_id || null);
-      
-      // If a crop is preselected (edit mode), ensure its varieties are loaded
-      const cid = labTestNumber || initialData?.seed_lab_id;
-      console.log("useEffect open", cid);
-
-      if (cid) fetchlabelpackages(String(cid));
-    }
-  }, [open, initialData]);
-
-  const labelpackageOptions = useMemo(
-      () => (labTestNumber ? packagesStore[labTestNumber]?.items || [] : []),
-      [labTestNumber, packagesStore],
-    );
+  const {
+    data: packagesData,
+    loading: packagesLoading,
+    error: packagesError,
+  } = useQuery(LOAD_SEED_LABEL_PACKAGES, { variables: { activeOnly: true } });
+  const packages = useMemo(
+    () => (packagesData?.seedLabelPackages ?? []) as any[],
+    [packagesData],
+  );
+  const formatPackageLabel = (pkg: any) =>
+    `${pkg.name} - ${pkg.packageSizeKg}kg @ ${pkg.priceUgx} UGX`;
+  const selectedPackage =
+    packages.find((pkg) => pkg.name === seedLabelPackage) ||
+    packages.find((pkg) => formatPackageLabel(pkg) === seedLabelPackage);
+  const packageSize = Number(selectedPackage?.packageSizeKg || 0);
+  const labelsPerPackage = Number(selectedPackage?.labelsPerPackage || 1);
+  const labelCount =
+    packageSize > 0
+      ? Math.floor(Number(quantity || 0) / packageSize) * labelsPerPackage
+      : 0;
+  const totalCost = selectedPackage ? labelCount * selectedPackage.priceUgx : 0;
+  const formattedTotal = new Intl.NumberFormat("en-UG").format(totalCost);
 
   const handleSubmit = () => {
     const data = {
@@ -192,22 +130,31 @@ const SeedLabelForm = ({
             <FieldLabel required>Seed Label Package</FieldLabel>
             <Select
               value={seedLabelPackage}
-              onValueChange={(v) => {setSeedLabelPackage(v)}}
+              onValueChange={setSeedLabelPackage}
+              disabled={packagesLoading || !!packagesError}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select Seed label package" />
+                <SelectValue
+                  placeholder={
+                    packagesLoading
+                      ? "Loading packages..."
+                      : "Select seed label package"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                {labelpackageOptions.map((v) => (
-                      <SelectItem key={v.id} value={v.id}>
-                        {v.quantity}{v.units} @ {v.price} UGX
-                      </SelectItem>
+                {packages.map((pkg) => (
+                  <SelectItem key={pkg.id} value={pkg.name}>
+                    {formatPackageLabel(pkg)}
+                  </SelectItem>
                 ))}
-                {/* <SelectItem value="2kgs">2 Kgs @ 2000 UGX</SelectItem>
-                <SelectItem value="5kgs">5 Kgs @ 5000 UGX</SelectItem> */}
-                {/* Add more options dynamically if needed */}
               </SelectContent>
             </Select>
+            {packagesError && (
+              <p className="text-xs text-danger mt-1">
+                Failed to load label packages.
+              </p>
+            )}
           </div>
 
           <div>
@@ -223,6 +170,22 @@ const SeedLabelForm = ({
               The quantity entered shouldn't be more than the quantity you have
               in stock.
             </p>
+            {selectedPackage && (
+              <div className="mt-3 rounded-md border bg-gray-50 px-3 py-2 text-xs text-gray-600 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span>Estimated labels</span>
+                  <span className="font-medium text-gray-900">
+                    {labelCount || "-"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Estimated total</span>
+                  <span className="font-medium text-gray-900">
+                    {formattedTotal} UGX
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* <div>

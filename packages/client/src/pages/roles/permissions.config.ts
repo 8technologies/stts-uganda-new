@@ -202,6 +202,10 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: "can_view_crops", label: "Can View Crops" },
       { id: "can_edit_crops", label: "Can Edit Crops" },
       { id: "can_delete_crops", label: "Can Delete Crops" },
+      {
+        id: "can_manage_seed_label_packages",
+        label: "Can Manage Seed Label Packages",
+      },
     ],
   },
 ];

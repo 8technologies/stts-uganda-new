@@ -1,18 +1,32 @@
-import React, { useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { KeenIcon } from '@/components';
-import { toast } from 'sonner';
-import { useAuthContext } from '@/auth';
-import { getPermissionsFromToken } from '@/utils/permissions';
-import StockExaminationFormSheet from './StockExaminationFormSheet';
-import StockExaminationDetailsSheet from './StockExaminationDetailsSheet';
-import { LOAD_INSPECTORS, LOAD_STOCK_EXAMINATIONS } from '@/gql/queries';
-import { ASSIGN_STOCK_EXAMINATION_INSPECTOR } from '@/gql/mutations';
-import StockInspectionSheet from './StockExamInspection';
-import { URL_2 } from '@/config/urls';
-import { _formatDate } from '@/utils/Date';
+import React, { useMemo, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { KeenIcon } from "@/components";
+import { Container } from "@/components/container";
+import {
+  Toolbar,
+  ToolbarActions,
+  ToolbarDescription,
+  ToolbarHeading,
+  ToolbarPageTitle,
+} from "@/partials/toolbar";
+import { toast } from "sonner";
+import { useAuthContext } from "@/auth";
+import { getPermissionsFromToken } from "@/utils/permissions";
+import StockExaminationFormSheet from "./StockExaminationFormSheet";
+import StockExaminationDetailsSheet from "./StockExaminationDetailsSheet";
+import { LOAD_INSPECTORS, LOAD_STOCK_EXAMINATIONS } from "@/gql/queries";
+import { ASSIGN_STOCK_EXAMINATION_INSPECTOR } from "@/gql/mutations";
+import StockInspectionSheet from "./StockExamInspection";
 
 interface StockExam {
   id: string;
@@ -96,7 +110,6 @@ export const statusBadge = (s: string) => {
 };
 
 export const seedCategory = (s: string) => {
-  console.log("seedCategory input:", s);
   if (s == "Grower_seed") {
     return "Grower seed";
   } else if (s == "Import_seed") {
@@ -119,6 +132,12 @@ const StockExamination: React.FC = () => {
     error: examErrors,
     refetch,
   } = useQuery(LOAD_STOCK_EXAMINATIONS);
+  const listErrorMessage = examErrors?.graphQLErrors?.length
+    ? examErrors.graphQLErrors.map((err) => err.message).join(", ")
+    : examErrors?.networkError?.message ??
+      examErrors?.message ??
+      "Unknown error";
+  const listErrorCode = examErrors?.graphQLErrors?.[0]?.extensions?.code;
 
   // const [items, setItems] = useState<StockExam[]>(examinations?.stockExaminations || []);
   const items = useMemo(
@@ -126,7 +145,6 @@ const StockExamination: React.FC = () => {
     [examinations],
   );
 
-  console.log("StockExaminations data:", examinations, items);
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null);
 
   const [createOpen, setCreateOpen] = useState(false);
@@ -435,331 +453,382 @@ const StockExamination: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
-      {/* Page Header */}
-      <div className="bg-white border-b px-6 py-4">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
-              Stock Examination
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Returns:{" "}
-              <span className="font-medium text-gray-900">
-                {filteredItems.length}
-              </span>{" "}
-              · Showing latest
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => setCreateOpen(true)}
-              className="gap-2 bg-green-600 hover:bg-green-700"
-            >
-              <KeenIcon icon="plus" />
-              Add Return
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Toolbar */}
-      <div className="bg-white border-b px-6 py-3">
-        <div className="flex items-center justify-between gap-4">
-          <div className="text-sm font-medium text-gray-700">
-            Showing {filteredItems.length} returns
-          </div>
-
-          <div className="flex-1 max-w-md">
-            <div className="relative">
-              <KeenIcon
-                icon="magnifier"
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Search returns"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {selectedIds.length > 0 && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">
-                  Selected:{" "}
-                  <strong className="text-gray-900">
-                    {selectedIds.length}
-                  </strong>
+    <div className="flex flex-col gap-5">
+      <Container>
+        <Toolbar>
+          <ToolbarHeading>
+            <ToolbarPageTitle text="Stock Examination" />
+            <ToolbarDescription>
+              <span className="text-gray-700">Returns:</span>
+              {examinationsLoading ? (
+                <Skeleton className="h-4 w-10" />
+              ) : (
+                <span className="font-medium text-gray-900">
+                  {filteredItems.length}
                 </span>
-                <div className="w-px h-6 bg-gray-300"></div>
+              )}
+              <span className="text-gray-500">Showing latest</span>
+            </ToolbarDescription>
+          </ToolbarHeading>
+          <ToolbarActions>
+            <Button size="sm" onClick={() => setCreateOpen(true)}>
+              <KeenIcon icon="plus" />
+              Create Stock Examination
+            </Button>
+          </ToolbarActions>
+        </Toolbar>
+      </Container>
+
+      <Container>
+        <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col gap-4 lg:flex-row lg:items-center">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+            <span className="font-medium text-gray-700">
+              Showing {filteredItems.length} returns
+            </span>
+            {selectedIds.length > 0 && (
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary-600" />
+                {selectedIds.length} selected
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+            <div className="w-full sm:max-w-md">
+              <div className="relative">
+                <KeenIcon
+                  icon="magnifier"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+                <Input
+                  type="text"
+                  placeholder="Search returns"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            {canAssignInspector && (
+              <div className="flex flex-wrap items-center gap-2">
+                <Select
+                  value={inspector}
+                  onValueChange={setInspector}
+                  disabled={inspectorsLoading || !!inspectorsError}
+                >
+                  <SelectTrigger className="w-56 h-9 rounded-lg border-gray-300">
+                    <SelectValue
+                      placeholder={
+                        inspectorsLoading ? "Loading…" : "Choose inspector"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {inspectorsData?.inspectors?.map((ins: any) => (
+                      <SelectItem key={ins.id} value={ins.id}>
+                        {ins.name ||
+                          ins.username ||
+                          ins.company_initials ||
+                          "Unknown"}
+                        {ins.district ? ` (${ins.district})` : ""}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  size="sm"
+                  onClick={handleAssign}
+                  disabled={
+                    inspectorsLoading ||
+                    assigning ||
+                    !inspector ||
+                    selectedIds.length === 0
+                  }
+                >
+                  <KeenIcon icon="tick-square" />
+                  Assign Inspector
+                </Button>
               </div>
             )}
-
-            <Select
-              value={inspector}
-              onValueChange={setInspector}
-              disabled={inspectorsLoading || !!inspectorsError}
-            >
-              <SelectTrigger className="w-56 h-9 rounded-lg border-gray-300">
-                <SelectValue
-                  placeholder={
-                    inspectorsLoading ? "Loading…" : "Choose inspector"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {inspectorsData?.inspectors?.map((ins: any) => (
-                  <SelectItem key={ins.id} value={ins.id}>
-                    {ins.name ||
-                      ins.username ||
-                      ins.company_initials ||
-                      "Unknown"}
-                    {ins.district ? ` (${ins.district})` : ""}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button
-              size="sm"
-              onClick={handleAssign}
-              disabled={!canAssignInspector || inspectorsLoading}
-              className="bg-green-600 hover:bg-green-700 text-white gap-2 h-9"
-            >
-              <KeenIcon icon="tick-square" />
-              Assign Inspector
-            </Button>
           </div>
         </div>
-      </div>
 
-      {/* Table Container */}
-      <div className="flex-1 overflow-auto px-6 py-4">
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="w-12 px-4 py-3">
-                    <input
-                      type="checkbox"
-                      aria-label="select all"
-                      checked={
-                        selectedIds.length > 0 &&
-                        selectedIds.length === filteredItems.length
-                      }
-                      onChange={(e) => toggleSelectAll(e.target.checked)}
-                      className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                    />
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <button className="flex items-center gap-1 hover:text-gray-700">
-                      Created On
-                      <KeenIcon icon="sort" className="text-gray-400" />
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <button className="flex items-center gap-1 hover:text-gray-700">
-                      Created by
-                      <KeenIcon icon="sort" className="text-gray-400" />
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <button className="flex items-center gap-1 hover:text-gray-700">
-                      Category
-                      <KeenIcon icon="sort" className="text-gray-400" />
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <button className="flex items-center gap-1 hover:text-gray-700">
-                      Status
-                      <KeenIcon icon="sort" className="text-gray-400" />
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <button className="flex items-center gap-1 hover:text-gray-700">
-                      Lot Number
-                      <KeenIcon icon="sort" className="text-gray-400" />
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <button className="flex items-center gap-1 hover:text-gray-700">
-                      Inspector
-                      <KeenIcon icon="sort" className="text-gray-400" />
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Examination Report
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredItems.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-4 py-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(row.id)}
-                        onChange={() => toggleSelect(row.id)}
-                        aria-label={`select-${row.id}`}
-                        className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                      />
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-900">
-                      {relativeTime(row.created_at)}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-900">
-                      {row.user?.username}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-900">
-                      {seedCategory(row.category)}
-                    </td>
-                    <td className="px-4 py-4">{statusBadge(row.status)}</td>
-                    <td className="px-4 py-4 text-sm font-medium text-gray-900">
-                      {row.mother_lot}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
-                      {row?.inspector?.username || "—"}
-                    </td>
-                    <td className="px-4 py-4">
-                      {row.status === 'approved' &&  (
-                        <button 
-                          // href={handlePrint(row)}
-                          // onClick={handlePrint(row)}
-                          onClick={() => {
-                                      handlePrint(row);
-                                    }}
-                          className="inline-flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700 hover:underline"
-                        >
-                          Print Report
-                          <KeenIcon icon="printer" className="text-xs" />
-                        </button>
-                      )}
-                      {row.status != 'approved' && (
-                        <span className="text-sm text-gray-400">Unavailable</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-4 relative">
-                      <button
-                        aria-label="actions"
-                        onClick={() =>
-                          setOpenMenuFor(openMenuFor === row.id ? null : row.id)
-                        }
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900"
-                      >
-                        <KeenIcon icon="dots-vertical" />
-                      </button>
-
-                      {openMenuFor === row.id && (
-                        <div
-                          className="absolute right-2 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[160px]"
-                          onMouseLeave={() => setOpenMenuFor(null)}
-                        >
-                          <div className="py-1">
-                            <button
-                              onClick={() => {
-                                setDetailsItem(row);
-                                setOpenMenuFor(null);
-                              }}
-                              className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                            >
-                              <KeenIcon icon="eye" className="text-gray-400" />
-                              Details
-                            </button>
-                            <button
-                              onClick={() => {
-                                setEditItem(row);
-                                setOpenMenuFor(null);
-                              }}
-                              className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                            >
-                              <KeenIcon icon="edit" className="text-gray-400" />
-                              Edit
-                            </button>
-                            <div className="border-t border-gray-100 my-1"></div>
-                            <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                              <KeenIcon icon="trash" className="text-red-500" />
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-
-                {filteredItems.length === 0 && (
-                  <tr>
-                    <td colSpan={9} className="px-4 py-12 text-center">
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                          <KeenIcon
-                            icon="file-search"
-                            className="text-gray-400 text-xl"
-                          />
-                        </div>
-                        <div className="text-sm font-medium text-gray-900">
-                          No records found
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          Try adjusting your search criteria
-                        </div>
+        <div className="mt-4">
+          {examinationsLoading ? (
+            <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-4 w-4" />
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              ))}
+            </div>
+          ) : examErrors ? (
+            <div className="p-6 bg-white rounded-lg border">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full border border-danger-clarity bg-danger-light text-danger">
+                    <KeenIcon icon="information-2" className="text-lg" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-base font-semibold text-gray-900">
+                      Unable to load stock examinations
+                    </div>
+                    <div className="text-sm text-gray-700">
+                      {listErrorMessage}
+                    </div>
+                    {listErrorCode ? (
+                      <div className="text-xs text-gray-500">
+                        Error code: {listErrorCode}
                       </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="light" onClick={() => refetch?.()}>
+                    <KeenIcon icon="arrow-rotate-right" /> Retry
+                  </Button>
+                </div>
+              </div>
+              <div className="mt-4 border-t border-dashed pt-3 text-xs text-gray-600">
+                If you believe this is a mistake, contact your administrator.
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="w-12 px-4 py-3">
+                        <input
+                          type="checkbox"
+                          aria-label="select all"
+                          checked={
+                            selectedIds.length > 0 &&
+                            selectedIds.length === filteredItems.length
+                          }
+                          onChange={(e) => toggleSelectAll(e.target.checked)}
+                          className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                        />
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <button className="flex items-center gap-1 hover:text-gray-700">
+                          Created On
+                          <KeenIcon icon="sort" className="text-gray-400" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <button className="flex items-center gap-1 hover:text-gray-700">
+                          Created by
+                          <KeenIcon icon="sort" className="text-gray-400" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <button className="flex items-center gap-1 hover:text-gray-700">
+                          Category
+                          <KeenIcon icon="sort" className="text-gray-400" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <button className="flex items-center gap-1 hover:text-gray-700">
+                          Status
+                          <KeenIcon icon="sort" className="text-gray-400" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <button className="flex items-center gap-1 hover:text-gray-700">
+                          Lot Number
+                          <KeenIcon icon="sort" className="text-gray-400" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <button className="flex items-center gap-1 hover:text-gray-700">
+                          Inspector
+                          <KeenIcon icon="sort" className="text-gray-400" />
+                        </button>
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Examination Report
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredItems.map((row) => (
+                      <tr
+                        key={row.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="px-4 py-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.includes(row.id)}
+                            onChange={() => toggleSelect(row.id)}
+                            aria-label={`select-${row.id}`}
+                            className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                          />
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900">
+                          {relativeTime(row.created_at)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900">
+                          {row.user?.username}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900">
+                          {seedCategory(row.category)}
+                        </td>
+                        <td className="px-4 py-4">{statusBadge(row.status)}</td>
+                        <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                          {row.mother_lot}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-600">
+                          {row?.inspector?.username || "—"}
+                        </td>
+                        <td className="px-4 py-4">
+                          {row.reportAvailable ? (
+                            <a
+                              href={`/stock/examination/${row.id}/report`}
+                              className="inline-flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700 hover:underline"
+                            >
+                              Print Report
+                              <KeenIcon icon="printer" className="text-xs" />
+                            </a>
+                          ) : (
+                            <span className="text-sm text-gray-400">
+                              Unavailable
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-4 relative">
+                          <button
+                            aria-label="actions"
+                            onClick={() =>
+                              setOpenMenuFor(
+                                openMenuFor === row.id ? null : row.id,
+                              )
+                            }
+                            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900"
+                          >
+                            <KeenIcon icon="dots-vertical" />
+                          </button>
+
+                          {openMenuFor === row.id && (
+                            <div
+                              className="absolute right-2 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[160px]"
+                              onMouseLeave={() => setOpenMenuFor(null)}
+                            >
+                              <div className="py-1">
+                                <button
+                                  onClick={() => {
+                                    setDetailsItem(row);
+                                    setOpenMenuFor(null);
+                                  }}
+                                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                >
+                                  <KeenIcon
+                                    icon="eye"
+                                    className="text-gray-400"
+                                  />
+                                  Details
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setEditItem(row);
+                                    setOpenMenuFor(null);
+                                  }}
+                                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                >
+                                  <KeenIcon
+                                    icon="edit"
+                                    className="text-gray-400"
+                                  />
+                                  Edit
+                                </button>
+                                <div className="border-t border-gray-100 my-1"></div>
+                                <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                  <KeenIcon
+                                    icon="trash"
+                                    className="text-red-500"
+                                  />
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+
+                    {filteredItems.length === 0 && (
+                      <tr>
+                        <td colSpan={9} className="px-4 py-12 text-center">
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                              <KeenIcon
+                                icon="file-search"
+                                className="text-gray-400 text-xl"
+                              />
+                            </div>
+                            <div className="text-sm font-medium text-gray-900">
+                              No records found
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Try adjusting your search criteria
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <div className="bg-white border-t px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <span>Rows per page</span>
+                    <select className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
+
+                  <div className="text-sm text-gray-700">
+                    1 - {filteredItems.length} of {filteredItems.length}
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      <KeenIcon icon="arrow-left" className="text-gray-600" />
+                    </button>
+                    <button className="px-3 py-1.5 rounded-lg bg-primary-600 text-white text-sm font-medium">
+                      1
+                    </button>
+                    <button
+                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      <KeenIcon icon="arrow-right" className="text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-
-      {/* Footer Pagination */}
-      <div className="bg-white border-t px-6 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-gray-700">
-            <span>Rows per page</span>
-            <select className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </div>
-
-          <div className="text-sm text-gray-700">
-            1 - {filteredItems.length} of {filteredItems.length}
-          </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              <KeenIcon icon="arrow-left" className="text-gray-600" />
-            </button>
-            <button className="px-3 py-1.5 rounded-lg bg-primary-600 text-white text-sm font-medium">
-              1
-            </button>
-            <button
-              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
-            >
-              <KeenIcon icon="arrow-right" className="text-gray-600" />
-            </button>
-          </div>
-        </div>
-      </div>
+      </Container>
 
       <StockExaminationFormSheet
         open={createOpen}

@@ -41,7 +41,7 @@ const AccountDetailsEditor = () => {
         name: me.name ?? "",
         company_initials: me.company_initials ?? "",
         phone_number: me.phone_number ?? "",
-        premises_location: me.premises_location,
+        premises_location: me.premises_location ?? "",
         email: me.email ?? "",
         district: me.district ?? "",
         image: me.image ?? "",
@@ -200,6 +200,21 @@ const AccountDetailsEditor = () => {
               
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
+<<<<<<< Updated upstream
+=======
+                  Phone number
+                </label>
+                <Input
+                  type="tel"
+                  value={form.phone_number}
+                  onChange={(e) =>
+                    setForm({ ...form, phone_number: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+>>>>>>> Stashed changes
                   Premises location
                 </label>
                 <Input

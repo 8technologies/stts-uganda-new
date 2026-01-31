@@ -74,6 +74,7 @@ const userTypeDefs = `#graphql
         updateUser(payload: UpdateUserInput!): UserResponse!
         toggleUserStatus(id: ID!): UserResponse!
         resetPassword(id: String!, newPassword: String!): UserResponse!
+        changePassword(currentPassword: String!, newPassword: String!): UserResponse!
         deleteUser(user_id: String!): UserResponse
     }
 `;

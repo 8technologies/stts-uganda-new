@@ -17,6 +17,7 @@ const app = express();
 // enabling our servers to shut down gracefully.
 
 app.use(express.static("public"));
+app.use("/templates", express.static("templates"));
 app.use(cors({ origin: "*" }));
 const httpServer = http.createServer(app);
 
@@ -28,14 +29,50 @@ const escapeHtml = (value = "") =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
+const formatExpiryDate = (date) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = months[date.getMonth()] || "";
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
+const getSeasonAndExpiry = (baseDate) => {
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
+  const isSeasonA = month < 6;
+  const season = `${year}${isSeasonA ? "A" : "B"}`;
+  const expiryDate = isSeasonA
+    ? new Date(year, 11, 31)
+    : new Date(year + 1, 5, 30);
+  return { season, expiry: formatExpiryDate(expiryDate) };
+};
+
 const buildVerificationPage = ({ isValid, message, label }) => {
   const statusClass = isValid ? "status-valid" : "status-invalid";
+  const issuedDate = label?.created_at ? new Date(label.created_at) : new Date();
+  const { season, expiry } = getSeasonAndExpiry(issuedDate);
   const details = label
     ? [
         // ["Label ID", label.id],
         ["Status", label.status?.toUpperCase() ?? "—"],
         ["Crop", label.crop_name ?? "—"],
         ["Variety", label.variety_name ?? "—"],
+        ["Season", season],
+        ["Expiry", expiry],
         ["Quantity", label.quantity ? `${label.quantity} kgs` : "—"],
         ["Package", label.label_package ?? "—"],
         ["Applicant", label.applicant_name ?? label.username ?? "—"],
