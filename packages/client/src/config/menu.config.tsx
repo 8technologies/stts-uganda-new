@@ -179,7 +179,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
         requiredPermissions: [
           getPerm("system_configuration", "can_manage_seed_label_packages"),
         ],
-      }
+      },]
   },
   {
     title: "My Profile",

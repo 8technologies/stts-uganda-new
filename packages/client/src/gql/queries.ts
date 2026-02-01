@@ -785,8 +785,11 @@ const LOAD_SEED_LABELS = gql`
         lot_number
       }
       SeedLabelPackage {
-        quantity
-        price
+        name
+        packageSizeKg
+        labelsPerPackage
+        priceUgx
+        isActive
       }
     }
   }

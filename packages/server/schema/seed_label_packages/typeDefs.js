@@ -1,34 +1,39 @@
 const SeedLabelPackagesTypes = `#graphql
+    scalar DateTime
 
     type SeedLabelPackage {
         id: ID!
-        crop_id: String!
-        quantity: String
-        price: Float!
-        created_at: Date
-        Crop: Crop
+        name: String!
+        packageSizeKg: Float!
+        labelsPerPackage: Int!
+        priceUgx: Int!
+        isActive: Boolean!
+        createdAt: DateTime
+        updatedAt: DateTime
     }
-    input SeedLabelPackageInput{
+
+    input SeedLabelPackageInput {
         id: ID
-        crop_id: ID!
-        quantity: String!
-        price: Float!
+        name: String!
+        packageSizeKg: Float!
+        labelsPerPackage: Int!
+        priceUgx: Int!
+        isActive: Boolean
+    }
+
+    type SeedLabelPackageResponse {
+        success: Boolean!
+        message: String
+        package: SeedLabelPackage
     }
 
     type Query {
-        getSeedLabelPackages(crop_id: ID): [SeedLabelPackage!]!
-        getSeedLabelPackage(id: ID!): SeedLabelPackage
+        seedLabelPackages(activeOnly: Boolean): [SeedLabelPackage!]!
     }
 
     type Mutation {
-        SeedLabelPackage(input: SeedLabelPackageInput!): SeedLabelPackageResponseMessage
-        deleteSeedLabelPackage(id: ID!): SeedLabelPackageResponseMessage
-    }
-
-    type SeedLabelPackageResponseMessage {
-        success: Boolean
-        message: String
-        seedLabelPackage: SeedLabelPackage  
+        saveSeedLabelPackage(input: SeedLabelPackageInput!): SeedLabelPackageResponse!
+        deleteSeedLabelPackage(id: ID!): ResponseMessage!
     }
 `;
 
