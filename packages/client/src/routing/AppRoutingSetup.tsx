@@ -111,6 +111,9 @@ import MySeedLabInspections from "@/pages/QA/seedLabs/MySeedLabsForms";
 import SeedLabInspectionPage from "@/pages/QA/seedLabs/blocks/seedLabInspection";
 import StockLabTestForm from "@/pages/QA/seedLabs/blocks/SeedLabTest";
 import SeedLabelManagementPage from "@/pages/QA/seed_Labels/SeedLabels";
+import MarketableSeed from "@/pages/seed-stock/marketable-seed/MarketableSeed";
+import MarketplacePage from "@/pages/marketplace/products/MarketplacePage";
+import OrdersPage from "@/pages/marketplace/orders/OrdersPage";
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -214,7 +217,6 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />
-          <Route path="/admin/seed-label-packages" element={<SeedLabelPackagesList />} />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />
           <Route path="/admin/users" element={<UsersListPage />} />
           <Route

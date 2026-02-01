@@ -1,125 +1,220 @@
 
 import { GraphQLError } from "graphql";
 import { db } from "../../config/config.js";
-import { fetchCropById } from "../crop/resolvers";
 import saveData from "../../utils/db/saveData.js";
+import checkPermission from "../../helpers/checkPermission.js";
+import hasPermission from "../../helpers/hasPermission.js";
+
+let seedLabelPackageColumns = null;
+
+const loadSeedLabelPackageColumns = async () => {
+  if (seedLabelPackageColumns) {
+    return seedLabelPackageColumns;
+  }
+
+  const [columns] = await db.execute("SHOW COLUMNS FROM seed_label_packages");
+  seedLabelPackageColumns = new Set(columns.map((col) => col.Field));
+  return seedLabelPackageColumns;
+};
+
+const ensureSeedLabelPackageSchema = async () => {
+  const columns = await loadSeedLabelPackageColumns();
+  const required = [
+    "name",
+    "package_size_kg",
+    "labels_per_package",
+    "price_ugx",
+    "is_active",
+  ];
+  const missing = required.filter((col) => !columns.has(col));
+  if (missing.length) {
+    throw new GraphQLError(
+      "Seed label packages table is out of date. Please run packages/server/sql/seed_label_packages.sql to update it."
+    );
+  }
+};
 
 const mapSeedLabelPackagesRow = (row) => {
-    return {    
-        id: row.id?.toString(),
-        crop_id: row.crop_id?.toString(),
-        quantity: row.quantity || null,
-        price: row.price != null ? parseFloat(row.price) : null,
-        created_at: row.created_at ? new Date(row.created_at) : null,
-    };
-}
+  const name =
+    row.name ||
+    (row.crop_id ? `Crop ${row.crop_id}` : `Package ${row.id ?? ""}`.trim());
+  const packageSizeKg =
+    row.package_size_kg != null ? Number(row.package_size_kg) : Number(row.quantity || 0);
+  const labelsPerPackage = row.labels_per_package ?? row.labelsPerPackage ?? 1;
+  const priceUgx =
+    row.price_ugx != null ? Number(row.price_ugx) : Number(row.price || 0);
+  const isActive =
+    row.is_active != null ? Boolean(row.is_active) : !Boolean(row.deleted);
+  return {
+    id: row.id?.toString(),
+    name,
+    packageSizeKg,
+    labelsPerPackage,
+    priceUgx,
+    isActive,
+    createdAt: row.created_at ? new Date(row.created_at) : null,
+    updatedAt: row.updated_at ? new Date(row.updated_at) : null,
+  };
+};
 
 export const fetchSeedLabelPackages = async ({
-    crop_id =null,
-}) => {
-    try{
-        let values = [];
-        let where = '';
+  id = null,
+  activeOnly = false,
+} = {}) => {
+  try {
+    const columns = await loadSeedLabelPackageColumns();
+    const values = [];
+    const where = [];
 
-        if (crop_id) {
-            where += ' AND crop_id = ? ';
-            values.push(crop_id);
-        }
-        const query = `SELECT * FROM seed_label_packages WHERE seed_label_packages.deleted =0 ${where} ORDER BY created_at DESC`;
-        const [rows] = await db.execute(query, values);
-        return rows.map(mapSeedLabelPackagesRow);
-
-    } catch (error) {
-        throw new GraphQLError(error.message);
+    if (id) {
+      where.push("id = ?");
+      values.push(id);
     }
 
+    if (activeOnly) {
+      if (columns.has("is_active")) {
+        where.push("is_active = 1");
+      } else if (columns.has("deleted")) {
+        where.push("deleted = 0");
+      }
+    }
+
+    const clause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+    const query = `SELECT * FROM seed_label_packages ${clause} ORDER BY created_at DESC`;
+    const [rows] = await db.execute(query, values);
+    return rows.map(mapSeedLabelPackagesRow);
+  } catch (error) {
+    throw new GraphQLError(error.message);
+  }
 };
 
 const SeedLabelPackagesResolver = {
-    Query: {
-        getSeedLabelPackages: async (parent, args, context) => {
-            try {
-                const crop_id = args.crop_id;
-                
-                const results = await fetchSeedLabelPackages({
-                    crop_id: crop_id??null,
-                });
+  Query: {
+    seedLabelPackages: async (_parent, args, context) => {
+      try {
+        const userPermissions = context?.req?.user?.permissions || [];
+        const canViewPackages =
+          hasPermission(userPermissions, "can_manage_seed_label_packages") ||
+          hasPermission(userPermissions, "can_manage_seed_labels") ||
+          hasPermission(userPermissions, "can_view_seed_labels") ||
+          hasPermission(userPermissions, "can_print_seed_labels") ||
+          hasPermission(userPermissions, "can_approve_seed_labels");
 
-                return results;
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
+        if (!canViewPackages) {
+          checkPermission(
+            userPermissions,
+            "can_manage_seed_label_packages",
+            "You dont have permissions to view seed label packages"
+          );
         }
+
+        return await fetchSeedLabelPackages({
+          activeOnly: Boolean(args?.activeOnly),
+        });
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
     },
-    SeedLabelPackage: {
-        Crop: async (parent) => {
-            try {
-                const cropId = parent.crop_id;
-                if (!cropId) return null;
+  },
+  Mutation: {
+    saveSeedLabelPackage: async (_parent, args, context) => {
+      try {
+        const userPermissions = context?.req?.user?.permissions || [];
+        checkPermission(
+          userPermissions,
+          "can_manage_seed_label_packages",
+          "You dont have permissions to manage seed label packages"
+        );
 
-                const crop = await fetchCropById(cropId);
-                return crop;
+        await ensureSeedLabelPackageSchema();
 
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
-        }
+        const input = args.input || {};
+        const {
+          id,
+          name,
+          packageSizeKg,
+          labelsPerPackage,
+          priceUgx,
+          isActive,
+        } = input;
+
+        const data = {
+          name,
+          package_size_kg: packageSizeKg,
+          labels_per_package: labelsPerPackage,
+          price_ugx: priceUgx,
+          is_active: isActive == null ? 1 : isActive ? 1 : 0,
+        };
+
+        const saveId = await saveData({
+          table: "seed_label_packages",
+          data,
+          id: id ?? null,
+        });
+
+        return {
+          success: true,
+          message: id
+            ? "Seed label package updated successfully"
+            : "Seed label package created successfully",
+          package: mapSeedLabelPackagesRow({
+            id: id ?? saveId,
+            name: data.name,
+            package_size_kg: data.package_size_kg,
+            labels_per_package: data.labels_per_package,
+            price_ugx: data.price_ugx,
+            is_active: data.is_active,
+            created_at: new Date(),
+            updated_at: new Date(),
+          }),
+        };
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
     },
-    Mutation: {
-        SeedLabelPackage: async (parent, args, context) => {
-            try {
-                const input = args.input;
-                const { id, crop_id, quantity, price } = input;
+    deleteSeedLabelPackage: async (_parent, args, context) => {
+      try {
+        const userPermissions = context?.req?.user?.permissions || [];
+        checkPermission(
+          userPermissions,
+          "can_manage_seed_label_packages",
+          "You dont have permissions to manage seed label packages"
+        );
 
-                const data = {
-                    crop_id,
-                    quantity,
-                    price,
-                };
+        const id = args.id;
 
-                const saveId = await saveData({
-                    table:'seed_label_packages', 
-                    data,
-                    id: id??null,
-                });
-
-                return {
-                    success: true,
-                    message: id ? "Seed Label Package updated successfully" : "Seed Label Package created successfully",
-                    seedLabelPackage: {...data, id: id??saveId},
-                };
-
-
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
-
-        },
-        deleteSeedLabelPackage: async (parent, args, context) => {
-            try {
-
-                const id = args.id;
-
-                const data = {
-                    deleted: 1,
-                };
-                await saveData({
-                    table:'seed_label_packages', 
-                    data,
-                    id,
-                });
-                return {
-                    success: true,
-                    message: "Seed Label Package deleted successfully",
-                };
-
-
-            } catch (error) {
-                throw new GraphQLError(error.message);
-            }
+        const columns = await loadSeedLabelPackageColumns();
+        if (columns.has("is_active")) {
+          await saveData({
+            table: "seed_label_packages",
+            data: {
+              is_active: 0,
+            },
+            id,
+          });
+        } else if (columns.has("deleted")) {
+          await saveData({
+            table: "seed_label_packages",
+            data: {
+              deleted: 1,
+            },
+            id,
+          });
+        } else {
+          await db.execute("DELETE FROM seed_label_packages WHERE id = ?", [
+            id,
+          ]);
         }
-    }
 
-}
+        return {
+          success: true,
+          message: "Seed label package deleted successfully",
+        };
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+  },
+};
 
 export default SeedLabelPackagesResolver;
