@@ -103,11 +103,11 @@ const SeedLabelForm = ({
         <div className="space-y-6">
           <div>
             <FieldLabel required>Lab Test Number</FieldLabel>
-            <Select value={labTestNumber} //onValueChange={setLabTestNumber}
-                onValueChange={(v) => {
-                    setLabTestNumber(v);
-                    fetchlabelpackages(v);
-                  }}
+            <Select
+              value={labTestNumber}
+              onValueChange={(v) => {
+                setLabTestNumber(v);
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select lab test number" />
