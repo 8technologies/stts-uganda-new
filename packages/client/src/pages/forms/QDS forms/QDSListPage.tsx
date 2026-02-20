@@ -137,20 +137,7 @@ const QDSListPage = () => {
                   </div>
                 </ToolbarDescription>
               </ToolbarHeading>
-              <ToolbarActions>
-                {/* <a href="#" className="btn btn-sm btn-light">
-                  Import CSV
-                </a> */}
-                <a
-                  href="#"
-                  onClick={() => {
-                    setCreateOpen(true);
-                  }}
-                  className="btn btn-sm btn-primary"
-                >
-                  {saving ? "Saving…" : "Create Application"}
-                </a>
-              </ToolbarActions>
+              
             </Toolbar>
           </Container>
         )}
