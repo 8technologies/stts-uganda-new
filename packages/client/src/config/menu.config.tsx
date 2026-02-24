@@ -176,8 +176,10 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: "Seed Label Packages",
         path: "/admin/seed-label-packages",
-        requiredPermissions: [
+        requiredAnyPermissions: [
           getPerm("system_configuration", "can_manage_seed_label_packages"),
+          getPerm("quality_assurance", "can_manage_seed_labels"),
+          getPerm("quality_assurance", "can_view_seed_labels"),
         ],
       },]
   },

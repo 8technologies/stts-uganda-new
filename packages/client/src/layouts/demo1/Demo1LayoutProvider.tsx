@@ -94,12 +94,19 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
       // Check requiredPermissions on the item itself, but when inside QA and user is not QA admin,
       // we ignore permissions and rely on attribute-based rules.
       const req: string[] | undefined = (item as any).requiredPermissions;
+      const reqAny: string[] | undefined = (item as any).requiredAnyPermissions;
       let keepSelf = true;
       if (req && req.length > 0) {
         // Only ignore perms inside QA section for non-QA admins
         if (!(underQA && !hasManageAllForms)) {
           const ok = req.every((key) => !!perms[key]);
           keepSelf = keepSelf && ok;
+        }
+      }
+      if (reqAny && reqAny.length > 0) {
+        if (!(underQA && !hasManageAllForms)) {
+          const okAny = reqAny.some((key) => !!perms[key]);
+          keepSelf = keepSelf && okAny;
         }
       }
 

@@ -183,6 +183,8 @@ export interface IMenuItemConfig {
   childrenIndex?: number;
   // Custom: permission keys required to show this item
   requiredPermissions?: string[];
+  // Custom: show when any of these permission keys is present
+  requiredAnyPermissions?: string[];
 }
 
 export type TMenuConfig = IMenuItemConfig[];
