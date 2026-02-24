@@ -1,4 +1,5 @@
 export * from "./Authentification";
+export * from "./ChangePasswordCard";
 export * from "./GeneralSettings";
 export * from "./LoginSessions";
 export * from "./ProductInsight";

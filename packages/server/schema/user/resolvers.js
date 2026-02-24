@@ -466,6 +466,108 @@ const userResolvers = {
 
       return result;
     },
+    changePassword: async (parent, args, context) => {
+      const { currentPassword, newPassword } = args;
+      const user = context?.req?.user;
+      let connection;
+
+      if (!user?.id) {
+        throw new GraphQLError("Unauthorized - You must be logged in", {
+          extensions: { code: "UNAUTHORIZED" },
+        });
+      }
+
+      if (!currentPassword || !newPassword) {
+        throw new GraphQLError("Current and new passwords are required", {
+          extensions: { code: "BAD_USER_INPUT" },
+        });
+      }
+
+      if (newPassword.length < 8) {
+        throw new GraphQLError("Password must be at least 8 characters", {
+          extensions: { code: "BAD_USER_INPUT" },
+        });
+      }
+
+      try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        const [rows] = await connection.execute(
+          "SELECT id, password FROM users WHERE id = ? AND deleted = 0 LIMIT 1",
+          [user.id]
+        );
+
+        if (!rows.length) {
+          throw new GraphQLError("User not found", {
+            extensions: { code: "NOT_FOUND" },
+          });
+        }
+
+        const existingPassword = rows[0].password;
+        const validPassword = await bcrypt.compare(
+          currentPassword,
+          existingPassword
+        );
+
+        if (!validPassword) {
+          throw new GraphQLError("Current password is incorrect", {
+            extensions: { code: "BAD_USER_INPUT" },
+          });
+        }
+
+        const isSamePassword = await bcrypt.compare(
+          newPassword,
+          existingPassword
+        );
+
+        if (isSamePassword) {
+          throw new GraphQLError(
+            "New password must be different from the current password",
+            {
+              extensions: { code: "BAD_USER_INPUT" },
+            }
+          );
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedPwd = await bcrypt.hash(newPassword, salt);
+
+        await saveData({
+          table: "users",
+          data: {
+            password: hashedPwd,
+            updated_at: new Date(),
+          },
+          id: user.id,
+          connection,
+        });
+
+        await connection.commit();
+
+        return {
+          success: true,
+          message: "Password updated successfully",
+        };
+      } catch (error) {
+        if (connection) {
+          await connection.rollback();
+        }
+
+        if (error instanceof GraphQLError) {
+          throw error;
+        }
+
+        console.error("Change password error:", error);
+        throw new GraphQLError("Failed to update password", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
+      } finally {
+        if (connection) {
+          connection.release();
+        }
+      }
+    },
     resetPassword: async (parent, args, context) => {
       const { id, newPassword } = args; // Note: Fixed typo from newPasswordd to newPassword
       let connection;

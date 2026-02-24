@@ -28,6 +28,15 @@ const LOGIN = gql`
   }
 `;
 
+const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+    changePassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+      success
+      message
+    }
+  }
+`;
+
 const SIGNUP = gql`
   mutation CreateUser($payload: CreateUserInput!) {
     createUser(payload: $payload) {
@@ -700,6 +709,34 @@ const CREATE_SEED_LABEL = gql`
   }
 `;
 
+const SAVE_SEED_LABEL_PACKAGE = gql`
+  mutation SaveSeedLabelPackage($input: SeedLabelPackageInput!) {
+    saveSeedLabelPackage(input: $input) {
+      success
+      message
+      package {
+        id
+        name
+        packageSizeKg
+        labelsPerPackage
+        priceUgx
+        isActive
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const DELETE_SEED_LABEL_PACKAGE = gql`
+  mutation DeleteSeedLabelPackage($id: ID!) {
+    deleteSeedLabelPackage(id: $id) {
+      success
+      message
+    }
+  }
+`;
+
 const DELETE_SEED_LABEL = gql`
   mutation SubmitLabTestReport($input: LabTestReportInput!) {
     submitLabTestReport(input: $input) {
@@ -782,9 +819,12 @@ export {
 
   //--------------------------------
   CREATE_SEED_LABEL,
+  SAVE_SEED_LABEL_PACKAGE,
+  DELETE_SEED_LABEL_PACKAGE,
   DELETE_SEED_LABEL,
   APPROVE_SEED_LABEL,
   PRINT_SEED_LABEL,
+  CHANGE_PASSWORD,
 };
 
 // ---- Plant Inspection (SR10) placeholder mutations ----

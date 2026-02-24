@@ -27,12 +27,12 @@ const AccountOverviewPage = () => {
             <ToolbarHeading>
               <ToolbarPageTitle />
               <ToolbarDescription>
-                Central Hub for Personal Customization
+                Manage your password and account security settings
               </ToolbarDescription>
             </ToolbarHeading>
             <ToolbarActions>
               <Link
-                to="/account/security/overview"
+                to="/account/security/security-log"
                 className="btn btn-sm btn-light"
               >
                 Security History

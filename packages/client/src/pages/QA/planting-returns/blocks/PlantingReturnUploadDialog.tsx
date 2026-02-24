@@ -11,6 +11,7 @@ import { useMutation } from "@apollo/client/react";
 import { Download, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { URL_2 } from "@/config/urls";
 
 type PlantingReturns = {
   id: string | number;
@@ -96,7 +97,11 @@ const PlantingReturnsUploadDialog = ({
   };
 
   const downloadTemplate = () => {
-    toast("Template downloaded successfully!");
+    const templateUrl = `${URL_2}/templates/sub-growsers-template.xlsx`;
+    const win = window.open(templateUrl, "_blank", "noopener,noreferrer");
+    if (!win) {
+      toast("Popup blocked. Please allow popups to download the template.");
+    }
   };
 
   useEffect(() => {
@@ -132,7 +137,7 @@ const PlantingReturnsUploadDialog = ({
       >
         <SheetHeader className="mb-4">
           <SheetTitle>
-            {title ? "Create New Application" : "Edit Application"}
+            {title ? "Upload CSV" : "Edit Application"}
           </SheetTitle>
         </SheetHeader>
         <div>

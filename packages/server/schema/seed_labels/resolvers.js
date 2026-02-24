@@ -247,7 +247,7 @@ const seedLabelResolvers = {
                 const [labelPackage] = await fetchSeedLabelPackages({
                   id: package_id,
                 });
-                return labelPackage;
+                return labelPackage || null;
             } catch (error) {
                 throw new GraphQLError(error.message);
             }
@@ -471,8 +471,8 @@ const seedLabelResolvers = {
                     id: form_id,
                 });
 
-                const labelPackage = await fetchSeedLabelPackages({ 
-                    id: formDetails.seed_label_package 
+                const [labelPackage] = await fetchSeedLabelPackages({
+                    id: formDetails.seed_label_package,
                 });
                 console.log("labelPackage:", labelPackage);
 
@@ -503,17 +503,26 @@ const seedLabelResolvers = {
                 const marketableSeed = await fetchSeedLabs({ id:lab_id });
                 console.log("marketableSeed:", formDetails);
 
-                const packages = formDetails.quantity/ labelPackage[0].quantity;
-                console.log("packages:", formDetails.quantity, labelPackage[0].quantity, packages);
+                const packageSizeKg = labelPackage?.packageSizeKg || 0;
+                const packages =
+                  packageSizeKg > 0
+                    ? formDetails.quantity / packageSizeKg
+                    : 0;
+                console.log(
+                  "packages:",
+                  formDetails.quantity,
+                  packageSizeKg,
+                  packages
+                );
                 const product ={
                     user_id: formDetails.user_id?? null,
                     crop_variety_id : formDetails.crop_variety_id ?? null,
                     seed_lab_id : formDetails.seed_lab_id ?? null,
                     seed_label_id : formDetails.id ?? null,
 
-                    quantity : labelPackage[0].quantity ?? null,
+                    quantity : packageSizeKg || null,
                     available_stock : packages ?? null,
-                    price: labelPackage[0].price ?? null,
+                    price: labelPackage?.priceUgx ?? null,
                     lab_test_number : marketableSeed[0].lab_test_number ?? null,
                     lot_number : marketableSeed[0].lot_number ?? null,
                     seed_class : marketableSeed[0].lot_number ?? null,

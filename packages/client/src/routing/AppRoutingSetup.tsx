@@ -82,39 +82,38 @@ import { ErrorsRouting } from "@/errors";
 import {
   AuthenticationWelcomeMessagePage,
   AuthenticationAccountDeactivatedPage,
-  AuthenticationGetStartedPage
-} from '@/pages/authentication';
-import { SR4ListPage } from '@/pages/forms/SR4ListPage';
-import { PermissionGuard } from '@/auth/PermissionGuard';
-import { RolesListPage } from '@/pages/roles/RolesListPage';
-import { SR6ListPage } from '@/pages/forms/SR6 forms/SR6ListPage';
-import { UsersListPage } from '@/pages/users/UsersListPage';
-import CropsListPage from '@/pages/crops/CropsListPage';
-import CropDetailsPage from '@/pages/crops/CropDetailsPage';
-import ImportPermitsListPage from '@/pages/import-permits/ImportPermitsListPage';
-import ExportPermitsListPage from '@/pages/export-permits/ExportPermitsListPage';
-import { QDSListPage } from '@/pages/forms/QDS forms/QDSListPage';
-import SubgrowersListPage from '@/pages/QA/Subgrowers/SubgrowersListPage';
-import MySr4ApplicationForms from '@/pages/forms/my_application_forms/MySr4ApplicationForms';
-import MySr6ApplicationForms from '@/pages/forms/my_application_forms/MySr6ApplicationForms';
-import MyQdsApplicationForms from '@/pages/forms/my_application_forms/MyQdsApplicationForms';
-import PlantingReturnsListPage from '@/pages/QA/planting-returns/PlantingReturnsListPage';
-import { PlantingInspectionPage } from '@/pages/QA/planting-returns/inspection/PlantingInspectionPage';
-import CropDeclarationListPage from '@/pages/QA/Qds-crop-declarations/CropDeclarationListPage';
-import { QdsCropInspectionPage } from '@/pages/QA/Qds-crop-declarations/inspection/QdsCropInspectionPage';
-import StockExamination from '@/pages/seed-stock/stock-examination/StockExamination';
-import StockInspectionPage from '@/pages/seed-stock/stock-examination/StockExamInspection';
-import StockRecordsPage from '@/pages/seed-stock/My-stock/StockRecord';
-import { SeedLabListPage } from '@/pages/QA/seedLabs/SeedLabListPage';
-import MySeedLabInspections from '@/pages/QA/seedLabs/MySeedLabsForms';
-import SeedLabInspectionPage from '@/pages/QA/seedLabs/blocks/seedLabInspection';
-import StockLabTestForm from '@/pages/QA/seedLabs/blocks/SeedLabTest';
-import SeedLabelManagementPage from '@/pages/QA/seed_Labels/SeedLabels';
-import MarketplacePage from '@/pages/marketplace/products/MarketplacePage';
-import OrdersPage from '@/pages/marketplace/orders/OrdersPage';
-import MarketableSeed from '@/pages/seed-stock/marketable-seed/MarketableSeed';
-import { SeedLabelPackagesList } from "@/pages/seed-label-packages/SeedLabelPackagesList";
-
+  AuthenticationGetStartedPage,
+} from "@/pages/authentication";
+import { SR4ListPage } from "@/pages/forms/SR4ListPage";
+import { PermissionGuard } from "@/auth/PermissionGuard";
+import { RolesListPage } from "@/pages/roles/RolesListPage";
+import { SR6ListPage } from "@/pages/forms/SR6 forms/SR6ListPage";
+import { UsersListPage } from "@/pages/users/UsersListPage";
+import CropsListPage from "@/pages/crops/CropsListPage";
+import CropDetailsPage from "@/pages/crops/CropDetailsPage";
+import SeedLabelPackagesPage from "@/pages/seed-label-packages/SeedLabelPackagesPage";
+import ImportPermitsListPage from "@/pages/import-permits/ImportPermitsListPage";
+import ExportPermitsListPage from "@/pages/export-permits/ExportPermitsListPage";
+import { QDSListPage } from "@/pages/forms/QDS forms/QDSListPage";
+import SubgrowersListPage from "@/pages/QA/Subgrowers/SubgrowersListPage";
+import MySr4ApplicationForms from "@/pages/forms/my_application_forms/MySr4ApplicationForms";
+import MySr6ApplicationForms from "@/pages/forms/my_application_forms/MySr6ApplicationForms";
+import MyQdsApplicationForms from "@/pages/forms/my_application_forms/MyQdsApplicationForms";
+import PlantingReturnsListPage from "@/pages/QA/planting-returns/PlantingReturnsListPage";
+import { PlantingInspectionPage } from "@/pages/QA/planting-returns/inspection/PlantingInspectionPage";
+import CropDeclarationListPage from "@/pages/QA/Qds-crop-declarations/CropDeclarationListPage";
+import { QdsCropInspectionPage } from "@/pages/QA/Qds-crop-declarations/inspection/QdsCropInspectionPage";
+import StockExamination from "@/pages/seed-stock/stock-examination/StockExamination";
+import StockInspectionPage from "@/pages/seed-stock/stock-examination/StockExamInspection";
+import StockRecordsPage from "@/pages/seed-stock/My-stock/StockRecord";
+import { SeedLabListPage } from "@/pages/QA/seedLabs/SeedLabListPage";
+import MySeedLabInspections from "@/pages/QA/seedLabs/MySeedLabsForms";
+import SeedLabInspectionPage from "@/pages/QA/seedLabs/blocks/seedLabInspection";
+import StockLabTestForm from "@/pages/QA/seedLabs/blocks/SeedLabTest";
+import SeedLabelManagementPage from "@/pages/QA/seed_Labels/SeedLabels";
+import MarketableSeed from "@/pages/seed-stock/marketable-seed/MarketableSeed";
+import MarketplacePage from "@/pages/marketplace/products/MarketplacePage";
+import OrdersPage from "@/pages/marketplace/orders/OrdersPage";
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -218,9 +217,12 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route path="/admin/roles" element={<RolesListPage />} />
           <Route path="/admin/crops" element={<CropsListPage />} />
-          <Route path="/admin/seed-label-packages" element={<SeedLabelPackagesList />} />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />
           <Route path="/admin/users" element={<UsersListPage />} />
+          <Route
+            path="/admin/seed-label-packages"
+            element={<SeedLabelPackagesPage />}
+          />
           <Route
             path="/public-profile/profiles/default"
             element={<ProfileDefaultPage />}
