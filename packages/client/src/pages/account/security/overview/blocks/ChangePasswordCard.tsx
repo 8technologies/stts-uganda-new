@@ -15,8 +15,8 @@ const ChangePasswordCard = () => {
   const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
 
   const passwordMismatch =
-    form.confirmPassword &&
-    form.newPassword &&
+    Boolean(form.confirmPassword) &&
+    Boolean(form.newPassword) &&
     form.newPassword !== form.confirmPassword;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
