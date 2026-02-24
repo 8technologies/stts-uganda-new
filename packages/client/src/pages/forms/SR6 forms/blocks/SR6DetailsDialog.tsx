@@ -338,7 +338,7 @@ const SR6DetailsDialog = ({
     const premisesLocation = formDetails.user?.premises_location || "";
     const phoneNumber = formDetails.user?.phone_number || "";
     const category =
-      formDetails.type === "seed_breeder" ? "Seed Breeder" : "Seed Producer";
+      formDetails.type === "plant_breeder" ? "Plant Breeder" : "Seed Producer";
     const issueDate = _formatDate(new Date());
     const verifyUrl = `${URL_2}/certificates/sr6/${String(formDetails?.id ?? "")}`;
 
@@ -595,6 +595,23 @@ const SR6DetailsDialog = ({
             </LabeledRow>
             <LabeledRow label="Are you aware of minimum standards">
               {yesno(d.aware_of_minimum_standards)}
+            </LabeledRow>
+
+            <LabeledRow label="Crops">
+              {Array.isArray(d.selectedCrops) && d.selectedCrops.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {d.selectedCrops.map((c: any) => (
+                    <span
+                      key={c.id || c.crop_id || c}
+                      className="badge badge-outline rounded-md"
+                    >
+                      {c.crop_name || c.name || String(c.crop_id || c.id || c)}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                "-"
+              )}
             </LabeledRow>
 
             <LabeledRow label="Receipt">

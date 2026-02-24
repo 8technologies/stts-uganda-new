@@ -42,7 +42,7 @@ type Sr6Application = {
   created_at?: string;
   valid_from?: string | null;
   valid_until?: string | null;
-  type: "seed_breeder" | "seed_producer";
+  type: "plant_breeder" | "seed_producer";
   status?: string | null;
   previous_grower_number?: string | null;
   years_of_experience?: string | null;
@@ -59,7 +59,7 @@ type Sr6Application = {
 };
 
 const typeLabel = (t?: string) =>
-  t === "seed_breeder" ? "Seed Breeder" : "Seed Producer";
+  t === "plant_breeder" ? "Plant Breeder" : "Seed Producer";
 
 const statusToColor = (status?: string | null) => {
   switch (status) {
@@ -99,12 +99,13 @@ const MySr6ApplicationForms = () => {
   }, [data?.sr6_applications, currentUser?.id]);
 
   const breedersCount = useMemo(
-    () => myForms.filter((f) => f.type === "seed_breeder").length,
+    () => myForms.filter((f) => f.type === "plant_breeder").length,
     [myForms],
   );
 
   const handleCreateSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === "yes";
+    const crops = vals.selectedCrops ? vals.selectedCrops.map((c: any) => c.value) : [];
     const payload: any = {
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
@@ -115,6 +116,7 @@ const MySr6ApplicationForms = () => {
       aware_of_minimum_standards: toBool(vals.standardSeed),
       signature_of_applicant: null,
       grower_number: null,
+      selectedCrops: crops,
       inspector_id: null,
       status_comment: null,
       recommendation: null,
@@ -125,6 +127,8 @@ const MySr6ApplicationForms = () => {
       receipt: vals.receipt,
       other_documents: vals.otherDocuments,
     };
+
+    console.log('Payload...', payload);
 
     try {
       await saveForm({ variables: { payload } });
@@ -140,6 +144,8 @@ const MySr6ApplicationForms = () => {
   const handleEditSave = async (vals: Record<string, any>) => {
     if (!selectedForm?.id) return;
     const toBool = (v: any) => String(v).toLowerCase() === "yes";
+    const crops = vals.selectedCrops ? vals.selectedCrops.map((c: any) => c.value) : [];
+    
     const payload: any = {
       id: selectedForm.id,
       years_of_experience: vals.yearsOfExperience,
@@ -151,6 +157,7 @@ const MySr6ApplicationForms = () => {
       aware_of_minimum_standards: toBool(vals.standardSeed),
       signature_of_applicant: null,
       grower_number: null,
+      selectedCrops: crops,
       status: vals.status,
       inspector_id: null,
       status_comment: null,
@@ -159,6 +166,8 @@ const MySr6ApplicationForms = () => {
       seed_grower_in_past: toBool(vals.BeenSeedGrower),
       type: vals.applicationCategory,
     };
+
+    console.log('Edit Payload...', payload);
 
     try {
       await saveForm({ variables: { payload } });
@@ -197,7 +206,7 @@ const MySr6ApplicationForms = () => {
                           {myForms.length}
                         </span>
                         <span className="text-md text-gray-700">
-                          Seed Breeders
+                          Plant Breeders
                         </span>
                         <span className="text-md text-gray-800 font-medium">
                           {breedersCount}
@@ -281,7 +290,6 @@ const MySr6ApplicationForms = () => {
             ) : (
               <Timeline
                 items={myForms.map((f) => {
-                  console.log("f", f);
                   const color =
                     f.status === "approved"
                       ? "green"

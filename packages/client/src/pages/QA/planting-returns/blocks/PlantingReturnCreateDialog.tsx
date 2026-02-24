@@ -22,6 +22,7 @@ import { useAuthContext } from "@/auth";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { LOAD_CROPS, LOAD_CROP } from "@/gql/queries";
 import { Upload } from "lucide-react";
+import { URL_2 } from "@/config/urls";
 
 export type PlantingReturnFormValues = {
   growerName: string;
@@ -47,6 +48,7 @@ export type PlantingReturnFormValues = {
   seedRatePerHa?: string;
   notes?: string;
   receipt_id?: string | null;
+  paymentReceipt?: File | null;
 };
 
 interface Props {
@@ -80,6 +82,7 @@ const DEFAULT_VALUES: PlantingReturnFormValues = {
   intendedMerchant: "",
   seedRatePerHa: "",
   receipt_id: "",
+  paymentReceipt: null,
   notes: "",
 };
 
@@ -553,11 +556,42 @@ const PlantingReturnCreateDialog = ({
                   </label>
                 </Button>
 
-                <span className="text-sm text-gray-500 truncate">
-                  {values.receipt_id
-                    ? values.receipt_id
-                    : initialValues?.receipt_id || "Select file"}
-                </span>
+                <div className="flex items-center gap-3">
+                  {/** If a new file was selected, show its name and allow preview */}
+                  {values.paymentReceipt ? (
+                    <>
+                      <span className="text-sm text-gray-700 truncate">
+                        {values.paymentReceipt.name}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const url = URL.createObjectURL(values.paymentReceipt as File);
+                          window.open(url, "_blank");
+                        }}
+                      >
+                        View
+                      </Button>
+                    </>
+                  ) : (
+                    /** Otherwise show existing uploaded receipt if present */
+                    initialValues?.receipt_id || values.receipt_id ? (
+                      <a
+                        href={`${URL_2}/form_attachments/${
+                          (values.receipt_id || initialValues?.receipt_id) as string
+                        }`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary-600 hover:underline text-sm"
+                      >
+                        View receipt
+                      </a>
+                    ) : (
+                      <span className="text-sm text-gray-500">Select file</span>
+                    )
+                  )}
+                </div>
               </div>
             </div>
           </div>

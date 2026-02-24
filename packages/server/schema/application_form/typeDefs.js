@@ -57,6 +57,7 @@ const applicationFormsTypeDefs = `#graphql
         grower_number: String
         seed_board_registration_number: String
         registration_number: String
+        selectedCrops: [sr6ApplicationCrop!]!
         valid_from: Date
         valid_until: Date
         status: StatusType
@@ -74,6 +75,13 @@ const applicationFormsTypeDefs = `#graphql
         user: User
         created_at: DateTime,
         updated_at: DateTime
+    }
+
+    type sr6ApplicationCrop {
+        id: ID!
+        # sr6_application_id: ID!
+        crop_id: ID!
+        crop_name: String
     }
 
     type QDsApplicationForm {
@@ -119,7 +127,7 @@ const applicationFormsTypeDefs = `#graphql
     }
 
     enum Sr6Type {
-        seed_breeder
+        plant_breeder
         seed_producer
     }
     
@@ -219,6 +227,7 @@ const applicationFormsTypeDefs = `#graphql
         signature_of_applicant: String
         grower_number: String
         status: StatusType
+        selectedCrops: [String]
         inspector_id: String
         status_comment: String
         recommendation: String

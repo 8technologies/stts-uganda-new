@@ -663,54 +663,54 @@ const userResolvers = {
         }
       }
     },
-    deleteUser: async (parent, args, context) => {
-      const { user_id } = args;
-      try {
-        // Input validation
-        if (!user_id) {
-          throw new GraphQLError("User ID is required", {
-            extensions: { code: "BAD_USER_INPUT" },
-          });
-        }
+    // deleteUser: async (parent, args, context) => {
+    //   const { user_id } = args;
+    //   try {
+    //     // Input validation
+    //     if (!user_id) {
+    //       throw new GraphQLError("User ID is required", {
+    //         extensions: { code: "BAD_USER_INPUT" },
+    //       });
+    //     }
 
-        // Check if user exists and isn't already deleted
-        const [user] = await getUsers({ id: user_id, limit: 1 });
+    //     // Check if user exists and isn't already deleted
+    //     const [user] = await getUsers({ id: user_id, limit: 1 });
 
-        if (!user) {
-          throw new GraphQLError("User not found", {
-            extensions: { code: "NOT_FOUND" },
-          });
-        }
+    //     if (!user) {
+    //       throw new GraphQLError("User not found", {
+    //         extensions: { code: "NOT_FOUND" },
+    //       });
+    //     }
 
-        if (user.deleted) {
-          throw new GraphQLError("User is already deleted", {
-            extensions: { code: "CONFLICT" },
-          });
-        }
+    //     if (user.deleted) {
+    //       throw new GraphQLError("User is already deleted", {
+    //         extensions: { code: "CONFLICT" },
+    //       });
+    //     }
 
-        // Perform soft delete
-        await saveData({
-          table: "users",
-          data: {
-            deleted: true,
-            updated_at: new Date(),
-          },
-          id: user_id,
-        });
+    //     // Perform soft delete
+    //     await saveData({
+    //       table: "users",
+    //       data: {
+    //         deleted: true,
+    //         updated_at: new Date(),
+    //       },
+    //       id: user_id,
+    //     });
 
-        return {
-          success: true,
-          message: "User account deactivated successfully",
-        };
-      } catch (error) {
-        if (error instanceof GraphQLError) {
-          throw error;
-        }
+    //     return {
+    //       success: true,
+    //       message: "User account deactivated successfully",
+    //     };
+    //   } catch (error) {
+    //     if (error instanceof GraphQLError) {
+    //       throw error;
+    //     }
 
-        console.error("User deletion error:", error);
-        throw new GraphQLError("Failed to deactivate user account");
-      }
-    },
+    //     console.error("User deletion error:", error);
+    //     throw new GraphQLError("Failed to deactivate user account");
+    //   }
+    // },
   },
 };
 

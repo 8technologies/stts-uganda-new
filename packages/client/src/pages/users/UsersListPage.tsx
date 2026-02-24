@@ -491,7 +491,7 @@ const UsersListPage = () => {
             users={users}
             onPreview={(u) => setPreviewUser(u)}
             onEdit={(u) => handleEdit(u)}
-            onDelete={(u) => handleDelete(u)}
+            // onDelete={(u) => handleDelete(u)}
             deletingId={deletingId}
           />
         )}
@@ -636,7 +636,7 @@ const UsersDataGrid = ({
               >
                 Edit
               </Button>
-              <Button
+              {/* <Button
                 variant="destructive"
                 size="sm"
                 onClick={() => onDelete(row.original)}
@@ -645,7 +645,7 @@ const UsersDataGrid = ({
                 {String(deletingId) === String(row.original.id)
                   ? "Deleting…"
                   : "Delete"}
-              </Button>
+              </Button> */}
             </div>
           </div>
         ),
