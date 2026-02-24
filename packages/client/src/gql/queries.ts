@@ -317,6 +317,11 @@ const LOAD_SR6_FORMS = gql`
         name
         district
       }
+      selectedCrops {
+        crop_id
+        crop_name
+        id
+      }
     }
   }
 `;

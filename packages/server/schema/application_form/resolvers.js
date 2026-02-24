@@ -17,6 +17,14 @@ import path from "path";
 import htmlToPdf from "../../helpers/htmlToPdf.js";
 import { Console } from "console";
 
+const mapCrop = (row) => ({
+  id: String(row.id),
+  // sr6_application_id : String(row.sr6_application_id ),
+  crop_id: row.crop_id ? String(row.crop_id) : null,
+  crop_name: row.crop_name || null,
+  
+});
+
 export const getForms = async ({
   id = null,
   form_type,
@@ -139,6 +147,25 @@ export const getForms = async ({
     console.log("error", error);
     throw new GraphQLError("Error fetching forms");
   }
+};
+
+const fetchCrops = async (sr6_applications_id, conn = db) => {
+  const [rows] = await conn.execute(
+    `
+    SELECT 
+      sr6c.id,
+      sr6c.sr6_application_id,
+      sr6c.crop_id,
+      crops.name AS crop_name
+    FROM sr6_application_has_crops AS sr6c
+    LEFT JOIN crops ON crops.id = sr6c.crop_id
+    WHERE sr6c.sr6_application_id = ?
+    ORDER BY sr6c.id ASC
+    `,
+    [sr6_applications_id]
+  );
+
+  return rows.map(mapCrop);
 };
 
 const applicationFormsResolvers = {
@@ -357,6 +384,23 @@ const applicationFormsResolvers = {
         throw new GraphQLError(error.message);
       }
     },
+    selectedCrops: async (parent) => {
+      try {
+        const [rows] = await db.execute(
+          'SELECT id FROM sr6_application_forms WHERE application_form_id = ? LIMIT 1',
+          [parent.id]
+        );
+
+        if (!rows || rows.length === 0) return [];
+
+        const sr6_application_id = rows[0].id;
+
+        const crops = await fetchCrops(sr6_application_id);
+        return crops;
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    }
   },
   QDsApplicationForm: {
     inspector: async (parent, args, context) => {
@@ -593,6 +637,7 @@ const applicationFormsResolvers = {
           grower_number,
           status,
           receipt,
+          selectedCrops,
           other_documents,
           inspector_id,
           status_comment,
@@ -690,6 +735,40 @@ const applicationFormsResolvers = {
           idColumn: "application_form_id",
           connection,
         });
+
+        // Determine the sr6_application_forms primary key id to use for crop FK
+        let sr6_pk_id = save_id2;
+        if (id) {
+          const [sr6Rows] = await connection.execute(
+            "SELECT id FROM sr6_application_forms WHERE application_form_id = ? LIMIT 1",
+            [id]
+          );
+          if (sr6Rows && sr6Rows[0] && sr6Rows[0].id) {
+            sr6_pk_id = sr6Rows[0].id;
+          }
+        }
+
+        console.log("selectedCrops", selectedCrops);
+
+        // save the crops
+        if (Array.isArray(selectedCrops) && selectedCrops.length) {
+          // Optionally remove existing mappings for updates to avoid duplicates
+          if (id) {
+            await connection.execute(
+              "DELETE FROM sr6_application_has_crops WHERE sr6_application_id = ?",
+              [sr6_pk_id]
+            );
+          }
+
+          const placeholders = selectedCrops.map(() => "(?, ?)").join(", ");
+          const values = selectedCrops.flatMap((i) => [sr6_pk_id, i]);
+          console.log("values", values);
+
+          await connection.execute(
+            `INSERT INTO sr6_application_has_crops (sr6_application_id, crop_id) VALUES ${placeholders}`,
+            values
+          );
+        }
 
         let savedDocuments = null;
         if (other_documents) {
@@ -1352,7 +1431,7 @@ const applicationFormsResolvers = {
           let seedBoardReg = formDetails.seed_board_registration_number;
           let growerReg = formDetails.grower_number;
           if (!seedBoardReg) {
-            if (formDetails.type == "seed_breeder") {
+            if (formDetails.type == "plant_breeder") {
               seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/SB" });
               growerReg = generateSeedBoardRegNo({ prefix: "NSCS/SB" });
             } else {

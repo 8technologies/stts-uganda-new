@@ -45,7 +45,7 @@ interface IColumnFilterProps<TData, TValue> {
 type Sr6Application = {
   id: string;
   status?: string | null;
-  type: 'seed_breeder' | 'seed_producer';
+  type: 'plant_breeder' | 'seed_producer';
   inspector?: { name?: string; district?: string } | null;
   user?: {
     name?: string;
@@ -322,12 +322,12 @@ const SR6s = () => {
       forms.map((f) => ({
         user: {
           avatar: 'blank.png',
-          userName: f.user.name,
+          userName: f.user?.name || '-',
           userGmail: f.phone_number || ''
         },
-        role: f.type === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer',
+        role: f.type === 'plant_breeder' ? 'Plant Breeder' : 'Seed Producer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
-        location: f.user.premises_location || f.user.premises_location || '-',
+        location: f.user?.premises_location || f.user?.premises_location || '-',
         // flag: 'uganda.svg',
         activity: f.inspector
           ? `${f.inspector.name ?? ''} ${f.inspector.district ?? ''}`.trim()
@@ -348,6 +348,7 @@ const SR6s = () => {
 
   const handleSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
+    const crops = vals.selectedCrops ? vals.selectedCrops.map((c: any) => c.value) : [];
     const payload: any = {
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
@@ -359,6 +360,7 @@ const SR6s = () => {
       signature_of_applicant: null,
       grower_number: null,
       status: vals.status,
+      selectedCrops:crops,
       inspector_id: null,
       status_comment: null,
       recommendation: null,
@@ -367,6 +369,8 @@ const SR6s = () => {
       type: vals.applicationCategory,
       id: vals?.id || null
     };
+
+    console.log('Payload...', payload);
 
     try {
       await saveForm({ variables: { payload } });

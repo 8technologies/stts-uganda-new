@@ -93,7 +93,8 @@ const UserEditDialog = ({
 
   const handleSubmit = async () => {
     // Let parent close after successful update
-    await onSave?.(values);
+    console.log("Submitting values", values);
+    onSave?.(values);
   };
 
   return (
@@ -161,7 +162,7 @@ const UserEditDialog = ({
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">
-                  Dealers in<span className="text-red-500">*</span>
+                  Applicant is applying for production of?<span className="text-red-500">*</span>
                 </label>
                 <Input
                   value={values.dealersIn}
@@ -170,7 +171,7 @@ const UserEditDialog = ({
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">
-                  Marketing of<span className="text-red-500">*</span>
+                  Applicant is applying for Marketing of?<span className="text-red-500">*</span>
                 </label>
                 <Input
                   value={values.marketingOf}
@@ -183,6 +184,7 @@ const UserEditDialog = ({
                 </label>
                 <Input
                   value={values.landSize}
+                  type="number"
                   onChange={(e) => handleChange("landSize", e.target.value)}
                 />
               </div>

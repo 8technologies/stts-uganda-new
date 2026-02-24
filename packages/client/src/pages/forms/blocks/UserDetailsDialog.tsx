@@ -569,10 +569,8 @@ const UserDetailsDialog = ({
             <LabeledRow label="Years of experience">
               {d.years_of_experience || "-"}
             </LabeledRow>
-            <LabeledRow label="Dealers in">{d.dealers_in || "-"}</LabeledRow>
-            <LabeledRow label="Marketing of">
-              {d.marketing_of || "-"}
-            </LabeledRow>
+            <LabeledRow label="Applicant is applying for production of?">{d.dealers_in || "-"}</LabeledRow>
+            <LabeledRow label="Applicant is applying for Marketing of?">{d.marketing_of || "-"}</LabeledRow>
             <LabeledRow label="Have adequate land">
               {yesno(d.have_adequate_land)}
             </LabeledRow>
