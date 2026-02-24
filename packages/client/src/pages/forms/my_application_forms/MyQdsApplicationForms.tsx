@@ -296,7 +296,6 @@ const MyQdsApplicationForms = () => {
   const { currentLayout } = useLayout();
   const { currentUser } = useAuthContext();
 
-  const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<QdsApplication | null>(null);
@@ -432,7 +431,7 @@ const MyQdsApplicationForms = () => {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    setCreateOpen(true);
+                    setDialogOpen(true);
                   }}
                   className="btn btn-sm btn-primary"
                 >
@@ -465,7 +464,7 @@ const MyQdsApplicationForms = () => {
               <div className="text-gray-800 font-medium">
                 No QDS applications yet
               </div>
-              <Button onClick={() => setCreateOpen(true)} size="sm">
+              <Button onClick={() => setDialogOpen(true)} size="sm">
                 <KeenIcon icon="plus" /> Create Application
               </Button>
             </div>
@@ -656,13 +655,7 @@ const MyQdsApplicationForms = () => {
       </Fragment>
 
       {/* Dialogs */}
-      {/* <UserCreateDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onSave={handleCreateSave}
-        saving={saving}
-      /> */}
-
+      
       <QDSFormDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}

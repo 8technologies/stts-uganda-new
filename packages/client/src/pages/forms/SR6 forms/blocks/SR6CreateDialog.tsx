@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import ReactSelect from "react-select";
 import {
   Select,
   SelectContent,
@@ -18,6 +19,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { KeenIcon } from "@/components";
+import { useQuery } from "@apollo/client/react";
+import { LOAD_CROPS } from "@/gql/queries";
 
 interface ISR6EditDialogProps<T = any> {
   open: boolean;
@@ -33,10 +36,11 @@ const SR6CreateDialog = ({
   saving,
 }: ISR6EditDialogProps) => {
   const [values, setValues] = useState<Record<string, any>>({
-    applicationCategory: "seed_breeder",
+    applicationCategory: "plant_breeder",
     registrationNumber: "",
     croppingHistory: "",
     yearsOfExperience: "",
+    selectedCrops: [],
     previousGrowerNumber: "",
     BeenSeedGrower: "",
     adequateStorage: "Yes",
@@ -46,6 +50,22 @@ const SR6CreateDialog = ({
     receipt: "",
     otherDocuments: "",
   });
+
+  const LIST_VARS = { filter: {}, pagination: { page: 1, size: 200 } } as const;
+    const {
+      data: cropsData,
+      loading: cropsLoading,
+      error: cropsError,
+    } = useQuery(LOAD_CROPS, { variables: LIST_VARS });
+    const cropOptions = useMemo(
+      () =>
+        ((cropsData?.crops?.items || []) as any[]).map((c) => ({
+          value: String(c.id),
+          label: c.name,
+        })),
+      [cropsData?.crops?.items],
+    );
+    
 
   const handleChange = (key: string, value: any) =>
     setValues((v) => ({ ...v, [key]: value }));
@@ -82,7 +102,7 @@ const SR6CreateDialog = ({
                     <SelectValue placeholder="Select an Option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="seed_breeder">Seed Breeder</SelectItem>
+                    <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                     <SelectItem value="seed_producer">Seed Producer</SelectItem>
                   </SelectContent>
                 </Select>
@@ -101,7 +121,7 @@ const SR6CreateDialog = ({
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">
-                  Crop history for the last three season or years
+                  The field where i intend to grow the seed crop was previously under
                   <span className="text-red-500">*</span>
                 </label>
                 <Textarea
@@ -111,7 +131,60 @@ const SR6CreateDialog = ({
                   }
                 />
               </div>
+              
             </div>
+          </div>
+
+          {/* Crops */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              I/We wish to apply for a license to produce seed as indicated below:
+            </h3>
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="form-label">
+                  Crops <span className="text-red-500">*</span>
+                </label>
+
+                <select
+                  multiple
+                  value={values.selectedCrops}
+                  onChange={(e) =>
+                    handleChange("selectedCrops", Array.from(e.target.selectedOptions, option => option.value))
+                  }
+                  className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[120px]"
+                >
+                  {cropOptions.map((crop) => (
+                    <option key={crop.id} value={crop.name}>
+                      {crop.name}
+                    </option>
+                  ))}
+                </select>
+
+                <small className="text-gray-500">
+                  Hold Ctrl (Windows) or Cmd (Mac) to select multiple crops
+                </small>
+              </div>
+            </div> */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="form-label">
+                    Crops <span className="text-red-500">*</span>
+                  </label>
+
+                  <ReactSelect
+                    isMulti
+                    options={cropOptions}
+                    value={values.selectedCrops}
+                    onChange={(selectedOptions) => {
+                        handleChange("selectedCrops", selectedOptions);
+                      }}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                  />
+                </div>
+    </div>
+            
           </div>
 
           {/* Capability Assessment Section */}

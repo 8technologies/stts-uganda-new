@@ -300,12 +300,12 @@ const Users = () => {
   const mapped: IUsersData[] = forms.map((f) => ({
     user: {
       avatar: 'blank.png',
-      userName: f.user.name,
+      userName: f.user?.name || '-',
       userGmail: f.phone_number || ''
     },
     role: f.type === 'seed_merchant' ? 'Seed Merchant/Company' : 'Seed Exporter/Importer',
     status: { label: f.status || 'pending', color: statusToColor(f.status) },
-    location: f.user.premises_location || f.user.premises_location || '-',
+    location: f.user?.premises_location || f.user?.premises_location || '-',
     // flag: 'uganda.svg',
     activity: f.inspector
       ? `${f.inspector.name ?? ''} - ${f.inspector.district ?? ''}`.trim()
@@ -321,6 +321,7 @@ const Users = () => {
   const [selectedForm, setSelectedForm] = useState<Sr4Application | null>(null);
 
   const handleEditSave = async (vals: Record<string, any>) => {
+    console.log('Edit payload', vals);
     if (!selectedForm?.id) return;
     const toBool = (v: any) => String(v).toLowerCase() === 'yes';
     const payload: any = {
@@ -346,7 +347,10 @@ const Users = () => {
       // seed_board_registration_number: vals.registrationNumber || null,
       type: vals.applicationCategory
     };
+    console.log('Edit payload', payload);
+
     if (vals.receipt) {
+      console.log('Adding receipt to payload', vals.receipt);
       payload.receipt = vals.receipt;
     }
     try {

@@ -176,7 +176,7 @@ const SR6EditDialog = ({
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">
-                  Crop history for the last three season or years
+                  The field where i intend to grow the seed crop was previously under
                 </label>
                 <Textarea
                   value={values.yearsOfExperience}

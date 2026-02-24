@@ -71,7 +71,7 @@ type Qds = {
 type QDSApplication = {
   id: string;
   status?: string | null;
-  type: 'seed_breeder' | 'seed_producer';
+  type: 'plant_breeder' | 'seed_producer';
   inspector?: { name?: string; district?: string } | null;
   user?: {
     name?: string;
@@ -364,7 +364,7 @@ const QDs = () => {
           userName: f.user?.name,
           userGmail: f.user?.phone_number || ''
         },
-        role: f.type === 'seed_breeder' ? 'Seed Breeder' : 'Seed Producer',
+        role: f.type === 'plant_breeder' ? 'Plant Breeder' : 'Seed Producer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
         location: f.user?.premises_location || '-',
         activity: f.inspector

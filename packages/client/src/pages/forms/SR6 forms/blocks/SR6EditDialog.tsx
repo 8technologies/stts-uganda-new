@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +19,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { KeenIcon } from "@/components";
 import { URL_2 } from "@/config/urls";
+import ReactSelect from "react-select";
+import { useQuery } from "@apollo/client/react";
+import { LOAD_CROPS } from "@/gql/queries";
 
 interface IUserEditDialogProps<T = any> {
   open: boolean;
@@ -38,7 +41,7 @@ const SR6EditDialog = ({
   const [values, setValues] = useState<Record<string, any>>({
     // applicationCategory: data?.role || 'Seed Merchant/Company',
     id: null,
-    applicationCategory: "seed_breeder",
+    applicationCategory: "plant_breeder",
     registrationNumber: "",
     croppingHistory: "",
     yearsOfExperience: "",
@@ -46,6 +49,7 @@ const SR6EditDialog = ({
     BeenSeedGrower: "",
     adequateStorage: "Yes",
     adequateIsolation: "No",
+    selectedCrops: [],
     adequateLabour: "Yes",
     standardSeed: "Yes",
     receipt: "",
@@ -59,7 +63,7 @@ const SR6EditDialog = ({
     const d: any = data;
     const yesno = (b: any) => (b ? "Yes" : "No");
     setValues({
-      applicationCategory: d.type ?? "seed_breeder",
+      applicationCategory: d.type ?? "plant_breeder",
       registrationNumber: d.seed_board_registration_number ?? "",
       croppingHistory: d.cropping_history ?? "",
       yearsOfExperience: d.years_of_experience ?? "",
@@ -74,10 +78,27 @@ const SR6EditDialog = ({
       id: d.id,
       status: d.status,
     });
+
+    // hydrate selected crops into ReactSelect option objects
+    const existingCrops = (d.selectedCrops || []).map((c: any) => ({
+      value: String(c.crop_id ?? c.id ?? c),
+      label: c.crop_name || c.name || String(c.crop_id ?? c.id ?? c),
+    }));
+
+    if (existingCrops.length) {
+      setValues((v) => ({ ...v, selectedCrops: existingCrops }));
+    }
   }, [open, data]);
 
   const handleChange = (key: string, value: any) =>
     setValues((v) => ({ ...v, [key]: value }));
+
+  const LIST_VARS = { filter: {}, pagination: { page: 1, size: 200 } } as const;
+  const { data: cropsData } = useQuery(LOAD_CROPS, { variables: LIST_VARS });
+  const cropOptions = useMemo(
+    () => ((cropsData?.crops?.items || []) as any[]).map((c) => ({ value: String(c.id), label: c.name })),
+    [cropsData?.crops?.items]
+  );
 
   const handleSubmit = async () => {
     // Let parent close after successful update
@@ -112,7 +133,7 @@ const SR6EditDialog = ({
                     <SelectValue placeholder="Select an Option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="seed_breeder">Seed Breeder</SelectItem>
+                    <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                     <SelectItem value="seed_producer">Seed Producer</SelectItem>
                   </SelectContent>
                 </Select>
@@ -130,7 +151,7 @@ const SR6EditDialog = ({
               </div>
               <div className="flex flex-col gap-1">
                 <label className="form-label">
-                  Crop history for the last three season or years
+                  The field where i intend to grow the seed crop was previously under
                   <span className="text-red-500">*</span>
                 </label>
                 <Textarea
@@ -141,6 +162,31 @@ const SR6EditDialog = ({
                 />
               </div>
             </div>
+          </div>
+
+          {/* Crops */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              I/We wish to apply for a license to produce seed as indicated below:
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="form-label">
+                    Crops <span className="text-red-500">*</span>
+                  </label>
+                  <ReactSelect
+                    isMulti
+                    options={cropOptions}
+                    value={values.selectedCrops}
+                    onChange={(selectedOptions) => {
+                        handleChange("selectedCrops", selectedOptions);
+                      }}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                  />
+                </div>
+            </div>
+            
           </div>
 
           {/* Capability Assessment Section */}

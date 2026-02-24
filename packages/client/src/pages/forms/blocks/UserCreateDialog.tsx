@@ -142,13 +142,14 @@ const UserCreateDialog = ({
                 <label className="form-label">Land size (In Acres)</label>
                 <Input
                   value={values.landSize}
+                  type="number"
                   onChange={(e) => handleChange("landSize", e.target.value)}
                 />
               </div>
 
               <div className="flex flex-col gap-1">
                 <label className="form-label">
-                  Dealers in<span className="text-red-500">*</span>
+                  Applicant is applying for production of?<span className="text-red-500">*</span>
                 </label>
                 <Select
                   value={values.dealersIn}
@@ -171,7 +172,7 @@ const UserCreateDialog = ({
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="form-label">Marketing of</label>
+                <label className="form-label">Applicant is applying for Marketing of?</label>
                 <Select
                   value={values.marketingOf}
                   onValueChange={(e) => handleChange("marketingOf", e)}
