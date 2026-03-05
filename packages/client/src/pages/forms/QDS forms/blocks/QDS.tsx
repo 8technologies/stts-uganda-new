@@ -87,18 +87,20 @@ type QDSApplication = {
 // --- Utils ---
 const statusToColor = (status?: string | null) => {
   switch (status) {
-    case 'accepted':
-    case 'recommended':
+    case 'approved':
       return 'success';
+    case 'recommended':
+      return 'info';
     case 'rejected':
     case 'halted':
       return 'danger';
     case 'assigned_inspector':
     case 'pending':
     default:
-      return 'primary';
+      return 'warning';
   }
 };
+
 
 // --- Main ---
 const QDs = () => {
@@ -339,13 +341,7 @@ const QDs = () => {
               >
                 <KeenIcon icon="eye" /> Details
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  console.log('Print Certificate', info.row.original)
-                }
-              >
-                <KeenIcon icon="printer" /> Print Certificate
-              </DropdownMenuItem>
+              
             </DropdownMenuContent>
           </DropdownMenu>
         ),

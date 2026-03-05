@@ -421,7 +421,7 @@ const StageForm = ({
           />
         </div>
         <div>
-          <label className="form-label">Enter size of field (ha)</label>
+          <label className="form-label">Enter size of field (Acres)</label>
           <Input
             value={values.fieldSize}
             onChange={(e) =>

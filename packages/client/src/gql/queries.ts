@@ -105,6 +105,21 @@ const LOAD_IMPORT_PERMITS = gql`
   }
 `;
 
+const GETDISTRICTS = gql`
+  query GetDistricts {
+    getDistricts {
+      id
+      name
+      createdAt
+      updatedAt
+      subcounties {
+        id
+        name
+      }
+    }
+  }
+`;
+
 const LOAD_IMPORT_PERMIT = gql`
   query ImportPermit($id: ID!) {
     importPermit(id: $id) {
@@ -932,6 +947,7 @@ export {
   ME,
   ROLES,
   REGISTER,
+  GETDISTRICTS,
   LOAD_SR4_FORMS,
   LOAD_SR6_FORMS,
   LOAD_QDS_FORMS,

@@ -278,11 +278,22 @@ const applicationFormsResolvers = {
         "can_view_qds_forms",
         "You dont have permissions to view QDs forms"
       );
+
+      // The permissions
+      const can_manage_all_forms = hasPermission(
+        userPermissions,
+        "can_manage_all_forms"
+      );
+
+      const can_view_specific_assigned_forms = hasPermission(
+        userPermissions,
+        "can_view_specific_assigned_forms"
+      );
+
       return await getForms({
-        user_id: hasPermission(userPermissions, "can_manage_all_forms")
-          ? null
-          : user_id,
+        user_id: !can_manage_all_forms ? user_id : null,
         form_type: "qds",
+        user_assigned_forms: can_view_specific_assigned_forms ? user_id : false,
       });
     },
     qds_application_details: async (_, args, context) => {

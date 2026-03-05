@@ -133,7 +133,7 @@ const PlantingReturnsUploadDialog = ({
     >
       <SheetContent
         side="right"
-        className="w-full sm:max-w-[840px] lg:max-w-[650px]"
+        className="w-full sm:max-w-[840px] lg:max-w-[650px] overflow-y-auto"
       >
         <SheetHeader className="mb-4">
           <SheetTitle>

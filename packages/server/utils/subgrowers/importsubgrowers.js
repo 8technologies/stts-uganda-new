@@ -102,20 +102,49 @@ export async function importSubGrowers(sub_growers_file, ) {
           if (field === 'planting_date') {
             let excelDate = row[index];
 
+            // Handle Excel serial numbers (numeric dates)
             if (typeof excelDate === 'number') {
-              // Excel stores days since 1900-01-01
               const baseDate = new Date(1900, 0, 1);
-              // Excel incorrectly treats 1900 as leap year, so adjust by -1
               baseDate.setDate(baseDate.getDate() + excelDate - 1);
               sub[field] = baseDate.toISOString().split('T')[0]; // e.g. '2025-01-02'
+
+            // Sometimes xlsx returns a Date object directly
+            } else if (excelDate instanceof Date) {
+              sub[field] = excelDate.toISOString().split('T')[0];
+
+            // Otherwise treat it as a string and try to normalise
             } else if (typeof excelDate === 'string') {
-              // Try parsing manually
-              const [month, day, year] = excelDate.split(/[\/\-]/); // handle 1/2/2025 or 1-2-2025
-              const parsedDate = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-              if (!isNaN(parsedDate.getTime())) {
-                sub[field] = parsedDate.toISOString().split('T')[0];
+              const dateStr = excelDate.trim();
+
+              // split on / or - and trim each part
+              const parts = dateStr.split(/[\/\-]/).map(p => p.trim());
+              let day, month, year;
+
+              if (parts.length >= 3) {
+                [day, month, year] = parts;
               } else {
-                console.warn(`Invalid date format: ${excelDate}`);
+                // fallback regex capture if split fails
+                const m = dateStr.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+                if (m) {
+                  day = m[1];
+                  month = m[2];
+                  year = m[3];
+                }
+              }
+
+              if (day && month && year) {
+                // ensure they are strings so padStart will work
+                day = String(day).padStart(2, '0');
+                month = String(month).padStart(2, '0');
+                const parsedDate = new Date(`${year}-${month}-${day}`);
+
+                if (!isNaN(parsedDate.getTime())) {
+                  sub[field] = parsedDate.toISOString().split('T')[0];
+                } else {
+                  console.warn(`Invalid date after parsing: ${excelDate}`);
+                }
+              } else {
+                console.warn(`Could not parse date string: ${excelDate}`);
               }
             }
           }
@@ -125,11 +154,16 @@ export async function importSubGrowers(sub_growers_file, ) {
             if (cropDetails) {
               const cropName = cropDetails[1].trim();
               const varietyName = cropDetails[2].trim();
+
+              console.log("crop name", cropName, varietyName)
+
               const cropQuery = 'SELECT id FROM crops WHERE name = ?';
               const varietyQuery = 'SELECT id FROM crop_varieties WHERE name = ?';
 
-              const [cropResult] = await db.promise().query(cropQuery, [cropName]);
-              const [varietyResult] = await db.promise().query(varietyQuery, [varietyName]);
+              const [cropResult] = await db.execute(cropQuery, [cropName]);
+              const [varietyResult] = await db.execute(varietyQuery, [varietyName]);
+
+              console.log('crop and variety', cropResult, varietyResult)
 
               if (cropResult.length > 0 && varietyResult.length > 0) {
                 sub.crop = cropResult[0].id;
@@ -139,7 +173,8 @@ export async function importSubGrowers(sub_growers_file, ) {
                 continue; // Skip if crop or variety is not found
               }
             }
-          } else if (field === 'seed_class') {
+          } 
+          else if (field === 'seed_class') {
             const input = row[index].toString().trim().toLowerCase();
             const seedClassMap = {
               'pre-basic': 'Pre-Basic',
