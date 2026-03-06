@@ -662,45 +662,6 @@ const plantingReturnsResolvers = {
             subgrowers = await importSubGrowers(savedSubgrowerInfo.filename);
             console.log("subgrowers", subgrowers);
             
-
-            // for (const subgrower of subgrowers) {
-            //   const sr8_number = await generateSr8Number();
-            //   const subgrowerdata = {
-            //       sr8_number,
-            //       file_upload_id: id,
-            //       created_by: context?.req?.user?.id || null,
-            //       applicant_name: subgrower.name || null,
-            //       contact_phone: subgrower.phone_number || null,
-            //       field_name: subgrower.field_name || null,
-            //       gps_lat: subgrower.gps_latitude || null,
-            //       gps_lng: subgrower.gps_longitude || null,
-            //       district: subgrower.district || null,
-            //       subcounty: subgrower.subcounty || null,
-            //       parish: subgrower.location?.parish || null,
-            //       village: subgrower.village || null,
-            //       date_sown: subgrower.planting_date || null,
-            //       expected_harvest: subgrower.planting_date || null,
-            //       seed_source: subgrower.source_of_seed || null,
-            //       seed_lot_code: subgrower.lot_number || null,
-            //       seed_class: subgrower.seed_class || null,
-            //       area_ha: subgrower.size ?? null,
-            //       crop_id: subgrower.crop || null,
-            //       variety_id: subgrower.variety || null,
-            //       intended_merchant: input.registered_dealer || null,
-            //       seed_rate_per_ha: input.amount_enclosed || null,
-            //       grower_number: subgrower.growerNumber || null,
-            //       garden_number: subgrower.gardenNumber || null,
-            //       receipt_id: savedReceiptInfo.filename || null,
-            //     };
-            //   await saveData({
-            //     table: "planting_returns",
-            //     data: subgrowerdata,
-            //     id: null,
-            //     idColumn: "id",
-            //     connection
-            //   });
-            // }
-
             const chunkSize = 10; // insert 10 at a time
             for (let i = 0; i < subgrowers.length; i += chunkSize) {
               const chunk = subgrowers.slice(i, i + chunkSize);
@@ -747,7 +708,7 @@ const plantingReturnsResolvers = {
 
           } catch (e) {
             // If upload fails, rollback and bubble up
-            throw new GraphQLError(`Receipt upload failed: ${e.message}`);
+            throw new GraphQLError(`Subgrower file upload failed: ${e.message}`);
           }
         }
 
@@ -776,6 +737,7 @@ const plantingReturnsResolvers = {
         }
         
       } catch (error) {
+        console.log('error', error)
         throw handleSQLError(error, "Failed to create planting return upload");
       }
     }

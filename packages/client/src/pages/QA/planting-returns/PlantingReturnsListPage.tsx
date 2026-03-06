@@ -618,13 +618,7 @@ const PlantingReturnsGrid = ({
         ),
         meta: { headerClassName: "min-w-[180px]" },
       },
-      // {
-      //   accessorKey: 'areaHa',
-      //   id: 'areaHa',
-      //   header: ({ column }) => <DataGridColumnHeader title="Area (ha)" column={column} />,
-      //   cell: ({ row }) => <span className="text-gray-800">{row.original.areaHa}</span>,
-      //   meta: { headerClassName: 'min-w-[120px]' }
-      // },
+      
       // {
       //   accessorKey: 'dateSown',
       //   id: 'dateSown',

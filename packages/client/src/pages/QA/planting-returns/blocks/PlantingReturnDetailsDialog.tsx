@@ -141,7 +141,7 @@ const PlantingReturnDetailsDialog = ({ open, onOpenChange, data }: Props) => {
               <Field label="Crop" value={data?.crop?.name} />
               <Field label="Variety" value={data?.variety?.name} />
               <Field label="Seed Class" value={data?.seedClass} />
-              <Field label="Area (ha)" value={data?.areaHa} />
+              <Field label="Area (Acres)" value={data?.areaHa} />
               <Field
                 label="Sowing Date"
                 value={formatIsoDate(data?.dateSown)}

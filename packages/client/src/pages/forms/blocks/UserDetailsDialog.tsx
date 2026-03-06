@@ -630,7 +630,8 @@ const UserDetailsDialog = ({
               <div className="form-control">{d.status_comment || "-"}</div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
+          {canRecommend || canApprove &&(
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
             <div className="text-sm text-gray-700 font-medium">
               Inspector comment
             </div>
@@ -638,6 +639,8 @@ const UserDetailsDialog = ({
               <div className="form-control">{d.inspector_comment || "-"}</div>
             </div>
           </div>
+          )}
+          
           <div className="space-y-4">
             <LabeledRow label="Valid From">
               {formatDate(d.valid_from)}
