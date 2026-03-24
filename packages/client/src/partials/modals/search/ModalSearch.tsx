@@ -42,7 +42,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
       setScrollableHeight(viewportHeight - offset);
     }, [viewportHeight]);
 
-    console.log("lotNumber", lotNumber);
+    // console.log("lotNumber", lotNumber);
     const { data, loading, error, refetch } = useQuery(TRACK_TRACE, {
       variables: { lotNumber: String(lotNumber) }
     });

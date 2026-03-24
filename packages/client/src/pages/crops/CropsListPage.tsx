@@ -232,7 +232,8 @@ const CropsListPage = () => {
         onOpenChange={setFormOpen}
         initialValues={editing}
         onSubmit={handleSubmit}
-        loading={creating || updating || loadingEdit}
+        isSubmitting={creating || updating}
+        isLoadingEdit={loadingEdit}
       />
     </div>
   );
@@ -425,13 +426,15 @@ const CropFormDrawer = ({
   onOpenChange,
   initialValues,
   onSubmit,
-  loading,
+  isSubmitting,
+  isLoadingEdit,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   initialValues: Crop | null;
   onSubmit: (payload: Omit<Crop, "id"> & { id?: string }) => void;
-  loading?: boolean;
+  isSubmitting?: boolean;
+  isLoadingEdit?: boolean;
 }) => {
   const [name, setName] = useState("");
   const [isQDS, setIsQDS] = useState(true);
@@ -502,6 +505,12 @@ const CropFormDrawer = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || daysBeforeSubmission === "" || !units) return;
+    console.log('payload submitting', {
+      name,
+      isQDS,
+    });
+
+    
     onSubmit({
       name,
       isQDS,
@@ -524,7 +533,7 @@ const CropFormDrawer = ({
         <SheetHeader className="mb-2">
           <SheetTitle>{isEditing ? "Edit Crop" : "Create Crop"}</SheetTitle>
         </SheetHeader>
-        {loading && !isEditing ? (
+        {isLoadingEdit && isEditing ? (
           <div className="p-6 text-sm text-gray-600">Loading crop…</div>
         ) : (
           <form
@@ -767,12 +776,13 @@ const CropFormDrawer = ({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={!!loading}>
-                {loading
+              <Button type="submit" disabled={!!isSubmitting}>
+                {isSubmitting
                   ? "Please wait…"
                   : isEditing
-                    ? "Save Changes"
-                    : "Create Crop"}
+                    ? "Save Changes...."
+                    : "Create Crop"
+                }
               </Button>
             </div>
           </form>

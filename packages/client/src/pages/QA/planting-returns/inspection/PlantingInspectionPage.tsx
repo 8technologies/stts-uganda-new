@@ -20,6 +20,8 @@ import {
   SUBMIT_PLANTING_INSPECTION_STAGE,
 } from "@/gql/mutations";
 import { formatDateTime, formatIsoDate } from "@/utils/Date";
+import { getPermissionsFromToken } from "@/utils/permissions";
+import { useAuthContext } from "@/auth/useAuthContext";
 
 type StageDecision = "rejected" | "provisional" | "skipped" | "accepted";
 
@@ -51,6 +53,10 @@ const PlantingInspectionPage = () => {
     },
   );
   const planting = detail?.plantingReturn;
+  
+  const { auth } = useAuthContext();
+  const perms = getPermissionsFromToken(auth?.access_token);
+  const canCarryoutInspections = !!perms["can_initialise_inspections"];
 
   const cropId = planting?.crop?.id || planting?.cropId;
   const { data: cropData } = useQuery(LOAD_CROP, {
@@ -134,7 +140,7 @@ const PlantingInspectionPage = () => {
     }
   };
 
-  const canInitialize = !tasks || tasks.length === 0;
+  const canInitialize = canCarryoutInspections && (!tasks || tasks.length === 0);
 
   return (
     <Container>

@@ -154,7 +154,7 @@ const userResolvers = {
   Upload: GraphQLUpload,
   Query: {
     users: async (_, args) => {
-      return await getUsers({});
+      return await getUsers(args);
     },
     me: async (_, args, context) => {
       const user_id = context.req.user.id;

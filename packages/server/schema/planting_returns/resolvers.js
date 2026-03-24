@@ -615,130 +615,167 @@ const plantingReturnsResolvers = {
         "You dont have permissions to create planting returns"
       );
 
-      console.log("args", args.input);
-
       const input = args.input || {};
       try {
         await connection.beginTransaction();
-        const data = {
-          amount_enclosed: input.amount_enclosed || null,
-          registered_dealer: input.registered_dealer || null,
-          user_id: context?.req?.user?.id || null,
-        };
 
-        const id = await saveData({
+        // ── 1. Create the upload tracking record ────────────────────────────
+        const uploadId = await saveData({
           table: "planting_returns_uploads",
-          data,
+          data: {
+            amount_enclosed: input.amount_enclosed || null,
+            registered_dealer: input.registered_dealer || null,
+            user_id: context?.req?.user?.id || null,
+          },
           id: null,
           idColumn: "id",
-          connection
+          connection,
         });
 
-        // If a receipt was uploaded, save it and capture its public path
-        let savedReceiptInfo = null;
+        // ── 2. Save payment receipt (optional) ──────────────────────────────
+        let receiptFilename = null;
         if (input.payment_receipt) {
           try {
-            savedReceiptInfo = await saveUpload({
+            const saved = await saveUpload({
               file: input.payment_receipt,
               subdir: "form_attachments",
             });
+            receiptFilename = saved.filename;
           } catch (e) {
-            // If upload fails, rollback and bubble up
             throw new GraphQLError(`Receipt upload failed: ${e.message}`);
           }
         }
 
-        // If a receipt was uploaded, save it and capture its public path
-        let savedSubgrowerInfo = null;
-        let subgrowers = null;
+        // ── 3. Save sub-growers file and parse it ───────────────────────────
+        let subgrowerFilename = null;
+        let parseResult = { rows: [], headerErrors: [] };
+
         if (input.sub_grower_file) {
-          try {
-            savedSubgrowerInfo = await saveUpload({
-              file: input.sub_grower_file,
-              subdir: "Subgrower_files",
-            });
-            console.log("try-------------------------------------");
-            //  subgrowers = importSubGrowers(null, { fileName: savedSubgrowerInfo.filename, returnId: id }, context);
-            subgrowers = await importSubGrowers(savedSubgrowerInfo.filename);
-            console.log("subgrowers", subgrowers);
-            
-            const chunkSize = 10; // insert 10 at a time
-            for (let i = 0; i < subgrowers.length; i += chunkSize) {
-              const chunk = subgrowers.slice(i, i + chunkSize);
-              await Promise.all(chunk.map(async (subgrower) => {
+          const saved = await saveUpload({
+            file: input.sub_grower_file,
+            subdir: "Subgrower_files",
+          });
+          subgrowerFilename = saved.filename;
+
+          // Server-side independent parse & validate (does not rely on client)
+          parseResult = await importSubGrowers(subgrowerFilename);
+
+          if (parseResult.headerErrors && parseResult.headerErrors.length > 0) {
+            await connection.rollback();
+            return {
+              success: false,
+              message: parseResult.headerErrorMessage || `Missing required columns: ${parseResult.headerErrors.join(', ')}`,
+              totalRecords: 0,
+              totalImported: 0,
+              totalFailed: 0,
+              results: [],
+            };
+          }
+        }
+
+        // ── 4. Persist upload file references ───────────────────────────────
+        await saveData({
+          table: "planting_returns_uploads",
+          data: {
+            payment_receipt: receiptFilename || null,
+            sub_grower_file: subgrowerFilename || null,
+          },
+          id: uploadId,
+          connection,
+        });
+
+        // ── 5. Per-row insert (batches of 100) ──────────────────────────────
+        const rows = parseResult.rows ?? [];
+        const totalRecords = rows.length;
+        let totalImported = 0;
+        let totalFailed = 0;
+        const results = [];
+
+        const BATCH_SIZE = 100;
+        for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+          const batch = rows.slice(i, i + BATCH_SIZE);
+          await Promise.all(
+            batch.map(async (row) => {
+              // Skip rows that already have server-side validation errors
+              if (row._errors && row._errors.length > 0) {
+                totalFailed++;
+                results.push({
+                  row: row._rowNum,
+                  success: false,
+                  message: row._errors.join('; '),
+                });
+                return;
+              }
+              try {
                 const sr8_number = await generateSr8Number();
-                const subgrowerdata = {
-                  sr8_number,
-                  file_upload_id: id,
-                  created_by: context?.req?.user?.id || null,
-                  applicant_name: subgrower.name || null,
-                  contact_phone: subgrower.phone_number || null,
-                  field_name: subgrower.field_name || null,
-                  gps_lat: subgrower.gps_latitude || null,
-                  gps_lng: subgrower.gps_longitude || null,
-                  district: subgrower.district || null,
-                  subcounty: subgrower.subcounty || null,
-                  parish: subgrower.location?.parish || null,
-                  village: subgrower.village || null,
-                  date_sown: subgrower.planting_date || null,
-                  expected_harvest: subgrower.planting_date || null,
-                  seed_source: subgrower.source_of_seed || null,
-                  seed_lot_code: subgrower.lot_number || null,
-                  seed_class: subgrower.seed_class || null,
-                  area_ha: subgrower.size ?? null,
-                  crop_id: subgrower.crop || null,
-                  variety_id: subgrower.variety || null,
-                  intended_merchant: input.registered_dealer || null,
-                  seed_rate_per_ha: input.amount_enclosed || null,
-                  grower_number: subgrower.growerNumber || null,
-                  garden_number: subgrower.gardenNumber || null,
-                  receipt_id: savedReceiptInfo.filename || null,
-                };
-                return saveData({
+                await saveData({
                   table: "planting_returns",
-                  data: subgrowerdata,
+                  data: {
+                    sr8_number,
+                    file_upload_id: uploadId,
+                    created_by: context?.req?.user?.id || null,
+                    applicant_name: row.name || null,
+                    contact_phone: row.phone_number || null,
+                    field_name: row.field_name || null,
+                    gps_lat: row.gps_latitude ?? null,
+                    gps_lng: row.gps_longitude ?? null,
+                    district: row.district || null,
+                    subcounty: row.subcounty || null,
+                    village: row.village || null,
+                    date_sown: row.planting_date || null,
+                    expected_harvest: row.planting_date || null,
+                    seed_source: row.source_of_seed || null,
+                    seed_lot_code: row.lot_number || null,
+                    seed_class: row.seed_class || null,
+                    area_ha: row.size ?? null,
+                    crop_id: row.crop_id || null,
+                    variety_id: row.variety_id || null,
+                    intended_merchant: input.registered_dealer || null,
+                    receipt_id: receiptFilename || null,
+                  },
                   id: null,
                   idColumn: "id",
-                  connection
+                  connection,
                 });
-              }));
-            }
-
-
-
-          } catch (e) {
-            // If upload fails, rollback and bubble up
-            throw new GraphQLError(`Subgrower file upload failed: ${e.message}`);
-          }
+                totalImported++;
+                results.push({ row: row._rowNum, success: true, message: null });
+              } catch (e) {
+                totalFailed++;
+                results.push({
+                  row: row._rowNum,
+                  success: false,
+                  message: e?.message || "Insert failed",
+                });
+              }
+            })
+          );
         }
 
-        //save the receipt and subgrower file info
-        if (savedReceiptInfo || savedSubgrowerInfo) {
-          try {
-            // Update application_forms with receipt_id
-            await saveData({
-              table: "planting_returns_uploads",
-              data: { payment_receipt: savedReceiptInfo.filename, sub_grower_file: savedSubgrowerInfo ? savedSubgrowerInfo.filename : null },
-              id: id,
-              connection,
-            });
-          } catch (e) {
-            // Non-fatal for the core form save; log but do not block
-            console.error(
-              "Failed to save form_attachments record or update receipt_id:",
-              e.message
-            );
-          }
-        }
+        // ── 6. Update upload record with final totals ────────────────────────
+        await saveData({
+          table: "planting_returns_uploads",
+          data: { total_records: totalRecords, total_imported: totalImported, total_failed: totalFailed },
+          id: uploadId,
+          connection,
+        }).catch((e) => console.warn("Could not save totals to upload record:", e.message));
 
         await connection.commit();
+
         return {
           success: true,
-        }
-        
+          message: `Import complete: ${totalImported} of ${totalRecords} records imported.`,
+          totalRecords,
+          totalImported,
+          totalFailed,
+          results,
+        };
+
       } catch (error) {
-        console.log('error', error)
+        try { await connection.rollback(); } catch (_) {}
+        console.error('[createPlantingReturnUpload] error:', error);
         throw handleSQLError(error, "Failed to create planting return upload");
+      } finally {
+        connection.release();
       }
     }
 

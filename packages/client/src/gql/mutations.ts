@@ -410,13 +410,13 @@ const UPLOAD_PLANTING_RETURNS = gql`
     createPlantingReturnUpload(input: $input) {
       success
       message
-      record {
-        id
-        sr8Number
-        applicantName
-        areaHa
-        status
-        createdAt
+      totalRecords
+      totalImported
+      totalFailed
+      results {
+        row
+        success
+        message
       }
     }
   }

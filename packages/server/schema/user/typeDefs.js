@@ -61,7 +61,10 @@ const userTypeDefs = `#graphql
 
 
     type Query {
-        users: [User!]!
+        users(
+            limit: Int = 10
+            offset: Int = 0
+        ): [User!]!
         user(id: ID!): User
         currentUser: User
         me: User

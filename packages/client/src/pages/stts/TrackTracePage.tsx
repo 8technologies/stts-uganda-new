@@ -13,7 +13,7 @@ const TrackTracePage = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const rafRef = useRef<number>();
 
-  console.log("lotNumber", lotNumber);
+  // console.log("lotNumber", lotNumber);
 
   const stopScanner = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
