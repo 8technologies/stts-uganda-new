@@ -94,7 +94,7 @@ export const listCrops = async ({ filter = {}, pagination = {} }) => {
   const total = Number(countRow.total || 0);
 
   const [rows] = await db.execute(
-    `SELECT * FROM crops ${where} ORDER BY name ASC LIMIT ? OFFSET ?`,
+    `SELECT * FROM crops ${where} ORDER BY id desc LIMIT ? OFFSET ?`,
     [...values, size, offset]
   );
 

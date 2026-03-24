@@ -56,9 +56,8 @@ import {
   UPDATE_PLANTING_RETURN,
   DELETE_PLANTING_RETURN,
   ASSIGN_PLANTING_RETURN_INSPECTOR,
-  UPLOAD_PLANTING_RETURNS,
 } from "@/gql/mutations";
-import { PlantingReturnsUploadDialog } from "./blocks/PlantingReturnUploadDialog";
+import { ImportSubGrowersSheet } from "./blocks/ImportSubGrowersSheet";
 
 type PlantingReturn = {
   id: string;
@@ -116,36 +115,7 @@ const PlantingReturnsListPage = () => {
     variables: LIST_VARS,
   });
 
-  const [isFormOpen, setFormOpen] = useState(false);
-  const [loading1, setLoading] = useState(false);
-
-  const handleClose = (open: boolean) => {
-    setFormOpen(false);
-  };
-
-  const handleSubmit = async (values: Record<string, any>) => {
-    setLoading(true);
-    const input = {
-      amount_enclosed: parseInt(values.amountEnclosed) || null,
-      payment_receipt: values.paymentReceipt || null,
-      sub_grower_file: values.subGrowersFile || null,
-      registered_dealer: values.registeredSeedMerchant || "",
-    };
-
-    try {
-      // Submit logic here (e.g., API call)
-
-      await uploadReturns({ variables: { input } });
-      toast("Planting return updated");
-    } catch (e: any) {
-      toast("Failed to upload:", {
-        description: e?.message || "Unknown error",
-      });
-    } finally {
-      setLoading(false);
-      setFormOpen(false);
-    }
-  };
+  const [importOpen, setImportOpen] = useState(false);
 
   const rows = useMemo(
     () => (data?.plantingReturns?.items ?? []) as any[],
@@ -154,10 +124,6 @@ const PlantingReturnsListPage = () => {
   const total = Number(data?.plantingReturns?.total || 0);
 
   const [createReturn] = useMutation(CREATE_PLANTING_RETURN, {
-    refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
-    awaitRefetchQueries: true,
-  });
-  const [uploadReturns] = useMutation(UPLOAD_PLANTING_RETURNS, {
     refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
     awaitRefetchQueries: true,
   });
@@ -220,7 +186,7 @@ const PlantingReturnsListPage = () => {
   };
 
   const handleUpload = () => {
-    setFormOpen(true);
+    setImportOpen(true);
   };
 
   const handleEdit = (row: any) => {
@@ -381,15 +347,10 @@ const PlantingReturnsListPage = () => {
         }
       />
 
-      <PlantingReturnsUploadDialog
-        isOpen={isFormOpen}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-        loading={loading1}
-        resetForm={false}
-        initialValues={null}
-        title="Edit Planting Return"
-        submitLabel="Save Changes"
+      <ImportSubGrowersSheet
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        onImported={() => refetch?.()}
       />
 
       <PlantingReturnDetailsDialog

@@ -390,14 +390,19 @@ const UserPreviewDialog = ({
 };
 
 const UsersListPage = () => {
-  const { data, loading, error } = useQuery(LOAD_USERS);
+  const limit = 100;
+  const offset = 0;
+
+  const { data, loading, error } = useQuery(LOAD_USERS, {
+    variables: { limit, offset },
+  });
   const { data: rolesData } = useQuery(ROLES);
   const [createUser, { loading: saving }] = useMutation(CREATE_USER, {
-    refetchQueries: [{ query: LOAD_USERS }],
+    refetchQueries: [{ query: LOAD_USERS, variables: { limit, offset } }],
     awaitRefetchQueries: true,
   });
   const [deleteUser] = useMutation(DELETE_USER, {
-    refetchQueries: [{ query: LOAD_USERS }],
+    refetchQueries: [{ query: LOAD_USERS, variables: { limit, offset } }],
     awaitRefetchQueries: true,
   });
 

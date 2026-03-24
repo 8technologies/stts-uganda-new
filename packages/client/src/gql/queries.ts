@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const LOAD_USERS = gql`
-  query Users {
-    users {
+  query Users($limit: Int = 10, $offset: Int = 0) {
+    users(limit: $limit, offset: $offset) {
       id
       username
       name
@@ -37,6 +37,7 @@ const LOAD_CROPS = gql`
         updatedAt
         varieties {
           id
+          name
         }
       }
     }

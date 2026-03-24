@@ -72,7 +72,7 @@ const plantingReturnsTypeDefs = `#graphql
     # id: ID!
     # user_id: String!
     amount_enclosed: Int
-    payment_receipt: Upload!
+    payment_receipt: Upload
     sub_grower_file: Upload!
     registered_dealer: String
   }
@@ -176,6 +176,21 @@ const plantingReturnsTypeDefs = `#graphql
     record: PlantingReturn
   }
 
+  type ImportRowResult {
+    row: Int!
+    success: Boolean!
+    message: String
+  }
+
+  type ImportPlantingReturnPayload {
+    success: Boolean!
+    message: String
+    totalRecords: Int!
+    totalImported: Int!
+    totalFailed: Int!
+    results: [ImportRowResult!]!
+  }
+
   type BasicPayload {
     success: Boolean!
     message: String
@@ -194,7 +209,7 @@ const plantingReturnsTypeDefs = `#graphql
     updatePlantingReturn(id: ID!, input: UpdatePlantingReturnInput!): PlantingReturnPayload
     deletePlantingReturn(id: ID!): BasicPayload
 
-    createPlantingReturnUpload(input: PlantingReturnUploadInput!): PlantingReturnPayload
+    createPlantingReturnUpload(input: PlantingReturnUploadInput!): ImportPlantingReturnPayload
 
     assignPlantingReturnInspector(input: AssignPlantingReturnInspectorInput!): BasicPayload
     approvePlantingReturn(input: ApprovePlantingReturnInput!): BasicPayload

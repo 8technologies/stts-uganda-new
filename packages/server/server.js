@@ -5,23 +5,166 @@ import { expressMiddleware } from "@as-integrations/express5";
 import express from "express";
 import http from "http";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { typeDefs, resolvers } from "./schema/index.js";
 import { host, port, db } from "./config/config.js";
 import authenticateUser from "./middleware/auth.js";
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import ExcelJS from "exceljs";
 
 // Required logic for integrating with Express
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // Our httpServer handles incoming requests to our Express app.
 // Below, we tell Apollo Server to "drain" this httpServer,
 // enabling our servers to shut down gracefully.
+
+// ── Dynamic sub-growers template (enriched with live DB dropdowns) ───────────
+app.get("/templates/sub-growers-template.xlsx", async (_req, res) => {
+  try {
+    const templatePath = path.join(
+      __dirname,
+      "templates",
+      "sub-growers-template.xlsx"
+    );
+    console.log("[template] Generating sub-growers template from:", templatePath);
+    
+    const [districtRows] = await db.execute(
+      "SELECT name FROM districts ORDER BY name ASC"
+    );
+    console.log("[template] Fetched districts:", districtRows.length);
+    const [cropRows] = await db.execute(`
+      SELECT CONCAT('CROP: ', c.name, ', VARIETY: ', cv.name) AS label
+      FROM crop_varieties cv
+      INNER JOIN crops c ON c.id = cv.crop_id
+      ORDER BY c.name ASC, cv.name ASC
+    `);
+
+    const districts = districtRows.map((row) => String(row.name ?? "").trim()).filter(Boolean);
+    const cropVarieties = cropRows.map((row) => String(row.label ?? "").trim()).filter(Boolean);
+    const seedClasses = ["Certified", "Basic", "Pre-basic", "Qds"];
+
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(templatePath);
+
+    const worksheet =
+      workbook.getWorksheet("Sheet1") ??
+      workbook.worksheets.find((sheet) => !String(sheet.name).startsWith("_")) ??
+      workbook.addWorksheet("Sheet1");
+
+    const existingHelper = workbook.getWorksheet("_subgrowers_dropdowns");
+    if (existingHelper) {
+      workbook.removeWorksheet(existingHelper.id);
+    }
+
+    const helperSheet = workbook.addWorksheet("_subgrowers_dropdowns", {
+      state: "veryHidden",  // <-- must be here, not assigned later
+    });
+
+    districts.forEach((value, index) => {
+      helperSheet.getCell(index + 1, 1).value = value;
+    });
+    cropVarieties.forEach((value, index) => {
+      helperSheet.getCell(index + 1, 2).value = value;
+    });
+    seedClasses.forEach((value, index) => {
+      helperSheet.getCell(index + 1, 3).value = value;
+    });
+
+    // Remove and recreate the Crops sheet cleanly.
+    const existingCrops = workbook.getWorksheet("Crops");
+    if (existingCrops) {
+      workbook.removeWorksheet(existingCrops.id);
+    }
+    const cropsSheet = workbook.addWorksheet("Crops", {
+      state: "hidden",  // use "hidden" (user can unhide) or "veryHidden" (only VBA can unhide)
+    });
+    cropsSheet.getCell(1, 1).value = "ID";
+    cropsSheet.getCell(1, 2).value = "Label";
+    cropsSheet.getColumn(1).width = 10;
+    cropsSheet.getColumn(2).width = 60;
+    cropVarieties.forEach((value, index) => {
+      cropsSheet.getCell(index + 2, 1).value = index + 1;
+      cropsSheet.getCell(index + 2, 2).value = value;
+    });
+
+    const maxRow = 5000;
+
+    if (cropVarieties.length > 0) {
+      worksheet.dataValidations.add(`D2:D${maxRow}`, {
+        type: "list",
+        allowBlank: true,
+        formulae: [`'_subgrowers_dropdowns'!$B$1:$B$${cropVarieties.length}`],
+        showErrorMessage: true,
+        errorStyle: "warning",
+        errorTitle: "Invalid Crop/Variety",
+        error: 'Select a value from the dropdown or use the format "CROP: Name, VARIETY: Name".',
+        showInputMessage: true,
+        promptTitle: "Crop and Variety",
+        prompt: 'Choose a crop/variety from the list.',
+      });
+    }
+
+    worksheet.dataValidations.add(`E2:E${maxRow}`, {
+      type: "list",
+      allowBlank: true,
+      formulae: [`'_subgrowers_dropdowns'!$C$1:$C$${seedClasses.length}`],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "Invalid Seed Class",
+      error: "Please select a valid seed class.",
+      showInputMessage: true,
+      promptTitle: "Seed Class",
+      prompt: "Choose a seed class from the list.",
+    });
+
+    if (districts.length > 0) {
+      worksheet.dataValidations.add(`N2:N${maxRow}`, {
+        type: "list",
+        allowBlank: true,
+        formulae: [`'_subgrowers_dropdowns'!$A$1:$A$${districts.length}`],
+        showErrorMessage: true,
+        errorStyle: "warning",
+        errorTitle: "Invalid District",
+        error: "Please select a district from the dropdown list.",
+        showInputMessage: true,
+        promptTitle: "District",
+        prompt: "Choose a district from the list.",
+      });
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="sub-growsers-template.xlsx"'
+    );
+    res.setHeader("X-Template-Generated", "sub-growers");
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.send(Buffer.from(buffer));
+  } catch (err) {
+    console.error("[template] sub-growers generation error:", err);
+    res.status(500).json({
+      error: "Failed to generate template",
+      details: err?.message ?? "Unknown error",
+    });
+  }
+});
 
 app.use(express.static("public"));
 app.use("/templates", express.static("templates"));
 app.use(cors({ origin: "*" }));
 const httpServer = http.createServer(app);
 
-const escapeHtml = (value = "") =>
+const escapeHtml = (value = "") => 
   String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
