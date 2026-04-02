@@ -236,6 +236,7 @@ const SR4ListPage = () => {
           columns={columns as any}
           data={data}
           rowSelection
+          pagination={{ size: 10 }}
           layout={{ card: true }}
           // pagination={{
           //   page: 0,

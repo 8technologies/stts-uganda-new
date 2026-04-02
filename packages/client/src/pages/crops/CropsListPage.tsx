@@ -410,6 +410,7 @@ const CropsDataGrid = ({
     <DataGrid<Crop>
       columns={columns}
       data={crops}
+      pagination={{ size: 10 }}
       rowSelection={true}
       layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
       toolbar={<HeaderToolbar />}

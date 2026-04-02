@@ -969,6 +969,7 @@ const PermitsDataGrid = ({
       columns={columns}
       data={permits}
       rowSelection={true}
+      pagination={{ size: 10 }}
       layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
       toolbar={<HeaderToolbar />}
       messages={{ loading: "Loading...", empty: "No permits found" }}

@@ -118,6 +118,44 @@ import OrdersPage from "@/pages/marketplace/orders/OrdersPage";
 const AppRoutingSetup = (): ReactElement => {
   return (
     <Routes>
+      {/* Explicit reset-password route registrations + legacy URL compatibility */}
+      <Route path="/reset-password" element={<Navigate to="/auth/reset-password" replace />} />
+      <Route
+        path="/reset-password/change"
+        element={
+          <Navigate
+            to={{ pathname: "/auth/reset-password/change", search: window.location.search }}
+            replace
+          />
+        }
+      />
+      <Route
+        path="/classic/reset-password"
+        element={<Navigate to="/auth/classic/reset-password" replace />}
+      />
+      <Route
+        path="/classic/reset-password/change"
+        element={
+          <Navigate
+            to={{ pathname: "/auth/classic/reset-password/change", search: window.location.search }}
+            replace
+          />
+        }
+      />
+      <Route
+        path="/metronic/tailwind/react/auth/reset-password"
+        element={<Navigate to="/auth/reset-password" replace />}
+      />
+      <Route
+        path="/metronic/tailwind/react/auth/reset-password/change"
+        element={
+          <Navigate
+            to={{ pathname: "/auth/reset-password/change", search: window.location.search }}
+            replace
+          />
+        }
+      />
+
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<SttsDashboardPage />} />

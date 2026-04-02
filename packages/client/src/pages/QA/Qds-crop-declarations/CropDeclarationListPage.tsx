@@ -740,6 +740,7 @@ const PlantingReturnsGrid = ({
       columns={columns}
       data={rows}
       rowSelection={true}
+      pagination={{ size: 10 }}
       layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
       toolbar={<HeaderToolbar />}
       messages={{ loading: "Loading...", empty: "No planting returns found" }}

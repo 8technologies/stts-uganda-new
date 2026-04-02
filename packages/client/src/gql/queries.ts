@@ -1,8 +1,20 @@
 import { gql } from "@apollo/client";
 
 const LOAD_USERS = gql`
-  query Users($limit: Int = 10, $offset: Int = 0) {
-    users(limit: $limit, offset: $offset) {
+  query Users(
+    $limit: Int = 10
+    $offset: Int = 0
+    $search: String
+    $roleName: String
+    $district: String
+  ) {
+    users(
+      limit: $limit
+      offset: $offset
+      search: $search
+      roleName: $roleName
+      district: $district
+    ) {
       id
       username
       name
@@ -20,6 +32,7 @@ const LOAD_USERS = gql`
       is_merchant
       is_qds_producer
     }
+    usersCount(search: $search, roleName: $roleName, district: $district)
   }
 `;
 

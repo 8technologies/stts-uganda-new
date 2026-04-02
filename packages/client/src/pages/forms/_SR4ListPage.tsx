@@ -238,13 +238,8 @@ const SR4ListPage = () => {
           columns={columns as any}
           data={data}
           rowSelection
+          pagination={{ size: 10 }}
           layout={{ card: true }}
-          // pagination={{
-          //   page: 0,
-          //   size: 5,
-          //   sizes: [5, 10, 20, 50],
-          //   info: 'Showing {from} to {to} of {count} entries'
-          // }}
           toolbar={
             <DataGridToolbar className="p-5">
               <ToolbarFilters />

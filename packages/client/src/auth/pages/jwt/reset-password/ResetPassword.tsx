@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/auth/useAuthContext";
 import { Alert, KeenIcon } from "@/components";
 import { useLayout } from "@/providers";
-import { AxiosError } from "axios";
 
 const initialValues = {
   email: "",
@@ -28,6 +27,23 @@ const ResetPassword = () => {
   const { requestPasswordResetLink } = useAuthContext();
   const { currentLayout } = useLayout();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (!token) return;
+
+    navigate(
+      {
+        pathname:
+          currentLayout?.name === "auth-branded"
+            ? "/auth/reset-password/change"
+            : "/auth/classic/reset-password/change",
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  }, [currentLayout?.name, navigate]);
 
   const formik = useFormik({
     initialValues,
@@ -52,11 +68,12 @@ const ResetPassword = () => {
           search: params.toString(),
         });
       } catch (error) {
-        if (error instanceof AxiosError && error.response) {
-          setStatus(error.response.data.message);
-        } else {
-          setStatus("Password reset failed. Please try again.");
-        }
+        const message =
+          (error as any)?.graphQLErrors?.[0]?.message ||
+          (error as any)?.networkError?.message ||
+          (error as Error)?.message ||
+          "Password reset failed. Please try again.";
+        setStatus(message);
         setHasErrors(true);
         setLoading(false);
         setSubmitting(false);

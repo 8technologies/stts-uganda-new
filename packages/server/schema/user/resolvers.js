@@ -10,6 +10,7 @@ import saveImage from "../../helpers/saveImage.js";
 import tryParseJSON from "../../helpers/tryParseJSON.js";
 import { getRoles } from "../role/resolvers.js";
 import { getForms } from "../application_form/resolvers.js";
+import sendEmail from "../../utils/emails/email_server.js";
 
 const loginUser = async ({ username, password, user_id, context }) => {
   try {
@@ -89,6 +90,77 @@ export const getUsers = async ({
   id,
   username,
   role_id,
+  search,
+  roleName,
+  district,
+}) => {
+  try {
+    let where = "WHERE users.deleted = 0";
+    let values = [];
+
+    if (email) {
+      where += " AND users.email = ?";
+      values.push(email);
+    }
+
+    if (id) {
+      where += " AND users.id = ?";
+      values.push(id);
+    }
+
+    if (username) {
+      where += " AND users.username = ?";
+      values.push(username);
+    }
+
+    if (role_id) {
+      where += " AND users.role_id = ?";
+      values.push(role_id);
+    }
+    if (search) {
+      where +=
+        " AND (users.username LIKE ? OR users.name LIKE ? OR users.email LIKE ?)";
+      const q = `%${search}%`;
+      values.push(q, q, q);
+    }
+
+    if (roleName) {
+      where += " AND roles.name LIKE ?";
+      values.push(`%${roleName}%`);
+    }
+
+    if (district) {
+      where += " AND users.district LIKE ?";
+      values.push(`%${district}%`);
+    }
+
+    let sql = `
+      SELECT 
+       users.*,
+       roles.name as role_name
+      FROM users 
+      LEFT JOIN roles ON roles.id = users.role_id
+      ${where} ORDER BY users.updated_at DESC LIMIT ? OFFSET ?
+    `;
+
+    values.push(limit, offset);
+
+    const [results] = await db.execute(sql, values);
+
+    return results;
+  } catch (error) {
+    throw new GraphQLError(error.message);
+  }
+};
+
+const getUsersCount = async ({
+  email,
+  id,
+  username,
+  role_id,
+  search,
+  roleName,
+  district,
 }) => {
   try {
     let where = "WHERE users.deleted = 0";
@@ -114,20 +186,33 @@ export const getUsers = async ({
       values.push(role_id);
     }
 
-    let sql = `
-      SELECT 
-       users.*,
-       roles.name as role_name
-      FROM users 
-      LEFT JOIN roles ON roles.id = users.role_id
-      ${where} ORDER BY users.updated_at DESC LIMIT ? OFFSET ?
-    `;
+    if (search) {
+      where +=
+        " AND (users.username LIKE ? OR users.name LIKE ? OR users.email LIKE ?)";
+      const q = `%${search}%`;
+      values.push(q, q, q);
+    }
 
-    values.push(limit, offset);
+    if (roleName) {
+      where += " AND roles.name LIKE ?";
+      values.push(`%${roleName}%`);
+    }
+
+    if (district) {
+      where += " AND users.district LIKE ?";
+      values.push(`%${district}%`);
+    }
+
+    const sql = `
+      SELECT COUNT(DISTINCT users.id) AS total
+      FROM users
+      LEFT JOIN roles ON roles.id = users.role_id
+      ${where}
+    `;
 
     const [results] = await db.execute(sql, values);
 
-    return results;
+    return Number(results?.[0]?.total || 0);
   } catch (error) {
     throw new GraphQLError(error.message);
   }
@@ -155,6 +240,9 @@ const userResolvers = {
   Query: {
     users: async (_, args) => {
       return await getUsers(args);
+    },
+    usersCount: async (_, args) => {
+      return await getUsersCount(args);
     },
     me: async (_, args, context) => {
       const user_id = context.req.user.id;
@@ -661,6 +749,132 @@ const userResolvers = {
         if (connection) {
           connection.release();
         }
+      }
+    },
+
+    resetPasswordWithToken: async (parent, args, context) => {
+      const { token, newPassword } = args;
+      let connection;
+
+      try {
+        if (!token || !newPassword) {
+          throw new GraphQLError("Token and new password are required", {
+            extensions: { code: "BAD_USER_INPUT" },
+          });
+        }
+
+        if (newPassword.length < 8) {
+          throw new GraphQLError("Password must be at least 8 characters", {
+            extensions: { code: "BAD_USER_INPUT" },
+          });
+        }
+
+        let decoded;
+        try {
+          decoded = jwt.verify(token, PRIVATE_KEY);
+        } catch (err) {
+          throw new GraphQLError("Invalid or expired reset token", {
+            extensions: { code: "UNAUTHENTICATED" },
+          });
+        }
+
+        if (!decoded?.id || decoded?.purpose !== "password_reset") {
+          throw new GraphQLError("Invalid reset token payload", {
+            extensions: { code: "UNAUTHENTICATED" },
+          });
+        }
+
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        const [user] = await getUsers({ id: decoded.id, limit: 1 });
+        if (!user) {
+          throw new GraphQLError("User not found", {
+            extensions: { code: "NOT_FOUND" },
+          });
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedPwd = await bcrypt.hash(newPassword, salt);
+
+        await saveData({
+          table: "users",
+          data: {
+            password: hashedPwd,
+            updated_at: new Date(),
+          },
+          id: decoded.id,
+          connection,
+        });
+
+        await connection.commit();
+
+        return {
+          success: true,
+          message: "Password reset successfully",
+        };
+      } catch (error) {
+        if (connection) {
+          await connection.rollback();
+        }
+
+        if (error instanceof GraphQLError) {
+          throw error;
+        }
+
+        console.error("Password reset with token error:", error);
+        throw new GraphQLError("Failed to reset password", {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
+      } finally {
+        if (connection) {
+          connection.release();
+        }
+      }
+    },
+    requestPasswordResetLink: async (parent, args, context) => {
+      const { email } = args;
+      try {
+        const [user] = await getUsers({ email, limit: 1 });
+
+        // Return a generic success response to avoid account enumeration.
+        if (!user) {
+          return {
+            success: true,
+            message:
+              "A password reset link has been sent to this email address.",
+          };
+        }
+
+        const resetToken = jwt.sign(
+          { id: user.id, purpose: "password_reset" },
+          PRIVATE_KEY,
+          { expiresIn: "15m" }
+        );
+
+        const resetBaseUrl =
+          process.env.CLIENT_RESET_PASSWORD_URL ||
+          process.env.CLIENT_URL ||
+          "http://localhost:5173/metronic/tailwind/react/auth/reset-password";
+
+        const resetLink = `${resetBaseUrl}?token=${encodeURIComponent(resetToken)}`;
+        const params = 
+        {
+          to: email,
+          subject: "Password Reset Request",
+          message: `Hello ${user.name},\n\nYou requested a password reset. Please use the following link to reset your password:\n\n${resetLink}\n\nThis link expires in 15 minutes. If you did not request this, please ignore this email.\n\nBest regards,\nPWD Observatory Team`,
+        
+        }
+        await sendEmail(params);
+
+        return {
+          success: true,
+          message:
+            "If that email exists, a password reset link has been sent.",
+        };
+      } catch (error) {
+        console.error("Password reset link error:", error);
+        throw new GraphQLError("Failed to send password reset link");
       }
     },
     // deleteUser: async (parent, args, context) => {

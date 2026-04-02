@@ -6,7 +6,6 @@ import { useState } from "react";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
 import { useLayout } from "@/providers";
-import { AxiosError } from "axios";
 
 const passwordSchema = Yup.object().shape({
   newPassword: Yup.string()
@@ -38,11 +37,10 @@ const ResetPasswordChange = () => {
       setHasErrors(undefined);
 
       const token = new URLSearchParams(window.location.search).get("token");
-      const email = new URLSearchParams(window.location.search).get("email");
 
-      if (!token || !email) {
+      if (!token) {
         setHasErrors(true);
-        setStatus("Token and email properties are required");
+        setStatus("Reset token is required");
         setLoading(false);
         setSubmitting(false);
         return;
@@ -50,7 +48,7 @@ const ResetPasswordChange = () => {
 
       try {
         await changePassword(
-          email,
+          "",
           token,
           values.newPassword,
           values.confirmPassword,
@@ -62,11 +60,12 @@ const ResetPasswordChange = () => {
             : "/auth/classic/reset-password/changed",
         );
       } catch (error) {
-        if (error instanceof AxiosError && error.response) {
-          setStatus(error.response.data.message);
-        } else {
-          setStatus("Password reset failed. Please try again.");
-        }
+        const message =
+          (error as any)?.graphQLErrors?.[0]?.message ||
+          (error as any)?.networkError?.message ||
+          (error as Error)?.message ||
+          "Password reset failed. Please try again.";
+        setStatus(message);
         setHasErrors(true);
       } finally {
         setLoading(false);
