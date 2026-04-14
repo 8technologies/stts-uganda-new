@@ -734,13 +734,9 @@ const SAVE_SEED_LABEL_PACKAGE = gql`
       message
       package {
         id
-        name
+        crop_id
         packageSizeKg
-        labelsPerPackage
         priceUgx
-        isActive
-        createdAt
-        updatedAt
       }
     }
   }

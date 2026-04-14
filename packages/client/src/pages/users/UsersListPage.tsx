@@ -112,9 +112,11 @@ const UserFormDialog = ({
     password: "",
     roleId: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (open) {
+      setShowPassword(false);
       setForm({
         id: String(initialValues?.id ?? ""),
         username: initialValues?.username ?? "",
@@ -131,11 +133,10 @@ const UserFormDialog = ({
         password: "",
         roleId: "",
       });
-      const initRoles =
-        (initialValues as any)?.role_name || (initialValues as any)?.roles;
-      if (Array.isArray(initRoles) && initRoles.length > 0) {
-        const match = rolesOptions.find((r) => r.name === initRoles[0]);
-        if (match) setForm((prev) => ({ ...prev, roleId: String(match.id) }));
+
+      console.log("Initial values for form:", initialValues);
+      if (initialValues?.role_id) {
+        setForm((prev) => ({ ...prev, roleId: String(initialValues.role_id) }));
       }
     }
   }, [open, initialValues]);
@@ -326,12 +327,23 @@ const UserFormDialog = ({
               <label className="text-sm font-medium text-gray-700 mb-1 block">
                 Password
               </label>
-              <Input
-                type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                // required
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="pr-10"
+                  // required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700"
+                  tabIndex={-1}
+                >
+                  <KeenIcon icon={showPassword ? "eye-slash" : "eye"} className="text-base" />
+                </button>
+              </div>
             </div>
             {/* )} */}
           </div>

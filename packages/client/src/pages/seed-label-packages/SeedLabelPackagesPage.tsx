@@ -29,26 +29,31 @@ import {
   useDataGrid,
 } from "@/components";
 import { toast } from "sonner";
-import { LOAD_SEED_LABEL_PACKAGES } from "@/gql/queries";
+import { LOAD_CROPS, LOAD_SEED_LABEL_PACKAGES } from "@/gql/queries";
 import {
   SAVE_SEED_LABEL_PACKAGE,
   DELETE_SEED_LABEL_PACKAGE,
 } from "@/gql/mutations";
 import type { Column, ColumnDef } from "@tanstack/react-table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type SeedLabelPackage = {
   id: string;
-  name: string;
+  crop_id: string;
   packageSizeKg: number;
   labelsPerPackage: number;
   priceUgx: number;
   isActive: boolean;
+  crop?: { id: string; name: string };
   createdAt?: string;
   updatedAt?: string;
 };
+type CropsResponse = {
+  crops: { items: { id: string | number; name: string }[] };
+};
 
 const DEFAULT_FORM = {
-  name: "",
+  crop_id: "",
   packageSizeKg: "",
   labelsPerPackage: "1",
   priceUgx: "",
@@ -68,6 +73,23 @@ const SeedLabelPackagesPage = () => {
   const packages = useMemo(
     () => (data?.seedLabelPackages ?? []) as SeedLabelPackage[],
     [data],
+  );
+
+  const { data: cropsData, loading: cropsLoading, error: cropsError } =
+    useQuery<CropsResponse>(LOAD_CROPS, { variables: {
+  "pagination": {
+    // "page": null,
+    "size": 100
+  }}
+});
+  
+  const cropsOptions = useMemo(
+    () =>
+      ((cropsData?.crops?.items  || []) as any[]).map((c) => ({
+        id: c.id,
+        name: c.name,
+      })),
+    [cropsData],
   );
 
   const [savePackage, { loading: saving }] = useMutation(
@@ -96,11 +118,13 @@ const SeedLabelPackagesPage = () => {
     setForm(DEFAULT_FORM);
     setFormOpen(true);
   };
-
+   
   const openEdit = (pkg: SeedLabelPackage) => {
     setEditing(pkg);
+    console.log("current pkg", pkg);
+
     setForm({
-      name: pkg.name,
+      crop_id: pkg.crop_id ?? "",
       packageSizeKg: String(pkg.packageSizeKg ?? ""),
       labelsPerPackage: String(pkg.labelsPerPackage ?? 1),
       priceUgx: String(pkg.priceUgx ?? ""),
@@ -112,15 +136,15 @@ const SeedLabelPackagesPage = () => {
   const handleSave = async () => {
     const payload = {
       id: editing?.id,
-      name: form.name.trim(),
+      crop_id: form.crop_id,
       packageSizeKg: Number(form.packageSizeKg),
-      labelsPerPackage: Number(form.labelsPerPackage) || 1,
+      // labelsPerPackage: Number(form.labelsPerPackage) || 1,
       priceUgx: Number(form.priceUgx),
       isActive: form.isActive,
     };
 
-    if (!payload.name) {
-      toast.error("Package name is required");
+    if (!payload.crop_id) {
+      toast.error("Crop ID is required");
       return;
     }
     if (!payload.packageSizeKg || payload.packageSizeKg <= 0) {
@@ -146,7 +170,7 @@ const SeedLabelPackagesPage = () => {
   };
 
   const handleDelete = async (pkg: SeedLabelPackage) => {
-    if (!window.confirm(`Delete package "${pkg.name}"?`)) return;
+    if (!window.confirm(`Delete package for crop "${pkg.crop?.name}"?`)) return;
     try {
       await deletePackage({ variables: { id: pkg.id } });
       toast.success("Package deleted");
@@ -240,15 +264,32 @@ const SeedLabelPackagesPage = () => {
           <DialogBody className="space-y-4">
             <div>
               <label className="form-label">Package Name</label>
-              <Input
-                value={form.name}
+              <Select
+                value={form.crop_id}
+                onValueChange={(v) =>
+                  setForm((prev) => ({ ...prev, crop_id: v }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select crop" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cropsOptions.map((r) => (
+                    <SelectItem key={String(r.id)} value={String(r.id)}>
+                      {r.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {/* <Input
+                value={form.crop_id}
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, name: e.target.value }))
                 }
                 placeholder="e.g. 5 kg package"
-              />
+              /> */}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> */}
               <div>
                 <label className="form-label">Package Size (kg)</label>
                 <Input
@@ -263,8 +304,8 @@ const SeedLabelPackagesPage = () => {
                   }
                   placeholder="5"
                 />
-              </div>
-              <div>
+              {/* </div> */}
+              {/* <div>
                 <label className="form-label">Labels per Package</label>
                 <Input
                   type="number"
@@ -278,7 +319,7 @@ const SeedLabelPackagesPage = () => {
                   }
                   placeholder="1"
                 />
-              </div>
+              </div> */}
             </div>
             <div>
               <label className="form-label">Price (UGX)</label>
@@ -351,18 +392,18 @@ const SeedLabelPackagesGrid = ({
         meta: { headerClassName: "w-0" },
       },
       {
-        accessorKey: "name",
-        id: "name",
+        accessorKey: "crop",
+        id: "crop",
         header: ({ column }) => (
           <DataGridColumnHeader
-            title="Package"
+            title="Crop Name"
             column={column}
             filter={<ColumnInputFilter column={column} />}
           />
         ),
         cell: ({ row }) => (
           <span className="text-gray-800 font-medium">
-            {row.original.name}
+            {row.original.crop?.name}
           </span>
         ),
         meta: { className: "min-w-[200px]" },
@@ -378,17 +419,17 @@ const SeedLabelPackagesGrid = ({
         ),
         meta: { className: "min-w-[120px]" },
       },
-      {
-        accessorKey: "labelsPerPackage",
-        id: "labelsPerPackage",
-        header: ({ column }) => (
-          <DataGridColumnHeader title="Labels/Package" column={column} />
-        ),
-        cell: ({ row }) => (
-          <span className="text-gray-800">{row.original.labelsPerPackage}</span>
-        ),
-        meta: { className: "min-w-[160px]" },
-      },
+      // {
+      //   accessorKey: "labelsPerPackage",
+      //   id: "labelsPerPackage",
+      //   header: ({ column }) => (
+      //     <DataGridColumnHeader title="Labels/Package" column={column} />
+      //   ),
+      //   cell: ({ row }) => (
+      //     <span className="text-gray-800">{row.original.labelsPerPackage}</span>
+      //   ),
+      //   meta: { className: "min-w-[160px]" },
+      // },
       {
         accessorKey: "priceUgx",
         id: "priceUgx",
@@ -475,7 +516,7 @@ const SeedLabelPackagesGrid = ({
                 onChange={(e) => {
                   const val = e.target.value;
                   setSearchInput(val);
-                  table.getColumn("name")?.setFilterValue(val);
+                  table.getColumn("crop")?.setFilterValue(val);
                 }}
               />
             </label>

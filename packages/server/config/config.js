@@ -19,6 +19,7 @@ const db = mysql.createPool({
   waitForConnections: true,
   queueLimit: 0,
   enableKeepAlive: true,
+  // charset: "utf8mb4",
 });
 
 // Verify connection

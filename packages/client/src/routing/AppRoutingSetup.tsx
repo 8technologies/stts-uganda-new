@@ -253,14 +253,29 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/market/orders" element={<OrdersPage />} />
 
 
-          <Route path="/admin/roles" element={<RolesListPage />} />
-          <Route path="/admin/crops" element={<CropsListPage />} />
+          <Route path="/admin/roles" element={
+            <PermissionGuard required={["can_manage_roles"]}>
+                <RolesListPage />
+              </PermissionGuard>
+            } />
+          <Route path="/admin/crops" element={
+            <PermissionGuard required={["can_manage_crops"]}>
+                <CropsListPage />
+              </PermissionGuard>
+            } />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />
-          <Route path="/admin/users" element={<UsersListPage />} />
+          <Route path="/admin/users" element={
+            <PermissionGuard required={["can_manage_users"]}>
+                <UsersListPage />
+              </PermissionGuard>
+            } />
           <Route
             path="/admin/seed-label-packages"
-            element={<SeedLabelPackagesPage />}
-          />
+            element={
+            <PermissionGuard required={["can_manage_seed_label_packages"]}>
+                <SeedLabelPackagesPage />
+              </PermissionGuard>
+            } />
           <Route
             path="/public-profile/profiles/default"
             element={<ProfileDefaultPage />}

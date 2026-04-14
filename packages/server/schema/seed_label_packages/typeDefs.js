@@ -3,10 +3,10 @@ const SeedLabelPackagesTypes = `#graphql
 
     type SeedLabelPackage {
         id: ID!
-        name: String!
+        crop_id: String
+        crop: Crop
         packageSizeKg: Float!
-        labelsPerPackage: Int!
-        priceUgx: Int!
+        priceUgx: Float!
         isActive: Boolean!
         createdAt: DateTime
         updatedAt: DateTime
@@ -14,10 +14,9 @@ const SeedLabelPackagesTypes = `#graphql
 
     input SeedLabelPackageInput {
         id: ID
-        name: String!
-        packageSizeKg: Float!
-        labelsPerPackage: Int!
-        priceUgx: Int!
+        crop_id: ID
+        packageSizeKg: Float
+        priceUgx: Float
         isActive: Boolean
     }
 

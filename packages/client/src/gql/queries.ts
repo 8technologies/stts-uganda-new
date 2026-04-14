@@ -831,17 +831,19 @@ const LOAD_SEED_LABELS = gql`
 
 const LOAD_SEED_LABEL_PACKAGES = gql`
   query SeedLabelPackages($activeOnly: Boolean) {
-    seedLabelPackages(activeOnly: $activeOnly) {
-      id
+  seedLabelPackages(activeOnly: $activeOnly) {
+    id
+    crop_id
+    packageSizeKg
+    priceUgx
+    isActive
+    createdAt
+    updatedAt
+    crop {
       name
-      packageSizeKg
-      labelsPerPackage
-      priceUgx
-      isActive
-      createdAt
-      updatedAt
     }
   }
+}
 `;
 
 const LOAD_SEED_LABEL_BY_ID = gql`
