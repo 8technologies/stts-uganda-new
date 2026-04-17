@@ -329,6 +329,7 @@ const applicationFormsResolvers = {
 
         const inspectors = await getUsers({
           role_id: existingRole.id,
+          limit: 1000,
         });
 
         return inspectors;

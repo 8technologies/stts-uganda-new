@@ -633,7 +633,7 @@ const Users = () => {
         rowSelection={true}
         onRowSelectionChange={handleRowSelection}
         pagination={{ size: 10 }}
-        sorting={canManageAllForms ? ([{ id: 'users', desc: false }] as any) : ([] as any)}
+        sorting={canManageAllForms ? ([{ id: 'users', desc: true }] as any) : ([] as any)}
         toolbar={<Toolbar typeFilter={typeFilter} setTypeFilter={setTypeFilter} />}
         layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
         messages={{

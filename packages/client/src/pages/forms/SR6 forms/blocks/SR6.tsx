@@ -46,6 +46,8 @@ type Sr6Application = {
   id: string;
   status?: string | null;
   type: 'plant_breeder' | 'seed_producer';
+  valid_until?: string | null;
+  created_at?: string | null;
   inspector?: { name?: string; district?: string } | null;
   user?: {
     name?: string;
@@ -99,6 +101,20 @@ const SR6s = () => {
         enableHiding: false,
         meta: {
           headerClassName: 'w-0'
+        }
+      },
+      {
+        accessorFn: (row) => row.created_at,
+        id: 'created_at',
+        header: ({ column }) => <DataGridColumnHeader title="Created At" column={column} />,
+        enableSorting: true,
+        cell: (info) => {
+          const date = new Date(info.row.original.created_at);
+          return (
+            <span className="text-gray-800 font-normal">
+              {date.toLocaleDateString()} {date.toLocaleTimeString()}
+            </span>
+          );
         }
       },
       {
@@ -236,22 +252,22 @@ const SR6s = () => {
           cellClassName: 'text-gray-800 font-normal'
         }
       },
+      // {
+      //   accessorFn: (row) => row.activity,
+      //   id: 'created_by',
+      //   header: ({ column }) => <DataGridColumnHeader title="Created By" column={column} />,
+      //   enableSorting: true,
+      //   cell: (info) => {
+      //     return info.row.original.created_user;
+      //   },
+      //   meta: {
+      //     headerClassName: 'min-w-[160px]',
+      //     cellClassName: 'text-gray-800 font-normal'
+      //   }
+      // },
       {
         accessorFn: (row) => row.activity,
-        id: 'created_by',
-        header: ({ column }) => <DataGridColumnHeader title="Created By" column={column} />,
-        enableSorting: true,
-        cell: (info) => {
-          return info.row.original.created_user;
-        },
-        meta: {
-          headerClassName: 'min-w-[160px]',
-          cellClassName: 'text-gray-800 font-normal'
-        }
-      },
-      {
-        accessorFn: (row) => row.activity,
-        id: 'expires_on',
+        id: 'valid_until',
         header: ({ column }) => <DataGridColumnHeader title="Expires On" column={column} />,
         enableSorting: true,
         cell: (info) => {
@@ -333,7 +349,8 @@ const SR6s = () => {
           ? `${f.inspector.name ?? ''} ${f.inspector.district ?? ''}`.trim()
           : '-',
         created_user: '-',
-        valid_until: undefined as any,
+        valid_until: f.valid_until ?? "-",
+        created_at: f.created_at ?? '-',
         raw: f as any
       })),
     [forms]
@@ -505,7 +522,7 @@ const SR6s = () => {
         rowSelection={true}
         onRowSelectionChange={handleRowSelection}
         pagination={{ size: 10 }}
-        sorting={[{ id: 'users', desc: false }]}
+        sorting={[{ id: 'users', desc: true }]}
         toolbar={<Toolbar />}
         layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
         messages={{

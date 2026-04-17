@@ -3,6 +3,7 @@ interface ISR6Data {
     avatar: string;
     userName: string;
     userGmail: string;
+    phone_number?: string;
   };
   role: string;
   status: {
@@ -12,6 +13,8 @@ interface ISR6Data {
   location: string;
   flag: string;
   activity: string;
+  valid_until?: string;
+  created_at?: string;
 }
 
 const SR6Data: ISR6Data[] = [
