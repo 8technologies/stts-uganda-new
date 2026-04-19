@@ -855,7 +855,7 @@ const userResolvers = {
         const resetBaseUrl =
           process.env.CLIENT_RESET_PASSWORD_URL ||
           process.env.CLIENT_URL ||
-          "http://localhost:5173/metronic/tailwind/react/auth/reset-password";
+          "https://new.seedtracking.net/auth/reset-password";
 
         const resetLink = `${resetBaseUrl}?token=${encodeURIComponent(resetToken)}`;
         const params = 
