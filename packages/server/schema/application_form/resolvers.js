@@ -1568,6 +1568,8 @@ const applicationFormsResolvers = {
           id: formOwner.id,
         });
 
+        await connection.commit();
+
         // send email with attachment if any
         await sendEmail({
           from: '"STTS MAAIF" <tredumollc@gmail.com>',
@@ -1577,7 +1579,7 @@ const applicationFormsResolvers = {
           // attachments,
         });
 
-        await connection.commit();
+        
 
         return {
           success: true,

@@ -398,6 +398,8 @@ const PlantingReturnsGrid = ({
     />
   );
 
+  console.log("Rows", rows);
+
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const cols: ColumnDef<any>[] = [
       {
@@ -451,7 +453,7 @@ const PlantingReturnsGrid = ({
                   to="#"
                   className="text-sm font-medium text-gray-900 hover:text-primary-active mb-px"
                 >
-                  {row.original?.applicantName || row.original?.createdBy?.name}
+                  {row.original?.createdBy?.name}
                 </Link>
               </div>
             </div>

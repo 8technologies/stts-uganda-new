@@ -208,8 +208,9 @@ const PlantingInspectionPage = () => {
                   const existing = stageStatusMap[String(s.id)];
                   const isLast = idx === stagesFromCrop.length - 1;
                   const status = existing?.status || "pending";
-                  const edit = status === "submitted";
-                  const enabled =  !canInitialize && s.order <= firstPendingOrder && !edit;
+                  const edit = status === "pending";
+                  const enabled =  !canInitialize && s.order <= firstPendingOrder && edit;
+                  console.log("Enabled", !canInitialize, s.order <= firstPendingOrder, edit, enabled);
                   const due = existing?.dueDate
                     ? formatIsoDate(existing.dueDate)
                     : "—";
@@ -396,13 +397,13 @@ const StageForm = ({
             <Input
               value={values.gpsLat}
               onChange={(e) => setValues({ ...values, gpsLat: e.target.value })}
-              readOnly={!enabled}
+              readOnly={enabled}
             />
             <Button
               type="button"
               variant="outline"
               onClick={handleGeo}
-              disabled={enabled}
+              disabled={!enabled}
             >
               Get GPS
             </Button>
@@ -413,7 +414,7 @@ const StageForm = ({
           <Input
             value={values.gpsLng}
             onChange={(e) => setValues({ ...values, gpsLng: e.target.value })}
-            readOnly={!enabled}
+            readOnly={enabled}
           />
         </div>
         <div>
@@ -423,7 +424,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, seedClass: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -433,7 +434,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, fieldSize: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -441,7 +442,7 @@ const StageForm = ({
           <Input
             value={values.offTypes}
             onChange={(e) => setValues({ ...values, offTypes: e.target.value })}
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -449,7 +450,7 @@ const StageForm = ({
           <Input
             value={values.diseases}
             onChange={(e) => setValues({ ...values, diseases: e.target.value })}
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -459,7 +460,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, noxiousWeeds: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -469,7 +470,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, otherFeatures: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -479,7 +480,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, otherWeeds: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -489,7 +490,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, isolationDistance: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -499,7 +500,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, plantCount: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div className="md:col-span-2">
@@ -510,7 +511,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, generalCondition: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div>
@@ -520,7 +521,7 @@ const StageForm = ({
             onChange={(e) =>
               setValues({ ...values, estimatedYield: e.target.value })
             }
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
         <div className="md:col-span-2">
@@ -529,7 +530,7 @@ const StageForm = ({
             rows={3}
             value={values.remarks}
             onChange={(e) => setValues({ ...values, remarks: e.target.value })}
-            readOnly={enabled}
+            readOnly={!enabled}
           />
         </div>
       </div>
@@ -545,7 +546,7 @@ const StageForm = ({
                 type="radio"
                 checked={decision === "provisional"}
                 onChange={() => setDecision("provisional")}
-                disabled={enabled}
+                disabled={!enabled}
               />
               Provisional
             </label>
@@ -554,7 +555,7 @@ const StageForm = ({
                 type="radio"
                 checked={decision === "skipped"}
                 onChange={() => setDecision("skipped")}
-                disabled={enabled}
+                disabled={!enabled}
               />
               Skip
             </label>
@@ -563,7 +564,7 @@ const StageForm = ({
                 type="radio"
                 checked={decision === "rejected"}
                 onChange={() => setDecision("rejected")}
-                disabled={enabled}
+                disabled={!enabled}
               />
               Reject
             </label>
@@ -576,7 +577,7 @@ const StageForm = ({
                 type="radio"
                 checked={decision === "accepted"}
                 onChange={() => setDecision("accepted")}
-                disabled={enabled}
+                disabled={!enabled}
               />
               Accepted
             </label>
@@ -585,7 +586,7 @@ const StageForm = ({
                 type="radio"
                 checked={decision === "rejected"}
                 onChange={() => setDecision("rejected")}
-                disabled={enabled}
+                disabled={!enabled}
               />
               Rejected
             </label>
@@ -599,7 +600,7 @@ const StageForm = ({
           rows={2}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          readOnly={enabled}
+          readOnly={!enabled}
         />
       </div>
 
@@ -615,7 +616,7 @@ const StageForm = ({
           </Button>
           <Button
             onClick={() => onSubmit({ decision, comment, inputs: values })}
-            disabled={ enabled}
+            disabled={!enabled}
           >
             <KeenIcon icon="tick-square" /> Submit Stage
           </Button>
