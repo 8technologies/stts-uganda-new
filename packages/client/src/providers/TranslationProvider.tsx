@@ -22,6 +22,11 @@ import { type TLanguage, type ITranslationProviderProps } from "@/i18n";
 import { getData, setData } from "@/utils";
 
 const getInitialLanguage = () => {
+  // Only run in browser environment
+  if (typeof window === "undefined") {
+    return I18N_DEFAULT_LANGUAGE;
+  }
+  
   const urlParams = new URLSearchParams(window.location.search);
   const langParam = urlParams.get("lang");
 
@@ -41,7 +46,7 @@ const getInitialLanguage = () => {
 };
 
 const initialProps: ITranslationProviderProps = {
-  currentLanguage: getInitialLanguage(),
+  currentLanguage: I18N_DEFAULT_LANGUAGE,
   changeLanguage: (_: TLanguage) => {},
   isRTL: () => false,
 };
@@ -77,6 +82,12 @@ const TranslationProvider = ({ children }: PropsWithChildren) => {
   const isRTL = () => {
     return currentLanguage.direction === "rtl";
   };
+
+  // Initialize language from browser on mount
+  useEffect(() => {
+    const initialLanguage = getInitialLanguage();
+    setCurrentLanguage(initialLanguage);
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("dir", currentLanguage.direction);

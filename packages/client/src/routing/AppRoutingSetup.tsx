@@ -114,6 +114,7 @@ import SeedLabelManagementPage from "@/pages/QA/seed_Labels/SeedLabels";
 import MarketableSeed from "@/pages/seed-stock/marketable-seed/MarketableSeed";
 import MarketplacePage from "@/pages/marketplace/products/MarketplacePage";
 import OrdersPage from "@/pages/marketplace/orders/OrdersPage";
+// import PreOrdersPage from "@/pages/marketplace/pre-orders/PreOrdersPage";
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -251,6 +252,7 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route path="/market/products" element={<MarketplacePage />} />
           <Route path="/market/orders" element={<OrdersPage />} />
+          {/* <Route path="/market/pre-orders" element={<PreOrdersPage />} /> */}
 
 
           <Route path="/admin/roles" element={

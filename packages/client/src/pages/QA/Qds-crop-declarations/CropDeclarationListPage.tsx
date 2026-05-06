@@ -284,7 +284,7 @@ const CropDeclarationListPage = () => {
             </div>
           ) : error ? (
             <div className="p-6 text-danger bg-white rounded-lg border flex items-center justify-between">
-              <span>Failed to load permits</span>
+              <span>{error.message || "Failed to load crop declarations"}</span>
               <a className="btn btn-sm" onClick={() => refetch?.()}>
                 Retry
               </a>

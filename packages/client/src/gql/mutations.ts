@@ -923,3 +923,36 @@ export const DELETESEEDLABELPACKAGE = gql`
   }
 }
 `;
+
+export const CREATE_PRE_ORDER = gql`
+  mutation CreatePreOrder($input: CreatePreOrderInput!) {
+    createPreOrder(input: $input) {
+      success
+      message
+      preOrder {
+        id
+        quantity
+        requested_date
+        status
+        Crop {
+          id
+          name
+        }
+        Variety {
+          id
+          name
+        }
+        created_at
+      }
+    }
+  }
+`;
+
+export const DELETE_PRE_ORDER = gql`
+  mutation DeletePreOrder($id: ID!) {
+    deletePreOrder(id: $id) {
+      success
+      message
+    }
+  }
+`;

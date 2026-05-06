@@ -140,7 +140,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
   });
 
   const handlePrint = async (formDetails: any) => {
-    console.log("nnnnnnnnnnn:", formDetails.id);
+    // console.log("nnnnnnnnnnn:", formDetails.id);
     if (printedOnce) {
       // already printed once - block further printing
       alert("This label has already been printed once and cannot be printed again.");
@@ -199,10 +199,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       <section class="tag">
         <div class="dotmatrix">
           <div class="header">${seedClass}</div>
-<<<<<<< Updated upstream
-=======
           <div class="tag-number">${String(index + 1).padStart(4, "0")}</div>
->>>>>>> Stashed changes
           <div class="main-grid">
             <div class="left-col">
               <div class="row"><div class="label">CROP:</div><div class="value">${crop}</div></div>
@@ -260,7 +257,6 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             gap: 16px;
           }
 
-<<<<<<< Updated upstream
           .tag {
             width: 720px;
             height: 320px;
@@ -273,20 +269,6 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             border-radius: 8px;
             page-break-inside: avoid;
           }
-=======
-      .tag {
-        width: 720px;
-        height: 320px;
-        background: #f5f0e1;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f5f0e1"/><path d="M0,0 Q50,20 100,0 L100,100 L0,100 Z" fill="%23e8e0d5" opacity="0.3"/></svg>');
-        background-size: 100px 100px;
-        padding: 16px 28px 52px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-        position: relative;
-        border-radius: 8px;
-        page-break-inside: avoid;
-      }
->>>>>>> Stashed changes
 
           @font-face {
             font-family: "DotMatrix";
@@ -314,15 +296,6 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             font-size: 18px;
           }
 
-<<<<<<< Updated upstream
-          .main-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 180px 110px;
-            align-items: start;
-            margin-top: 12px;
-            column-gap: 12px;
-          }
-=======
       .main-grid {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 180px 110px;
@@ -331,42 +304,11 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
         column-gap: 12px;
         row-gap: 4px;
       }
->>>>>>> Stashed changes
 
           .left-col {
             font-size: 18px;
           }
 
-<<<<<<< Updated upstream
-          .row {
-            display: flex;
-            margin: 6px 0;
-          }
-
-          .label {
-            width: 200px;
-          }
-
-          .value {
-            font-weight: normal;
-          }
-
-          .right-col {
-            font-size: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 2px;
-          }
-
-          .right-item span:first-child {
-            font-weight: bold;
-          }
-
-          .right-item span:nth-child(2) {
-            font-weight: normal;
-          }
-=======
       .row {
         display: grid;
         grid-template-columns: 220px minmax(0, 1fr);
@@ -409,7 +351,6 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
        white-space: normal;
         overflow-wrap: anywhere;
       }
->>>>>>> Stashed changes
 
           .qr-col {
             display: flex;
@@ -433,18 +374,6 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             letter-spacing: 1px;
           }
 
-<<<<<<< Updated upstream
-          .bottom {
-            position: absolute;
-            bottom: 18px;
-            width: 100%;
-            left: 0;
-            text-align: center;
-            font-size: 20px;
-            letter-spacing: 2px;
-            transform: translateY(6px);
-          }
-=======
       .bottom {
         position: absolute;
         bottom: 14px;
@@ -455,7 +384,6 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
         letter-spacing: 2px;
         transform: translateY(6px);
       }
->>>>>>> Stashed changes
 
           @media print {
             body {

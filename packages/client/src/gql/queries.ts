@@ -819,12 +819,15 @@ const LOAD_SEED_LABELS = gql`
         lot_number
       }
       SeedLabelPackage {
+      crop_id
+      crop {
         name
-        packageSizeKg
-        labelsPerPackage
-        priceUgx
-        isActive
       }
+      packageSizeKg
+      priceUgx
+      id
+      isActive
+    }
     }
   }
 `;
@@ -1081,6 +1084,35 @@ export const SEEDLABELPACKAGES = gql`
       Crop {
         name,
         units
+      }
+    }
+  }
+`;
+
+export const PRE_ORDERS = gql`
+  query GetPreOrders {
+    getPreOrders {
+      id
+      user_id
+      crop_id
+      variety_id
+      quantity
+      requested_date
+      status
+      comment
+      created_at
+      Crop {
+        id
+        name
+      }
+      Variety {
+        id
+        name
+      }
+      createdBy {
+        id
+        name
+        username
       }
     }
   }

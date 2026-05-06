@@ -326,7 +326,7 @@ const ExportPermitsListPage = () => {
             </div>
           ) : listError ? (
             <div className="p-6 text-danger bg-white rounded-lg border flex items-center justify-between">
-              <span>Failed to load permits</span>
+              <span>{listError.message || "Failed to load permits"}</span>
               <a className="btn btn-sm" onClick={() => refetch?.()}>
                 Retry
               </a>
