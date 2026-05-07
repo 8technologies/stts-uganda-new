@@ -37,6 +37,24 @@ const CHANGE_PASSWORD = gql`
   }
 `;
 
+const REQUEST_PASSWORD_RESET_LINK = gql`
+  mutation RequestPasswordResetLink($email: String!) {
+    requestPasswordResetLink(email: $email) {
+      success
+      message
+    }
+  }
+`;
+
+const RESET_PASSWORD_WITH_TOKEN = gql`
+  mutation ResetPasswordWithToken($token: String!, $newPassword: String!) {
+    resetPasswordWithToken(token: $token, newPassword: $newPassword) {
+      success
+      message
+    }
+  }
+`;
+
 const SIGNUP = gql`
   mutation CreateUser($payload: CreateUserInput!) {
     createUser(payload: $payload) {
@@ -716,13 +734,9 @@ const SAVE_SEED_LABEL_PACKAGE = gql`
       message
       package {
         id
-        name
+        crop_id
         packageSizeKg
-        labelsPerPackage
         priceUgx
-        isActive
-        createdAt
-        updatedAt
       }
     }
   }
@@ -825,6 +839,8 @@ export {
   APPROVE_SEED_LABEL,
   PRINT_SEED_LABEL,
   CHANGE_PASSWORD,
+  REQUEST_PASSWORD_RESET_LINK,
+  RESET_PASSWORD_WITH_TOKEN,
 };
 
 // ---- Plant Inspection (SR10) placeholder mutations ----
@@ -906,4 +922,37 @@ export const DELETESEEDLABELPACKAGE = gql`
     message
   }
 }
+`;
+
+export const CREATE_PRE_ORDER = gql`
+  mutation CreatePreOrder($input: CreatePreOrderInput!) {
+    createPreOrder(input: $input) {
+      success
+      message
+      preOrder {
+        id
+        quantity
+        requested_date
+        status
+        Crop {
+          id
+          name
+        }
+        Variety {
+          id
+          name
+        }
+        created_at
+      }
+    }
+  }
+`;
+
+export const DELETE_PRE_ORDER = gql`
+  mutation DeletePreOrder($id: ID!) {
+    deletePreOrder(id: $id) {
+      success
+      message
+    }
+  }
 `;

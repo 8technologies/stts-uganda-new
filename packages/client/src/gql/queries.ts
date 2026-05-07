@@ -1,8 +1,20 @@
 import { gql } from "@apollo/client";
 
 const LOAD_USERS = gql`
-  query Users($limit: Int = 10, $offset: Int = 0) {
-    users(limit: $limit, offset: $offset) {
+  query Users(
+    $limit: Int = 10
+    $offset: Int = 0
+    $search: String
+    $roleName: String
+    $district: String
+  ) {
+    users(
+      limit: $limit
+      offset: $offset
+      search: $search
+      roleName: $roleName
+      district: $district
+    ) {
       id
       username
       name
@@ -20,6 +32,7 @@ const LOAD_USERS = gql`
       is_merchant
       is_qds_producer
     }
+    usersCount(search: $search, roleName: $roleName, district: $district)
   }
 `;
 
@@ -806,29 +819,34 @@ const LOAD_SEED_LABELS = gql`
         lot_number
       }
       SeedLabelPackage {
+      crop_id
+      crop {
         name
-        packageSizeKg
-        labelsPerPackage
-        priceUgx
-        isActive
       }
+      packageSizeKg
+      priceUgx
+      id
+      isActive
+    }
     }
   }
 `;
 
 const LOAD_SEED_LABEL_PACKAGES = gql`
   query SeedLabelPackages($activeOnly: Boolean) {
-    seedLabelPackages(activeOnly: $activeOnly) {
-      id
+  seedLabelPackages(activeOnly: $activeOnly) {
+    id
+    crop_id
+    packageSizeKg
+    priceUgx
+    isActive
+    createdAt
+    updatedAt
+    crop {
       name
-      packageSizeKg
-      labelsPerPackage
-      priceUgx
-      isActive
-      createdAt
-      updatedAt
     }
   }
+}
 `;
 
 const LOAD_SEED_LABEL_BY_ID = gql`
@@ -1066,6 +1084,35 @@ export const SEEDLABELPACKAGES = gql`
       Crop {
         name,
         units
+      }
+    }
+  }
+`;
+
+export const PRE_ORDERS = gql`
+  query GetPreOrders {
+    getPreOrders {
+      id
+      user_id
+      crop_id
+      variety_id
+      quantity
+      requested_date
+      status
+      comment
+      created_at
+      Crop {
+        id
+        name
+      }
+      Variety {
+        id
+        name
+      }
+      createdBy {
+        id
+        name
+        username
       }
     }
   }

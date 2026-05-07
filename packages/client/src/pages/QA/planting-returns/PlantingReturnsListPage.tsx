@@ -1,5 +1,5 @@
-import { Fragment, useMemo, useState } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { Fragment, useCallback, useMemo, useState } from "react";
+import { useApolloClient, useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 
 import { Container } from "@/components/container";
 import {
@@ -20,6 +20,7 @@ import {
   DataGridRowSelect,
   DataGridRowSelectAll,
   KeenIcon,
+  TDataGridRequestParams,
   useDataGrid,
 } from "@/components";
 import { Input } from "@/components/ui/input";
@@ -96,7 +97,30 @@ type PlantingReturn = {
   createdAt?: string;
 };
 
+type PlantingReturnsResponse = {
+  plantingReturns?: {
+    items?: PlantingReturn[];
+    total?: number;
+  };
+};
+
+type PlantingReturnDetailResponse = {
+  plantingReturn?: any;
+};
+
+type AssignPlantingReturnInspectorResponse = {
+  assignPlantingReturnInspector?: {
+    success?: boolean;
+    message?: string;
+  };
+};
+
+type InspectorsResponse = {
+  inspectors?: any[];
+};
+
 const PlantingReturnsListPage = () => {
+  const client = useApolloClient();
   const { currentLayout } = useLayout();
   const [createOpen, setCreateOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -107,21 +131,63 @@ const PlantingReturnsListPage = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canCreatePlantingReturns = !!perms["can_create_planting_returns"];
-  const canAssignInspector = !!perms["qa_can_assign_inspector"];
+  const [fetching, setFetching] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [currentPageData, setCurrentPageData] = useState<PlantingReturn[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Data
-  const LIST_VARS = { filter: {}, pagination: { page: 1, size: 200 } } as const;
-  const { data, loading, error, refetch } = useQuery(LOAD_PLANTING_RETURNS, {
-    variables: LIST_VARS,
-  });
+  const LIST_VARS = { filter: {} } as const;
+
+  const fetchPlantingReturns = useCallback(
+    async ({ pageIndex, pageSize }: TDataGridRequestParams) => {
+      setFetching(true);
+
+      try {
+        const response = await client.query<PlantingReturnsResponse>({
+          query: LOAD_PLANTING_RETURNS,
+          variables: {
+            filter: {},
+            pagination: {
+              page: pageIndex + 1,
+              size: pageSize,
+            },
+          },
+          fetchPolicy: "network-only",
+        });
+
+        const items = response?.data?.plantingReturns?.items || [];
+        const total = Number(response?.data?.plantingReturns?.total || 0);
+
+        setCurrentPageData(items);
+        setTotalCount(total);
+        setFetchError(null);
+
+        return {
+          data: items,
+          totalCount: total,
+        };
+      } catch (error: any) {
+        setCurrentPageData([]);
+        setTotalCount(0);
+        setFetchError(error?.message || "Failed to load planting returns");
+
+        return {
+          data: [],
+          totalCount: 0,
+        };
+      } finally {
+        setFetching(false);
+      }
+    },
+    [client]
+  );
 
   const [importOpen, setImportOpen] = useState(false);
 
-  const rows = useMemo(
-    () => (data?.plantingReturns?.items ?? []) as any[],
-    [data],
-  );
-  const total = Number(data?.plantingReturns?.total || 0);
+  const rows = useMemo(() => currentPageData as any[], [currentPageData]);
+  const total = totalCount;
 
   const [createReturn] = useMutation(CREATE_PLANTING_RETURN, {
     refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
@@ -135,7 +201,13 @@ const PlantingReturnsListPage = () => {
     refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
     awaitRefetchQueries: true,
   });
-  const [loadDetail] = useLazyQuery(LOAD_PLANTING_RETURN);
+  const [loadDetail] = useLazyQuery<PlantingReturnDetailResponse>(
+    LOAD_PLANTING_RETURN,
+  );
+
+  const reloadGrid = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
 
   const handleSave = async (vals: any, id?: string) => {
     setSaving(true);
@@ -171,6 +243,7 @@ const PlantingReturnsListPage = () => {
         await createReturn({ variables: { input } });
         toast("Planting return created");
       }
+      reloadGrid();
       setCreateOpen(false);
       setEditing(null);
     } catch (e: any) {
@@ -211,6 +284,7 @@ const PlantingReturnsListPage = () => {
     try {
       setDeletingId(String(row.id));
       await deleteReturn({ variables: { id: row.id } });
+      reloadGrid();
       toast("Planting return deleted");
     } catch (e: any) {
       toast("Failed to delete return", {
@@ -279,29 +353,16 @@ const PlantingReturnsListPage = () => {
         )}
 
         <Container>
-          {loading ? (
-            <div className="p-6 space-y-3 bg-white rounded-lg border">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="flex-1">
-                    <Skeleton className="h-4 w-64" />
-                    <Skeleton className="h-3 w-40 mt-2" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : error ? (
+          {fetchError && rows.length === 0 && !fetching ? (
             <div className="p-6 text-danger bg-white rounded-lg border flex items-center justify-between">
-              <span>Failed to load permits</span>
-              <a className="btn btn-sm" onClick={() => refetch?.()}>
-                Retry
-              </a>
+              <span>{fetchError}</span>
             </div>
           ) : (
             <PlantingReturnsGrid
+              key={refreshKey}
               rows={rows}
               onEdit={handleEdit}
+              fetchPlantingReturns={fetchPlantingReturns}
               onDelete={handleDelete}
               deletingId={deletingId}
               onPreview={handlePreview}
@@ -350,7 +411,7 @@ const PlantingReturnsListPage = () => {
       <ImportSubGrowersSheet
         open={importOpen}
         onOpenChange={setImportOpen}
-        onImported={() => refetch?.()}
+        onImported={reloadGrid}
       />
 
       <PlantingReturnDetailsDialog
@@ -369,12 +430,17 @@ export default PlantingReturnsListPage;
 const PlantingReturnsGrid = ({
   rows,
   onEdit,
+  fetchPlantingReturns,
   onDelete,
   deletingId,
   onPreview,
 }: {
   rows: any[];
   onEdit: (p: any) => void;
+  fetchPlantingReturns: (params: TDataGridRequestParams) => Promise<{
+    data: PlantingReturn[];
+    totalCount: number;
+  }>;
   onDelete: (p: any) => void;
   deletingId: string | null;
   onPreview: (p: any) => void;
@@ -397,6 +463,8 @@ const PlantingReturnsGrid = ({
       className="h-9 w-full max-w-40"
     />
   );
+
+  console.log("Rows", rows);
 
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const cols: ColumnDef<any>[] = [
@@ -451,7 +519,7 @@ const PlantingReturnsGrid = ({
                   to="#"
                   className="text-sm font-medium text-gray-900 hover:text-primary-active mb-px"
                 >
-                  {row.original?.applicantName || row.original?.createdBy?.name}
+                  {row.original?.createdBy?.name}
                 </Link>
               </div>
             </div>
@@ -655,19 +723,20 @@ const PlantingReturnsGrid = ({
       loading: inspectorsLoading,
       error: inspectorsError,
       refetch,
-    } = useQuery(LOAD_INSPECTORS);
+    } = useQuery<InspectorsResponse>(LOAD_INSPECTORS);
 
-    const [assignInspector, { loading: assigning }] = useMutation(
-      ASSIGN_PLANTING_RETURN_INSPECTOR,
-      {
-        refetchQueries: [
-          {
-            query: LOAD_PLANTING_RETURNS,
-            variables: { filter: {}, pagination: { page: 1, size: 200 } },
-          },
-        ],
-        awaitRefetchQueries: true,
-      },
+    const [assignInspector, { loading: assigning }] =
+      useMutation<AssignPlantingReturnInspectorResponse>(
+        ASSIGN_PLANTING_RETURN_INSPECTOR,
+        {
+          refetchQueries: [
+            {
+              query: LOAD_PLANTING_RETURNS,
+              variables: { filter: {}, pagination: { page: 1, size: 200 } },
+            },
+          ],
+          awaitRefetchQueries: true,
+        },
     );
 
     const selectedIds = table
@@ -779,6 +848,9 @@ const PlantingReturnsGrid = ({
       columns={columns}
       data={rows}
       rowSelection={true}
+      serverSide={true}
+      pagination={{ size: 10 }}
+      onFetchData={fetchPlantingReturns}
       layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
       toolbar={<HeaderToolbar />}
       messages={{ loading: "Loading...", empty: "No planting returns found" }}

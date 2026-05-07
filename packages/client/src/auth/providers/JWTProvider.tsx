@@ -14,12 +14,14 @@ import { type AuthModel, type UserModel } from "@/auth";
 import { useLazyQuery } from "@apollo/client/react";
 import { useApolloClient } from "@apollo/client/react";
 import { ME } from "@/gql/queries";
+import {
+  REQUEST_PASSWORD_RESET_LINK,
+  RESET_PASSWORD_WITH_TOKEN,
+} from "@/gql/mutations";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 export const LOGIN_URL = `${API_URL}/login`;
 export const REGISTER_URL = `${API_URL}/register`;
-export const FORGOT_PASSWORD_URL = `${API_URL}/forgot-password`;
-export const RESET_PASSWORD_URL = `${API_URL}/reset-password`;
 export const GET_USER_URL = `${API_URL}/user`;
 
 interface AuthContextProps {
@@ -153,9 +155,16 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const requestPasswordResetLink = async (email: string) => {
-    await axios.post(FORGOT_PASSWORD_URL, {
-      email,
+    const { data } = await client.mutate({
+      mutation: REQUEST_PASSWORD_RESET_LINK,
+      variables: { email },
+      fetchPolicy: "no-cache",
     });
+
+    const result = data?.requestPasswordResetLink;
+    if (!result?.success) {
+      throw new Error(result?.message || "Failed to send password reset link");
+    }
   };
 
   const changePassword = async (
@@ -164,12 +173,20 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     password: string,
     password_confirmation: string,
   ) => {
-    await axios.post(RESET_PASSWORD_URL, {
-      email,
-      token,
-      password,
-      password_confirmation,
+    if (password !== password_confirmation) {
+      throw new Error("Passwords do not match");
+    }
+
+    const { data } = await client.mutate({
+      mutation: RESET_PASSWORD_WITH_TOKEN,
+      variables: { token, newPassword: password },
+      fetchPolicy: "no-cache",
     });
+
+    const result = data?.resetPasswordWithToken;
+    if (!result?.success) {
+      throw new Error(result?.message || "Failed to reset password");
+    }
   };
 
   const getUser = async (): Promise<UserModel> => {

@@ -48,7 +48,7 @@ const SettingsProvider = ({ children }: PropsWithChildren) => {
     setData(SETTINGS_CONFIGS_KEY, { ...getStoredSettings(), ...newSettings });
     updateSettings(newSettings);
   };
-
+ 
   const getThemeMode = (): TSettingsThemeMode => {
     const { themeMode } = settings;
 

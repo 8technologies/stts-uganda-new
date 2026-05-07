@@ -97,6 +97,7 @@ const QDSDetailsDialog = ({
     "assign_inspector" | "halt" | "reject" | "recommend" | ""
   >("");
   const [inspector, setInspector] = useState("");
+  const [inspectorSearch, setInspectorSearch] = useState("");
   const [comment, setComment] = useState("");
   const [assignError, setAssignError] = useState<string | null>(null);
   const { auth } = useAuthContext();
@@ -149,6 +150,7 @@ const QDSDetailsDialog = ({
     const preselected =
       (d as any)?.inspector?.id || (d as any)?.inspector_id || "";
     setInspector(preselected || "");
+    setInspectorSearch("");
     setAssignError(null);
   }, [open, d]);
 
@@ -739,13 +741,22 @@ const QDSDetailsDialog = ({
                     />
                   </SelectTrigger>
                   <SelectContent>
+                    <div className="px-2 pb-1 pt-1">
+                      <input
+                        className="w-full rounded border border-gray-200 px-2 py-1 text-sm outline-none focus:border-primary-400"
+                        placeholder="Search by name or district…"
+                        value={inspectorSearch}
+                        onChange={(e) => setInspectorSearch(e.target.value)}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                    </div>
                     {inspectorsLoading && (
-                      <SelectItem value="" disabled>
+                      <SelectItem value="__loading__" disabled>
                         Loading…
                       </SelectItem>
                     )}
                     {inspectorsError && (
-                      <SelectItem value="" disabled>
+                      <SelectItem value="__error__" disabled>
                         Failed to load inspectors
                       </SelectItem>
                     )}
@@ -753,19 +764,47 @@ const QDSDetailsDialog = ({
                       !inspectorsError &&
                       (!inspectorsData?.inspectors ||
                         inspectorsData.inspectors.length === 0) && (
-                        <SelectItem value="" disabled>
+                        <SelectItem value="__empty__" disabled>
                           No inspectors found
                         </SelectItem>
                       )}
-                    {inspectorsData?.inspectors?.map((ins: any) => (
-                      <SelectItem key={ins.id} value={ins.id}>
-                        {ins.name ||
-                          ins.username ||
-                          ins.company_initials ||
-                          "Unknown"}
-                        {ins.district ? ` (${ins.district})` : ""}
-                      </SelectItem>
-                    ))}
+                    {inspectorsData?.inspectors
+                      ?.filter((ins: any) => {
+                        const q = inspectorSearch.toLowerCase();
+                        return (
+                          !q ||
+                          (ins.name || "").toLowerCase().includes(q) ||
+                          (ins.username || "").toLowerCase().includes(q) ||
+                          (ins.district || "").toLowerCase().includes(q) ||
+                          (ins.company_initials || "").toLowerCase().includes(q)
+                        );
+                      })
+                      .map((ins: any) => (
+                        <SelectItem key={ins.id} value={ins.id}>
+                          {ins.name ||
+                            ins.username ||
+                            ins.company_initials ||
+                            "Unknown"}
+                          {ins.district ? ` (${ins.district})` : ""}
+                        </SelectItem>
+                      ))}
+                    {!inspectorsLoading &&
+                      !inspectorsError &&
+                      inspectorsData?.inspectors?.length > 0 &&
+                      inspectorsData.inspectors.filter((ins: any) => {
+                        const q = inspectorSearch.toLowerCase();
+                        return (
+                          !q ||
+                          (ins.name || "").toLowerCase().includes(q) ||
+                          (ins.username || "").toLowerCase().includes(q) ||
+                          (ins.district || "").toLowerCase().includes(q) ||
+                          (ins.company_initials || "").toLowerCase().includes(q)
+                        );
+                      }).length === 0 && (
+                        <SelectItem value="__no-match__" disabled>
+                          No inspectors match your search
+                        </SelectItem>
+                      )}
                   </SelectContent>
                 </Select>
                 {assignError && (

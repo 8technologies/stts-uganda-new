@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client/react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client/react";
 import { LOAD_USERS, ROLES } from "@/gql/queries";
 import { CREATE_USER, DELETE_USER } from "@/gql/mutations";
 import { Container } from "@/components/container";
@@ -32,8 +32,9 @@ import {
   DataGridColumnHeader,
   DataGridRowSelect,
   DataGridRowSelectAll,
-  useDataGrid,
+  TDataGridRequestParams,
   KeenIcon,
+  useDataGrid,
 } from "@/components";
 import { Column, ColumnDef } from "@tanstack/react-table";
 import {
@@ -43,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MAIN_URL, URL_2 } from "@/config/urls";
+import { URL_2 } from "@/config/urls";
 
 type User = {
   id: string | number;
@@ -59,6 +60,28 @@ type User = {
   role_name?: string[];
   created_at?: string;
 };
+
+type LoadUsersQueryData = {
+  users: User[];
+  usersCount: number;
+};
+
+type LoadUsersVariables = {
+  limit: number;
+  offset: number;
+  search?: string;
+  roleName?: string;
+  district?: string;
+};
+
+type RolesResponse = {
+  roles: { id: string | number; name: string }[];
+};
+
+const getErrorMessage = (error: any, fallback = "Unknown error") =>
+  error?.graphQLErrors?.length
+    ? error.graphQLErrors.map((err: any) => err.message).join(", ")
+    : error?.networkError?.message ?? error?.message ?? fallback;
 
 const UserFormDialog = ({
   open,
@@ -89,9 +112,11 @@ const UserFormDialog = ({
     password: "",
     roleId: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (open) {
+      setShowPassword(false);
       setForm({
         id: String(initialValues?.id ?? ""),
         username: initialValues?.username ?? "",
@@ -108,11 +133,10 @@ const UserFormDialog = ({
         password: "",
         roleId: "",
       });
-      const initRoles =
-        (initialValues as any)?.role_name || (initialValues as any)?.roles;
-      if (Array.isArray(initRoles) && initRoles.length > 0) {
-        const match = rolesOptions.find((r) => r.name === initRoles[0]);
-        if (match) setForm((prev) => ({ ...prev, roleId: String(match.id) }));
+
+      console.log("Initial values for form:", initialValues);
+      if (initialValues?.role_id) {
+        setForm((prev) => ({ ...prev, roleId: String(initialValues.role_id) }));
       }
     }
   }, [open, initialValues]);
@@ -155,10 +179,10 @@ const UserFormDialog = ({
           className="h-full flex flex-col"
           style={{
             height: "calc(100vh - 75px)",
-            overflow: "auto",
+            // overflow: "auto",
           }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto ">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-1 block">
                 Username
@@ -303,16 +327,27 @@ const UserFormDialog = ({
               <label className="text-sm font-medium text-gray-700 mb-1 block">
                 Password
               </label>
-              <Input
-                type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                // required
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="pr-10"
+                  // required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700"
+                  tabIndex={-1}
+                >
+                  <KeenIcon icon={showPassword ? "eye-slash" : "eye"} className="text-base" />
+                </button>
+              </div>
             </div>
             {/* )} */}
           </div>
-          <div className="mt-6 flex justify-end gap-3 border-t pt-4">
+          <div className="mt-6 flex justify-end gap-3 border-t pt-4 ">
             <Button
               type="button"
               variant="outline"
@@ -390,35 +425,91 @@ const UserPreviewDialog = ({
 };
 
 const UsersListPage = () => {
-  const limit = 100;
-  const offset = 0;
-
-  const { data, loading, error } = useQuery(LOAD_USERS, {
-    variables: { limit, offset },
-  });
-  const { data: rolesData } = useQuery(ROLES);
-  const [createUser, { loading: saving }] = useMutation(CREATE_USER, {
-    refetchQueries: [{ query: LOAD_USERS, variables: { limit, offset } }],
-    awaitRefetchQueries: true,
-  });
-  const [deleteUser] = useMutation(DELETE_USER, {
-    refetchQueries: [{ query: LOAD_USERS, variables: { limit, offset } }],
-    awaitRefetchQueries: true,
-  });
-
-  const users = (data?.users || []) as User[];
+  const apolloClient = useApolloClient();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const { data: rolesData, loading: rolesLoading, error: rolesError } =
+    useQuery<RolesResponse>(ROLES);
+  const [createUser, { loading: saving }] = useMutation(CREATE_USER);
+  const [deleteUser] = useMutation(DELETE_USER);
   const rolesOptions = useMemo(
     () =>
       ((rolesData?.roles || []) as any[]).map((r) => ({
         id: r.id,
         name: r.name,
       })),
-    [rolesData?.roles],
+    [rolesData],
   );
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [previewUser, setPreviewUser] = useState<User | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const fetchUsers = useCallback(
+    async (params: TDataGridRequestParams) => {
+      const searchFilter = params.columnFilters?.find(
+        (entry) => entry.id === "user",
+      )?.value;
+      const roleFilter = params.columnFilters?.find(
+        (entry) => entry.id === "role",
+      )?.value;
+      const districtFilter = params.columnFilters?.find(
+        (entry) => entry.id === "district",
+      )?.value;
+
+      const search =
+        typeof searchFilter === "string" && searchFilter.trim()
+          ? searchFilter.trim()
+          : undefined;
+      const roleName =
+        typeof roleFilter === "string" && roleFilter.trim()
+          ? roleFilter.trim()
+          : undefined;
+      const district =
+        typeof districtFilter === "string" && districtFilter.trim()
+          ? districtFilter.trim()
+          : undefined;
+
+      try {
+        const { data } = await apolloClient.query<
+          LoadUsersQueryData,
+          LoadUsersVariables
+        >({
+          query: LOAD_USERS,
+          variables: {
+            limit: params.pageSize,
+            offset: params.pageIndex * params.pageSize,
+            search,
+            roleName,
+            district,
+          },
+          fetchPolicy: "network-only",
+        });
+
+        setFetchError(null);
+
+        return {
+          data: data?.users || [],
+          totalCount: data?.usersCount || 0,
+        };
+      } catch (error) {
+        setFetchError(
+          getErrorMessage(error, "Failed to load users. Please try again."),
+        );
+
+        return {
+          data: [],
+          totalCount: 0,
+        };
+      }
+    },
+    [apolloClient],
+  );
+
+  const handleRefresh = () => {
+    setFetchError(null);
+    setRefreshKey((prev) => prev + 1);
+  };
 
   const handleCreate = () => {
     setEditingUser(null);
@@ -434,9 +525,10 @@ const UsersListPage = () => {
       setDeletingId(String(user.id));
       await deleteUser({ variables: { userId: String(user.id) } });
       toast("User deleted");
+      setRefreshKey((prev) => prev + 1);
     } catch (e: any) {
       toast("Failed to delete user", {
-        description: e?.message ?? "Unknown error",
+        description: getErrorMessage(e, "Unknown error"),
       });
     } finally {
       setDeletingId(null);
@@ -448,15 +540,16 @@ const UsersListPage = () => {
       await createUser({ variables: { payload } });
       toast(payload?.id ? "User updated" : "User created");
       setIsFormOpen(false);
+      setRefreshKey((prev) => prev + 1);
     } catch (e: any) {
       toast("Failed to save user", {
-        description: e?.message ?? "Unknown error",
+        description: getErrorMessage(e, "Unknown error"),
       });
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
       <Container>
         <Toolbar>
           <ToolbarHeading
@@ -464,42 +557,44 @@ const UsersListPage = () => {
             description="Manage users and their roles"
           />
           <ToolbarActions>
-            <a
-              href="#"
+            <button
+              type="button"
+              className="btn btn-sm btn-light"
+              onClick={handleRefresh}
+            >
+              Refresh
+            </button>
+            <button
+              type="button"
               className="btn btn-sm btn-primary"
               onClick={handleCreate}
+              disabled={rolesLoading}
             >
               New User
-            </a>
+            </button>
           </ToolbarActions>
         </Toolbar>
       </Container>
-      <Container>
-        {loading ? (
-          <div className="p-6 space-y-3 bg-white rounded-lg border">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="flex-1">
-                  <Skeleton className="h-4 w-64" />
-                  <Skeleton className="h-3 w-40 mt-2" />
-                </div>
-              </div>
-            ))}
+      <Container className="py-0">
+        {rolesError && (
+          <div className="alert alert-danger mb-4">
+            <div className="alert-title">Unable to load roles</div>
+            <div className="text-sm text-gray-700">
+              {getErrorMessage(rolesError, "Role options are unavailable.")}
+            </div>
           </div>
-        ) : error ? (
-          <div className="p-6 text-danger bg-white rounded-lg border">
-            Failed to load users
-          </div>
-        ) : (
-          <UsersDataGrid
-            users={users}
-            onPreview={(u) => setPreviewUser(u)}
-            onEdit={(u) => handleEdit(u)}
-            // onDelete={(u) => handleDelete(u)}
-            deletingId={deletingId}
-          />
         )}
+
+        <UsersDataGrid
+          key={refreshKey}
+          onFetchData={fetchUsers}
+          fetchError={fetchError}
+          onRetry={handleRefresh}
+          onPreview={(u) => setPreviewUser(u)}
+          onEdit={(u) => handleEdit(u)}
+          // onDelete={(u) => handleDelete(u)}
+          deletingId={deletingId}
+        />
       </Container>
 
       <UserFormDialog
@@ -516,21 +611,28 @@ const UsersListPage = () => {
         onOpenChange={() => setPreviewUser(null)}
         user={previewUser}
       />
-    </div>
+    </>
   );
 };
 
 const UsersDataGrid = ({
-  users,
+  onFetchData,
+  fetchError,
+  onRetry,
   onPreview,
   onEdit,
-  onDelete,
+  // onDelete,
   deletingId,
 }: {
-  users: User[];
+  onFetchData: (params: TDataGridRequestParams) => Promise<{
+    data: User[];
+    totalCount: number;
+  }>;
+  fetchError: string | null;
+  onRetry: () => void;
   onPreview: (u: User) => void;
   onEdit: (u: User) => void;
-  onDelete: (u: User) => void;
+  // onDelete: (u: User) => void;
   deletingId: string | null;
 }) => {
   const ColumnInputFilter = <TData, TValue>({
@@ -589,11 +691,17 @@ const UsersDataGrid = ({
         accessorFn: (row: User) => row.role_name || (row as any).roles,
         id: "role",
         header: ({ column }) => (
-          <DataGridColumnHeader title="Role" column={column} />
+          <DataGridColumnHeader
+            title="Role"
+            filter={<ColumnInputFilter column={column} />}
+            column={column}
+          />
         ),
         cell: ({ row }) => (
           <span className="badge badge-success shrink-0 badge-outline rounded-[30px]">
-            {row.original.role_name}
+            {Array.isArray(row.original.role_name)
+              ? row.original.role_name.join(", ")
+              : row.original.role_name}
           </span>
         ),
         meta: { className: "min-w-[300px]" },
@@ -613,7 +721,11 @@ const UsersDataGrid = ({
         accessorFn: (row: User) => row.district,
         id: "district",
         header: ({ column }) => (
-          <DataGridColumnHeader title="District" column={column} />
+          <DataGridColumnHeader
+            title="District"
+            filter={<ColumnInputFilter column={column} />}
+            column={column}
+          />
         ),
         cell: ({ row }) => (
           <span className="text-gray-800">{row.original.district || "-"}</span>
@@ -634,13 +746,6 @@ const UsersDataGrid = ({
               >
                 Preview
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onEdit(row.original)}
-              >
-                Edit
-              </Button>
               {/* <Button
                 variant="destructive"
                 size="sm"
@@ -651,6 +756,13 @@ const UsersDataGrid = ({
                   ? "Deleting…"
                   : "Delete"}
               </Button> */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(row.original)}
+              >
+                Edit
+              </Button>
             </div>
           </div>
         ),
@@ -663,11 +775,18 @@ const UsersDataGrid = ({
   const HeaderToolbar = () => {
     const { table } = useDataGrid();
     const [searchInput, setSearchInput] = useState("");
+
+    useEffect(() => {
+      const timeoutId = setTimeout(() => {
+        table.getColumn("user")?.setFilterValue(searchInput.trim() || undefined);
+      }, 300);
+
+      return () => clearTimeout(timeoutId);
+    }, [searchInput, table]);
+
     return (
       <div className="card-header flex-wrap gap-2 border-b-0 px-5">
-        <h3 className="card-title font-medium text-sm">
-          Showing {users.length} users
-        </h3>
+        <h3 className="card-title font-medium text-sm">Users</h3>
         <div className="flex flex-wrap gap-2 lg:gap-5">
           <div className="flex">
             <label className="input input-sm">
@@ -676,11 +795,7 @@ const UsersDataGrid = ({
                 type="text"
                 placeholder="Search users"
                 value={searchInput}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setSearchInput(val);
-                  table.getColumn("user")?.setFilterValue(val);
-                }}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </label>
           </div>
@@ -690,14 +805,29 @@ const UsersDataGrid = ({
   };
 
   return (
-    <DataGrid<User>
-      columns={columns}
-      data={users}
-      rowSelection={true}
-      layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
-      toolbar={<HeaderToolbar />}
-      messages={{ loading: "Loading...", empty: "No users found" }}
-    />
+    <>
+      {fetchError && (
+        <div className="alert alert-danger mb-4">
+          <div className="alert-title">Unable to load users</div>
+          <div className="text-sm text-gray-700">{fetchError}</div>
+          <div className="mt-3">
+            <Button size="sm" variant="outline" onClick={onRetry}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+      <DataGrid<User>
+        columns={columns}
+        serverSide={true}
+        onFetchData={onFetchData}
+        pagination={{ size: 10 }}
+        rowSelection={true}
+        layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
+        toolbar={<HeaderToolbar />}
+        messages={{ loading: "Loading...", empty: "No users found" }}
+      />
+    </>
   );
 };
 

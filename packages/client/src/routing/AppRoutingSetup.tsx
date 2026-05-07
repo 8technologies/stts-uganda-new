@@ -114,10 +114,49 @@ import SeedLabelManagementPage from "@/pages/QA/seed_Labels/SeedLabels";
 import MarketableSeed from "@/pages/seed-stock/marketable-seed/MarketableSeed";
 import MarketplacePage from "@/pages/marketplace/products/MarketplacePage";
 import OrdersPage from "@/pages/marketplace/orders/OrdersPage";
+// import PreOrdersPage from "@/pages/marketplace/pre-orders/PreOrdersPage";
 
 const AppRoutingSetup = (): ReactElement => {
   return (
     <Routes>
+      {/* Explicit reset-password route registrations + legacy URL compatibility */}
+      <Route path="/reset-password" element={<Navigate to="/auth/reset-password" replace />} />
+      <Route
+        path="/reset-password/change"
+        element={
+          <Navigate
+            to={{ pathname: "/auth/reset-password/change", search: window.location.search }}
+            replace
+          />
+        }
+      />
+      <Route
+        path="/classic/reset-password"
+        element={<Navigate to="/auth/classic/reset-password" replace />}
+      />
+      <Route
+        path="/classic/reset-password/change"
+        element={
+          <Navigate
+            to={{ pathname: "/auth/classic/reset-password/change", search: window.location.search }}
+            replace
+          />
+        }
+      />
+      <Route
+        path="/metronic/tailwind/react/auth/reset-password"
+        element={<Navigate to="/auth/reset-password" replace />}
+      />
+      <Route
+        path="/metronic/tailwind/react/auth/reset-password/change"
+        element={
+          <Navigate
+            to={{ pathname: "/auth/reset-password/change", search: window.location.search }}
+            replace
+          />
+        }
+      />
+
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<SttsDashboardPage />} />
@@ -213,16 +252,32 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route path="/market/products" element={<MarketplacePage />} />
           <Route path="/market/orders" element={<OrdersPage />} />
+          {/* <Route path="/market/pre-orders" element={<PreOrdersPage />} /> */}
 
 
-          <Route path="/admin/roles" element={<RolesListPage />} />
-          <Route path="/admin/crops" element={<CropsListPage />} />
+          <Route path="/admin/roles" element={
+            <PermissionGuard required={["can_manage_roles"]}>
+                <RolesListPage />
+              </PermissionGuard>
+            } />
+          <Route path="/admin/crops" element={
+            <PermissionGuard required={["can_manage_crops"]}>
+                <CropsListPage />
+              </PermissionGuard>
+            } />
           <Route path="/admin/crops/:id" element={<CropDetailsPage />} />
-          <Route path="/admin/users" element={<UsersListPage />} />
+          <Route path="/admin/users" element={
+            <PermissionGuard required={["can_manage_users"]}>
+                <UsersListPage />
+              </PermissionGuard>
+            } />
           <Route
             path="/admin/seed-label-packages"
-            element={<SeedLabelPackagesPage />}
-          />
+            element={
+            <PermissionGuard required={["can_manage_seed_label_packages"]}>
+                <SeedLabelPackagesPage />
+              </PermissionGuard>
+            } />
           <Route
             path="/public-profile/profiles/default"
             element={<ProfileDefaultPage />}

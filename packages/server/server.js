@@ -8,7 +8,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { typeDefs, resolvers } from "./schema/index.js";
-import { host, port, db } from "./config/config.js";
+import { host, port, db,} from "./config/config.js";
 import authenticateUser from "./middleware/auth.js";
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 import ExcelJS from "exceljs";
@@ -432,6 +432,8 @@ app.use(
         "IntrospectionQuery",
         "System_settings",
         "Register",
+        "RequestPasswordResetLink",
+        "ResetPasswordWithToken",
       ]);
 
       // token: req.headers.token

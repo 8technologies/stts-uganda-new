@@ -64,7 +64,11 @@ const userTypeDefs = `#graphql
         users(
             limit: Int = 10
             offset: Int = 0
+            search: String
+            roleName: String
+            district: String
         ): [User!]!
+        usersCount(search: String, roleName: String, district: String): Int!
         user(id: ID!): User
         currentUser: User
         me: User
@@ -76,7 +80,9 @@ const userTypeDefs = `#graphql
         register(payload: RegisterInput!): UserResponse!
         updateUser(payload: UpdateUserInput!): UserResponse!
         toggleUserStatus(id: ID!): UserResponse!
+        requestPasswordResetLink(email: String!): UserResponse!
         resetPassword(id: String!, newPassword: String!): UserResponse!
+        resetPasswordWithToken(token: String!, newPassword: String!): UserResponse!
         changePassword(currentPassword: String!, newPassword: String!): UserResponse!
         deleteUser(user_id: String!): UserResponse
     }

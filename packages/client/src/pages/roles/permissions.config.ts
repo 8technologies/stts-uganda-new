@@ -190,7 +190,7 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: "can_create_users", label: "Can Create Users" },
       { id: "can_view_settings", label: "Can View Settings" },
       { id: "can_manage_users", label: "Can Manage Users" },
-      { id: "can_manage_roles", label: "Can Manage Users" },
+      { id: "can_manage_roles", label: "Can Manage Roles" },
       { id: "can_view_roles", label: "Can View Roles" },
       { id: "can_create_roles", label: "Can Create or edit Roles" },
       { id: "can_delete_roles", label: "Can Delete Roles" },

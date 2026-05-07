@@ -236,6 +236,9 @@ export async function importSubGrowers(sub_growers_file) {
       if (m) {
         const cropName    = m[1].trim();
         const varietyName = m[2].trim();
+
+        console.log(`[Row ${rowNum}] Resolving crop "${cropName}" and variety "${varietyName}" from DB`);
+
         const [cropRows]    = await db.execute('SELECT id FROM crops WHERE LOWER(name) = LOWER(?)', [cropName]);
         const [varietyRows] = await db.execute('SELECT id FROM crop_varieties WHERE LOWER(name) = LOWER(?)', [varietyName]);
         if (cropRows.length === 0)    errors.push(`Crop "${cropName}" not found in the system`);

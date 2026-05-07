@@ -7,7 +7,7 @@ const byModuleId = Object.fromEntries(MODULES_CONFIG.map((m) => [m.id, m]));
 const getPerm = (moduleId: string, permissionId: string) => {
   const m = byModuleId[moduleId];
   const p = m?.permissions.find((x) => x.id === permissionId);
-  console.log("perm", p);
+  // console.log("perm", permissionId);
   return p?.id ?? permissionId; // fallback to key
 };
 
@@ -145,7 +145,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       { title: 'Products', path: '/market/products' },
       { title: 'Orders', path: '/market/orders' },
-      // { title: 'Quotations', path: '/market/quotations' }
+      { title: 'Pre-orders', path: '/market/pre-orders' }
     ]
   },
   {

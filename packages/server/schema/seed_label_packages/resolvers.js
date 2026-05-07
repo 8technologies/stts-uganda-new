@@ -19,12 +19,18 @@ const loadSeedLabelPackageColumns = async () => {
 
 const ensureSeedLabelPackageSchema = async () => {
   const columns = await loadSeedLabelPackageColumns();
+  // const required = [
+  //   "name",
+  //   "package_size_kg",
+  //   "labels_per_package",
+  //   "price_ugx",
+  //   "is_active",
+  // ];
   const required = [
-    "name",
-    "package_size_kg",
-    "labels_per_package",
-    "price_ugx",
-    "is_active",
+    "crop_id",
+    "quantity",
+    "price",
+    "deleted",
   ];
   const missing = required.filter((col) => !columns.has(col));
   if (missing.length) {
@@ -35,21 +41,21 @@ const ensureSeedLabelPackageSchema = async () => {
 };
 
 const mapSeedLabelPackagesRow = (row) => {
-  const name =
-    row.name ||
-    (row.crop_id ? `Crop ${row.crop_id}` : `Package ${row.id ?? ""}`.trim());
+  const crop_id =
+    // row.name ||
+    (row.crop_id ? row.crop_id.toString() : null);
   const packageSizeKg =
-    row.package_size_kg != null ? Number(row.package_size_kg) : Number(row.quantity || 0);
-  const labelsPerPackage = row.labels_per_package ?? row.labelsPerPackage ?? 1;
+    row.quantity != null ? Number(row.quantity) : Number(row.quantity || 0);
+  // const labelsPerPackage = row.labels_per_package ?? row.labelsPerPackage ?? 1;
   const priceUgx =
-    row.price_ugx != null ? Number(row.price_ugx) : Number(row.price || 0);
+    row.price != null ? Number(row.price) : Number(row.price || 0);
   const isActive =
-    row.is_active != null ? Boolean(row.is_active) : !Boolean(row.deleted);
+    row.deleted != null ? !Boolean(row.deleted) : Boolean(row.is_active);
   return {
     id: row.id?.toString(),
-    name,
+    crop_id,
     packageSizeKg,
-    labelsPerPackage,
+    // labelsPerPackage,
     priceUgx,
     isActive,
     createdAt: row.created_at ? new Date(row.created_at) : null,
@@ -116,6 +122,16 @@ const SeedLabelPackagesResolver = {
       }
     },
   },
+  SeedLabelPackage: {
+      crop: async (parent) => {
+        if (!parent.crop_id) return null;
+        const [rows] = await db.execute("SELECT * FROM crops WHERE id = ?", [
+          parent.crop_id,
+        ]);
+        return rows.length ? rows[0] : null;
+
+      },
+  },
   Mutation: {
     saveSeedLabelPackage: async (_parent, args, context) => {
       try {
@@ -131,19 +147,17 @@ const SeedLabelPackagesResolver = {
         const input = args.input || {};
         const {
           id,
-          name,
+          crop_id,
           packageSizeKg,
-          labelsPerPackage,
           priceUgx,
           isActive,
         } = input;
 
         const data = {
-          name,
-          package_size_kg: packageSizeKg,
-          labels_per_package: labelsPerPackage,
-          price_ugx: priceUgx,
-          is_active: isActive == null ? 1 : isActive ? 1 : 0,
+          crop_id,
+          quantity: packageSizeKg,
+          price: priceUgx,
+          deleted: isActive == null ? 0 : isActive ? 0 : 1,
         };
 
         const saveId = await saveData({
@@ -159,11 +173,10 @@ const SeedLabelPackagesResolver = {
             : "Seed label package created successfully",
           package: mapSeedLabelPackagesRow({
             id: id ?? saveId,
-            name: data.name,
-            package_size_kg: data.package_size_kg,
-            labels_per_package: data.labels_per_package,
-            price_ugx: data.price_ugx,
-            is_active: data.is_active,
+            crop_id: data.crop_id,
+            quantity: data.quantity,
+            price: data.price,
+            deleted: data.deleted,
             created_at: new Date(),
             updated_at: new Date(),
           }),

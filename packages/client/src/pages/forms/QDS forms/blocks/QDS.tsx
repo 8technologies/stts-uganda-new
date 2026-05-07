@@ -500,7 +500,7 @@ const QDs = () => {
         data={mapped}
         rowSelection={true}
         onRowSelectionChange={handleRowSelection}
-        pagination={{ size: 5 }}
+        pagination={{ size: 10 }}
         sorting={[{ id: 'users', desc: false }]}
         toolbar={<Toolbar />}
         layout={{ card: true, cellSpacing: 'xs', cellBorder: true }}
