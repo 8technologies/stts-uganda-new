@@ -111,7 +111,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
         title: "My seed Labs",
         path: "/qa/my-labs",
         requiredPermissions: [
-          getPerm("quality_assurance", "can_create_seed_stock"),
+          getPerm("quality_assurance", "can_request_seed_lab_inspection"),
         ],
       },
       {
@@ -145,7 +145,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       { title: 'Products', path: '/market/products' },
       { title: 'Orders', path: '/market/orders' },
-      { title: 'Pre-orders', path: '/market/pre-orders' }
+      // { title: 'Pre-orders', path: '/market/pre-orders' }
     ]
   },
   {

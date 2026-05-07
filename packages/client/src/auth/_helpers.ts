@@ -1,9 +1,13 @@
 import { User as Auth0UserModel } from "@auth0/auth0-spa-js";
 
 import { getData, setData } from "@/utils";
-import { type AuthModel } from "./_models";
+import { type AuthModel, type UserModel } from "./_models";
 
 const AUTH_LOCAL_STORAGE_KEY = `${import.meta.env.VITE_APP_NAME}-auth-v${
+  import.meta.env.VITE_APP_VERSION
+}`;
+
+const USER_LOCAL_STORAGE_KEY = `${import.meta.env.VITE_APP_NAME}-user-v${
   import.meta.env.VITE_APP_VERSION
 }`;
 
@@ -25,8 +29,38 @@ const setAuth = (auth: AuthModel | Auth0UserModel) => {
   setData(AUTH_LOCAL_STORAGE_KEY, auth);
 };
 
+const getUser = (): UserModel | undefined => {
+  try {
+    const user = getData(USER_LOCAL_STORAGE_KEY) as UserModel | undefined;
+
+    if (user) {
+      return user;
+    } else {
+      return undefined;
+    }
+  } catch (error) {
+    console.error("USER LOCAL STORAGE PARSE ERROR", error);
+  }
+};
+
+const setUser = (user: UserModel) => {
+  setData(USER_LOCAL_STORAGE_KEY, user);
+};
+
+const removeUser = () => {
+  if (typeof localStorage === "undefined") {
+    return;
+  }
+
+  try {
+    localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
+  } catch (error) {
+    console.error("USER LOCAL STORAGE REMOVE ERROR", error);
+  }
+};
+
 const removeAuth = () => {
-  if (!localStorage) {
+  if (typeof localStorage === "undefined") {
     return;
   }
 
@@ -53,4 +87,13 @@ export function setupAxios(axios: any) {
   );
 }
 
-export { AUTH_LOCAL_STORAGE_KEY, getAuth, removeAuth, setAuth };
+export {
+  AUTH_LOCAL_STORAGE_KEY,
+  USER_LOCAL_STORAGE_KEY,
+  getAuth,
+  getUser,
+  removeAuth,
+  removeUser,
+  setAuth,
+  setUser,
+};

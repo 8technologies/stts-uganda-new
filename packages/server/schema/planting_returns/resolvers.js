@@ -225,7 +225,7 @@ const plantingReturnsResolvers = {
 
       checkPermission(
         userPermissions,
-        "can_view_planting_returns...",
+        "can_view_planting_returns",
         "You dont have permissions to view planting returns"
       );
 

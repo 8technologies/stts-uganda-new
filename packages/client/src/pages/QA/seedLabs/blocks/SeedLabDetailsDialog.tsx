@@ -75,57 +75,52 @@ const timeAgo = (iso?: string | null) => {
   return `${days}d ago`;
 };
 
-/* --- Status styles (emerald palette) --- */
+/* --- Status styles (system palette) --- */
 export const STATUS = {
   ACCEPTED: {
     label: 'Accepted',
     icon: 'check-circle',
-    badge:
-      'text-white bg-gradient-to-r from-emerald-500 to-emerald-600 shadow-sm ring-1 ring-emerald-300/70',
+    badge: 'bg-green-50 text-green-700 ring-1 ring-green-200',
   },
   RECOMMENDED: {
     label: 'Recommended',
     icon: 'verify',
-    badge:'text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-sm ring-1 ring-blue-300/70',
+    badge: 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
   },
   REJECTED: {
     label: 'Rejected',
     icon: 'cross-circle',
-    badge:
-      'text-white bg-gradient-to-r from-rose-500 to-rose-600 shadow-sm ring-1 ring-rose-300/70',
+    badge: 'bg-rose-50 text-rose-700 ring-1 ring-rose-200',
   },
   HALTED: {
     label: 'Halted',
     icon: 'shield-cross',
-    badge:
-      'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
+    badge: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
   },
   PENDING: {
     label: 'Pending',
     icon: 'time',
-    badge:
-      'text-white bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-sm ring-1 ring-yellow-300/70',
+    badge: 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200',
   },
   RECEIVED: {
     label: 'Received',
     icon: 'inbox-in',
-    badge:
-      'text-white bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-sm ring-1 ring-yellow-300/70',
+    badge: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
   },
   ASSIGNED_INSPECTOR: {
     label: 'Inspector Assigned',
     icon: 'user-tick',
-    badge:'text-white bg-gradient-to-r from-amber-500 to-orange-600 shadow-sm ring-1 ring-amber-300/70',
+    badge: 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200',
   },
   MARKETABLE: {
     label: 'Marketable',
     icon: 'user-tick',
-    badge:'text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-sm ring-1 ring-blue-300/70',
+    badge: 'bg-green-50 text-green-700 ring-1 ring-green-200',
   },
   NON_MARKETABLE: {
     label: 'Non-Marketable',
     icon: 'block',
-    badge:'text-white bg-gradient-to-r from-red-500 to-red-600 shadow-sm ring-1 ring-red-300/70',
+    badge: 'bg-red-50 text-red-700 ring-1 ring-red-200',
   
   },
 } as const;
@@ -150,7 +145,7 @@ const Copy = ({ value, label }: { value?: string | null; label?: string }) => {
   return (
     <button
       type="button"
-      className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-700 hover:text-emerald-900 hover:bg-emerald-50 rounded transition-colors"
+      className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-primary hover:bg-gray-100"
       onClick={() => {
         navigator.clipboard.writeText(String(value));
         toast.success(`${label || 'Value'} copied`);
@@ -179,13 +174,13 @@ const JsonBlock = ({ value }: { value: any }) => {
 
   return (
     <div className="rounded-xl border overflow-hidden bg-white shadow-sm">
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-emerald-600 to-green-700 text-white">
-        <div className="flex items-center gap-2 text-sm font-semibold">
+      <div className="flex items-center justify-between border-b bg-gray-50 px-4 py-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
           <KeenIcon icon="code" />
           Inspector Report
         </div>
         <button
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-lg border bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100"
           onClick={() => setOpen((v) => !v)}
           type="button"
         >
@@ -204,7 +199,7 @@ const JsonBlock = ({ value }: { value: any }) => {
 
 /* --- Reusable blocks --- */
 const Pill = ({ children }: { children: React.ReactNode }) => (
-  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
+  <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 ring-1 ring-gray-200">
     {children}
   </span>
 );
@@ -220,13 +215,13 @@ const StatCard = ({
   value: React.ReactNode;
   hint?: string;
 }) => (
-  <div className="group rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-4 shadow-sm hover:shadow-md transition-shadow">
+  <div className="group rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
     <div className="flex items-start gap-3">
-      <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
+      <div className="rounded-lg bg-gray-100 p-2 text-gray-600">
         <KeenIcon icon={icon} className="text-lg" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-medium text-emerald-800/80 mb-1">{title}</div>
+        <div className="mb-1 text-xs font-medium text-gray-600">{title}</div>
         <div className="text-sm font-semibold text-slate-900 break-words">{value}</div>
         {hint && <div className="text-xs text-slate-500 mt-1">{hint}</div>}
       </div>
@@ -243,7 +238,7 @@ const RowItem = ({
   value: React.ReactNode;
   copyValue?: string;
 }) => (
-  <div className="flex items-start justify-between gap-4 py-2 px-3 -mx-3 rounded-lg transition-colors hover:bg-emerald-50/50">
+  <div className="flex items-start justify-between gap-4 py-2 px-3 -mx-3 rounded-lg transition-colors hover:bg-gray-50">
     <div className="text-sm font-medium text-slate-600 min-w-[160px]">{label}</div>
     <div className="flex items-center gap-2 flex-1 justify-end text-right">
       <div className="text-sm text-slate-900">{value}</div>
@@ -261,7 +256,7 @@ const Section = ({
 }) => (
   <div className="space-y-3">
     <div className="flex items-center gap-2">
-      <div className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700">
+      <div className="p-1.5 rounded-lg bg-gray-100 text-gray-600">
         <KeenIcon icon="element-equal" />
       </div>
       <h3 className="text-sm font-bold text-slate-900 tracking-wide">{title}</h3>
@@ -293,7 +288,8 @@ const SeedLabDetailsDialog = ({
     loading: inspectorsLoading,
     error: inspectorsError,
     refetch: refetchInspectors,
-  } = useQuery(LOAD_INSPECTORS, { skip: !open });
+  } = useQuery<{ inspectors: any[] }>(LOAD_INSPECTORS, { skip: !open });
+  const inspectors = inspectorsData?.inspectors ?? [];
 
   const [assignInspector, { loading: assigning }] = useMutation(ASSIGN_LAB_INSPECTOR, {
     refetchQueries: [{ query: LOAD_SEED_LABS }],
@@ -379,6 +375,8 @@ const SeedLabDetailsDialog = ({
     if (action === 'receive_sample' || action === 'reject_sample') {
       try {
         const decision = action === 'receive_sample' ? 'received' : 'halted';
+        const successMessage =
+          action === 'receive_sample' ? 'Sample received' : 'Reception rejected';
         const res = await receiveRequest({
           variables: {
             input: { id: String(d?.id ?? ''), decision, receptionist_comment: comment },
@@ -391,7 +389,7 @@ const SeedLabDetailsDialog = ({
           toast('Failed to update reception', { description: payload?.message || 'Unknown error' });
           return;
         }
-        toast(payload?.message || (decision === 'receive' ? 'Sample received' : 'Reception rejected'));
+        toast(payload?.message || successMessage);
         onOpenChange(false);
       } catch (e: any) {
         setAssignError(e?.message || 'Failed to perform reception');
@@ -427,13 +425,13 @@ const SeedLabDetailsDialog = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-[900px] h-full flex flex-col p-0 bg-white"
+        className="w-full sm:max-w-[600px] h-full flex flex-col p-0 bg-white"
       >
         {/* HERO HEADER */}
-        <SheetHeader className="px-6 pt-6 pb-5 border-b bg-gradient-to-r from-emerald-600 to-green-700 text-white">
+        <SheetHeader className="px-6 pt-6 pb-5 border-b bg-white">
           <div className="flex items-center justify-between mb-3">
-            <SheetTitle className="flex items-center gap-3 text-xl text-white">
-              <div className="p-2 rounded-xl bg-white/15">
+            <SheetTitle className="flex items-center gap-3 text-xl text-slate-900">
+              <div className="p-2 rounded-xl bg-gray-100 text-gray-700">
                 <KeenIcon icon="flask" className="text-xl" />
               </div>
               Seed Lab Inspection
@@ -442,17 +440,17 @@ const SeedLabDetailsDialog = ({
           </div>
 
           {d && (
-            <div className="flex flex-wrap items-center gap-2 text-xs">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
               <Pill>
                 <KeenIcon icon="fingerprint-scanning" />
                 {d.id}
               </Pill>
-              <span className="text-white/70">•</span>
-              <span className="flex items-center gap-1 text-white/90">
+              <span className="text-slate-300">•</span>
+              <span className="flex items-center gap-1 text-slate-600">
                 <KeenIcon icon="calendar-tick" />
                 {formatDate(d.created_at)}
               </span>
-              <span className="flex items-center gap-1 text-white/80">
+              <span className="flex items-center gap-1 text-slate-500">
                 ({timeAgo(d.created_at)})
               </span>
               {d.deleted && (
@@ -515,7 +513,7 @@ const SeedLabDetailsDialog = ({
                           href={`${URL_2}/receipts/${d.receipt_id}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 font-medium hover:underline"
+                          className="inline-flex items-center gap-1.5 text-primary font-medium hover:underline"
                         >
                           <KeenIcon icon="document" />
                           View Receipt
@@ -530,7 +528,7 @@ const SeedLabDetailsDialog = ({
               {/* REMARKS */}
               {d.applicant_remark && (
                 <Section title="Applicant Remarks">
-                  <div className="rounded-xl border bg-emerald-50/50 p-4">
+                  <div className="rounded-xl border bg-gray-50 p-4">
                     <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap">
                       {d.applicant_remark}
                     </p>
@@ -699,12 +697,12 @@ const SeedLabDetailsDialog = ({
                         )}
                         {!inspectorsLoading &&
                           !inspectorsError &&
-                          (!inspectorsData?.inspectors || inspectorsData.inspectors.length === 0) && (
+                          inspectors.length === 0 && (
                             <SelectItem value="__none" disabled>
                               No inspectors found
                             </SelectItem>
                           )}
-                        {inspectorsData?.inspectors?.map((ins: any) => (
+                        {inspectors.map((ins: any) => (
                           <SelectItem key={ins.id} value={String(ins.id)}>
                             {ins.name || ins.username || ins.company_initials || 'Unknown'}
                             {ins.district ? ` (${ins.district})` : ''}
@@ -777,14 +775,14 @@ const SeedLabDetailsDialog = ({
               {/* Open Inspection: only visible to assigned inspector when status is inspector_assigned */}
               {showOpenInspection && (
                 <Link to={inspectionPath} onClick={() => onOpenChange(false)}>
-                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Button>
                     <KeenIcon icon="geolocation" /> Open Inspection
                   </Button>
                 </Link>
               )}
               {showOpenlabtest && (
                 <Link to={labTestPath} onClick={() => onOpenChange(false)}>
-                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Button>
                     <KeenIcon icon="geolocation" /> Open lab test form
                   </Button>
                 </Link>

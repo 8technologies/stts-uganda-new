@@ -125,6 +125,7 @@ const StockExamination: React.FC = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canAssignInspector = !!perms["qa_can_assign_inspector"];
+  const canCreateStock = !!perms["can_create_planting_returns"];
 
   const {
     data: examinations,
@@ -471,10 +472,12 @@ const StockExamination: React.FC = () => {
             </ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions>
-            <Button size="sm" onClick={() => setCreateOpen(true)}>
-              <KeenIcon icon="plus" />
-              Create Stock Examination
-            </Button>
+            {canCreateStock && (
+              <Button size="sm" onClick={() => setCreateOpen(true)}>
+                <KeenIcon icon="plus" />
+                Create Stock Examination
+              </Button>
+            )}
           </ToolbarActions>
         </Toolbar>
       </Container>

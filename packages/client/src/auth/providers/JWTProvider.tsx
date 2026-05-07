@@ -57,7 +57,9 @@ const AuthContext = createContext<AuthContextProps | null>(null);
 const AuthProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
   const [auth, setAuth] = useState<AuthModel | undefined>(authHelper.getAuth());
-  const [currentUser, setCurrentUser] = useState<UserModel | undefined>();
+  const [currentUser, setCurrentUser] = useState<UserModel | undefined>(
+    authHelper.getUser(),
+  );
   const client = useApolloClient();
 
   const [loadMe] = useLazyQuery(ME, {
@@ -67,10 +69,24 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   // Sync auth state with localStorage on mount
   useEffect(() => {
     const storedAuth = authHelper.getAuth();
+    const storedUser = authHelper.getUser();
+
     if (storedAuth && !auth) {
       setAuth(storedAuth);
     }
+
+    if (storedUser && !currentUser) {
+      setCurrentUser(storedUser);
+    }
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      authHelper.setUser(currentUser);
+    } else {
+      authHelper.removeUser();
+    }
+  }, [currentUser]);
 
   const verify = async () => { 
     // Read token directly from localStorage, not from React state

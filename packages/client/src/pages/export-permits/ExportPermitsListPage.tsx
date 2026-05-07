@@ -109,6 +109,10 @@ const ExportPermitsListPage = () => {
   const [preview, setPreview] = useState<any | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  const { auth } = useAuthContext();
+  const perms = getPermissionsFromToken(auth?.access_token);
+  const canCreateImportPermits = !!perms["can_create_permits"];
+
   const toEnumCategory = (v: string) =>
     (
       ({
@@ -297,7 +301,8 @@ const ExportPermitsListPage = () => {
                 {/* <a href="#" className="btn btn-sm btn-light">
                   Import CSV
                 </a> */}
-                <a
+                {canCreateImportPermits && (
+                  <a
                   href="#"
                   onClick={() => {
                     handleCreate();
@@ -306,6 +311,8 @@ const ExportPermitsListPage = () => {
                 >
                   {"Apply For An Export Permit"}
                 </a>
+                )}
+                
               </ToolbarActions>
             </Toolbar>
           </Container>

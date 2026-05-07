@@ -378,7 +378,7 @@ const seedLabelResolvers = {
                 };
                 
             } catch (error) {
-                throw new Error(`Failed to save seed lab request: ${error.message}`);
+                throw new Error(`Failed to save seed label request: ${error.message}`);
             }
         },
         approveSeedLabelRequest: async (parent, args, context) => {

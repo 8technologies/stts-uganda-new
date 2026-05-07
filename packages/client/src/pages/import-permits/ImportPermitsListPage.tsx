@@ -84,6 +84,10 @@ const ImportPermitsListPage = () => {
     [listData],
   );
 
+  const { auth } = useAuthContext();
+  const perms = getPermissionsFromToken(auth?.access_token);
+  const canCreateImportPermits = !!perms["can_create_permits"];
+
   const [createPermit, { loading: creating }] = useMutation(
     CREATE_IMPORT_PERMIT,
     {
@@ -295,7 +299,7 @@ const ImportPermitsListPage = () => {
                 {/* <a href="#" className="btn btn-sm btn-light">
                   Import CSV
                 </a> */}
-                <a
+                {canCreateImportPermits && (<a
                   href="#"
                   onClick={() => {
                     handleCreate();
@@ -303,7 +307,8 @@ const ImportPermitsListPage = () => {
                   className="btn btn-sm btn-primary"
                 >
                   {"Apply For An Import Permit"}
-                </a>
+                </a>)}
+                
               </ToolbarActions>
             </Toolbar>
           </Container>

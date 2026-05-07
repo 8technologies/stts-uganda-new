@@ -104,7 +104,7 @@ const MySeedLabInspections = () => {
       toast.success('Seed Lab inspection created');
       setCreateOpen(false);
     } catch (e: any) {
-      toast('Failed to create inspection', { description: e?.message ?? 'Unknown error' });
+      toast('Failed to create lab inspection', { description: e?.message ?? 'Unknown error' });
     }
   };
 
@@ -164,7 +164,7 @@ const MySeedLabInspections = () => {
                   }}
                   className="btn btn-sm btn-primary"
                 >
-                  {saving ? 'Saving…' : 'Create Inspection'}
+                  {saving ? 'Saving…' : 'Create '}
                 </a>
                 <button
                   className="btn btn-sm btn-outline"
@@ -199,7 +199,7 @@ const MySeedLabInspections = () => {
             <div className="card p-8 flex flex-col items-center gap-4">
               <div className="text-gray-800 font-medium">No seed lab inspections yet</div>
               <Button onClick={() => setCreateOpen(true)} size="sm">
-                <KeenIcon icon="plus" /> Create Inspection
+                <KeenIcon icon="plus" /> Create
               </Button>
             </div>
           )}
