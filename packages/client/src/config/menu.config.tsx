@@ -1,6 +1,5 @@
 import { type TMenuConfig } from "@/components/menu";
 import { MODULES_CONFIG } from "@/pages/roles/permissions.config";
-import { get } from "http";
 
 // Helper: find permission id by module + permission id
 const byModuleId = Object.fromEntries(MODULES_CONFIG.map((m) => [m.id, m]));
@@ -84,28 +83,31 @@ export const MENU_SIDEBAR: TMenuConfig = [
     title: "Quality Assurance",
     icon: "folder-added",
     // requiredPermissions: [getPerm('application_forms', 'can_manage_all_forms')],
+    requiresApprovedApplication: true,
     children: [
       {
         title: "Import Permits",
         path: "/qa/import_permits",
-        // requiredPermissions: [getPerm('quality_assurance', 'can_view_field_inspections')]
+        requiredPermissions: [getPerm('quality_assurance', 'can_view_import_permits')]
       },
       {
         title: "Export Permits",
         path: "/qa/export_permits",
-        // requiredPermissions: [getPerm('quality_assurance', 'can_manage_all_qa_tasks')]
+        requiredPermissions: [getPerm('quality_assurance', 'can_view_import_permits')]
       },
       {
         title: "Planting Returns",
         path: "/qa/planting-returns",
-        // requiredPermissions: [
-        //   getPerm('quality_assurance', 'can_manage_planting_returns'),
-        //   getPerm('quality_assurance', 'can_view_planting_returns')
-        // ]
+        requiredPermissions: [
+          // getPerm('quality_assurance', 'can_manage_planting_returns'),
+          getPerm('quality_assurance', 'can_view_planting_returns')
+        ],
+        requiresApprovedSr4: true,
       },
       {
         title: "QDS - Crop Declarations",
         path: "/qa/crop-declarations",
+        requiresApprovedSr4: true,
       },
       {
         title: "My seed Labs",
@@ -113,6 +115,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
         requiredPermissions: [
           getPerm("quality_assurance", "can_request_seed_lab_inspection"),
         ],
+        // requiresApprovedApplication: true,
       },
       {
         title: "Lab tests",
@@ -120,6 +123,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
         requiredPermissions: [
           getPerm("quality_assurance", "can_manage_seed_lab_inspection"),
         ],
+        // requiresApprovedApplication: true,
       },
       {
         title: "Seed labels",
@@ -133,6 +137,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: "Seed stock",
     icon: "questionnaire-tablet",
+    requiresApprovedApplication: true,
     children: [
       { title: 'Stock examination', path: '/stock/examination' },
       { title: 'My Stock', path: '/stock/mystock' },

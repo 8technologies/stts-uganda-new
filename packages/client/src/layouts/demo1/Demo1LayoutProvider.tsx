@@ -11,6 +11,8 @@ import { useMenuChildren } from "@/components/menu";
 import { MENU_SIDEBAR } from "@/config/menu.config";
 import { useAuthContext } from "@/auth";
 import { getPermissionsFromToken } from "@/utils/permissions";
+import { useQuery } from "@apollo/client/react";
+import { LOAD_QDS_FORMS, LOAD_SR4_FORMS, LOAD_SR6_FORMS } from "@/gql/queries";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
 import { useMenus } from "@/providers";
 import { ILayoutConfig, useLayout } from "@/providers";
@@ -73,6 +75,40 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
   const { pathname } = useLocation(); // Gets the current path
   const { setMenuConfig } = useMenus(); // Accesses menu configuration methods
   const { auth, currentUser } = useAuthContext();
+  const currentUserId = currentUser?.id;
+
+  const { data: sr4Data } = useQuery<{ sr4_applications: Array<{ user_id?: string | number | null; status?: string | null }> }>(
+    LOAD_SR4_FORMS,
+    { skip: !currentUserId },
+  );
+  const { data: sr6Data } = useQuery<{ sr6_applications: Array<{ user_id?: string | number | null; status?: string | null }> }>(
+    LOAD_SR6_FORMS,
+    { skip: !currentUserId },
+  );
+  const { data: qdsData } = useQuery<{ qds_applications: Array<{ user_id?: string | number | null; status?: string | null }> }>(
+    LOAD_QDS_FORMS,
+    { skip: !currentUserId },
+  );
+
+  const hasApprovedApplication = [
+    ...(sr4Data?.sr4_applications ?? []),
+    ...(sr6Data?.sr6_applications ?? []),
+    ...(qdsData?.qds_applications ?? []),
+  ].some(
+    (app) =>
+      String(app?.user_id ?? "") === String(currentUserId ?? "") &&
+      String(app?.status ?? "").toLowerCase() === "approved",
+  );
+
+  const hasApprovedSr4 = [
+    // ...(sr4Data?.sr4_applications ?? []),
+    ...(sr6Data?.sr6_applications ?? []),
+    ...(qdsData?.qds_applications ?? []),
+  ].some(
+    (app) =>
+      String(app?.user_id ?? "") === String(currentUserId ?? "") &&
+      String(app?.status ?? "").toLowerCase() === "approved",
+  );
 
   // Filter menu using JWT permissions and user flags
   const filterMenuWithVisibilityRules = (
@@ -98,6 +134,22 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
       if (req && req.length > 0) {
         const ok = req.every((key) => !!perms[key]);
         keepSelf = keepSelf && ok;
+      }
+
+      const requiresApprovedApplication = !!(item as any)
+        .requiresApprovedApplication;
+      if (requiresApprovedApplication) {
+        const bypassApprovedApplicationCheck = hasManageAllForms;
+        keepSelf =
+          keepSelf &&
+          (bypassApprovedApplicationCheck || hasApprovedApplication);
+      }
+
+      const requiresApprovedSr4 = !!(item as any)
+        .requiresApprovedSr4;
+      if (requiresApprovedSr4) {
+        const bypassApprovedSr4Check = hasManageAllForms;
+        keepSelf = keepSelf && (bypassApprovedSr4Check || hasApprovedSr4);
       }
 
       // Recurse into children

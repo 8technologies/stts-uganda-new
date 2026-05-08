@@ -183,6 +183,10 @@ export interface IMenuItemConfig {
   childrenIndex?: number;
   // Custom: permission keys required to show this item
   requiredPermissions?: string[];
+  // Custom: require at least one approved application (SR4/SR6/QDS)
+  requiresApprovedApplication?: boolean;
+  requiresApprovedSr4?: boolean;
+
 }
 
 export type TMenuConfig = IMenuItemConfig[];
