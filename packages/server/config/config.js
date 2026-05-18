@@ -7,7 +7,8 @@ const baseUrl = `http://${host}:${port}/logos/`;
 const imagesUrl = `http://${host}:2222`;
 const test = "testing123";
 const MAX_RESULTS = 1000;
-const PRIVATE_KEY = "tredumo_lower@2025";
+// const PRIVATE_KEY = "tredumo_lower@2025";
+const PRIVATE_KEY = "oY8p5l*A#!Tk";
 
 // Create connection pool
 const db = mysql.createPool({

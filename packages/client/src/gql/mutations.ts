@@ -925,23 +925,40 @@ export const DELETESEEDLABELPACKAGE = gql`
 `;
 
 export const CREATE_PRE_ORDER = gql`
-  mutation CreatePreOrder($input: CreatePreOrderInput!) {
-    createPreOrder(input: $input) {
+  mutation savePreOrder($input: savePreOrderInput!) {
+  savePreOrder(input: $input) {
+    success
+    message
+    preOrder {
+      id
+      user_id
+      breeder_id
+      variety_id
+      quantity
+      collection_date
+      detail
+      supply_date
+      pickup_location
+      status
+      comment
+      deleted
+      created_at
+      updated_at
+    }
+  }
+}
+`;
+
+export const UPDATE_PRE_ORDER = gql`
+  mutation UpdatePreOrder($id: ID!, $input: UpdatePreOrderInput!) {
+    updatePreOrder(id: $id, input: $input) {
       success
       message
       preOrder {
         id
-        quantity
-        requested_date
         status
-        Crop {
-          id
-          name
-        }
-        Variety {
-          id
-          name
-        }
+        comment
+        collection_date
         created_at
       }
     }

@@ -296,8 +296,8 @@ const Users = () => {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const mapped: IUsersData[] = forms.map((f) => ({
     user: {
-      avatar: 'blank.png',
-      userName: f.user.name,
+      avatar: f.user.avatar ?? 'blank.png',
+      userName: f.user.name ?? f.user.username ?? '-',
       userGmail: f.phone_number || ''
     },
     role: f.type === 'seed_merchant' ? 'Seed Merchant/Company' : 'Seed Exporter/Importer',

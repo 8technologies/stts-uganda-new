@@ -1106,7 +1106,7 @@ const applicationFormsResolvers = {
 
         // send a notification to the assigned inspector
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: "Inspector Assignment",
           message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formOwner.name}'s ${formDetails.form_type} application `,
@@ -1114,7 +1114,7 @@ const applicationFormsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: "Inspector Assignment",
           message: `Dear ${formOwner.name}, You have been assigned to ${inspector.name} as your inspector for the ${formDetails.form_type} application that you submitted`,
@@ -1169,7 +1169,7 @@ const applicationFormsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Halted`,
           message: `Dear ${formOwner.name}, Your form haas been halted. Please go to the system to see the reason`,
@@ -1224,7 +1224,7 @@ const applicationFormsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Rejection`,
           message: `Dear ${formOwner.name}, Your form haas been rejected. Please go to the system to see the reason`,
@@ -1279,7 +1279,7 @@ const applicationFormsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Recommendation`,
           message: `Dear ${formOwner.name}, Your form haas been recommended. The form is now submitted back to the commissioner`,
@@ -1572,7 +1572,7 @@ const applicationFormsResolvers = {
 
         // send email with attachment if any
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Approval`,
           message: `Congragfulations!!!, Dear ${formOwner.name}, Your form has been approved.`,

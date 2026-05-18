@@ -579,7 +579,7 @@ const importPermitsResolvers = {
 
         // send a notification to the assigned inspector
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: `${formDetails.permitType} Permit Inspector Assignment`,
           message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formOwner.name}'s ${formDetails.permitType} permit`,
@@ -587,7 +587,7 @@ const importPermitsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Inspector Assignment`,
           message: `Dear ${formOwner.name}, You have been assigned to ${inspector.name} as your inspector for the ${formDetails.permitType} permit requests that you submitted`,
@@ -641,7 +641,7 @@ const importPermitsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Halted`,
           message: `Dear ${formOwner.name}, Your ${formDetails.permitType} Permit Application has been halted. Please go to the system to see the reason`,
@@ -695,7 +695,7 @@ const importPermitsResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Rejection`,
           message: `Dear ${formOwner.name}, Your form has been rejected. Please go to the system to see the reason`,
@@ -785,7 +785,7 @@ const importPermitsResolvers = {
 
         // send email with attachment if any
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Approval`,
           message: `Congragfulations!!!, Dear ${formOwner.name}, Your ${formDetails.permitType} Permit has been approved.`,

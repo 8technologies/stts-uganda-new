@@ -4,34 +4,46 @@ const PreOrderType = `#graphql
         id: ID!
         user_id: ID!
         breeder_id: ID
-        crop_id: ID!
         variety_id: ID!
         quantity: Float!
+        seed_class: String!
         collection_date: Date!
         detail: String
-        supply_date: Date!
+        supply_date: Date
         pickup_location: String
-        status: String
+        status: PreOrderStatus
         comment: String
-        deleted: Int
+        response: String
         created_at: Date
         updated_at: Date
         createdBy: User
+        breeder: User
         Crop: Crop
         Variety: CropVariety
     }
 
-    input CreatePreOrderInput {
+    enum PreOrderStatus {
+        pending
+        accepted
+        rejected
+        completed
+    }
+
+    input savePreOrderInput {
+        id: ID
         cropId: ID!
         varietyId: ID!
+        breederId: ID!  
         seedClass: String
         quantity: Float!
         requestedDate: String!
+        pickup_location: String
         comment: String
     }
 
     input UpdatePreOrderInput {
-        status: String
+        status: PreOrderStatus
+        supplyDate: String
         comment: String
     }
 
@@ -41,7 +53,7 @@ const PreOrderType = `#graphql
     }
 
     type Mutation {
-        createPreOrder(input: CreatePreOrderInput!): PreOrderResponse
+        savePreOrder(input: savePreOrderInput!): PreOrderResponse
         updatePreOrder(id: ID!, input: UpdatePreOrderInput!): PreOrderResponse
         deletePreOrder(id: ID!): PreOrderResponse
     }

@@ -427,7 +427,7 @@ const seedLabResolvers = {
 
         // send a notification to the assigned inspector
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: "Inspector Assignment",
           message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formOwner.name}'s seed lab application `,
@@ -435,7 +435,7 @@ const seedLabResolvers = {
 
         // send another email to the form owner
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: "Inspector Assignment",
           message: `Dear ${formOwner.name}, You have been assigned to ${inspector.name} as your inspector for the ${formDetails.form_type} application that you submitted`,

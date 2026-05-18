@@ -369,7 +369,7 @@ const stockExaminationResolvers = {
 
         // Notify inspector
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: `Stock Examination Inspector Assignment`,
           message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formIds.length} stock examination(s).`,
@@ -379,7 +379,7 @@ const stockExaminationResolvers = {
         await Promise.all(
           owners.map((owner) =>
             sendEmail({
-              from: '"STTS MAAIF" <tredumollc@gmail.com>',
+              from: '"STTS MAAIF" <info@seedtracking.net>',
               to: owner.email,
               subject: `Stock Examination Inspector Assigned`,
               message: `Dear ${owner.name}, ${inspector.name} has been assigned as your inspector for your stock examination request.`,
@@ -486,7 +486,7 @@ const stockExaminationResolvers = {
 
         // Send email notification
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: owner.email,
           subject: `Stock Examination Inspection ${decision.toUpperCase()}`,
           message: `Dear ${owner.name}, your stock examination has been ${decision} after inspection.`,

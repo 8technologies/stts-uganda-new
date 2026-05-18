@@ -412,7 +412,11 @@ const PlantingReturnsGrid = ({
           return (
             <div className="flex items-center gap-4">
               <img
-                src={`${URL_2}/imgs/${row.original?.createdBy?.image}`}
+                src={
+                  row.original?.createdBy?.image
+                    ? `${URL_2}/imgs/${row.original?.createdBy?.image}`
+                    : toAbsoluteUrl("/media/avatars/blank.png")
+                }
                 className="rounded-full size-9 shrink-0"
                 alt={`${row.original?.createdBy?.username}`}
               />

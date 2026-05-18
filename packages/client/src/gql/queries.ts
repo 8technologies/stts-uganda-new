@@ -1091,29 +1091,37 @@ export const SEEDLABELPACKAGES = gql`
 
 export const PRE_ORDERS = gql`
   query GetPreOrders {
-    getPreOrders {
-      id
-      user_id
-      crop_id
-      variety_id
-      quantity
-      requested_date
-      status
-      comment
-      created_at
-      Crop {
-        id
-        name
-      }
-      Variety {
-        id
-        name
-      }
-      createdBy {
-        id
-        name
-        username
-      }
+  getPreOrders {
+    id
+    user_id
+    breeder_id
+    variety_id
+    quantity
+    collection_date
+    detail
+    seed_class
+    supply_date
+    pickup_location
+    status
+    comment
+    created_at
+    updated_at
+    createdBy {
+      username
+      name
+    }
+    breeder {
+      username
+      name
+    }
+    Variety {
+      cropId
+      name
+    }
+    Crop {
+      name
     }
   }
+}
+    
 `;

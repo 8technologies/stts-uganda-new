@@ -7,17 +7,17 @@ async function sendEmail({
   message,
   html,
   attachments, // optional: nodemailer attachments array
-  from = "darlingtonakampa720@gmail.com",
+  from = "info@seedtracking.net",
 }) {
   try {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
+      host: "seedtracking.net",
       port: 465,
       secure: true, // true for 465, false for other ports
       auth: {
-        user: "tredumollc@gmail.com",
-        pass: "zykiwbbaffehohlb",
+        user: "info@seedtracking.net",
+        pass: "oY8p5l*A#!Tk",
       },
     });
 
@@ -35,6 +35,12 @@ async function sendEmail({
 
     console.log("Message sent: %s", info.messageId);
   } catch (error) {
+    console.error("Email send failure:", {
+      message: error?.message,
+      code: error?.code,
+      response: error?.response,
+      command: error?.command,
+    });
     throw new GraphQLError("server error: Failed to send emails");
     // console.log("server error: Failed to send emails");
   }

@@ -517,7 +517,7 @@ const plantingReturnsResolvers = {
 
         // Notify inspector (one email). Optionally include a list of returns.
         await sendEmail({
-          from: '"STTS MAAIF" <tredumollc@gmail.com>',
+          from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: `Planting Return Inspector Assignment`,
           message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formIds.length} planting return(s).`,
@@ -527,7 +527,7 @@ const plantingReturnsResolvers = {
         await Promise.all(
           owners.map((owner) =>
             sendEmail({
-              from: '"STTS MAAIF" <tredumollc@gmail.com>',
+              from: '"STTS MAAIF" <info@seedtracking.net>',
               to: owner.email,
               subject: `Planting Return Inspector Assignment`,
               message: `Dear ${owner.name}, You have been assigned to ${inspector.name} as your inspector for your Planting Return request.`,

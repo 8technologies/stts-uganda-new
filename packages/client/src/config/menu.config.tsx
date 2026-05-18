@@ -150,7 +150,9 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       { title: 'Products', path: '/market/products' },
       { title: 'Orders', path: '/market/orders' },
-      // { title: 'Pre-orders', path: '/market/pre-orders' }
+      { title: 'Pre-orders', 
+        path: '/market/pre-orders',
+        requiredPermissions: [getPerm("market_place", "can_view_pre_orders")]}
     ]
   },
   {
@@ -191,7 +193,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
     icon: "profile-circle",
     children: [
       { title: "Overview", path: "/account/home/user-profile" },
-      { title: "Security", path: "/account/security/overview" },
+      // { title: "Security", path: "/account/security/overview" },
     ],
   },
 ];

@@ -179,6 +179,11 @@ export const MODULES_CONFIG: ModuleConfig[] = [
       { id: 'can_view_marketplace', label: 'Can View Marketplace' },
       { id: 'can_order_seeds', label: 'Can Order Seeds' },
       { id: 'can_view_only_own_orders', label: 'Can view only own orders' },
+      { id: 'can_view_pre_orders', label: 'Can view pre-orders' },
+      { id: 'can_manage_pre_orders', label: 'Can manage pre-orders' },
+      { id: 'can_view_own_pre_orders', label: 'Can view own pre-orders' },
+      { id: 'can_create_pre_orders', label: 'Can create pre-orders' },
+      { id: 'can_receive_pre_orders', label: 'Can receive pre-orders' },
 
     ]
   },
