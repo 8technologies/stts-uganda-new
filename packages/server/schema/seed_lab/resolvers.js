@@ -3,7 +3,7 @@ import { db } from "../../config/config.js";
 import checkPermission from "../../helpers/checkPermission.js";
 import hasPermission from "../../helpers/hasPermission.js";
 import saveData from "../../utils/db/saveData.js";
-import { fetchExaminations } from "../stock_examinations/resolvers.js";
+import { fetchExaminations, mapExamRow } from "../stock_examinations/resolvers.js";
 import saveUpload from "../../helpers/saveUpload.js";
 import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
@@ -244,9 +244,24 @@ const seedLabResolvers = {
       } catch (error) {
         throw new GraphQLError(error.message);
       }
+    },
+    stockExamination: async (parent) => {
+    try {
+      const stock_examination_id = parent.stock_examination_id;
+
+      if (!stock_examination_id) return null;
+
+      const [stockExamination] = await fetchExaminations({
+        id: stock_examination_id,
+      });
+
+      return stockExamination;
+    } catch (error) {
+      throw new GraphQLError(error.message);
     }
   },
-
+  },
+  
   Mutation:{
     saveSeedLabRequest: async (_parent, args, context) => {
       const connection = await db.getConnection();

@@ -1,5 +1,6 @@
 import { type TMenuConfig } from "@/components/menu";
 import { MODULES_CONFIG } from "@/pages/roles/permissions.config";
+import { get } from "http";
 
 // Helper: find permission id by module + permission id
 const byModuleId = Object.fromEntries(MODULES_CONFIG.map((m) => [m.id, m]));
@@ -107,6 +108,9 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: "QDS - Crop Declarations",
         path: "/qa/crop-declarations",
+        requiredPermissions: [
+          getPerm('quality_assurance', 'can_view_planting_returns'),
+        ],
         requiresApprovedSr4: true,
       },
       {
@@ -137,6 +141,9 @@ export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: "Seed stock",
     icon: "questionnaire-tablet",
+    requiredPermissions: [
+        getPerm("seed_stock", "can_view_seed_stock"),
+    ],
     requiresApprovedApplication: true,
     children: [
       { title: 'Stock examination', path: '/stock/examination' },

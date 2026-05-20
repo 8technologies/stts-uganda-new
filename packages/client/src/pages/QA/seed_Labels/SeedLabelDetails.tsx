@@ -114,6 +114,9 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
   });
   const packages = (packagesData?.seedLabelPackages || []) as any[];
 
+  const formatPackageLabel = (pkg: any) =>
+    `${pkg.packageSizeKg}kg @ ${pkg.priceUgx} UGX`;
+
   console.log("Seed Label Details data:", d);
 
   useEffect(() => {
@@ -191,7 +194,8 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
     const packageSize =
       packageMatch?.packageSizeKg ||
       parsePackageSize(formDetails?.seed_label_package);
-    const weight = packageSize ? `${packageSize} kg` : formDetails?.seed_label_package || "";
+    // const weight = packageSize ? `${packageSize} kg` : formDetails?.seed_label_package || "";
+    const weight = `${formDetails?.SeedLabelPackage?.packageSizeKg || ''} kg`;
     const seedClass = formDetails?.SeedLab?.seed_class || "CERTIFIED SEED";
     const labelNumber = String(formDetails?.id ?? "").padStart(6, "0");
 
@@ -596,7 +600,8 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
                           Package
                         </div>
                         <div className="text-sm font-medium text-gray-900">
-                          {d.seed_label_package}
+                          {/* {d.seed_label_package} */}
+                          {formatPackageLabel(d.SeedLabelPackage)}
                         </div>
                       </div>
                     )}

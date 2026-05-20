@@ -75,6 +75,12 @@ const timeAgo = (iso?: string | null) => {
   return `${days}d ago`;
 };
 
+const formatReportValue = (value: unknown) => {
+  if (value === null || value === undefined) return '-';
+  if (typeof value === 'string' && value.trim() === '') return '-';
+  return String(value);
+};
+
 /* --- Status styles (system palette) --- */
 export const STATUS = {
   ACCEPTED: {
@@ -238,9 +244,9 @@ const RowItem = ({
   value: React.ReactNode;
   copyValue?: string;
 }) => (
-  <div className="flex items-start justify-between gap-4 py-2 px-3 -mx-3 rounded-lg transition-colors hover:bg-gray-50">
+  <div className="flex items-start justify-between gap-2 py-2 px-2 -mx-2 rounded-lg transition-colors hover:bg-gray-50">
     <div className="text-sm font-medium text-slate-600 min-w-[160px]">{label}</div>
-    <div className="flex items-center gap-2 flex-1 justify-end text-right">
+    <div className="flex items-center gap-2 flex-1">
       <div className="text-sm text-slate-900">{value}</div>
       {copyValue && <Copy value={copyValue} label={label} />}
     </div>
@@ -281,6 +287,7 @@ const SeedLabDetailsDialog = ({
   const { auth, currentUser } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canAssignInspector = !!perms['can_assign_inspector'];
+  const canReceive = !!perms['can_receive_seed_lab_inspections'];
   const canPerfomLabTest = !!perms['can_perform_seed_lab_tests'];
 
   const {
@@ -333,7 +340,7 @@ const SeedLabDetailsDialog = ({
   const isConfirmDisabled =
     !action ||
     (action === 'assign_inspector' && !inspector) ||
-    ((action === 'receive_sample' || action === 'reject_sample') && !comment.trim()) ||
+    ((action === 'reject_sample') && !comment.trim()) ||
     !isActionPermitted;
 
   // show comment input for reception actions (and existing status-based flows)
@@ -425,34 +432,35 @@ const SeedLabDetailsDialog = ({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-[600px] h-full flex flex-col p-0 bg-white"
+        className="w-full sm:max-w-[700px] h-full flex flex-col p-0 bg-white"
       >
         {/* HERO HEADER */}
-        <SheetHeader className="px-6 pt-6 pb-5 border-b bg-white">
-          <div className="flex items-center justify-between mb-3">
-            <SheetTitle className="flex items-center gap-3 text-xl text-slate-900">
-              <div className="p-2 rounded-xl bg-gray-100 text-gray-700">
+        <SheetHeader className="px-6 py-5 border-b border-emerald-200 bg-primary">
+          <div className="flex items-center justify-between">
+            <div>
+              <SheetTitle className="text-white text-xl font-semibold flex items-center gap-2">
                 <KeenIcon icon="flask" className="text-xl" />
-              </div>
-              Seed Lab Inspection
-            </SheetTitle>
+                Seed Lab Inspection
+              </SheetTitle>
+              <p className="text-emerald-100 text-sm mt-1">
+                Review inspection details and process lab actions
+              </p>
+            </div>
             {d && <StatusBadge s={d.status} />}
           </div>
 
           {d && (
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-emerald-100 mt-3">
               <Pill>
                 <KeenIcon icon="fingerprint-scanning" />
                 {d.id}
               </Pill>
-              <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-1 text-slate-600">
+              <span>•</span>
+              <span className="flex items-center gap-1">
                 <KeenIcon icon="calendar-tick" />
                 {formatDate(d.created_at)}
               </span>
-              <span className="flex items-center gap-1 text-slate-500">
-                ({timeAgo(d.created_at)})
-              </span>
+              <span>({timeAgo(d.created_at)})</span>
               {d.deleted && (
                 <span className="ml-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-700 ring-1 ring-rose-200">
                   <KeenIcon icon="information" />
@@ -501,9 +509,9 @@ const SeedLabDetailsDialog = ({
                     copyValue={d.createdBy?.username || undefined}
                   />
                   <RowItem
-                    label="Stock Examination"
-                    value={<span className="font-mono text-xs">{d.stock_examination_id || '—'}</span>}
-                    copyValue={d.stock_examination_id || undefined}
+                    label="Lab test number"
+                    value={<span className="font-mono text-xs">{d.lab_test_number || '—'}</span>}
+                    copyValue={d.lab_test_number || undefined}
                   />
                   {d.receipt_id && (
                     <RowItem
@@ -556,7 +564,7 @@ const SeedLabDetailsDialog = ({
                           className="flex flex-col bg-gray-50 p-3 rounded-lg border border-gray-100"
                         >
                           <span className="text-gray-500 capitalize">{key.replace(/_/g, " ")}</span>
-                          <span className="font-medium text-gray-900">{String(value)}</span>
+                          <span className="font-medium text-gray-900">{formatReportValue(value)}</span>
                         </div>
                       ))}
                     </div>
@@ -565,40 +573,41 @@ const SeedLabDetailsDialog = ({
               )}
 
               {d.lab_test_report && (
-  <Section title="Technical Report">
-    <div className="bg-white rounded-xl shadow-sm p-6 mt-4 border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2">
-        Lab Test Summary
-      </h3>
+                <Section title="Technical Report">
+                  <div className="bg-white rounded-xl shadow-sm p-6 mt-4 border border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2">
+                      Lab Test Summary
+                    </h3>
 
-      <div className="space-y-6">
-        {Object.entries(d.lab_test_report).map(([category, values]) => (
-          <div key={category} className="bg-gray-50 rounded-lg border border-gray-100 p-4">
-            <h4 className="text-md font-semibold text-gray-700 mb-3 capitalize">
-              {category}
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-              {Object.entries(values as Record<string, any>).map(([key, value]) => (
-                <div
-                  key={key}
-                  className="flex flex-col bg-white p-3 rounded-md border border-gray-100 hover:shadow-sm transition"
-                >
-                  <span className="text-gray-500 capitalize">{key.replace(/_/g, " ")}</span>
-                  <span className="font-medium text-gray-900 truncate">{String(value)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </Section>
-)}
+                    <div className="space-y-6">
+                      {Object.entries(d.lab_test_report).map(([category, values]) => (
+                        <div key={category} className="bg-gray-50 rounded-lg border border-gray-100 p-4">
+                          <h4 className="text-md font-semibold text-gray-700 mb-3 capitalize">
+                            {category}
+                          </h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                            {Object.entries(values as Record<string, any>).map(([key, value]) => (
+                              <div
+                                key={key}
+                                className="flex flex-col bg-white p-3 rounded-md border border-gray-100 hover:shadow-sm transition"
+                              >
+                                <span className="text-gray-500 capitalize">{key.replace(/_/g, " ")}</span>
+                                <span className="font-medium text-gray-900 truncate">{formatReportValue(value)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Section>
+              )}
 
 
 
               {/* ACTIONS */}
-              <div className="space-y-4">
+              <div className="space-y-4 border-t border-gray-200 pt-5">
+                
                 {permittedActions.length > 0 &&
                   (d.status === 'pending' ||
                     d.status === 'recommended' ||
@@ -612,12 +621,14 @@ const SeedLabDetailsDialog = ({
                     d.status === 'recommended' ||
                     d.status === 'assigned_inspector' ||
                     d.status === 'inspector_assigned') && (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       {permittedActions.map((opt) => (
                         <label
                           key={opt.value}
-                          className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                            action === opt.value ? 'border-primary-500' : 'border-gray-200'
+                          className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
+                            action === opt.value
+                              ? 'border-primary bg-primary/5 text-primary'
+                              : 'border-gray-200 hover:bg-gray-50'
                           }`}
                         >
                           <input
@@ -637,12 +648,14 @@ const SeedLabDetailsDialog = ({
                 {receptionActions.length > 0 && (
                   <>
                     <div className="text-sm font-semibold text-gray-900">Reception</div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       {receptionActions.map((opt) => (
                         <label
                           key={opt.value}
-                          className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                            action === opt.value ? 'border-primary-500' : 'border-gray-200'
+                          className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
+                            action === opt.value
+                              ? 'border-primary bg-primary/5 text-primary'
+                              : 'border-gray-200 hover:bg-gray-50'
                           }`}
                         >
                           <input
@@ -714,30 +727,6 @@ const SeedLabDetailsDialog = ({
                   </div>
                 )}
 
-                {(action === 'halt' ||
-                  action === 'reject' ||
-                  action === 'recommend' ||
-                  action === 'receive_sample' ||
-                  action === 'reject_sample' ||
-                  d.status === 'assigned_inspector' ||
-                  d.status === 'inspector_assigned') &&
-                  (d.status === 'pending' ||
-                    d.status === 'recommended' ||
-                    d.status === 'assigned_inspector' ||
-                    d.status === 'inspector_assigned') && (
-                    <div className="max-w-xl">
-                      <label className="form-label text-sm">Status comment</label>
-                      <Textarea
-                        className="mt-2"
-                        rows={3}
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        placeholder={`Provide a reason for ${action || 'this update'}…`}
-                        disabled={assigning}
-                      />
-                    </div>
-                  )
-                  }
                 {showCommentInput &&
                   (d.status === 'pending' ||
                     d.status === 'recommended' ||
@@ -745,7 +734,13 @@ const SeedLabDetailsDialog = ({
                     d.status === 'inspector_assigned' ||
                     d.status === 'accepted') && (
                     <div className="max-w-xl">
-                      <label className="form-label text-sm">Status comment</label>
+                      <label className="form-label text-sm">
+                        {action === 'receive_sample'
+                          ? 'Reception note'
+                          : action === 'reject_sample'
+                            ? 'Rejection reason'
+                            : 'Status comment'}
+                      </label>
                       <Textarea
                         className="mt-2"
                         rows={3}

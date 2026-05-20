@@ -777,6 +777,11 @@ const LOAD_SEED_LABS = gql`
         username
         name
       }
+      stockExamination {
+        id
+        mother_lot
+        lot_number
+      }
     }
   }
 `;

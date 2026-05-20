@@ -121,6 +121,11 @@ const SeedLabInspectionPage = () => {
           : ''
     );
   }, [record]);  */
+  useEffect(() => {
+    if (!record) return;
+    setMotherLot(record.stockExamination?.mother_lot || '');
+    setLotNumber(record.stockExamination?.lot_number || '');
+  }, [record]);
 
   const valid =
     samplingDate &&
@@ -244,21 +249,7 @@ const SeedLabInspectionPage = () => {
               <KeenIcon icon="arrow-left" /> Back
             </Button>
           </Link>
-          <Button
-            variant="outline"
-            onClick={() => handleSave(false)}
-            disabled={saving || !valid}
-            className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
-          >
-            <KeenIcon icon="task" /> Save Draft
-          </Button>
-          <Button
-            onClick={() => handleSave(true)}
-            disabled={saving || !valid || !decision}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            <KeenIcon icon="tick-square" /> Submit Decision
-          </Button>
+          
         </div>
       </div>
 
@@ -341,7 +332,7 @@ const SeedLabInspectionPage = () => {
                 placeholder="Input Mother lot"
                 value={motherLot}
                 onChange={(e) => setMotherLot(e.target.value)}
-                disabled={lock}
+                disabled={true}
               />
             </div>
 
@@ -351,7 +342,7 @@ const SeedLabInspectionPage = () => {
                 placeholder="Optional Lot Number"
                 value={lotNumber}
                 onChange={(e) => setLotNumber(e.target.value)}
-                disabled={lock}
+                disabled={true}
               />
             </div>
           </div>
@@ -467,6 +458,25 @@ const SeedLabInspectionPage = () => {
           <div className="mt-3 text-xs text-emerald-700 font-medium">
             NOTE: You cannot reverse this process once it's done.
           </div>
+          
+        </div>
+        <div className="flex items-center gap-2 justify-end">
+          
+          <Button
+            variant="outline"
+            onClick={() => handleSave(false)}
+            disabled={saving || !valid}
+            className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+          >
+            <KeenIcon icon="task" /> Save Draft
+          </Button>
+          <Button
+            onClick={() => handleSave(true)}
+            disabled={saving || !valid || !decision}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <KeenIcon icon="tick-square" /> Submit Decision
+          </Button>
         </div>
       </div>
     </Container>

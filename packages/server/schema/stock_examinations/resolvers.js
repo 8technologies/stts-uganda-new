@@ -17,7 +17,7 @@ const parseJSON = (text) => {
   }
 };
 
-const mapExamRow = (row) => {
+export const mapExamRow = (row) => {
   const meta = parseJSON(row.report);
   const decision = meta?.decision || null;
   const status = decision || "pending"; // UI expects: pending |inspector_assigned | accepted | rejected
@@ -43,6 +43,7 @@ const mapExamRow = (row) => {
     status_comment: row.status_comment ?? null,
     remarks: row.remarks,
     mother_lot: row.mother_lot ?? null,
+    lot_number: row.lot_number ?? null,
   };
 };
 

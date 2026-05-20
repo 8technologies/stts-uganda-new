@@ -38,6 +38,7 @@ const seedLabTypeDefs = `#graphql
         createdBy: User
         variety: CropVariety
         inspector: User
+        stockExamination: StockExamination
     }
 
     type Query {

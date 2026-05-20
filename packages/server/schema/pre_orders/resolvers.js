@@ -2,7 +2,6 @@ import { GraphQLError } from "graphql";
 import { db } from "../../config/config.js";
 import { getUsers } from "../user/resolvers.js";
 import saveData from "../../utils/db/saveData.js";
-import { seedCategory } from "../../../client/src/pages/seed-stock/stock-examination/StockExamination.js";
 import checkPermission from "../../helpers/checkPermission.js";
 import hasPermission from "../../helpers/hasPermission.js";
 

@@ -77,7 +77,7 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
   const { auth, currentUser } = useAuthContext();
   const currentUserId = currentUser?.id;
 
-  const { data: sr4Data } = useQuery<{ sr4_applications: Array<{ user_id?: string | number | null; status?: string | null }> }>(
+  const { data: sr4Data } = useQuery<{ sr4_applications: Array<{ user_id?: string | number | null; status?: string | null; type?: string | null }> }>(
     LOAD_SR4_FORMS,
     { skip: !currentUserId },
   );
@@ -90,6 +90,8 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
     { skip: !currentUserId },
   );
 
+  console.log("SR4 Data:", sr4Data);
+
   const hasApprovedApplication = [
     ...(sr4Data?.sr4_applications ?? []),
     ...(sr6Data?.sr6_applications ?? []),
@@ -99,9 +101,26 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
       String(app?.user_id ?? "") === String(currentUserId ?? "") &&
       String(app?.status ?? "").toLowerCase() === "approved",
   );
+  const hasApprovedSr4Merchant = [
+    ...(sr4Data?.sr4_applications ?? []),
+  ].some(
+    (app) =>
+      String(app?.user_id ?? "") === String(currentUserId ?? "") &&
+      String(app?.status ?? "").toLowerCase() === "approved" &&
+      String(app?.type ?? "").toLowerCase() === "seed_merchant",
+  );
+
+  const hasApprovedSr4Import = [
+    ...(sr4Data?.sr4_applications ?? []),
+  ].some(
+    (app) =>
+      String(app?.user_id ?? "") === String(currentUserId ?? "") &&
+      String(app?.status ?? "").toLowerCase() === "approved" &&
+      String(app?.type ?? "").toLowerCase() === "seed_exporter_or_importer",
+
+  );
 
   const hasApprovedSr4 = [
-    // ...(sr4Data?.sr4_applications ?? []),
     ...(sr6Data?.sr6_applications ?? []),
     ...(qdsData?.qds_applications ?? []),
   ].some(
@@ -119,7 +138,7 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
     underQA = false,
   ): any[] => {
     const result: any[] = [];
-    const hasManageAllForms = !!perms["can_manage_all_forms"];
+    const hasManageAllForms = !!perms["can_manage_all_qa_tasks"];
 
     for (const rawItem of items) {
       const item = { ...rawItem };
@@ -149,7 +168,7 @@ const Demo1LayoutProvider = ({ children }: PropsWithChildren) => {
         .requiresApprovedSr4;
       if (requiresApprovedSr4) {
         const bypassApprovedSr4Check = hasManageAllForms;
-        keepSelf = keepSelf && (bypassApprovedSr4Check || hasApprovedSr4);
+        keepSelf = keepSelf && (bypassApprovedSr4Check || hasApprovedSr4Merchant || hasApprovedSr4);
       }
 
       // Recurse into children

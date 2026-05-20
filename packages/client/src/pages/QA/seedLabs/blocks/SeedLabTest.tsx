@@ -164,10 +164,11 @@ export default function StockLabTestForm() {
             <CardTitle className="text-lg font-semibold text-gray-700">PURITY (P)</CardTitle>
           </CardHeader>
           <Separator />
-          <CardContent className="space-y-4 pt-4">
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <FieldLabel required>Enter Pure seed (in percentage)</FieldLabel>
               <Input
+              type="number"
                 placeholder="Enter Pure seed (in percentage)"
                 value={formData.purity.pure_seed}
                 onChange={(e) => handleChange("purity", "pure_seed", e.target.value)}
@@ -177,6 +178,7 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Inert matter</FieldLabel>
               <Input
+                type="number"
                 placeholder="Input Inert matter"
                 value={formData.purity.inert_matter}
                 onChange={(e) => handleChange("purity", "inert_matter", e.target.value)}
@@ -186,6 +188,7 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Other crop seeds</FieldLabel>
               <Input
+              type="number"
                 placeholder="Input Other crop seeds"
                 value={formData.purity.other_crop_seeds}
                 onChange={(e) => handleChange("purity", "other_crop_seeds", e.target.value)}
@@ -195,6 +198,7 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Weed seed</FieldLabel>
               <Input
+              type="number"
                 placeholder="Input Weed seed"
                 value={formData.purity.weed_seed}
                 onChange={(e) => handleChange("purity", "weed_seed", e.target.value)}
@@ -211,10 +215,11 @@ export default function StockLabTestForm() {
             <CardTitle className="text-lg font-semibold text-gray-700">GERMINATION (G)</CardTitle>
           </CardHeader>
           <Separator />
-          <CardContent className="space-y-4 pt-4">
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <FieldLabel required>Enter Germination capacity (in percentage)</FieldLabel>
               <Input
+                type="number"
                 placeholder="Enter Germination capacity (in percentage)"
                 value={formData.germination.capacity}
                 onChange={(e) => handleChange("germination", "capacity", e.target.value)}
@@ -225,6 +230,7 @@ export default function StockLabTestForm() {
               <div>
                 <FieldLabel required>1st count</FieldLabel>
                 <Input
+                type="number"
                   placeholder="Input 1st count"
                   value={formData.germination.first_count}
                   onChange={(e) => handleChange("germination", "first_count", e.target.value)}
@@ -233,6 +239,7 @@ export default function StockLabTestForm() {
               <div>
                 <FieldLabel required>Final count</FieldLabel>
                 <Input
+                type="number"
                   placeholder="Input Final count"
                   value={formData.germination.final_count}
                   onChange={(e) => handleChange("germination", "final_count", e.target.value)}
@@ -243,6 +250,7 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Hard</FieldLabel>
               <Input
+              type="number"
                 placeholder="Input Hard"
                 value={formData.germination.hard}
                 onChange={(e) => handleChange("germination", "hard", e.target.value)}
@@ -251,7 +259,8 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Fresh Ungerminated</FieldLabel>
               <Input
-                placeholder="fresh"
+              type="number"
+                placeholder="Input Fresh Ungerminated"
                 value={formData.germination.fresh}
                 onChange={(e) => handleChange("germination", "fresh", e.target.value)}
               />
@@ -259,7 +268,8 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Rotten or Dead</FieldLabel>
               <Input
-                placeholder="Input dead"
+              type="number"
+                placeholder="Input Rotten or Dead"
                 value={formData.germination.dead}
                 onChange={(e) => handleChange("germination", "dead", e.target.value)}
               />
@@ -267,6 +277,7 @@ export default function StockLabTestForm() {
             <div>
               <FieldLabel>Abnormal sprouts (in percentage)</FieldLabel>
               <Input
+              type="number"
                 placeholder="Input Abnormal sprouts (in percentage)"
                 value={formData.germination.abnormal_sprouts}
                 onChange={(e) => handleChange("germination", "abnormal_sprouts", e.target.value)}
@@ -283,10 +294,11 @@ export default function StockLabTestForm() {
             <CardTitle className="text-lg font-semibold text-gray-700">MOISTURE (M)</CardTitle>
           </CardHeader>
           <Separator />
-          <CardContent className="space-y-4 pt-4">
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <FieldLabel required>Enter Moisture content (in percentage)</FieldLabel>
               <Input
+                type="number"
                 placeholder="Enter Moisture content (in percentage)"
                 value={formData.moisture.moisture}
                 onChange={(e) => handleChange("moisture", "moisture", e.target.value)}

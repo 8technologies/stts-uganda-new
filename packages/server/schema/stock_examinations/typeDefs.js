@@ -18,6 +18,7 @@ const stockExaminationTypeDefs = `#graphql
         status_comment: String
         remarks: String
         mother_lot: String
+        lot_number: String
         seed_class: String
         field_size: String
         yield: String

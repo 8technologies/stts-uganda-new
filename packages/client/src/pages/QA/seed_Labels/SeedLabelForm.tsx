@@ -64,7 +64,7 @@ const SeedLabelForm = ({
     [packagesData],
   );
   const formatPackageLabel = (pkg: any) =>
-    `${pkg.name} - ${pkg.packageSizeKg}kg @ ${pkg.priceUgx} UGX`;
+    `${pkg.packageSizeKg}kg @ ${pkg.priceUgx} UGX`;
   const selectedPackage =
     packages.find((pkg) => pkg.name === seedLabelPackage) ||
     packages.find((pkg) => formatPackageLabel(pkg) === seedLabelPackage);
@@ -144,7 +144,7 @@ const SeedLabelForm = ({
               </SelectTrigger>
               <SelectContent>
                 {packages.map((pkg) => (
-                  <SelectItem key={pkg.id} value={pkg.name}>
+                  <SelectItem key={pkg.id} value={pkg.id}>
                     {formatPackageLabel(pkg)}
                   </SelectItem>
                 ))}
