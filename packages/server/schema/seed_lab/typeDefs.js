@@ -41,9 +41,14 @@ const seedLabTypeDefs = `#graphql
         stockExamination: StockExamination
     }
 
+    type LabTestCertificate {
+        html: String!
+    }
+
     type Query {
         getLabInspections: [LabInspection!]!
         getSeedLab(id: ID!): LabInspection
+        labTestCertificate(id: ID!): LabTestCertificate!
 
     }
 

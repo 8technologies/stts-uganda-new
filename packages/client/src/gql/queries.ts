@@ -786,6 +786,14 @@ const LOAD_SEED_LABS = gql`
   }
 `;
 
+const LAB_TEST_CERTIFICATE = gql`
+  query LabTestCertificate($id: ID!) {
+    labTestCertificate(id: $id) {
+      html
+    }
+  }
+`;
+
 const LOAD_SEED_LABELS = gql`
   query GetSeedLabels {
     getSeedLabels {
@@ -993,6 +1001,7 @@ export {
 
   // -------------------------
   LOAD_SEED_LABS,
+  LAB_TEST_CERTIFICATE,
   LOAD_SEED_LABELS,
   LOAD_SEED_LABEL_PACKAGES,
   LOAD_SEED_LABEL_BY_ID,

@@ -49,6 +49,8 @@ type SeedLabInspection = {
   inspector_id: string | null;
   status: string | null;
   inspector_report: any | null;
+  lab_test_report: any | null;
+  lab_test_number?: string | null;
   deleted: boolean;
   created_at: string | null;
   createdBy?: { username: string; name: string } | null;
