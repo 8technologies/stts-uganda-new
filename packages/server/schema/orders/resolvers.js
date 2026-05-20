@@ -118,7 +118,7 @@ const orderResolvers = {
                 // checkPermission(userPermissions, 'can_order_product', 'No permission to order product');
 
                 // Fetch the product to ensure it exists and has enough stock
-                const [productRows] = await db.execute('SELECT * FROM products WHERE id = ? AND deleted = 0', [input.productId]);
+                const [productRows] = await connection.execute('SELECT * FROM products WHERE id = ? AND deleted = 0', [input.productId]);
                 if (productRows.length === 0) {
                 return { success: false, message: 'Product not found' };
                 }
@@ -150,11 +150,14 @@ const orderResolvers = {
                     connection
                 });
 
-                connection.commit();
+                await connection.commit();
                 return { success: true, message: 'Order placed successfully', data: data };
             }
             catch (err) {
+                try { await connection.rollback(); } catch (_) {}
                 return { success: false, message: err.message };
+            } finally {
+                connection.release();
             }
         },
 
@@ -186,12 +189,15 @@ const orderResolvers = {
                     connection
                 });
 
-                connection.commit();
+                await connection.commit();
                 return { success: true, message: 'Order updated successfully', order: {...order[0], ...data} };
 
 
             }catch (err) {
+                try { await connection.rollback(); } catch (_) {}
                 return { success: false, message: err.message };
+            } finally {
+                connection.release();
             }
         },
 

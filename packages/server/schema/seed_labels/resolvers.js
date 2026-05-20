@@ -313,7 +313,7 @@ const seedLabelResolvers = {
                     available_stock,
                     applicant_remark,
                 }
-                console.log("data.........", data)
+                
                 if (!id) {
                   data.id = uuidv4();
                 }
@@ -378,7 +378,10 @@ const seedLabelResolvers = {
                 };
                 
             } catch (error) {
+                try { await connection.rollback(); } catch (_) {}
                 throw new Error(`Failed to save seed label request: ${error.message}`);
+            } finally {
+                connection.release();
             }
         },
         approveSeedLabelRequest: async (parent, args, context) => {
@@ -446,8 +449,10 @@ const seedLabelResolvers = {
                 };
             } catch (error) {
                 console.error("Error approving seed label request:", error);
-                await connection.rollback();
+                try { await connection.rollback(); } catch (_) {}
                 throw new GraphQLError(error.message);
+            } finally {
+                connection.release();
             }
         },
         printSeedLabelRequest: async (parent, args, context) => {
@@ -553,8 +558,10 @@ const seedLabelResolvers = {
                 };
             } catch (error) {
                 console.error("Error printing seed label request:", error);
-                await connection.rollback();
+                try { await connection.rollback(); } catch (_) {}
                 throw new GraphQLError(error.message);
+            } finally {
+                connection.release();
             }
         },
     }

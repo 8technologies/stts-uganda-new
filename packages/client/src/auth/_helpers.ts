@@ -11,6 +11,10 @@ const USER_LOCAL_STORAGE_KEY = `${import.meta.env.VITE_APP_NAME}-user-v${
   import.meta.env.VITE_APP_VERSION
 }`;
 
+const LOGOUT_REDIRECT_STORAGE_KEY = `${import.meta.env.VITE_APP_NAME}-logout-redirect-v${
+  import.meta.env.VITE_APP_VERSION
+}`;
+
 const getAuth = (): AuthModel | undefined => {
   try {
     const auth = getData(AUTH_LOCAL_STORAGE_KEY) as AuthModel | undefined;
@@ -71,6 +75,43 @@ const removeAuth = () => {
   }
 };
 
+const setLogoutRedirect = () => {
+  if (typeof sessionStorage === "undefined") {
+    return;
+  }
+
+  try {
+    sessionStorage.setItem(LOGOUT_REDIRECT_STORAGE_KEY, "1");
+  } catch (error) {
+    console.error("LOGOUT REDIRECT STORAGE SET ERROR", error);
+  }
+};
+
+const getLogoutRedirect = () => {
+  if (typeof sessionStorage === "undefined") {
+    return false;
+  }
+
+  try {
+    return sessionStorage.getItem(LOGOUT_REDIRECT_STORAGE_KEY) === "1";
+  } catch (error) {
+    console.error("LOGOUT REDIRECT STORAGE READ ERROR", error);
+    return false;
+  }
+};
+
+const removeLogoutRedirect = () => {
+  if (typeof sessionStorage === "undefined") {
+    return;
+  }
+
+  try {
+    sessionStorage.removeItem(LOGOUT_REDIRECT_STORAGE_KEY);
+  } catch (error) {
+    console.error("LOGOUT REDIRECT STORAGE REMOVE ERROR", error);
+  }
+};
+
 export function setupAxios(axios: any) {
   axios.defaults.headers.Accept = "application/json";
   axios.interceptors.request.use(
@@ -89,10 +130,14 @@ export function setupAxios(axios: any) {
 
 export {
   AUTH_LOCAL_STORAGE_KEY,
+  LOGOUT_REDIRECT_STORAGE_KEY,
   USER_LOCAL_STORAGE_KEY,
   getAuth,
+  getLogoutRedirect,
   getUser,
   removeAuth,
+  removeLogoutRedirect,
+  setLogoutRedirect,
   removeUser,
   setAuth,
   setUser,

@@ -96,10 +96,10 @@ const fetchRecentActivities = async () => {
   `);
 
   const [labelRows] = await db.execute(`
-    SELECT id, quantity, status, updated_at, created_at
+    SELECT id, quantity, status, created_at
     FROM seed_labels
     WHERE deleted = 0
-    ORDER BY updated_at DESC
+    ORDER BY created_at DESC
     LIMIT 5
   `);
 

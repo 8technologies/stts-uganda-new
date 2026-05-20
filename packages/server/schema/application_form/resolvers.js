@@ -627,8 +627,10 @@ const applicationFormsResolvers = {
           },
         };
       } catch (error) {
-        await connection.rollback();
+        try { await connection.rollback(); } catch (_) {}
         throw new GraphQLError(error.message);
+      } finally {
+        connection.release();
       }
     },
     saveSr6Form: async (parent, args, context) => {
@@ -848,8 +850,10 @@ const applicationFormsResolvers = {
         };
       } catch (error) {
         console.log("error", error);
-        await connection.rollback();
+        try { await connection.rollback(); } catch (_) {}
         throw new GraphQLError(error.message);
+      } finally {
+        connection.release();
       }
     },
     saveQdsForm: async (parent, args, context) => {
@@ -1053,8 +1057,10 @@ const applicationFormsResolvers = {
         };
       } catch (error) {
         console.log("error", error);
-        await connection.rollback();
+        try { await connection.rollback(); } catch (_) {}
         throw new GraphQLError(error.message);
+      } finally {
+        connection.release();
       }
     },
     assignInspector: async (parent, args, context) => {
@@ -1586,8 +1592,10 @@ const applicationFormsResolvers = {
           message: "Form approved successfully",
         };
       } catch (error) {
-        await connection.rollback();
+        try { await connection.rollback(); } catch (_) {}
         throw new GraphQLError(error.message);
+      } finally {
+        connection.release();
       }
     },
   },
