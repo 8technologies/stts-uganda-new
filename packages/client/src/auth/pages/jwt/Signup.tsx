@@ -96,7 +96,7 @@ const Signup = () => {
               premises_location: values.premises_location,
               phone_number: values.phone_number,
               email: values.email,
-              district: values.email,
+              district: values.district,
               password: values.password,
             },
           },
