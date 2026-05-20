@@ -270,7 +270,6 @@ const plantingReturnsResolvers = {
 
   Mutation: {
     createPlantingReturn: async (parent, args, context) => {
-      const connection = await db.getConnection();
       const userPermissions = context.req.user.permissions;
       checkPermission(
         userPermissions,
@@ -279,6 +278,7 @@ const plantingReturnsResolvers = {
       );
 
       const input = args.input || {};
+      const connection = await db.getConnection();
       try {
         await connection.beginTransaction();
         
@@ -359,7 +359,10 @@ const plantingReturnsResolvers = {
           record,
         };
       } catch (error) {
+        try { await connection.rollback(); } catch (_) {}
         throw handleSQLError(error, "Failed to create planting return");
+      } finally {
+        connection.release();
       }
     },
 
@@ -607,7 +610,6 @@ const plantingReturnsResolvers = {
     },
 
     createPlantingReturnUpload: async (parent, args, context) => {
-      const connection = await db.getConnection();
       const userPermissions = context.req.user.permissions;
       checkPermission(
         userPermissions,
@@ -616,6 +618,7 @@ const plantingReturnsResolvers = {
       );
 
       const input = args.input || {};
+      const connection = await db.getConnection();
       try {
         await connection.beginTransaction();
 

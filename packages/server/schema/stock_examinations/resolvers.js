@@ -452,7 +452,7 @@ const stockExaminationResolvers = {
             status: decision, // accepted or rejected
           },
           id,
-          conn
+          connection: conn
         });
         console.log("owner", owner);
 
@@ -474,7 +474,7 @@ const stockExaminationResolvers = {
             table: "stock_records",
             data,
             id: null,
-            conn
+            connection: conn
           })
         }
         await conn.commit();
@@ -499,7 +499,10 @@ const stockExaminationResolvers = {
           message: `Stock examination inspection submitted successfully`,
         };
       } catch (error) {
+        try { await conn.rollback(); } catch (_) {}
         throw new GraphQLError(error?.message || "Failed to submit inspection");
+      } finally {
+        conn.release();
       }
     },
   },

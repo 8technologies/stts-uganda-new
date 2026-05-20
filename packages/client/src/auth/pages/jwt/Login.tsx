@@ -10,6 +10,7 @@ import { useLayout } from "@/providers";
 import { Alert } from "@/components";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { LOGIN } from "@/gql/mutations";
+import * as authHelper from "@/auth/_helpers";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -34,7 +35,9 @@ const Login = () => {
   const { login, setCurrentUser, saveAuth } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = authHelper.getLogoutRedirect()
+    ? "/"
+    : location.state?.from?.pathname || "/";
   const signupSuccess = location.state?.signupSuccess as boolean | undefined;
   const [showPassword, setShowPassword] = useState(false);
   const { currentLayout } = useLayout();
@@ -70,6 +73,7 @@ const Login = () => {
         } else {
           localStorage.removeItem("email");
         }
+        authHelper.removeLogoutRedirect();
 
         // if (data) {
         //   // Save token if needed

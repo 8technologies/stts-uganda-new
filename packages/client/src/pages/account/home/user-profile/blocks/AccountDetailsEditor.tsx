@@ -56,8 +56,22 @@ const AccountDetailsEditor = () => {
 
   const onUpload = (file: File) => {
     const url = URL.createObjectURL(file);
-    setForm((prev) => ({ ...prev, imageFile: file, previewUrl: url }));
+    setForm((prev) => {
+      if (prev.previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(prev.previewUrl);
+      }
+
+      return { ...prev, imageFile: file, previewUrl: url };
+    });
   };
+
+  useEffect(() => {
+    return () => {
+      if (form.previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(form.previewUrl);
+      }
+    };
+  }, [form.previewUrl]);
 
   const onSave = async () => {
     try {

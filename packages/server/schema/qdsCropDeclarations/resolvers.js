@@ -311,7 +311,7 @@ const roleResolvers = {
           data,
           id,
           idColumn: "id",
-          conn
+          connection: conn
         });
 
         let savedReceiptInfo = null;
@@ -336,7 +336,7 @@ const roleResolvers = {
               table: "qds_crop_declaration",
               data: { receipt_id: savedReceiptInfo.filename },
               id: save_id,
-              conn,
+              connection: conn,
             });
           } catch (e) {
             // Non-fatal for the core form save; log but do not block
@@ -398,9 +398,11 @@ const roleResolvers = {
           },
         };
       } catch (error) {
-        await conn.rollback();
+        try { await conn.rollback(); } catch (_) {}
         console.log("error", error);
         throw new GraphQLError(error.message);
+      } finally {
+        conn.release();
       }
     },
     

@@ -212,6 +212,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const logout = () => {
+    authHelper.setLogoutRedirect();
     saveAuth(undefined);
     setCurrentUser(undefined);
   };

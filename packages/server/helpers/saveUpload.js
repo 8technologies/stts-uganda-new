@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs";
+import { pipeline } from "stream/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,15 +33,7 @@ const saveUpload = async ({ file, subdir = "attachments" }) => {
     const filePath = path.join(folderPath, newFilename);
     const publicPath = path.posix.join(subdir, newFilename);
 
-    const stream = createReadStream();
-
-    await new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(filePath);
-      writeStream.on("finish", resolve);
-      writeStream.on("error", reject);
-      stream.on("error", reject);
-      stream.pipe(writeStream);
-    });
+    await pipeline(createReadStream(), fs.createWriteStream(filePath));
 
     return {
       filename: newFilename,
@@ -55,4 +48,3 @@ const saveUpload = async ({ file, subdir = "attachments" }) => {
 };
 
 export default saveUpload;
-

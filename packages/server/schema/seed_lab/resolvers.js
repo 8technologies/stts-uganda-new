@@ -361,7 +361,10 @@ const seedLabResolvers = {
         };
         
       } catch (error) {
+        try { await connection.rollback(); } catch (_) {}
         throw new Error(`Failed to save seed lab request: ${error.message}`);
+      } finally {
+        connection.release();
       }
     },
     deleteSeedLabInspection: async (_parent, { id }, context) => {
@@ -592,7 +595,10 @@ const seedLabResolvers = {
           message: "Lab test report submitted successfully",
         };
       } catch (error) {
+        try { await connection.rollback(); } catch (_) {}
         throw new GraphQLError(error.message);
+      } finally {
+        connection.release();
       }
     }
 

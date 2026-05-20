@@ -799,8 +799,10 @@ const importPermitsResolvers = {
           message: `${formDetails.permitType} permit approved successfully`,
         };
       } catch (error) {
-        await connection.rollback();
+        try { await connection.rollback(); } catch (_) {}
         throw new GraphQLError(error.message);
+      } finally {
+        connection.release();
       }
     },
   },

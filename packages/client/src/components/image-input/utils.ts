@@ -32,11 +32,18 @@ export const getBase64 = async (file: File): Promise<string> => {
 
 export const getImage = async (file: File): Promise<HTMLImageElement> => {
   const image = new Image();
-  return await new Promise((resolve) => {
+  return await new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const cleanup = () => URL.revokeObjectURL(url);
     image.addEventListener("load", () => {
+      cleanup();
       resolve(image);
     });
-    image.src = URL.createObjectURL(file);
+    image.addEventListener("error", () => {
+      cleanup();
+      reject(new Error("Failed to load image"));
+    });
+    image.src = url;
   });
 };
 
