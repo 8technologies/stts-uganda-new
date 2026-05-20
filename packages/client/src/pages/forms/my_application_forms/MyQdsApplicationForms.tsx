@@ -319,9 +319,9 @@ const MyQdsApplicationForms = () => {
     const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const payload: any = {
       id: editingQds?.id ?? undefined,
-      certification: vals.otherDocuments,
+      certification: vals.certificate,
       receipt: vals.receipt,
-      recommendation_id: vals.recommendationLetter,
+      recommendation_id: vals.recommendation_id,
       years_of_experience: vals.yearsOfExperience,
       dealers_in: null,
       previous_grower_number: vals.previousGrowerNumber,

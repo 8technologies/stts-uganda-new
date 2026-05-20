@@ -144,11 +144,11 @@ const AppRoutingSetup = (): ReactElement => {
         }
       />
       <Route
-        path="/metronic/tailwind/react/auth/reset-password"
+        path="/auth/reset-password"
         element={<Navigate to="/auth/reset-password" replace />}
       />
       <Route
-        path="/metronic/tailwind/react/auth/reset-password/change"
+        path="/auth/reset-password/change"
         element={
           <Navigate
             to={{ pathname: "/auth/reset-password/change", search: window.location.search }}

@@ -168,6 +168,7 @@ const SR6EditDialog = ({
               <div className="flex flex-col gap-1">
                 <label className="form-label">Years of experience</label>
                 <Input
+                  type="number"
                   value={values.yearsOfExperience}
                   onChange={(e) =>
                     handleChange("yearsOfExperience", e.target.value)

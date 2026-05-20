@@ -154,6 +154,7 @@ const UserEditDialog = ({
                   Years of experience<span className="text-red-500">*</span>
                 </label>
                 <Input
+                type="number"
                   value={values.yearsOfExperience}
                   onChange={(e) =>
                     handleChange("yearsOfExperience", e.target.value)

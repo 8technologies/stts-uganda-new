@@ -8,6 +8,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { KeenIcon } from "@/components";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "@/auth";
+import { getPermissionsFromToken } from "@/utils/permissions";
 
 interface Props {
   open: boolean;
@@ -110,6 +112,15 @@ const StockExaminationDetailsSheet: React.FC<Props> = ({
   const categoryInfo = getCategoryInfo();
   const statusInfo = getStatusInfo();
   const report = d.report || {};
+  const normalizedStatus = String(d.status || "").toLowerCase();
+  const isInspectorAssigned =
+    normalizedStatus === "inspector_assigned" ||
+    normalizedStatus === "assigned_inspector";
+
+  const { auth } = useAuthContext();
+    const perms = getPermissionsFromToken(auth?.access_token);
+    const canEditExam = !!perms["can_edit_examination_inspections"];
+    
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -304,8 +315,9 @@ const StockExaminationDetailsSheet: React.FC<Props> = ({
                 </Button>
               </a>
             )}
-
             {/* Open Inspection button */}
+            {canEditExam && isInspectorAssigned && (
+              
             <Button
               className="bg-green-600 hover:bg-green-700 text-white gap-2"
               onClick={() => {
@@ -320,6 +332,8 @@ const StockExaminationDetailsSheet: React.FC<Props> = ({
             >
               <KeenIcon icon="geolocation" /> Open Inspection
             </Button>
+            )}
+            
           </div>
         </div>
       </SheetContent>

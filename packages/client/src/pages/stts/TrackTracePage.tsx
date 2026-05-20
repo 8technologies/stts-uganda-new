@@ -3,6 +3,8 @@ import { Toolbar, ToolbarHeading } from "@/layouts/demo1/toolbar";
 import { KeenIcon } from "@/components/keenicons";
 import { ModalSearch } from "@/partials/modals/search/ModalSearch";
 import { useEffect, useRef, useState } from "react";
+import { useLazyQuery } from "@apollo/client/react";
+import { TRACK_TRACE } from "@/gql/queries";
 
 const TrackTracePage = () => {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -12,9 +14,22 @@ const TrackTracePage = () => {
   const [scanError, setScanError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const rafRef = useRef<number>();
+  const [isTracking, setIsTracking] = useState(false);
+  const [data, setData] = useState<any>(null);
 
-  // console.log("lotNumber", lotNumber);
+  const [fetchTrackTrace] = useLazyQuery(TRACK_TRACE, {
+    fetchPolicy: "network-only",
+  });
 
+  const handleTrackTrace = async (isTrack: boolean) => {
+    setTrack(isTrack);
+    setSearchModalOpen(true);
+    setIsTracking(true);
+    const result = await fetchTrackTrace({ variables: { lotNumber: String(lotNumber) } });
+    setData(result.data ?? null);
+    setIsTracking(false);
+  };
+     
   const stopScanner = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (videoRef.current?.srcObject) {
@@ -57,7 +72,7 @@ const TrackTracePage = () => {
             const barcodes = await detector.detect(videoRef.current);
             if (barcodes.length && barcodes[0]?.rawValue) {
               const raw = barcodes[0].rawValue.trim();
-              setLotNumber(raw);
+              window.location.assign(raw);
               stopScanner();
               return;
             }
@@ -115,21 +130,15 @@ const TrackTracePage = () => {
               </label>
               <button
                 className="btn btn-success"
-                onClick={() => {
-                  setSearchModalOpen(true);
-                  setTrack(true);
-                }}
+                onClick={() => handleTrackTrace(true)}
               >
-                Track
+                {isTracking ? "Tracking..." : "Track"}
               </button>
               <button
                 className="btn btn-primary"
-                onClick={() => {
-                  setSearchModalOpen(true);
-                  setTrack(false);
-                }}
+                onClick={() => handleTrackTrace(false)}
               >
-                Trace
+                {isTracking ? "Tracing..." : "Trace"}
               </button>
             </div>
           </div>
@@ -141,6 +150,7 @@ const TrackTracePage = () => {
         open={searchModalOpen}
         onOpenChange={() => setSearchModalOpen(false)}
         track={track}
+        data={data}
         lotNumber={lotNumber}
       />
       {/* )} */}

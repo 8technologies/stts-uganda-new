@@ -397,7 +397,7 @@ const StageForm = ({
             <Input
               value={values.gpsLat}
               onChange={(e) => setValues({ ...values, gpsLat: e.target.value })}
-              readOnly={enabled}
+              readOnly
             />
             <Button
               type="button"
@@ -414,7 +414,7 @@ const StageForm = ({
           <Input
             value={values.gpsLng}
             onChange={(e) => setValues({ ...values, gpsLng: e.target.value })}
-            readOnly={enabled}
+            readOnly
           />
         </div>
         <div>
@@ -430,6 +430,7 @@ const StageForm = ({
         <div>
           <label className="form-label">Enter size of field (Acres)</label>
           <Input
+          type="number"
             value={values.fieldSize}
             onChange={(e) =>
               setValues({ ...values, fieldSize: e.target.value })
@@ -496,6 +497,7 @@ const StageForm = ({
         <div>
           <label className="form-label">Plant Count</label>
           <Input
+          type="number"
             value={values.plantCount}
             onChange={(e) =>
               setValues({ ...values, plantCount: e.target.value })
@@ -517,6 +519,7 @@ const StageForm = ({
         <div>
           <label className="form-label">Estimated yield (Kg)</label>
           <Input
+          type="number"
             value={values.estimatedYield}
             onChange={(e) =>
               setValues({ ...values, estimatedYield: e.target.value })

@@ -70,8 +70,8 @@ const StockInspectionSheet: React.FC<Props> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     const payload = {
       input: {
         id: stockId,
@@ -95,25 +95,28 @@ const StockInspectionSheet: React.FC<Props> = ({
 
     console.log("Submitting payload:", payload);
 
-    const { data } = await saveExamInspection({
-      variables: payload,
-    });
+    try {
+      const result: any = await saveExamInspection({
+        variables: payload,
+      });
+      const data: any = result?.data;
 
-    if (data?.submitStockExaminationInspection?.success) {
-      toast.success(
-        data.submitStockExaminationInspection.message ||
-          "Stock examination saved successfully",
-      );
-      onSaved?.(data.submitStockExaminationInspection.data);
-      onOpenChange(false);
-    } else {
-      toast.error(
-        data?.submitStockExaminationInspection?.message ||
-          "Failed to save stock examination",
-      );
+      if (data?.submitStockExaminationInspection?.success) {
+        toast.success(
+          data.submitStockExaminationInspection.message ||
+            "Stock examination saved successfully",
+        );
+        onSaved?.(data.submitStockExaminationInspection.data);
+        onOpenChange(false);
+      } else {
+        toast.error(
+          data?.submitStockExaminationInspection?.message ||
+            "Failed to save stock examination",
+        );
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to save stock examination");
     }
-
-    // onOpenChange(false);
   };
 
   return (
@@ -141,6 +144,7 @@ const StockInspectionSheet: React.FC<Props> = ({
 
         {/* Form */}
         <form
+          id="stock-inspection-form"
           onSubmit={handleSubmit}
           className="flex-1 overflow-y-auto p-6 space-y-6"
         >
@@ -281,13 +285,14 @@ const StockInspectionSheet: React.FC<Props> = ({
           >
             Close
           </Button>
+          
           <Button
             type="submit"
-            onClick={handleSubmit}
+            form="stock-inspection-form"
             className="bg-green-600 hover:bg-green-700 text-white gap-2"
           >
             <KeenIcon icon="check-circle" />
-            Submit Inspection
+            {savingMutation ? "Submitting..." : "Submit Inspection"}
           </Button>
         </div>
       </SheetContent>

@@ -517,16 +517,16 @@ const plantingReturnsResolvers = {
             })
           )
         );
+         try {
+            // Notify inspector (one email). Optionally include a list of returns.
+            await sendEmail({
+              from: '"STTS MAAIF" <info@seedtracking.net>',
+              to: inspector.email,
+              subject: `Planting Return Inspector Assignment`,
+              message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formIds.length} planting return(s).`,
+            });
 
-        // Notify inspector (one email). Optionally include a list of returns.
-        await sendEmail({
-          from: '"STTS MAAIF" <info@seedtracking.net>',
-          to: inspector.email,
-          subject: `Planting Return Inspector Assignment`,
-          message: `Dear ${inspector.name}, You have been assigned as the inspector for ${formIds.length} planting return(s).`,
-        });
-
-        // Notify each form owner
+            // Notify each form owner
         await Promise.all(
           owners.map((owner) =>
             sendEmail({
@@ -538,6 +538,10 @@ const plantingReturnsResolvers = {
           )
         );
 
+         } catch (e) {
+            console.log("Failed to save assignment comment, proceeding anyway:", e.message);
+         }
+        
         return {
           success: true,
           message: `Inspector assigned to ${formIds.length} planting return(s).`,

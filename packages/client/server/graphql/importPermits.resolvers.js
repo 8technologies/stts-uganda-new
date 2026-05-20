@@ -218,7 +218,7 @@ const importPermitsResolvers = {
             } catch (e) {
               // continue on single-file failure
               // eslint-disable-next-line no-console
-              console.error("Attachment save error:", e?.message || e);
+              console.log("Attachment save error:", e?.message || e);
             }
           }
         }
@@ -327,7 +327,7 @@ const importPermitsResolvers = {
               , [id, filename, filePath, mimetype || null]);
             } catch (e) {
               // eslint-disable-next-line no-console
-              console.error("Attachment save error:", e?.message || e);
+              console.log("Attachment save error:", e?.message || e);
             }
           }
         }

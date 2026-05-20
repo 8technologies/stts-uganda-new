@@ -65,9 +65,9 @@ const QDSFormDialog = ({
         standardSeed: data.aware_of_minimum_standards ? "Yes" : "No",
         isolationDistance: data.isolation_distance?.toString() ?? "",
         numberOfLabours: data.number_of_labors?.toString() ?? "",
-        recommendation_id: data.recommendation_id ?? "",
-        receipt_id: data.receipt_id ?? "",
-        certification: data.certification ?? "",
+        recommendation_id: "",
+        receipt: "",
+        certificate: "",
       });
     } else {
       setValues({
@@ -123,6 +123,7 @@ const QDSFormDialog = ({
               <div className="flex flex-col gap-1">
                 <label className="form-label">Years of experience</label>
                 <Input
+                type="number"
                   value={values.yearsOfExperience}
                   onChange={(e) =>
                     handleChange("yearsOfExperience", e.target.value)
@@ -221,6 +222,7 @@ const QDSFormDialog = ({
                     Specify number of laborers
                   </label>
                   <Input
+                  type="number"
                     value={values.numberOfLabours || ""}
                     onChange={(e) =>
                       handleChange("numberOfLabours", e.target.value)
@@ -322,7 +324,7 @@ const QDSFormDialog = ({
 
                   {/* Image preview if it's an image */}
                   {values.receipt &&
-                    values.receipt.type.startsWith("image/") && (
+                    values.receipt.type?.startsWith("image/") && (
                       <img
                         src={URL.createObjectURL(values.receipt)}
                         alt="Receipt preview"
@@ -377,17 +379,18 @@ const QDSFormDialog = ({
                   </label>
 
                   {/* Show file name */}
-                  {values.recommendation_id && (
+                  {values.recommendation_id &&
+                    typeof values.recommendation_id === "object" && (
                     <p className="text-sm text-gray-600 mt-1">
                       Selected file:{" "}
                       <span className="font-medium">
                         {values.recommendation_id.name}
                       </span>
                     </p>
-                  )}
+                    )}
 
                   {/* Existing receipt when record has one and no new file selected */}
-                  {!values.otherDocuments &&
+                  {!values.recommendation_id &&
                     (data as any)?.recommendation_id && (
                       <div className="mt-2 text-sm text-gray-700">
                         <div className="mb-1">Existing documents:</div>
@@ -421,7 +424,7 @@ const QDSFormDialog = ({
 
                   {/* Image preview if it's an image */}
                   {values.recommendation_id &&
-                    values.recommendation_id.type.startsWith("image/") && (
+                    values.recommendation_id.type?.startsWith("image/") && (
                       <img
                         src={URL.createObjectURL(values.recommendation_id)}
                         alt="recommendation preview"
@@ -473,7 +476,7 @@ const QDSFormDialog = ({
                   </label>
 
                   {/* Show file name */}
-                  {values.certificate && (
+                  {values.certificate && typeof values.certificate === "object" && (
                     <p className="text-sm text-gray-600 mt-1">
                       Selected file:{" "}
                       <span className="font-medium">
@@ -483,27 +486,27 @@ const QDSFormDialog = ({
                   )}
 
                   {/* Existing receipt when record has one and no new file selected */}
-                  {!values.certificate && (data as any)?.certificate && (
+                  {!values.certificate && (data as any)?.certification && (
                     <div className="mt-2 text-sm text-gray-700">
                       <div className="mb-1">Existing documents:</div>
                       {/\.(png|jpe?g|gif|bmp|webp)$/i.test(
-                        String((data as any)?.certificate),
+                        String((data as any)?.certification),
                       ) ? (
                         <a
-                          href={`${URL_2}/form_attachments/${(data as any)?.certificate}`}
+                          href={`${URL_2}/form_attachments/${(data as any)?.certification}`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-block"
                         >
                           <img
-                            src={`${URL_2}/form_attachments/${(data as any)?.certificate}`}
+                            src={`${URL_2}/form_attachments/${(data as any)?.certification}`}
                             alt="Existing certificate preview"
                             className="mt-1 w-40 rounded-lg shadow"
                           />
                         </a>
                       ) : (
                         <a
-                          href={`${URL_2}/form_attachments/${(data as any)?.certificate}`}
+                          href={`${URL_2}/form_attachments/${(data as any)?.certification}`}
                           target="_blank"
                           rel="noreferrer"
                           className="text-primary-600 hover:underline"
@@ -516,7 +519,7 @@ const QDSFormDialog = ({
 
                   {/* Image preview if it's an image */}
                   {values.certificate &&
-                    values.certificate.type.startsWith("image/") && (
+                    values.certificate.type?.startsWith("image/") && (
                       <img
                         src={URL.createObjectURL(values.certificate)}
                         alt="certificate preview"

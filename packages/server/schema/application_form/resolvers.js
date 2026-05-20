@@ -1110,8 +1110,9 @@ const applicationFormsResolvers = {
           id: form_id,
         });
 
-        // send a notification to the assigned inspector
-        await sendEmail({
+        try{
+          // send a notification to the assigned inspector
+       await  sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: "Inspector Assignment",
@@ -1119,12 +1120,17 @@ const applicationFormsResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+         await sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: "Inspector Assignment",
-          message: `Dear ${formOwner.name}, You have been assigned to ${inspector.name} as your inspector for the ${formDetails.form_type} application that you submitted`,
+          message: `Dear ${formOwner.name}, You have been assigned to an inspector for the ${formDetails.form_type} application that you submitted`,
         });
+        }catch(e){
+          console.log("Failed to send assignment emails:", e.message);
+        }
+
+        
 
         return {
           success: true,
@@ -1173,13 +1179,18 @@ const applicationFormsResolvers = {
           id: form_id,
         });
 
-        // send another email to the form owner
-        await sendEmail({
-          from: '"STTS MAAIF" <info@seedtracking.net>',
-          to: formOwner.email,
-          subject: `${formDetails.form_type} Form Halted`,
-          message: `Dear ${formOwner.name}, Your form haas been halted. Please go to the system to see the reason`,
-        });
+        try{
+          // send another email to the form owner
+          await sendEmail({
+            from: '"STTS MAAIF" <info@seedtracking.net>',
+            to: formOwner.email,
+            subject: `${formDetails.form_type} Form Halted`,
+            message: `Dear ${formOwner.name}, Your form haas been halted. Please go to the system to see the reason`,
+          });
+        }catch(e){
+          console.log("Failed to send halt email:", e.message);
+        }
+        
 
         return {
           success: true,

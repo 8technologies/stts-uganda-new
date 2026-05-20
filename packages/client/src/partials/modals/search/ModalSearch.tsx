@@ -13,8 +13,6 @@ import {
   DialogBody,
   DialogContent,
 } from "@/components/ui/dialog";
-import { useQuery } from "@apollo/client/react";
-import { TRACK_TRACE } from "@/gql/queries";
 import { _formatDate } from "@/utils/Date";
 import { StatusBadge } from "@/pages/QA/seedLabs/blocks/SeedLabDetailsDialog";
 
@@ -22,11 +20,12 @@ interface IModalSearchProps {
   open: boolean;
   onOpenChange: () => void;
   track?: boolean;
+  data?: any;
   lotNumber?: string;
 }
 
 const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
-  ({ open, onOpenChange, track, lotNumber }, ref) => {
+  ({ open, onOpenChange, track, data, lotNumber }, ref) => {
     const [scrollableHeight, setScrollableHeight] = useState<number>(0);
     const [viewportHeight] = useViewport();
     
@@ -43,9 +42,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
     }, [viewportHeight]);
 
     // console.log("lotNumber", lotNumber);
-    const { data, loading, error, refetch } = useQuery(TRACK_TRACE, {
-      variables: { lotNumber: String(lotNumber) }
-    });
+    
 
     useEffect(() => {
         if (data?.trackTrace) {

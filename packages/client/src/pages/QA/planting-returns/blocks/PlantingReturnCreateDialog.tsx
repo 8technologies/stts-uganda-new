@@ -363,6 +363,7 @@ const PlantingReturnCreateDialog = ({
                     value={values.gpsLat || ""}
                     onChange={(e) => handleChange("gpsLat", e.target.value)}
                     placeholder="Latitude"
+                    readOnly
                   />
                   <Button type="button" variant="outline" onClick={handleGeo}>
                     Get GPS
@@ -375,6 +376,7 @@ const PlantingReturnCreateDialog = ({
                   value={values.gpsLng || ""}
                   onChange={(e) => handleChange("gpsLng", e.target.value)}
                   placeholder="Longitude"
+                  readOnly
                 />
               </div>
             </div>
@@ -543,6 +545,7 @@ const PlantingReturnCreateDialog = ({
               <div>
                 <label className="form-label">Expected yield (in Kgs)</label>
                 <Input
+                type="number"
                   value={values.seedRatePerHa || ""}
                   onChange={(e) =>
                     handleChange("seedRatePerHa", e.target.value)

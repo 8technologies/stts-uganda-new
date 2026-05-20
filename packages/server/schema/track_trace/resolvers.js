@@ -24,6 +24,7 @@ const fetchSeedLabByLot = async (lotNumber) => {
 
 const fetchSeedLabelBySeedLab = async (seedLabId) => {
   if (!seedLabId) return null;
+  console.log("fetchSeedLabelBySeedLab", { seedLabId });
   const [rows] = await db.execute(
     `SELECT sl.*, sl.id AS label_id,
             u.name AS applicant_name,
@@ -36,10 +37,13 @@ const fetchSeedLabelBySeedLab = async (seedLabId) => {
      LEFT JOIN crop_varieties cv ON cv.id = se.crop_variety_id
      LEFT JOIN crops c ON c.id = cv.crop_id
      WHERE sl.deleted = 0 AND sl.seed_lab_id = ?
-     ORDER BY sl.created_at DESC
+     ORDER BY sl.created_at ASC
      LIMIT 1`,
     [seedLabId]
   );
+
+  console.log("fetchSeedLabelBySeedLab", { seedLabId, rows });
+
   return rows[0] || null;
 };
 
@@ -65,6 +69,7 @@ const trackTraceResolvers = {
       }
 
       const seedLabRow = await fetchSeedLabByLot(trimmed);
+      console.log("fetchSeedLabByLot", seedLabRow );
       const seedLabelRow = seedLabRow
         ? await fetchSeedLabelBySeedLab(seedLabRow.lab_id)
         : null;

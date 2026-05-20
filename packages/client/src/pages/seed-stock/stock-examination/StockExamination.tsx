@@ -125,7 +125,9 @@ const StockExamination: React.FC = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canAssignInspector = !!perms["qa_can_assign_inspector"];
-  const canCreateStock = !!perms["can_create_planting_returns"];
+  const canCreateStock = !!perms["can_create_seed_stock"];
+  const canEditStock = !!perms["can_edit_seed_stock"];
+  const canDeleteStock = !!perms["can_delete_seed_stock"];
 
   const {
     data: examinations,
@@ -743,7 +745,8 @@ const StockExamination: React.FC = () => {
                                   />
                                   Details
                                 </button>
-                                <button
+                                {canEditStock && (
+                                  <button
                                   onClick={() => {
                                     setEditItem(row);
                                     setOpenMenuFor(null);
@@ -756,14 +759,18 @@ const StockExamination: React.FC = () => {
                                   />
                                   Edit
                                 </button>
-                                <div className="border-t border-gray-100 my-1"></div>
-                                <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                )}
+                                
+                                {canDeleteStock && (
+                                  <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                                   <KeenIcon
                                     icon="trash"
                                     className="text-red-500"
                                   />
                                   Delete
                                 </button>
+                                )}
+                                
                               </div>
                             </div>
                           )}

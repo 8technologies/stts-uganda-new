@@ -577,7 +577,8 @@ const importPermitsResolvers = {
           id: form_id,
         });
 
-        // send a notification to the assigned inspector
+        try{
+          // send a notification to the assigned inspector
         await sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
@@ -592,6 +593,11 @@ const importPermitsResolvers = {
           subject: `${formDetails.permitType} Permit Inspector Assignment`,
           message: `Dear ${formOwner.name}, You have been assigned to ${inspector.name} as your inspector for the ${formDetails.permitType} permit requests that you submitted`,
         });
+        }catch(e){
+          console.log("Email sending error:", e?.message || e);
+        }
+
+        
 
         return {
           success: true,
