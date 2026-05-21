@@ -398,8 +398,8 @@ const stockExaminationResolvers = {
     },
 
     submitStockExaminationInspection: async (_parent, args, context) => {
+      const conn = await db.getConnection();
       try {
-        const conn = await db.getConnection();
 
         const user = context?.req?.user;
         const userPermissions = user?.permissions || [];
@@ -485,7 +485,8 @@ const stockExaminationResolvers = {
         //   throw new GraphQLError("Form owner not found");
         // }
 
-        // Send email notification
+        try {
+          // Send email notification
         await sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: owner.email,
@@ -493,6 +494,10 @@ const stockExaminationResolvers = {
           message: `Dear ${owner.name}, your stock examination has been ${decision} after inspection.`,
         });
 
+        }catch (error) {
+          console.log("Error during post-inspection processing:", error);
+        }
+        
         
         return {
           success: true,

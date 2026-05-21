@@ -941,7 +941,6 @@ export const CREATE_PRE_ORDER = gql`
       pickup_location
       status
       comment
-      deleted
       created_at
       updated_at
     }

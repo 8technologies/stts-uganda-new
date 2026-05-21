@@ -871,7 +871,7 @@ const seedLabResolvers = {
             source: seedLab[0].source ?? null,
             // detail : seedLab[0].detail,
             package_id: seedLab[0].seed_label_package_id ?? null,
-            // lab_test_number : seedLab[0].lab_test_number,
+            lab_test_number : seedLab[0].lab_test_number,
           };
 
           await saveData({

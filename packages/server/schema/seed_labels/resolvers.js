@@ -530,7 +530,7 @@ const seedLabelResolvers = {
                     price: labelPackage?.priceUgx ?? null,
                     lab_test_number : marketableSeed[0].lab_test_number ?? null,
                     lot_number : marketableSeed[0].lot_number ?? null,
-                    seed_class : marketableSeed[0].lot_number ?? null,
+                    seed_class : marketableSeed[0].seed_class ?? null,
                     image_url : marketableSeed[0].lot_number ?? null,
                 }
 

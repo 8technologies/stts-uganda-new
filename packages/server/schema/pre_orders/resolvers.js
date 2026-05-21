@@ -24,7 +24,7 @@ const mapPreOrderRow = (row) => ({
   updated_at: row.updated_at ? new Date(row.updated_at) : null,
 });
 
-const getPreOrders = async ({ id = null, user_id = null } = {}) => {
+const getPreOrders = async ({ id = null, user_id = null, breeder_id = null } = {}) => {
   let values = [];
   let where = "";
 
@@ -35,6 +35,10 @@ const getPreOrders = async ({ id = null, user_id = null } = {}) => {
   if (user_id) {
     where += " AND po.user_id = ? ";
     values.push(user_id);
+  }
+  if (breeder_id) {
+    where += " AND po.breeder = ? ";
+    values.push(breeder_id);
   }
 
   const query = `SELECT po.* FROM pre_orders AS po WHERE deleted = 0 ${where} ORDER BY po.created_at DESC`;
@@ -54,13 +58,20 @@ const preOrderResolvers = {
                 "can_view_pre_orders",
                 "You dont have permissions to view pre-orders"
             );
-          const can_manage_pre_orders = hasPermission(
+          const can_create_pre_orders = hasPermission(
                 userPermissions,
-                "can_manage_pre_orders"
+                "can_create_pre_orders"
             );
+          const can_view_own_pre_orders = hasPermission(
+                userPermissions,
+                "can_view_own_pre_orders"
+            );
+        
 
         return await getPreOrders({ 
-          user_id: can_manage_pre_orders ? null : user_id  });
+          user_id: can_create_pre_orders ? user_id : null,
+          breeder_id: can_view_own_pre_orders ? null : user_id
+        });
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -132,6 +143,7 @@ const preOrderResolvers = {
         const user_id = context.req.user.id;
 
         checkPermission(
+          context.req.user.permissions,
           "can_create_pre_orders",
           "You dont have permissions to create pre-orders"
         );

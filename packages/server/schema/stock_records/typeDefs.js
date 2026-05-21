@@ -3,7 +3,7 @@ const stockRecordsTypeDefs = `#graphql
         CERTIFIED
         BASIC
         PRE_BASIC
-        QS
+        QDS
     }
 
     type StockRecord {

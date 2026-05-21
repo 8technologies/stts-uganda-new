@@ -160,7 +160,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       { title: 'Pre-orders', 
         path: '/market/pre-orders',
         requiredPermissions: [getPerm("market_place", "can_view_pre_orders")],
-        requiresApprovedApplication: true,
+        // requiresApprovedApplication: true,
       }
     ]
   },
