@@ -50,7 +50,7 @@ const MarketplacePage: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading && <div>Loading…</div>}
-        {!loading && filtered.length === 0 && <div className="text-sm text-gray-600">No marketable seed found.</div>}
+        {!loading && filtered.length === 0 && <div className="text-sm text-gray-600">No products found.</div>}
         {filtered.map((s) => {
           // helper display values
           // const sellerName = s.metadata?.sellerName ?? s.metadata?.seller?.name ?? 'Seller';

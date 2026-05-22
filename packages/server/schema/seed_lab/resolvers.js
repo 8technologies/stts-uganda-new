@@ -860,6 +860,9 @@ const seedLabResolvers = {
         if (marketableStatus === "marketable") {
           // If the seed is marketable, update the stock examination status
           const seedLab = await fetchSeedLabs({ id });
+
+          const exam = await fetchExaminations( seedLab[0].stock_examination_id);
+          console.log("Fetched examination for lab test report submission:", exam[0], seedLab[0]);
           const marketabledata = {
             user_id: seedLab[0].user_id,
             crop_variety_id: seedLab[0].variety_id,
@@ -867,9 +870,9 @@ const seedLabResolvers = {
             // seed_label_id : seedLab[0].seed_label_id,
             lot_number: seedLab[0].lot_number,
             quantity: seedLab[0].inspector_report.quantity_represented_kg,
-            seed_class: seedLab[0].seed_class ?? null,
+            seed_class: exam[0].seed_class ?? null,
             source: seedLab[0].source ?? null,
-            // detail : seedLab[0].detail,
+            remaining_quantity : seedLab[0].inspector_report.quantity_represented_k,
             package_id: seedLab[0].seed_label_package_id ?? null,
             lab_test_number : seedLab[0].lab_test_number,
           };

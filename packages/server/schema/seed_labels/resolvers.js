@@ -10,6 +10,7 @@ import { getUsers } from "../user/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
 import { v4 as uuidv4 } from "uuid";
 import { fetchSeedLabelPackages } from "../seed_label_packages/resolvers.js";
+import { fetchRecords } from "../marketable_seeds/resolvers.js";
 
 export const mapLabelsRow = (row) => {
   return {
@@ -20,8 +21,8 @@ export const mapLabelsRow = (row) => {
 
     seed_lab_id: row.seed_lab_id,
     quantity:row.quantity?.toString(),
-    available_stock:row.available_stock,
-    status_comment: row.available_stock,
+    number_of_labels:row.number_of_labels,
+    total_cost:row.total_cost,
     image_id: row.image_id,
     receipt_id: row.receipt_id || null,
     applicant_remark: row.applicant_remark || null,
@@ -279,7 +280,8 @@ const seedLabelResolvers = {
                     seed_lab_id,
                     seed_label_package,
                     quantity,
-                    available_stock,
+                    number_of_labels,
+                    total_cost,
                     image,
                 } = args.input;
 
@@ -293,6 +295,15 @@ const seedLabelResolvers = {
                   "You dont have permissions to request seed lab inspection"
                 );
 
+                const [marketableSeed] = await fetchRecords({ lab_id: seed_lab_id });
+                console.log("marketableSeed:", marketableSeed);
+
+                const remainingQuantity = marketableSeed.remaining_quantity - quantity;
+
+                if (remainingQuantity < 0) {
+                    throw new GraphQLError("Cannot approve seed label request: insufficient quantity in stock.");
+                }
+
                 let seed_lab = {};
                 
                 if (seed_lab_id) {
@@ -301,7 +312,7 @@ const seedLabelResolvers = {
                         id: seed_lab_id,
                         user_id: user.id,
                     });
-                    console.log(" seed_lab:", seed_lab[0]?.variety_id);
+                    console.log(" seed_lab:", seed_lab[0]?.variety_id, seed_lab);
                 }
 
                 const data = {
@@ -310,7 +321,8 @@ const seedLabelResolvers = {
                     seed_lab_id,
                     label_package:seed_label_package,
                     quantity/* : parseInt(quantity), */,
-                    available_stock,
+                    number_of_labels,
+                    total_cost,
                     applicant_remark,
                 }
                 
@@ -400,10 +412,18 @@ const seedLabelResolvers = {
                 "You don't have permissions to approve a seed label"
                 );
 
+                console.log("status:", args.status);
+
                 // fetch the form details
                 const [formDetails] = await fetchSeedLabels({
                 id: form_id,
                 });
+
+                //fetch the marketable seed details to get the quantity available for the seed label
+                const [marketableSeed] = await fetchRecords({ lab_id: formDetails.seed_lab_id });
+                console.log("marketableSeed:", marketableSeed);
+
+                const remainingQuantity = marketableSeed.quantity - formDetails.quantity;
 
                 if (!formDetails)
                 throw new GraphQLError("Form with the provided id is not found!");
@@ -417,11 +437,8 @@ const seedLabelResolvers = {
 
                 // update the form status/validity on application_forms
                 const data = {
-                status: "approved",
-                // user_id: formDetails.user_id,
-                // seed_lab_id: formDetails.seed_lab_id,
-                // crop_variety_id: formDetails.crop_variety_id,
-                // status_comment: "Accepted",
+                    status: args.status,
+                
                 };
 
                 await saveData({
@@ -431,13 +448,24 @@ const seedLabelResolvers = {
                 connection,
                 });
 
+                if(!(remainingQuantity < 0) && args.status === "approved"){
+                    
+                    await saveData({
+                        table: "marketable_seeds",
+                        data: { remaining_quantity: remainingQuantity },
+                        id: marketableSeed.id,
+                        connection,
+                    });
+
+                }
+
                 
                 // send email with attachment if any
                 await sendEmail({
                 from: '"STTS MAAIF" <info@seedtracking.net>',
                 to: formOwner.email,
                 subject: `${formDetails.form_type} Form Approval`,
-                message: `Congragulations!!!, Dear ${formOwner.name}, Your seed label has been approved.`,
+                message: `Congragulations!!!, Dear ${formOwner.name}, Your seed label has been ${args.status}.`,
                 // attachments,
                 });
 
@@ -445,7 +473,7 @@ const seedLabelResolvers = {
 
                 return {
                 success: true,
-                message: "Seed label request approved successfully",
+                message: `Seed label request ${args.status} successfully`,
                 };
             } catch (error) {
                 console.error("Error approving seed label request:", error);

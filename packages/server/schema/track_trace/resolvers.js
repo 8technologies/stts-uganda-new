@@ -49,9 +49,18 @@ const fetchSeedLabelBySeedLab = async (seedLabId) => {
 
 const fetchMotherLot = async (lotNumber) => {
   const [rows] = await db.execute(
-    `SELECT se.*, inspector.name AS inspector_name
+    `SELECT se.*, 
+            inspector.name AS inspector_name,
+            pr.seed_lot_code AS mother_lot,
+            pr.seed_class AS seed_class,
+            pr.seed_source AS source,
+            c.name AS crop_name,
+            cv.name AS variety_name
      FROM stock_examinations se
      LEFT JOIN users inspector ON inspector.id = se.inspector_id
+     LEFT JOIN planting_returns pr ON pr.id = se.planting_return_id
+     LEFT JOIN crops c ON c.id = pr.crop_id
+     LEFT JOIN crop_varieties cv ON cv.id = pr.variety_id
      WHERE se.deleted = 0 AND se.lot_number = ?
      ORDER BY se.created_at DESC
      LIMIT 1`,
@@ -109,6 +118,9 @@ const trackTraceResolvers = {
               motherLot:motherLotRow.mother_lot,
               lotNumber: motherLotRow.lot_number,
               seedClass: motherLotRow.seed_class,
+              crop: motherLotRow.crop_name,
+              variety: motherLotRow.variety_name,
+              source: motherLotRow.source,
               yieldAmount: motherLotRow.yield,
               fieldSize: motherLotRow.field_size,
               inspector: motherLotRow.inspector_name,

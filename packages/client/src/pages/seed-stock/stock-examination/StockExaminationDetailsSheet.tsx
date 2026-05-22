@@ -330,7 +330,7 @@ const StockExaminationDetailsSheet: React.FC<Props> = ({
                 }, 200);
               }}
             >
-              <KeenIcon icon="geolocation" /> Open Inspection
+              <KeenIcon icon="geolocation" /> Open Examination
             </Button>
             )}
             

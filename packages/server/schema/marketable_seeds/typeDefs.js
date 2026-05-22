@@ -15,6 +15,7 @@ const marketableSeedsTypeDefs = `#graphql
         seed_label_id: ID
         lab_test_number: String
         quantity: Int
+        remaining_quantity: Int
         package_id: String
         created_at: DateTime
         lot_number: String

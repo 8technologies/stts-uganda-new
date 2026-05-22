@@ -710,7 +710,8 @@ const CREATE_SEED_LABEL = gql`
         }
         seed_label_package
         quantity
-        available_stock
+        number_of_labels
+        total_cost
         applicant_remark
         status
         status_comment
@@ -761,12 +762,12 @@ const DELETE_SEED_LABEL = gql`
 `;
 
 const APPROVE_SEED_LABEL = gql`
-  mutation ApproveSeedLabelRequest($approveSeedLabelRequestId: ID!) {
-    approveSeedLabelRequest(id: $approveSeedLabelRequestId) {
-      success
-      message
-    }
+  mutation ApproveSeedLabelRequest($approveSeedLabelRequestId: ID!, $status: SeedLabelStatus!) {
+  approveSeedLabelRequest(id: $approveSeedLabelRequestId, status: $status) {
+    success
+    message
   }
+}
 `;
 const PRINT_SEED_LABEL = gql`
   mutation PrintSeedLabelRequest($printSeedLabelRequestId: ID!) {

@@ -66,12 +66,15 @@ const preOrderResolvers = {
                 userPermissions,
                 "can_view_own_pre_orders"
             );
-        
 
-        return await getPreOrders({ 
+        const orders = await getPreOrders({
           user_id: can_create_pre_orders ? user_id : null,
-          breeder_id: can_view_own_pre_orders ? null : user_id
+          breeder_id: can_view_own_pre_orders ? user_id : null
         });
+
+        console.log("Fetched pre-orders", orders);
+        return orders;
+
       } catch (error) {
         throw new GraphQLError(error.message);
       }

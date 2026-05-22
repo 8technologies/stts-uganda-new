@@ -12,8 +12,10 @@ const mapRecordRow = (row) => ({
   source: row.source,
   stock_examination_id: row.stock_examination_id ? row.stock_examination_id.toString() : null,
   quantity: row.quantity,
+  remaining_quantity: row.remaining_quantity,
   is_deposit: Boolean(row.is_deposit),
   is_transfer: Boolean(row.is_transfer),
+  lab_test_number: row.lab_test_number,
   created_at: row.created_at ? new Date(row.created_at) : null,
   updated_at: row.updated_at ? new Date(row.updated_at) : null,
   lot_number: row.lot_number || null,
@@ -23,6 +25,7 @@ const mapRecordRow = (row) => ({
 export const fetchRecords = async ({
   id = null,
   user_id = null,
+  lab_id = null,
 } = {}) => {
   try {
     const values = [];
@@ -36,6 +39,11 @@ export const fetchRecords = async ({
     if (user_id) {
       where += " AND marketable_seeds.user_id = ?";
       values.push(user_id);
+    }
+
+    if (lab_id) {
+      where += " AND marketable_seeds.seed_lab_id = ?";
+      values.push(lab_id);
     }
 
     const sql = `

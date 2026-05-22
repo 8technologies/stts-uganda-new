@@ -7,6 +7,7 @@ const seedLabelTypeDefs = `#graphql
     enum SeedLabelStatus{
         pending
         approved
+        rejected
         printed
     }
 
@@ -17,7 +18,8 @@ const seedLabelTypeDefs = `#graphql
         crop_variety_id:ID!
         seed_label_package:String
         quantity:String
-        available_stock:String
+        number_of_labels:String
+        total_cost:String
         applicant_remark:String
         status: SeedLabelStatus!
         status_comment: String
@@ -40,7 +42,7 @@ const seedLabelTypeDefs = `#graphql
 
     type Mutation{
         saveSeedLabelRequest(input: SeedLabelInput!): SeedLabelResponseMessage
-        approveSeedLabelRequest(id: ID!): SeedLabelResponseMessage
+        approveSeedLabelRequest(id: ID!, status: SeedLabelStatus!): SeedLabelResponseMessage
         printSeedLabelRequest(id: ID!): SeedLabelResponseMessage
     } 
 
@@ -49,7 +51,8 @@ const seedLabelTypeDefs = `#graphql
         seed_lab_id:ID!
         seed_label_package:String
         quantity:Int
-        available_stock:String
+        number_of_labels:Int
+        total_cost:String
         applicant_remark:String
         receipt:Upload
         image: Upload

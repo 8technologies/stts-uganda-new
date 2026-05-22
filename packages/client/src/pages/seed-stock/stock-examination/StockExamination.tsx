@@ -745,7 +745,7 @@ const StockExamination: React.FC = () => {
                                   />
                                   Details
                                 </button>
-                                {canEditStock && (
+                                {canEditStock && row.status === 'pending' && (
                                   <button
                                   onClick={() => {
                                     setEditItem(row);
@@ -761,7 +761,7 @@ const StockExamination: React.FC = () => {
                                 </button>
                                 )}
                                 
-                                {canDeleteStock && (
+                                {canDeleteStock && row.status === 'pending' && (
                                   <button className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
                                   <KeenIcon
                                     icon="trash"

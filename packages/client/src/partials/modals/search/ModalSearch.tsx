@@ -79,12 +79,8 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
               <TabsList className="justify-between px-5 mb-2.5">
                 <div className="flex items-center gap-5">
                   <Tab value={1}>Seed Details</Tab>
-                  <Tab value={2}>Seed Lab Details</Tab>
+                  {/* <Tab value={2}>Seed Lab Details</Tab> */}
                   <Tab value={3}>Mother Lot</Tab>
-                  {/* <Tab value={4}>Users</Tab>
-                  <Tab value={5}>Docs</Tab>
-                  <Tab value={6}>Empty</Tab>
-                  <Tab value={7}>No Results</Tab> */}
                 </div>
                 {/* <Menu className="items-stretch">
                   <MenuItem
@@ -199,10 +195,78 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                         </span>
                       </div>
                     </div>
+                    <div className="menu-link flex items-center justify-between gap-10 py-1 border-t">
+                      <div className="flex items-center grow gap-2 ">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Lab Test Number
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {seedLab?.labTestNumber || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            P_x_G
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          80
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Status
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm text-gray-900 hover:text-primary-active">
+                          {/* {get(seedLab?.status) || "N/A"} */}
+                          <StatusBadge s={seedLab?.status} />
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </TabPanel>
                 <TabPanel value={2}>
-                  {/* <ModalSearchSettings items={settingsItems} /> */}
+                  
                   <div className="menu-item" style={{ padding: "12px 25px" }}>
                     <div className="menu-link flex items-center justify-between gap-10 py-1 border-t">
                       <div className="flex items-center grow gap-2 ">
@@ -393,7 +457,7 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                 <TabPanel value={3}>
                   {/* <ModalSearchIntegrations items={integrationsItems} /> */}
                   <div className="menu-item" style={{ padding: "12px 25px" }}>
-                    <div className="menu-link flex items-center justify-between gap-2">
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
                       <div className="flex items-center grow gap-2">
                         {/* Logo */}
 
@@ -419,20 +483,88 @@ const ModalSearch = forwardRef<HTMLDivElement, IModalSearchProps>(
                         </span>
                       </div>
                     </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        {/* Logo */}
+
+                        {/* Name and description */}
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Crop
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm font-semibold text-gray-900 hover:text-primary-active">
+                          {motherLot?.crop || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        {/* Logo */}
+
+                        {/* Name and description */}
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                          >
+                            Crop Variety
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm font-semibold text-gray-900 hover:text-primary-active">
+                          {motherLot?.variety || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="menu-link flex items-center justify-between gap-2 py-1 border-t">
+                      <div className="flex items-center grow gap-2">
+                        {/* Logo */}
+
+                        {/* Name and description */}
+                        <div className="flex flex-col gap-0.5">
+                          <a
+                            href="#"
+                            className="text-2sm font-semibold text-gray-900 hover:text-primary-active"
+                            >
+                              Source
+                          </a>
+                          {/* <span className="text-2xs font-medium text-gray-600">
+                                    {item.description}
+                                  </span> */}
+                        </div>
+                      </div>
+
+                      {/* Team avatars */}
+                      <div className="flex justify-end shrink-0">
+                        {/* <CommonAvatars size="size-[30px]" group={item.team} /> */}
+                        <span className="text-2sm font-semibold text-gray-900 hover:text-primary-active">
+                          {motherLot?.source || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    
                   </div>
                 </TabPanel>
-                {/* <TabPanel value={4}>
-                  <ModalSearchUsers items={usersItems} />
-                </TabPanel>
-                <TabPanel value={5}>
-                  <ModalSearchDocs items={docsItems} />
-                </TabPanel>
-                <TabPanel value={6}>
-                  <ModalSearchEmpty />
-                </TabPanel>
-                <TabPanel value={7}>
-                  <ModalSearchNoResults />
-                </TabPanel> */}
+                
               </div>
             </Tabs>
           </DialogBody>

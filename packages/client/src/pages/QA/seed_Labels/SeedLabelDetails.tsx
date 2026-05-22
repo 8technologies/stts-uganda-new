@@ -9,6 +9,7 @@ import {
   LOAD_SEED_LABEL_BY_ID,
   LOAD_SEED_LABELS,
   LOAD_SEED_LABEL_PACKAGES,
+  LOAD_SEED_LABS,
 } from "@/gql/queries";
 import {
   Sheet,
@@ -29,6 +30,7 @@ import {
 } from "lucide-react";
 import { useAuthContext } from "@/auth";
 import { getPermissionsFromToken } from "@/utils/permissions";
+import { SeedLabInspection } from "../seedLabs/MySeedLabsForms";
 
 interface Props {
   open: boolean;
@@ -82,6 +84,16 @@ const getSeasonAndExpiry = (printDate: Date): { season: string; expiry: string }
   return { season, expiry: formatExpiryDate(expiryDate) };
 };
 
+const formatSeedClass = (seed_class: string): string => {
+  if(seed_class === "certified") return "CERTIFIED SEED";
+  if(seed_class === "pre-basic") return "PRE-BASIC SEED";
+  if(seed_class === "basic") return "BASIC SEED";
+  if(seed_class === "qds") return "QUALITY DECLARED SEED";
+
+  return seed_class;
+
+};
+
 const SeedLabelDetailSheet: React.FC<Props> = ({
   open,
   onOpenChange,
@@ -103,6 +115,12 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       awaitRefetchQueries: true,
     },
   );
+  const { data:allLabs, loading, error, refetch } = useQuery(LOAD_SEED_LABS);
+  // All inspections from API
+    const allInspections = (data?.getLabInspections || []) as SeedLabInspection[];
+
+    const lab = allInspections.find((l) => l.id === d?.SeedLab?.id);
+    
   const [printSeedLabel, { loading: printing }] = useMutation(PRINT_SEED_LABEL, {
     refetchQueries: [{ query: LOAD_SEED_LABELS }],
     awaitRefetchQueries: true
@@ -125,12 +143,12 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
     }
   }, [d]);
 
-  const handleApprove = async () => {
+  const handleApprove = async (status: "approved" | "rejected") => {
     try {
       await approveSeedLabel({
-        variables: { approveSeedLabelRequestId: d.id },
+        variables: { approveSeedLabelRequestId: d.id, status: status },
       });
-      setStatus("approved");
+      setStatus(status);
     } catch (error) {
       console.error("Error approving label:", error);
     }
@@ -196,7 +214,9 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
       parsePackageSize(formDetails?.seed_label_package);
     // const weight = packageSize ? `${packageSize} kg` : formDetails?.seed_label_package || "";
     const weight = `${formDetails?.SeedLabelPackage?.packageSizeKg || ''} kg`;
-    const seedClass = formDetails?.SeedLab?.seed_class || "CERTIFIED SEED";
+    const seedClass = formatSeedClass(formDetails?.SeedLab?.stockExamination?.seed_class) || "CERTIFIED SEED";
+      console.log("Print details:", formDetails?.SeedLab); 
+
     const labelNumber = String(formDetails?.id ?? "").padStart(6, "0");
 
     const labelCard = (index: number) => `
@@ -232,10 +252,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
 
     const quantity = Number(formDetails?.quantity) || 0;
     const labelsPerPackage = packageMatch?.labelsPerPackage || 1;
-    const labelCount =
-      packageSize > 0
-        ? Math.floor(quantity / packageSize) * labelsPerPackage
-        : 0;
+    const labelCount = formDetails?.number_of_labels
 
     const labelMarkup = Array.from({ length: Math.max(1, labelCount) })
       .map((_, idx) => labelCard(idx))
@@ -326,8 +343,14 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
 
       .value {
         font-weight: normal;
-          white-space: normal;
+        white-space: normal;
         overflow-wrap: anywhere;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
       }
 
       .right-col {
@@ -352,8 +375,14 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
 
       .right-item span:nth-child(2) {
         font-weight: normal;
-       white-space: normal;
+        white-space: normal;
         overflow-wrap: anywhere;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
       }
 
           .qr-col {
@@ -564,6 +593,26 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
                   <div className="border-t border-gray-100"></div>
 
                   <div className="grid grid-cols-2 gap-4">
+                    {d?.SeedLab?.lab_test_number && (
+                      <div>
+                        <div className="text-xs font-medium text-gray-500 mb-1">
+                          Lab Test Number
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {d?.SeedLab?.lab_test_number}
+                        </div>
+                      </div>
+                    )}
+                    {d?.SeedLab?.lot_number && (
+                      <div>
+                        <div className="text-xs font-medium text-gray-500 mb-1">
+                          Lot Number
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {d?.SeedLab?.lot_number}
+                        </div>
+                      </div>
+                    )}
                     {d?.Crop?.name && (
                       <div>
                         <div className="text-xs font-medium text-gray-500 mb-1">
@@ -615,6 +664,28 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
                         </div>
                       </div>
                     )}
+                    {d?.number_of_labels && (
+                      <div>
+                        <div className="text-xs font-medium text-gray-500 mb-1">
+                          Number of labels
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {d.number_of_labels}
+                        </div>
+                      </div>
+                    )}
+
+                    {d?.total_cost && (
+                      <div>
+                        <div className="text-xs font-medium text-gray-500 mb-1">
+                          Total Cost
+                        </div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {d.total_cost}
+                        </div>
+                      </div>
+                    )}
+                    
                     {d?.receipt_id && (
                       <div>
                         <div className="text-xs font-medium text-gray-500 mb-1">
@@ -658,7 +729,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
             {status === "pending" && canAssignInspector && (
               <>
                 <Button
-                  onClick={handleApprove}
+                  onClick={() => handleApprove("approved")}
                   disabled={approving}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white h-11 font-medium shadow-sm transition-all duration-200"
                 >
@@ -666,7 +737,7 @@ const SeedLabelDetailSheet: React.FC<Props> = ({
                   {approving ? "Approving..." : "Approve Label"}
                 </Button>
                 <Button
-                  onClick={handleApprove}
+                  onClick={() => handleApprove("rejected")}
                   disabled={approving}
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white h-11 font-medium shadow-sm transition-all duration-200"
                 >

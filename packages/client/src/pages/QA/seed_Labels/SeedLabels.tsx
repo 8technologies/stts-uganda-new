@@ -79,7 +79,8 @@ const SeedLabelManagementPage = () => {
       seed_lab_id: vals.labTestNumber ?? null,
       seed_label_package: vals.seedLabelPackage ?? null,
       quantity: vals.quantity ?? null,
-      available_stock: vals.available_stock ?? null,
+      number_of_labels: vals.numberOfLabels ?? null,
+      total_cost: vals.totalCost ?? null,
       image: vals.thumbnailImage ?? null,
     };
 

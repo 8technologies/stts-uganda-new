@@ -519,7 +519,7 @@ const SeedLabDetailsDialog = ({
     onOpenChange(false);
   };
 
-  /* ----- Visibility for "Open Inspection" button ----- */
+  /* ----- Visibility for "Open lab test" button ----- */
   const statusLower = (d?.status || "").toLowerCase();
   const isInspectorAssigned =
     statusLower === "inspector_assigned" ||
@@ -966,7 +966,7 @@ const SeedLabDetailsDialog = ({
               {showOpenInspection && (
                 <Link to={inspectionPath} onClick={() => onOpenChange(false)}>
                   <Button>
-                    <KeenIcon icon="geolocation" /> Open Inspection
+                    <KeenIcon icon="geolocation" /> Open Examination
                   </Button>
                 </Link>
               )}

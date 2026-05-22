@@ -781,6 +781,7 @@ const LOAD_SEED_LABS = gql`
         id
         mother_lot
         lot_number
+        seed_class
       }
     }
   }
@@ -808,7 +809,8 @@ const LOAD_SEED_LABELS = gql`
       }
       seed_label_package
       quantity
-      available_stock
+      number_of_labels
+      total_cost
       applicant_remark
       status
       status_comment
@@ -829,7 +831,14 @@ const LOAD_SEED_LABELS = gql`
       SeedLab {
         id
         lab_test_report
+        lab_test_number
         lot_number
+        stockExamination {
+          id
+          mother_lot
+          lot_number
+          seed_class
+        }
       }
       SeedLabelPackage {
       crop_id
@@ -876,7 +885,8 @@ const LOAD_SEED_LABEL_BY_ID = gql`
       }
       seed_label_package
       quantity
-      available_stock
+      number_of_labels
+      total_cost
       applicant_remark
       status
       status_comment
@@ -963,6 +973,9 @@ const TRACK_TRACE = gql`
       id
       lotNumber
       seedClass
+      crop
+      variety
+      source
       motherLot
       yieldAmount
       fieldSize
@@ -970,6 +983,25 @@ const TRACK_TRACE = gql`
       status
       createdAt
     }
+  }
+}
+`;
+
+const LOAD_MARKETABLE_SEEDS = gql`
+query MarketableSeeds {
+  marketableSeeds {
+    id
+    user_id
+    seed_lab_id
+    crop_variety_id
+    seed_class
+    seed_label_id
+    lab_test_number
+    quantity
+    remaining_quantity
+    package_id
+    created_at
+    lot_number
   }
 }
 `;
@@ -1007,6 +1039,8 @@ export {
   LOAD_SEED_LABEL_BY_ID,
   DASHBOARD_STATS,
   TRACK_TRACE,
+
+  LOAD_MARKETABLE_SEEDS,
 };
 
 // ---- Plant Inspection (SR10) placeholder queries ----

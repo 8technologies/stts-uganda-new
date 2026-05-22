@@ -100,8 +100,8 @@ const PreOrdersPage: React.FC = () => {
 
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  const canCreateStock = !!perms["can_create_planting_returns"];
-  const canManagePreOrders = !!perms['can_manage_pre_orders'] || !!perms['qa_can_assign_inspector'];
+  const canCreatePreOrders = !!perms["can_create_pre_orders"];
+  const canReceivePreOrders = !!perms['can_receive_pre_orders'];
 
   const {
     data: preOrdersData,
@@ -353,7 +353,7 @@ const PreOrdersPage: React.FC = () => {
             <KeenIcon icon="refresh" className="mr-1" />
             Refresh
           </button>
-          {canCreateStock && (
+          {canCreatePreOrders && (
             <button className="btn btn-primary" onClick={openCreateSheet}>
             <Plus className="w-4 h-4 mr-1" />
             New pre-order
@@ -384,7 +384,7 @@ const PreOrdersPage: React.FC = () => {
         open={detailsOpen}
         preOrder={selectedPreOrder}
         loading={updating}
-        canModerate={canManagePreOrders}
+        canReceivePreOrders={canReceivePreOrders}
         onOpenChange={(open) => {
           setDetailsOpen(open);
           if (!open) {
@@ -493,7 +493,7 @@ const PreOrdersPage: React.FC = () => {
                                 <Eye className="w-4 h-4 mr-1" />
                                 View
                             </button>
-                            {canCreateStock && (
+                            {canCreatePreOrders && (
                                 <>
                                 <button className="btn btn-sm btn-ghost" onClick={() => openEditSheet(preOrder)}>
                                     <Pencil className="w-4 h-4 mr-1" />

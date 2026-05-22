@@ -21,7 +21,7 @@ type Props = {
   open: boolean;
   preOrder: PreOrderItem | null;
   loading?: boolean;
-  canModerate?: boolean;
+  canReceivePreOrders?: boolean;
   onOpenChange: (open: boolean) => void;
   onApprove: (payload: { collectionDate: string; notes: string }) => Promise<void>;
   onReject: (reason: string) => Promise<void>;
@@ -31,7 +31,7 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
   open,
   preOrder,
   loading = false,
-  canModerate = false,
+  canReceivePreOrders = false,
   onOpenChange,
   onApprove,
   onReject,
@@ -69,7 +69,7 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
   };
 
   const status = String(item?.status ?? 'pending').toLowerCase();
-  const canTakeAction = canModerate && status === 'pending';
+  const canTakeAction = canReceivePreOrders && status === 'pending';
 
   const submitApprove = async () => {
     if (!supplyDate) {

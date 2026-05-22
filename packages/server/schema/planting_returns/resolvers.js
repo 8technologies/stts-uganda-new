@@ -693,6 +693,35 @@ const plantingReturnsResolvers = {
 
         // ── 5. Per-row insert (batches of 100) ──────────────────────────────
         const rows = parseResult.rows ?? [];
+        const createdById = context?.req?.user?.id || null;
+
+        const normalizeFieldName = (value) => String(value || "").trim().toLowerCase();
+        const normalizeDateOnly = (value) => {
+          if (!value) return "";
+          const date = value instanceof Date ? value : new Date(value);
+          if (!Number.isNaN(date.getTime())) return date.toISOString().slice(0, 10);
+          return String(value).trim().slice(0, 10);
+        };
+        const buildRowKey = ({ fieldName, dateSown, createdBy }) =>
+          `${createdBy || ""}::${normalizeFieldName(fieldName)}::${normalizeDateOnly(dateSown)}`;
+
+        // Load current user's existing rows once to prevent re-importing duplicates.
+        const [existingRows] = await connection.execute(
+          `SELECT field_name, date_sown, created_by
+           FROM planting_returns
+           WHERE created_by = ?`,
+          [createdById],
+        );
+        const existingRowKeys = new Set(
+          (existingRows || []).map((r) =>
+            buildRowKey({
+              fieldName: r.field_name,
+              dateSown: r.date_sown,
+              createdBy: r.created_by,
+            }),
+          ),
+        );
+
         const totalRecords = rows.length;
         let totalImported = 0;
         let totalFailed = 0;
@@ -713,6 +742,24 @@ const plantingReturnsResolvers = {
                 });
                 return;
               }
+
+              const rowKey = buildRowKey({
+                fieldName: row.field_name,
+                dateSown: row.planting_date,
+                createdBy: createdById,
+              });
+
+              // Skip duplicates from previous uploads or repeated rows in the same sheet.
+              if (existingRowKeys.has(rowKey)) {
+                totalFailed++;
+                results.push({
+                  row: row._rowNum,
+                  success: false,
+                  message: "Duplicate row skipped (field_name + created_by + date_sown already exists)",
+                });
+                return;
+              }
+
               try {
                 const sr8_number = await generateSr8Number();
                 await saveData({
@@ -720,7 +767,7 @@ const plantingReturnsResolvers = {
                   data: {
                     sr8_number,
                     file_upload_id: uploadId,
-                    created_by: context?.req?.user?.id || null,
+                    created_by: createdById,
                     applicant_name: row.name || null,
                     contact_phone: row.phone_number || null,
                     field_name: row.field_name || null,
@@ -744,6 +791,7 @@ const plantingReturnsResolvers = {
                   idColumn: "id",
                   connection,
                 });
+                existingRowKeys.add(rowKey);
                 totalImported++;
                 results.push({ row: row._rowNum, success: true, message: null });
               } catch (e) {

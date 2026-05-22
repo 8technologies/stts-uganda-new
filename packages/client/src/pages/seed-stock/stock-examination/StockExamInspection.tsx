@@ -213,7 +213,8 @@ const StockInspectionSheet: React.FC<Props> = ({
             <div>
               <label>Insect Damage</label>
               <Input
-                type="text"
+                type="number"
+                step="0.1 "
                 value={formData.report.insect_damage}
                 onChange={(e) =>
                   handleReportChange("insect_damage", e.target.value)
@@ -223,7 +224,8 @@ const StockInspectionSheet: React.FC<Props> = ({
             <div>
               <label>Moldiness</label>
               <Input
-                type="text"
+                type="number"
+                step="0.1"
                 value={formData.report.moldiness}
                 onChange={(e) =>
                   handleReportChange("moldiness", e.target.value)
@@ -233,7 +235,8 @@ const StockInspectionSheet: React.FC<Props> = ({
             <div>
               <label>Weeds</label>
               <Input
-                type="text"
+                type="number"
+                step="0.1"
                 value={formData.report.weeds}
                 onChange={(e) => handleReportChange("weeds", e.target.value)}
               />
@@ -290,9 +293,10 @@ const StockInspectionSheet: React.FC<Props> = ({
             type="submit"
             form="stock-inspection-form"
             className="bg-green-600 hover:bg-green-700 text-white gap-2"
+            disabled={savingMutation}
           >
             <KeenIcon icon="check-circle" />
-            {savingMutation ? "Submitting..." : "Submit Inspection"}
+            {savingMutation ? "Submitting..." : "Submit Examination"}
           </Button>
         </div>
       </SheetContent>

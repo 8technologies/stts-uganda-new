@@ -26,6 +26,9 @@ const trackTraceTypeDefs = `#graphql
     motherLot: String
     lotNumber: String
     seedClass: String
+    crop: String
+    variety: String
+    source: String
     yieldAmount: String
     fieldSize: String
     inspector: String

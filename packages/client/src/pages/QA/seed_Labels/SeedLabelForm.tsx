@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { FieldLabel } from "../seedLabs/blocks/SeedLabTest";
 import { useQuery } from "@apollo/client/react";
-import { LOAD_SEED_LABEL_PACKAGES, LOAD_SEED_LABS } from "@/gql/queries";
+import { LOAD_MARKETABLE_SEEDS, LOAD_SEED_LABEL_PACKAGES, LOAD_SEED_LABS } from "@/gql/queries";
 import { SeedLabInspection } from "../seedLabs/MySeedLabsForms";
 import { URL_2 } from "@/config/urls";
 
@@ -37,6 +37,8 @@ const SeedLabelForm = ({
   const [labTestNumber, setLabTestNumber] = useState<string>(
     initialData?.seed_lab_id || "",
   );
+  console.log("Initial lab test number:", initialData);
+  const [marketableSeed, setMarketableSeed] = useState<any | null>(null);
   const [seedLabelPackage, setSeedLabelPackage] = useState<string>(
     (initialData?.seed_label_package as string) || "",
   );
@@ -54,6 +56,13 @@ const SeedLabelForm = ({
 
   const { data, loading, error } = useQuery(LOAD_SEED_LABS);
   const allInspections = (data?.getLabInspections || []) as SeedLabInspection[];
+
+  const {data:marketableseeds, loading:seedsLoading, error:seedsError} = useQuery(LOAD_MARKETABLE_SEEDS)
+  const allMarketableSeeds = (marketableseeds?.marketableSeeds || []) as any[];
+
+  console.log("All marketable seeds fetched for SeedLabelForm:", marketableSeed);
+  
+
   const {
     data: packagesData,
     loading: packagesLoading,
@@ -66,9 +75,10 @@ const SeedLabelForm = ({
   const formatPackageLabel = (pkg: any) =>
     `${pkg.packageSizeKg}kg @ ${pkg.priceUgx} UGX`;
   const selectedPackage =
-    packages.find((pkg) => pkg.name === seedLabelPackage) ||
+    packages.find((pkg) => pkg.id === seedLabelPackage) ||
     packages.find((pkg) => formatPackageLabel(pkg) === seedLabelPackage);
   const packageSize = Number(selectedPackage?.packageSizeKg || 0);
+  console.log("Selected package details:", selectedPackage, "Calculated package size:", packageSize);
   const labelsPerPackage = Number(selectedPackage?.labelsPerPackage || 1);
   const labelCount =
     packageSize > 0
@@ -76,6 +86,8 @@ const SeedLabelForm = ({
       : 0;
   const totalCost = selectedPackage ? labelCount * selectedPackage.priceUgx : 0;
   const formattedTotal = new Intl.NumberFormat("en-UG").format(totalCost);
+  const availableQuantity = Number(marketableSeed?.remaining_quantity || 0);
+  const quantityExceeded = quantity > availableQuantity;
 
   const handleSubmit = () => {
     const data = {
@@ -87,9 +99,23 @@ const SeedLabelForm = ({
       remarks,
       receipt, // new file or null
       existingReceipt, // existing URL or null
+      numberOfLabels: labelCount,
+      totalCost: totalCost.toString(),
     };
     onSave?.(data);
   };
+  useEffect(() => {
+      if (!open || !initialData) return;
+    
+      setLabTestNumber(String(initialData.seed_lab_id ?? ""));
+      setSeedLabelPackage(String(initialData.seed_label_package ?? ""));
+      setQuantity(Number(initialData.quantity || 0));
+      setExistingThumbnail(initialData.image_url || initialData.image_id || null);
+      setRemarks(initialData.applicant_remark || "");
+      setExistingReceipt(initialData.receipt_url || initialData.receipt_id || null);
+      setThumbnailImage(null);
+      setReceipt(null);
+    }, [open, initialData]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -98,7 +124,7 @@ const SeedLabelForm = ({
         className="w-full sm:max-w-[700px] h-full overflow-y-auto"
       >
         <SheetHeader>
-          <SheetTitle>Create/Edit Seed Label</SheetTitle>
+          <SheetTitle>{initialData ? "Edit Seed Label" : "Create Seed Label"}</SheetTitle>
         </SheetHeader>
         <div className="space-y-6">
           <div>
@@ -106,7 +132,11 @@ const SeedLabelForm = ({
             <Select value={labTestNumber} //onValueChange={setLabTestNumber}
                 onValueChange={(v) => {
                     setLabTestNumber(v);
-                    fetchlabelpackages(v);
+                    setMarketableSeed(
+                      allMarketableSeeds.find(
+                        (seed) => String(seed.seed_lab_id) === String(v)
+                      ) || null
+                    );
                   }}
             >
               <SelectTrigger>
@@ -115,8 +145,8 @@ const SeedLabelForm = ({
               <SelectContent>
                 {!loading &&
                   !error &&
-                  allInspections.map((opt) => (
-                    <SelectItem key={opt.id} value={opt.id}>
+                  allMarketableSeeds.map((opt: any) => (
+                    <SelectItem key={opt.seed_lab_id} value={opt.seed_lab_id}>
                       {opt.lab_test_number}
                     </SelectItem>
                   ))}
@@ -162,14 +192,32 @@ const SeedLabelForm = ({
             <Input
               type="number"
               value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
+              onChange={(e) => {
+                const nextValue = Number(e.target.value);
+                if (Number.isNaN(nextValue)) {
+                  setQuantity(0);
+                  return;
+                }
+
+                setQuantity(
+                  availableQuantity > 0
+                    ? Math.min(nextValue, availableQuantity)
+                    : nextValue,
+                );
+              }}
               min={1}
+              max={availableQuantity > 0 ? availableQuantity : undefined}
               placeholder="Enter quantity in Kgs"
             />
             <p className="text-xs text-gray-500 mt-1">
-              The quantity entered shouldn't be more than the quantity you have
+              The quantity entered shouldn't be more than {availableQuantity} you have
               in stock.
             </p>
+            {quantityExceeded && (
+              <p className="text-xs text-red-600 mt-1">
+                Quantity cannot be greater than available stock.
+              </p>
+            )}
             {selectedPackage && (
               <div className="mt-3 rounded-md border bg-gray-50 px-3 py-2 text-xs text-gray-600 space-y-1">
                 <div className="flex items-center justify-between">
@@ -393,7 +441,7 @@ const SeedLabelForm = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={quantity <= 0}>
+          <Button onClick={handleSubmit} disabled={quantity <= 0 || quantityExceeded}>
             Save Record
           </Button>
         </div>
