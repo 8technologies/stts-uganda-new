@@ -507,7 +507,7 @@ const stockExaminationResolvers = {
         try { await conn.rollback(); } catch (_) {}
         throw new GraphQLError(error?.message || "Failed to submit inspection");
       } finally {
-        conn.release();
+       conn.release();
       }
     },
   },

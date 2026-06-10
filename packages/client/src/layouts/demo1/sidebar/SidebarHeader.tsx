@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useDemo1Layout } from "../";
 import { toAbsoluteUrl } from "@/utils";
 import { SidebarToggle } from "./";
+import { URL_2 } from "@/config/urls";
 
 const SidebarHeader = forwardRef<HTMLDivElement, any>((props, ref) => {
   const { layout } = useDemo1Layout();
@@ -17,7 +18,7 @@ const SidebarHeader = forwardRef<HTMLDivElement, any>((props, ref) => {
           }}
         >
           <img
-            src={`https://seedtracking.net/assets/images/maaif.png`}
+            src={`${URL_2}/imgs/maaif_2.png`}
             className="default-logo min-h-[2px] max-w-none w-12"
             style={{
               borderRadius: 25,
@@ -35,7 +36,7 @@ const SidebarHeader = forwardRef<HTMLDivElement, any>((props, ref) => {
           </h2>
         </div>
         <img
-          src={`https://seedtracking.net/assets/images/maaif.png`}
+          src={`${URL_2}/imgs/maaif_2.png`}
           className="small-logo min-h-[22px] max-w-none w-8"
           style={{
             borderRadius: 25,

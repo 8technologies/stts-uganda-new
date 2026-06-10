@@ -56,6 +56,7 @@ export interface TDataGridProps<TData extends object> {
   sorting?: { id: string; desc?: boolean }[];
   toolbar?: ReactNode;
   filters?: { id: string; value: unknown }[];
+  loadingMode?: "overlay" | "empty";
   serverSide?: boolean;
   onFetchData?: (params: TDataGridRequestParams) => Promise<any>;
   children?: ReactNode;

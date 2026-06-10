@@ -37,14 +37,36 @@ interface Props {
   data: any | null;
 }
 
-const Field = ({ label, value }: { label: string; value: any }) => (
-  <div className="grid grid-cols-5 gap-3 py-1">
-    <div className="col-span-2 text-sm text-gray-600">{label}</div>
-    <div className="col-span-3 text-sm text-gray-900 font-medium">
-      {value ?? "—"}
+const Field = ({ label, value }: { label: string; value: any }) => {
+  const displayValue =
+    value === null || value === undefined || value === "" ? "—" : value;
+
+  return (
+    <div className="grid grid-cols-5 gap-3 py-1">
+      <div className="col-span-2 text-sm text-gray-600">{label}</div>
+      <div className="col-span-3 text-sm text-gray-900 font-medium">
+        {displayValue}
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+const formatDetailsDate = (value: any) => {
+  if (!value) return null;
+
+  const dateOnly = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (dateOnly) {
+    const [, year, month, day] = dateOnly;
+    return formatIsoDate(`${year}-${month}-${day}T00:00:00`);
+  }
+
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  return formatIsoDate(
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T00:00:00`,
+  );
+};
 
 const PlantingReturnDetailsDialog = ({ open, onOpenChange, data }: Props) => {
   const d = data as any;
@@ -144,16 +166,20 @@ const PlantingReturnDetailsDialog = ({ open, onOpenChange, data }: Props) => {
               <Field label="Area (Acres)" value={data?.areaHa} />
               <Field
                 label="Sowing Date"
-                value={formatIsoDate(data?.dateSown)}
+                value={formatDetailsDate(data?.dateSown)}
+              />
+              <Field
+                label="Quantity Planted (kg)"
+                value={data?.quantityPlanted}
               />
               <Field
                 label="Expected Harvest"
-                value={formatIsoDate(data?.expectedHarvest)}
+                value={data?.expectedHarvest}
               />
               <Field label="Seed Source" value={data?.seedSource} />
               <Field label="Seed Lot Code" value={data?.seedLotCode} />
               <Field label="Intended Merchant" value={data?.intendedMerchant} />
-              <Field label="Seed Rate/ha" value={data?.seedRatePerHa} />
+              {/* <Field label="Seed Rate/ha" value={data?.seedRatePerHa} /> */}
               <Field label="Status" value={data?.status} />
             </div>
             {!!data?.id && (
@@ -236,7 +262,7 @@ const PlantingReturnActions = ({
     const id = String(data?.id || "");
     if (!id || !inspector) return;
     try {
-      const res = await assignInspector({
+      const res: any = await assignInspector({
         variables: { input: { id, inspectorId: inspector } },
       });
       const ok = res?.data?.assignPlantingReturnInspector?.success;
@@ -285,7 +311,7 @@ const PlantingReturnActions = ({
                 <SelectValue placeholder="Choose inspector" />
               </SelectTrigger>
               <SelectContent>
-                {inspectorsData?.inspectors?.map((ins: any) => (
+                {(inspectorsData as any)?.inspectors?.map((ins: any) => (
                   <SelectItem key={ins.id} value={ins.id}>
                     {ins.name ||
                       ins.username ||

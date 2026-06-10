@@ -11,6 +11,7 @@ import { Alert } from "@/components";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { LOGIN } from "@/gql/mutations";
 import * as authHelper from "@/auth/_helpers";
+import { URL_2 } from "@/config/urls";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -55,7 +56,7 @@ const Login = () => {
         }
 
         // await login(values.email, values.password);
-        const res = await loginUser({
+        const res: any = await loginUser({
           variables: {
             username: values.email,
             password: values.password,
@@ -64,7 +65,7 @@ const Login = () => {
 
         saveAuth({
           access_token: res.data.login.token,
-          refreshToken: null,
+          refreshToken: undefined,
         });
         setCurrentUser(res.data.login.user);
 
@@ -112,8 +113,9 @@ const Login = () => {
       >
         <div className="text-center mb-2.5 flex flex-col items-center gap-2">
           <img
-            src={`https://seedtracking.net/assets/images/maaif.png`}
+            src={`${URL_2}/imgs/maaif_2.png`}
             className="h-20 w-20"
+            alt="MAAIF"
           />
           <h3 className="text-lg font-semibold text-gray-900 leading-none mb-1">
             STTS Login

@@ -1,8 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
 import { Fragment } from "react";
-import { toAbsoluteUrl } from "@/utils";
 import useBodyClasses from "@/hooks/useBodyClasses";
 import { AuthBrandedLayoutProvider } from "./AuthBrandedLayoutProvider";
+import { URL_2 } from "@/config/urls";
 
 const Layout = () => {
   // Applying body classes to manage the background color in dark mode
@@ -13,12 +13,12 @@ const Layout = () => {
       <style>
         {`
           .branded-bg {
-            background-image: linear-gradient(135deg, rgba(65, 61, 63, 0.99), rgba(65, 61, 63, 0.0)), url('https://seedtracking.net/assets/images/bg/background2.jpg');
+            background-image: linear-gradient(135deg, rgba(65, 61, 63, 0.99), rgba(65, 61, 63, 0.0)), url('${URL_2}/imgs/background2.jpg');
             background-size: cover;
             background-blend-mode: multiply;
           }
           .dark .branded-bg {
-            background-image: linear-gradient(135deg, rgba(23,96,45,0.95), rgba(40,184,98,0.9)), url('https://seedtracking.net/assets/images/bg/background2.jpg');
+            background-image: linear-gradient(135deg, rgba(23,96,45,0.95), rgba(40,184,98,0.9)), url('${URL_2}/imgs/background2.jpg');
             background-size: cover;
             background-blend-mode: multiply;
           }
@@ -34,7 +34,7 @@ const Layout = () => {
           <div className="flex flex-col p-8 lg:p-16 gap-4">
             <Link to="/">
               {/* <img
-                src={`https://seedtracking.net/assets/images/maaif.png`}
+                src={`${URL_2}/imgs/maaif.png`}
                 className="h-[64px] max-w-none"
                 alt="STTS"
               /> */}

@@ -41,11 +41,11 @@ const mapReturn = (row) => ({
 
   areaHa: row.area_ha != null ? Number(row.area_ha) : null,
   dateSown: row.date_sown,
+  quantityPlanted: row.quantity_planted != null ? Number(row.quantity_planted) : null,
   expectedHarvest: row.expected_harvest,
   seedSource: row.seed_source,
   seedLotCode: row.seed_lot_code,
   intendedMerchant: row.intended_merchant,
-  seedRatePerHa: row.seed_rate_per_ha,
 
   status: row.status,
   statusComment: row.status_comment,
@@ -61,6 +61,92 @@ const mapReturn = (row) => ({
 
 const handleSQLError = (error, fallback = "Database error") => {
   return new GraphQLError(error?.message || fallback);
+};
+
+const applicantNameSearchField = {
+  label: "Applicant name",
+  clauses: [
+    "applicant_name LIKE ?",
+    `EXISTS (
+      SELECT 1
+      FROM users u
+      WHERE u.id = planting_returns.created_by
+        AND (u.name LIKE ? OR u.email LIKE ? OR u.company_initials LIKE ?)
+    )`,
+  ],
+};
+
+const visiblePlantingReturnSearchFields = [
+  {
+    label: "SR8 number",
+    clauses: ["sr8_number LIKE ?"],
+  },
+  {
+    label: "Field/Garden",
+    clauses: ["field_name LIKE ?", "garden_number LIKE ?"],
+  },
+  {
+    label: "Inspector",
+    clauses: [
+      "inspector_id LIKE ?",
+      `EXISTS (
+        SELECT 1
+        FROM users u
+        WHERE u.id = planting_returns.inspector_id
+          AND (u.name LIKE ? OR u.email LIKE ? OR u.company_initials LIKE ?)
+      )`,
+    ],
+  },
+  {
+    label: "Crop",
+    clauses: [
+      "CAST(crop_id AS CHAR) LIKE ?",
+      `EXISTS (
+        SELECT 1
+        FROM crops c
+        WHERE c.id = planting_returns.crop_id
+          AND c.name LIKE ?
+      )`,
+    ],
+  },
+  {
+    label: "Variety",
+    clauses: [
+      "CAST(variety_id AS CHAR) LIKE ?",
+      `EXISTS (
+        SELECT 1
+        FROM crop_varieties cv
+        WHERE cv.id = planting_returns.variety_id
+          AND cv.name LIKE ?
+      )`,
+    ],
+  },
+];
+
+const placeholderCount = (sql) => (sql.match(/\?/g) || []).length;
+
+const applyPlantingReturnSearch = (
+  where,
+  values,
+  search,
+  { includeApplicantName = true } = {}
+) => {
+  if (!search || !String(search).trim()) return where;
+
+  const searchableFields = includeApplicantName
+    ? [applicantNameSearchField, ...visiblePlantingReturnSearchFields]
+    : visiblePlantingReturnSearchFields;
+  const clauses = searchableFields.flatMap((field) => field.clauses);
+  const term = `%${String(search).trim()}%`;
+
+  where += ` AND (${clauses.join(" OR ")})`;
+  values.push(
+    ...clauses.flatMap((clause) =>
+      Array(placeholderCount(clause)).fill(term)
+    )
+  );
+
+  return where;
 };
 
 export const fetchReturnById = async (id, conn = db) => {
@@ -123,16 +209,9 @@ export const listPlantingReturns = async ({ filter = {}, pagination = {} }) => {
     values.push(filter.inspectorId, filter.inspectorId);
   }
 
-  if (filter.search) {
-    where +=
-      " AND (applicant_name LIKE ? OR field_name LIKE ? OR garden_number LIKE ? OR seed_lot_code LIKE ?)";
-    values.push(
-      `%${filter.search}%`,
-      `%${filter.search}%`,
-      `%${filter.search}%`,
-      `%${filter.search}%`
-    );
-  }
+  where = applyPlantingReturnSearch(where, values, filter.search, {
+    includeApplicantName: filter.includeApplicantNameSearch !== false,
+  });
 
   const [[countRow]] = await db.execute(
     `SELECT COUNT(*) AS total FROM planting_returns ${where}`,
@@ -246,6 +325,7 @@ const plantingReturnsResolvers = {
         ...filter,
         inspectorId: canViewAssignedPlantingReturns ? user_id : null,
         createdById: !canManageAllPlantingReturns ? user_id : null,
+        includeApplicantNameSearch: canManageAllPlantingReturns,
       };
 
       console.log("newFilters", newFilters);
@@ -302,11 +382,11 @@ const plantingReturnsResolvers = {
           seed_class: input.seedClass || null,
           area_ha: input.areaHa ?? null,
           date_sown: input.dateSown || null,
+          quantity_planted: input.quantityPlanted ?? null,
           expected_harvest: input.expectedHarvest || null,
           seed_source: input.seedSource || null,
           seed_lot_code: input.seedLotCode || null,
           intended_merchant: input.intendedMerchant || null,
-          seed_rate_per_ha: input.seedRatePerHa || null,
           // receipt: input.receipt || null,
         };
 
@@ -392,7 +472,6 @@ const plantingReturnsResolvers = {
           seedSource: "seed_source",
           seedLotCode: "seed_lot_code",
           intendedMerchant: "intended_merchant",
-          seedRatePerHa: "seed_rate_per_ha",
           scheduledVisitDate: "scheduled_visit_date",
         };
         for (const k of Object.keys(map)) {
@@ -696,31 +775,116 @@ const plantingReturnsResolvers = {
         const createdById = context?.req?.user?.id || null;
 
         const normalizeFieldName = (value) => String(value || "").trim().toLowerCase();
+        const toYmd = (year, month, day) => {
+          const y = String(year).padStart(4, "0");
+          const m = String(month).padStart(2, "0");
+          const d = String(day).padStart(2, "0");
+          return `${y}-${m}-${d}`;
+        };
         const normalizeDateOnly = (value) => {
-          if (!value) return "";
-          const date = value instanceof Date ? value : new Date(value);
-          if (!Number.isNaN(date.getTime())) return date.toISOString().slice(0, 10);
-          return String(value).trim().slice(0, 10);
+          if (value == null || value === "") return "";
+
+          // Excel serial date values (common from spreadsheets)
+          if (typeof value === "number" && Number.isFinite(value)) {
+            const parsed = XLSX.SSF.parse_date_code(value);
+            if (parsed?.y && parsed?.m && parsed?.d) {
+              return toYmd(parsed.y, parsed.m, parsed.d);
+            }
+          }
+
+          // Keep calendar date in local time to avoid UTC day shifts.
+          if (value instanceof Date && !Number.isNaN(value.getTime())) {
+            return toYmd(value.getFullYear(), value.getMonth() + 1, value.getDate());
+          }
+
+          const raw = String(value).trim();
+          if (!raw) return "";
+
+          // Already in SQL-like format (YYYY-MM-DD or YYYY-MM-DD HH:mm:ss)
+          const ymdMatch = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+          if (ymdMatch) return `${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`;
+
+          // Handle slash or dot dates like 10/06/2026 or 10.06.2026.
+          const delimited = raw.match(/^(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})$/);
+          if (delimited) {
+            const a = Number(delimited[1]);
+            const b = Number(delimited[2]);
+            const y = Number(delimited[3]);
+            let day = a;
+            let month = b;
+
+            // If clearly month/day, flip. If ambiguous, default to day/month.
+            if (a <= 12 && b > 12) {
+              month = a;
+              day = b;
+            }
+
+            if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+              return toYmd(y, month, day);
+            }
+          }
+
+          const parsed = new Date(raw);
+          if (!Number.isNaN(parsed.getTime())) {
+            return toYmd(parsed.getFullYear(), parsed.getMonth() + 1, parsed.getDate());
+          }
+
+          return raw.slice(0, 10);
         };
         const buildRowKey = ({ fieldName, dateSown, createdBy }) =>
           `${createdBy || ""}::${normalizeFieldName(fieldName)}::${normalizeDateOnly(dateSown)}`;
 
         // Load current user's existing rows once to prevent re-importing duplicates.
         const [existingRows] = await connection.execute(
-          `SELECT field_name, date_sown, created_by
+          `SELECT id,
+                  LOWER(TRIM(field_name)) AS field_name_key,
+                  DATE_FORMAT(date_sown, '%Y-%m-%d') AS date_sown_key,
+                  created_by
            FROM planting_returns
            WHERE created_by = ?`,
           [createdById],
         );
+        const existingRowIdByKey = new Map();
         const existingRowKeys = new Set(
-          (existingRows || []).map((r) =>
-            buildRowKey({
-              fieldName: r.field_name,
-              dateSown: r.date_sown,
+          (existingRows || []).map((r) => {
+            const key = buildRowKey({
+              fieldName: r.field_name_key,
+              dateSown: r.date_sown_key,
               createdBy: r.created_by,
-            }),
-          ),
+            });
+            existingRowIdByKey.set(key, r.id);
+            return key;
+          }),
         );
+
+        const buildMutableRowData = (row) => ({
+          file_upload_id: uploadId,
+          applicant_name: row.name || null,
+          contact_phone: row.phone_number || null,
+          gps_lat: row.gps_latitude ?? null,
+          gps_lng: row.gps_longitude ?? null,
+          district: row.district || null,
+          subcounty: row.subcounty || null,
+          village: row.village || null,
+          expected_harvest: row.expected_yield || null,
+          quantity_planted: row.quantity_planted ?? null,
+          seed_source: row.source_of_seed || null,
+          seed_lot_code: row.lot_number || null,
+          seed_class: row.seed_class || null,
+          area_ha: row.size ?? null,
+          crop_id: row.crop_id || null,
+          variety_id: row.variety_id || null,
+          intended_merchant: input.registered_dealer || null,
+          receipt_id: receiptFilename || null,
+        });
+
+        const buildInsertRowData = (row, sr8_number) => ({
+          ...buildMutableRowData(row),
+          sr8_number,
+          created_by: createdById,
+          field_name: row.field_name || null,
+          date_sown: normalizeDateOnly(row.planting_date) || null,
+        });
 
         const totalRecords = rows.length;
         let totalImported = 0;
@@ -748,53 +912,62 @@ const plantingReturnsResolvers = {
                 dateSown: row.planting_date,
                 createdBy: createdById,
               });
-
-              // Skip duplicates from previous uploads or repeated rows in the same sheet.
+              // If this key exists in DB, update mutable columns only.
               if (existingRowKeys.has(rowKey)) {
-                totalFailed++;
-                results.push({
-                  row: row._rowNum,
-                  success: false,
-                  message: "Duplicate row skipped (field_name + created_by + date_sown already exists)",
-                });
+                const existingId = existingRowIdByKey.get(rowKey);
+                if (!existingId) {
+                  totalFailed++;
+                  results.push({
+                    row: row._rowNum,
+                    success: false,
+                    message: "Duplicate row in current upload skipped",
+                  });
+                  return;
+                }
+
+                try {
+                  await saveData({
+                    table: "planting_returns",
+                    data: buildMutableRowData(row),
+                    id: existingId,
+                    idColumn: "id",
+                    connection,
+                  });
+                  totalImported++;
+                  results.push({
+                    row: row._rowNum,
+                    success: true,
+                    message: "Existing row updated (field_name and date_sown kept unchanged)",
+                  });
+                } catch (e) {
+                  totalFailed++;
+                  results.push({
+                    row: row._rowNum,
+                    success: false,
+                    message: e?.message || "Update failed",
+                  });
+                }
                 return;
               }
 
+              // Reserve key before async work to avoid race conditions in Promise.all.
+              existingRowKeys.add(rowKey);
+
               try {
                 const sr8_number = await generateSr8Number();
-                await saveData({
+                const insertedId = await saveData({
                   table: "planting_returns",
-                  data: {
-                    sr8_number,
-                    file_upload_id: uploadId,
-                    created_by: createdById,
-                    applicant_name: row.name || null,
-                    contact_phone: row.phone_number || null,
-                    field_name: row.field_name || null,
-                    gps_lat: row.gps_latitude ?? null,
-                    gps_lng: row.gps_longitude ?? null,
-                    district: row.district || null,
-                    subcounty: row.subcounty || null,
-                    village: row.village || null,
-                    date_sown: row.planting_date || null,
-                    expected_harvest: row.planting_date || null,
-                    seed_source: row.source_of_seed || null,
-                    seed_lot_code: row.lot_number || null,
-                    seed_class: row.seed_class || null,
-                    area_ha: row.size ?? null,
-                    crop_id: row.crop_id || null,
-                    variety_id: row.variety_id || null,
-                    intended_merchant: input.registered_dealer || null,
-                    receipt_id: receiptFilename || null,
-                  },
+                  data: buildInsertRowData(row, sr8_number),
                   id: null,
                   idColumn: "id",
                   connection,
                 });
-                existingRowKeys.add(rowKey);
+                existingRowIdByKey.set(rowKey, insertedId);
                 totalImported++;
                 results.push({ row: row._rowNum, success: true, message: null });
               } catch (e) {
+                // Release reservation so only successfully inserted keys remain locked.
+                existingRowKeys.delete(rowKey);
                 totalFailed++;
                 results.push({
                   row: row._rowNum,

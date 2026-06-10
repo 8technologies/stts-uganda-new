@@ -455,11 +455,11 @@ const LOAD_PLANTING_RETURNS = gql`
         seedClass
         areaHa
         dateSown
+        quantityPlanted
         expectedHarvest
         seedSource
         seedLotCode
         intendedMerchant
-        seedRatePerHa
         status
         statusComment
         scheduledVisitDate
@@ -511,11 +511,11 @@ const LOAD_PLANTING_RETURN = gql`
       seedClass
       areaHa
       dateSown
+      quantityPlanted
       expectedHarvest
       seedSource
       seedLotCode
       intendedMerchant
-      seedRatePerHa
       status
       statusComment
       scheduledVisitDate

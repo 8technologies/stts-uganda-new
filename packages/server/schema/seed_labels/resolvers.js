@@ -533,7 +533,11 @@ const seedLabelResolvers = {
                 });
 
                 const lab_id = formDetails.seed_lab_id;
-                const marketableSeed = await fetchSeedLabs({ id:lab_id });
+                const marketableSeed = await fetchSeedLabs({ id: lab_id });
+                const marketableSeedRow = marketableSeed?.[0];
+                if (!marketableSeedRow) {
+                  throw new GraphQLError("Related seed lab record not found");
+                }
                 console.log("marketableSeed:", formDetails);
 
                 const packageSizeKg = labelPackage?.packageSizeKg || 0;
@@ -556,10 +560,10 @@ const seedLabelResolvers = {
                     quantity : packageSizeKg || null,
                     available_stock : packages ?? null,
                     price: labelPackage?.priceUgx ?? null,
-                    lab_test_number : marketableSeed[0].lab_test_number ?? null,
-                    lot_number : marketableSeed[0].lot_number ?? null,
-                    seed_class : marketableSeed[0].seed_class ?? null,
-                    image_url : marketableSeed[0].lot_number ?? null,
+                    lab_test_number : marketableSeedRow.lab_test_number ?? null,
+                    lot_number : marketableSeedRow.lot_number ?? null,
+                    seed_class : marketableSeedRow.seed_class ?? null,
+                    image_url : marketableSeedRow.lot_number ?? null,
                 }
 
                 await saveData({

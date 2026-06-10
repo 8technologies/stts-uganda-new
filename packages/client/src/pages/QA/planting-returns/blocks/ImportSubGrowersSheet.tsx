@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useApolloClient, useQuery, useMutation } from "@apollo/client/react";
 import * as XLSX from "xlsx";
 import {
@@ -53,8 +59,12 @@ const HEADER_ALIASES: Record<string, string[]> = {
     "area",
     "hectares",
     "ha",
-    "Field size(acres)",
-    "Field_size"
+    "field size(acres)",
+    "field_size",
+    "field size",
+    "area acres",
+    "area_acres",
+    "area (acres)",
   ],
   crop: [
     "crop",
@@ -87,6 +97,18 @@ const HEADER_ALIASES: Record<string, string[]> = {
     "date_sown",
     "date planted",
     "date_planted",
+    "sowing date",
+    "sowing_date",
+    "planting date (D/M/Y)"
+  ],
+  expected_harvest: [
+    "expected_harvest",
+    "expected harvest",
+    "expected harvest date",
+    "expected_harvest_date",
+    "harvest date",
+    "harvest_date",
+    
   ],
   quantity_planted: [
     "quantity_planted",
@@ -95,7 +117,7 @@ const HEADER_ALIASES: Record<string, string[]> = {
     "qty",
     "qty_planted",
   ],
-  expected_yield: ["expected_yield", "expected yield", "yield"],
+  expected_yield: ["expected_yield", "expected yield", "yield", "expected_yield_kgs", "expected yield (kgs)"],
   phone_number: [
     "phone_number",
     "phone number",
@@ -105,13 +127,7 @@ const HEADER_ALIASES: Record<string, string[]> = {
     "phoneno",
     "phone_no",
   ],
-  gps_latitude: [
-    "gps_latitude",
-    "gps latitude",
-    "latitude",
-    "lat",
-    "gps_lat",
-  ],
+  gps_latitude: ["gps_latitude", "gps latitude", "latitude", "lat", "gps_lat"],
   gps_longitude: [
     "gps_longitude",
     "gps longitude",
@@ -152,7 +168,9 @@ const normalizeHeader = (h: string) =>
     .replace(/^_+|_+$/g, "");
 
 const normalizeValue = (value: unknown) =>
-  String(value ?? "").replace(/\s+/g, " ").trim();
+  String(value ?? "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const normalizeLookupValue = (value: unknown) =>
   String(value ?? "")
@@ -227,6 +245,9 @@ const rowHasImportData = (row: Record<string, unknown>) => {
   );
 };
 
+const formatDateOnly = (date: Date): string =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
 function parseExcelDate(value: any): string {
   if (value === null || value === undefined || value === "") return "";
   if (typeof value === "number") {
@@ -236,19 +257,31 @@ function parseExcelDate(value: any): string {
       return `${info.y}-${String(info.m).padStart(2, "0")}-${String(info.d).padStart(2, "0")}`;
     }
   }
-  if (value instanceof Date) return value.toISOString().split("T")[0];
+  if (value instanceof Date) return formatDateOnly(value);
   const str = String(value).trim();
-  // Try DD/MM/YYYY or DD-MM-YYYY
-  const parts = str.split(/[\/\-]/).map((p) => p.trim());
-  if (parts.length === 3) {
-    const [d, m, y] = parts;
-    const candidate = new Date(
-      `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`,
-    );
-    if (!isNaN(candidate.getTime())) return candidate.toISOString().split("T")[0];
+  const parts = str.match(/^(\d{1,4})[\/-](\d{1,2})[\/-](\d{1,4})$/);
+  if (parts) {
+    const [, first, second, third] = parts;
+    const isYearFirst = first.length === 4;
+    const year = isYearFirst
+      ? first
+      : third.length === 2
+        ? `20${third}`
+        : third;
+    const month = second;
+    const day = isYearFirst ? third : first;
+    const candidate = new Date(Number(year), Number(month) - 1, Number(day));
+
+    if (
+      candidate.getFullYear() === Number(year) &&
+      candidate.getMonth() === Number(month) - 1 &&
+      candidate.getDate() === Number(day)
+    ) {
+      return formatDateOnly(candidate);
+    }
   }
   const direct = new Date(str);
-  if (!isNaN(direct.getTime())) return direct.toISOString().split("T")[0];
+  if (!isNaN(direct.getTime())) return formatDateOnly(direct);
   return str;
 }
 
@@ -277,6 +310,7 @@ type ParsedRow = {
   lot_number: string;
   source_of_seed: string;
   planting_date: string;
+  expected_harvest: string;
   quantity_planted: string;
   expected_yield: string;
   phone_number: string;
@@ -332,8 +366,11 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
   const apolloClient = useApolloClient();
 
   // ── Lookups ──
-  const { data: districtData, loading: loadingDistricts, error: districtsError } =
-    useQuery(GETDISTRICTS);
+  const {
+    data: districtData,
+    loading: loadingDistricts,
+    error: districtsError,
+  } = useQuery(GETDISTRICTS);
 
   useEffect(() => {
     let cancelled = false;
@@ -451,7 +488,14 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
         const wb = XLSX.read(data, { type: "array", cellDates: true });
 
         // Prefer "Sheet1" data sheet; fall back to first non-hidden sheet
-        const DATA_SHEET_NAMES = ["Sheet1", "sheet1", "Data", "data", "Sub-Growers", "SubGrowers"];
+        const DATA_SHEET_NAMES = [
+          "Sheet1",
+          "sheet1",
+          "Data",
+          "data",
+          "Sub-Growers",
+          "SubGrowers",
+        ];
         const sheetName =
           DATA_SHEET_NAMES.find((n) => wb.SheetNames.includes(n)) ??
           wb.SheetNames.find((n) => !n.startsWith("_")) ??
@@ -474,12 +518,15 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
         const headerRowIndex = findHeaderRowIndex(rawRows);
 
         // Parse again starting at detected header row, same pattern used in PWD importer
-        const objectRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
-          defval: "",
-          raw: true,
-          blankrows: false,
-          range: headerRowIndex,
-        });
+        const objectRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
+          ws,
+          {
+            defval: "",
+            raw: true,
+            blankrows: false,
+            range: headerRowIndex,
+          },
+        );
 
         const normalizedRows = objectRows.map((row) => {
           const assoc: Record<string, unknown> = {};
@@ -489,14 +536,18 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
           return assoc;
         });
 
-        const filteredRows = normalizedRows.filter((row) => rowHasImportData(row));
+        const filteredRows = normalizedRows.filter((row) =>
+          rowHasImportData(row),
+        );
 
         const parsedHeaders = Object.keys(normalizedRows[0] || {});
 
         // Check required columns are present
         const missing = REQUIRED_COLS.filter((field) => {
           const aliases = HEADER_ALIASES[field];
-          return !aliases.some((alias) => parsedHeaders.includes(normalizeHeader(alias)));
+          return !aliases.some((alias) =>
+            parsedHeaders.includes(normalizeHeader(alias)),
+          );
         });
         const availableCols = parsedHeaders.join(", ");
         if (missing.length > 0) {
@@ -530,7 +581,13 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
             planting_date: parseExcelDate(
               getRawByAliases(raw, HEADER_ALIASES.planting_date),
             ),
-            quantity_planted: getByAliases(raw, HEADER_ALIASES.quantity_planted),
+            expected_harvest: parseExcelDate(
+              getRawByAliases(raw, HEADER_ALIASES.expected_harvest),
+            ),
+            quantity_planted: getByAliases(
+              raw,
+              HEADER_ALIASES.quantity_planted,
+            ),
             expected_yield: getByAliases(raw, HEADER_ALIASES.expected_yield),
             phone_number: getByAliases(raw, HEADER_ALIASES.phone_number),
             gps_latitude: getByAliases(raw, HEADER_ALIASES.gps_latitude),
@@ -589,15 +646,20 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
         // Crop / variety validation
         if (row.cropName && row.varietyName) {
           const key = makeCropVarietyKey(row.cropName, row.varietyName);
-          console.log('key', key);
-          console.log('available pairs', Array.from(cropVarietyPairs).slice(0, 10));
+          console.log("key", key);
+          console.log(
+            "available pairs",
+            Array.from(cropVarietyPairs).slice(0, 10),
+          );
           if (!cropVarietyPairs.has(key)) {
             extra.push(
               `Crop "${row.cropName}" / Variety "${row.varietyName}" not found in the system`,
             );
           }
         } else if (row.crop && !row.varietyName) {
-          extra.push('Crop field must be in format "CROP: Name, VARIETY: Name"');
+          extra.push(
+            'Crop field must be in format "CROP: Name, VARIETY: Name"',
+          );
         }
       }
 
@@ -609,7 +671,12 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
   const invalidCount = validatedRows.filter((r) => r.errors.length > 0).length;
   const allRowsValid = validatedRows.length > 0 && invalidCount === 0;
 
-  console.log('errors', validatedRows.filter((r) => r.errors.length > 0).map((r) => ({ row: r._idx, errors: r.errors })));
+  console.log(
+    "errors",
+    validatedRows
+      .filter((r) => r.errors.length > 0)
+      .map((r) => ({ row: r._idx, errors: r.errors })),
+  );
 
   const canImport =
     !!subGrowersFile &&
@@ -709,9 +776,7 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
                   accept=".pdf,.jpg,.jpeg,.png"
                   className="hidden"
                   disabled={importing}
-                  onChange={(e) =>
-                    setReceiptFile(e.target.files?.[0] ?? null)
-                  }
+                  onChange={(e) => setReceiptFile(e.target.files?.[0] ?? null)}
                 />
                 <Button
                   type="button"
@@ -802,25 +867,33 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
             </div>
 
             <div className="mt-2 text-xs text-gray-600">
-              District source: <span className="font-medium">{districtNames.size}</span>
+              District source:{" "}
+              <span className="font-medium">{districtNames.size}</span>
             </div>
             <div className="text-xs text-gray-600">
-              Crop/Variety source: <span className="font-medium">{cropVarietyPairs.size}</span>
+              Crop/Variety source:{" "}
+              <span className="font-medium">{cropVarietyPairs.size}</span>
             </div>
             {loadingDistricts && (
-              <div className="text-xs text-gray-500 mt-1">Loading district list...</div>
+              <div className="text-xs text-gray-500 mt-1">
+                Loading district list...
+              </div>
             )}
             {loadingAllCrops && (
-              <div className="text-xs text-gray-500">Loading crops/varieties...</div>
+              <div className="text-xs text-gray-500">
+                Loading crops/varieties...
+              </div>
             )}
             {districtsError && (
               <div className="mt-2 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-700">
-                Failed to load districts. District validation will fail until this is resolved.
+                Failed to load districts. District validation will fail until
+                this is resolved.
               </div>
             )}
             {allCropsError && (
               <div className="mt-2 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-700">
-                Failed to load crops/varieties. Crop validation will fail until this is resolved.
+                Failed to load crops/varieties. Crop validation will fail until
+                this is resolved.
               </div>
             )}
 
@@ -895,8 +968,9 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
                         "Lot #",
                         "Field Name",
                         "Phone",
-                        "Area (ha)",
+                        "Area (Acres)",
                         "Planting Date",
+                        "Expected Yield(kgs)",
                         "Subcounty",
                         "Village",
                       ].map((h) => (
@@ -987,6 +1061,9 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
                           <td className="px-2 py-1.5 whitespace-nowrap">
                             {row.planting_date}
                           </td>
+                          <td className="px-2 py-1.5 whitespace-nowrap">
+                            {row.expected_yield}
+                          </td>
                           <td className="px-2 py-1.5">{row.subcounty}</td>
                           <td className="px-2 py-1.5">{row.village}</td>
                         </tr>
@@ -1058,18 +1135,18 @@ export const ImportSubGrowersSheet: React.FC<ImportSubGrowersSheetProps> = ({
               {parsing
                 ? "Reading file..."
                 : importing
-                ? "Importing…"
-                : canImport
-                  ? `Import ${validatedRows.length} Record${validatedRows.length !== 1 ? "s" : ""}`
-                  : !amountEnclosed.trim()
-                    ? "Enter amount to continue"
-                    : !subGrowersFile
-                      ? "Choose a file to continue"
-                      : parseError
-                        ? "Fix file errors first"
-                        : !lookupsReady
-                          ? "Loading lookups…"
-                          : "Fix row errors first"}
+                  ? "Importing…"
+                  : canImport
+                    ? `Import ${validatedRows.length} Record${validatedRows.length !== 1 ? "s" : ""}`
+                    : !amountEnclosed.trim()
+                      ? "Enter amount to continue"
+                      : !subGrowersFile
+                        ? "Choose a file to continue"
+                        : parseError
+                          ? "Fix file errors first"
+                          : !lookupsReady
+                            ? "Loading lookups…"
+                            : "Fix row errors first"}
             </Button>
           )}
         </div>

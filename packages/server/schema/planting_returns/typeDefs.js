@@ -26,12 +26,12 @@ const plantingReturnsTypeDefs = `#graphql
 
     # Planting & production
     areaHa: Float
-    dateSown: DateTime
-    expectedHarvest: DateTime
+    dateSown: Date
+    quantityPlanted: Float
+    expectedHarvest: Float
     seedSource: String
     seedLotCode: String
     intendedMerchant: String
-    seedRatePerHa: String
 
     # Workflow
     status: String
@@ -112,11 +112,11 @@ const plantingReturnsTypeDefs = `#graphql
 
     areaHa: Float
     dateSown: String
-    expectedHarvest: String
+    quantityPlanted: Float
+    expectedHarvest: Float
     seedSource: String
     seedLotCode: String
     intendedMerchant: String
-    seedRatePerHa: String
     receipt: Upload
   }
 
@@ -135,11 +135,11 @@ const plantingReturnsTypeDefs = `#graphql
 
     areaHa: Float
     dateSown: String
-    expectedHarvest: String
+    quantityPlanted: Float
+    expectedHarvest: Float
     seedSource: String
     seedLotCode: String
     intendedMerchant: String
-    seedRatePerHa: String
     receipt: Upload
 
     # Scheduling

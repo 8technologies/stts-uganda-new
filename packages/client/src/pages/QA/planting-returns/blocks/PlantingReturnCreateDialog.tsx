@@ -41,11 +41,11 @@ export type PlantingReturnFormValues = {
   seedClass?: string;
   areaHa?: string; // keep as string for input
   dateSown?: string; // yyyy-mm-dd
-  expectedHarvest?: string; // yyyy-mm-dd
+  expectedHarvest?: string; 
   seedSource?: string;
   seedLotCode?: string;
   intendedMerchant?: string;
-  seedRatePerHa?: string;
+  quantityPlanted?: string;
   notes?: string;
   receipt_id?: string | null;
   paymentReceipt?: File | null;
@@ -80,7 +80,7 @@ const DEFAULT_VALUES: PlantingReturnFormValues = {
   seedSource: "",
   seedLotCode: "",
   intendedMerchant: "",
-  seedRatePerHa: "",
+  quantityPlanted: "",
   receipt_id: "",
   paymentReceipt: null,
   notes: "",
@@ -234,6 +234,8 @@ const PlantingReturnCreateDialog = ({
       er.expectedHarvest = "Expected harvest date required";
     if (!values.seedSource) er.seedSource = "Seed source is required";
     if (!values.seedLotCode) er.seedLotCode = "Lot code is required";
+    if (!values.quantityPlanted || Number(values.quantityPlanted) <= 0)
+      er.quantityPlanted = "Enter quantity planted";
     setErrors(er);
     return Object.keys(er).length === 0;
   };
@@ -490,10 +492,27 @@ const PlantingReturnCreateDialog = ({
                 )}
               </div>
               <div>
-                <label className="form-label">Expected harvest date</label>
+                <label className="form-label">Quantity Planted (in Kgs)</label>
                 <Input
-                  type="date"
+                type="number"
+                  value={values.quantityPlanted || ""}
+                  onChange={(e) =>
+                    handleChange("quantityPlanted", e.target.value)
+                  }
+                  placeholder="e.g. 20kg"
+                />
+                {errors.quantityPlanted && (
+                  <div className="text-xs text-danger mt-1">
+                    {errors.quantityPlanted}
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="form-label">Expected yield (in Kgs)</label>
+                <Input
+                  type="number"
                   value={values.expectedHarvest || ""}
+                   placeholder="e.g. 20kg"
                   onChange={(e) =>
                     handleChange("expectedHarvest", e.target.value)
                   }
@@ -542,17 +561,7 @@ const PlantingReturnCreateDialog = ({
                   placeholder="Company"
                 />
               </div> */}
-              <div>
-                <label className="form-label">Expected yield (in Kgs)</label>
-                <Input
-                type="number"
-                  value={values.seedRatePerHa || ""}
-                  onChange={(e) =>
-                    handleChange("seedRatePerHa", e.target.value)
-                  }
-                  placeholder="e.g. 20kg"
-                />
-              </div>
+              
             </div>
             <div>
               <label className="form-label">Detail</label>

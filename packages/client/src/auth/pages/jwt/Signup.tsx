@@ -10,6 +10,7 @@ import { useLayout } from "@/providers";
 import { useMutation } from "@apollo/client/react";
 import { SIGNUP } from "@/gql/mutations";
 import { REGISTER } from "@/gql/queries";
+import { URL_2 } from "@/config/urls";
 
 const initialValues = {
   username: "",
@@ -136,8 +137,9 @@ const Signup = () => {
       >
         <div className="text-center mb-2.5 flex flex-col items-center gap-2">
           <img
-            src={`https://seedtracking.net/assets/images/maaif.png`}
+            src={`${URL_2}/imgs/maaif_2.png`}
             className="h-20 w-20"
+            alt="MAAIF"
           />
           <h3 className="text-lg font-semibold text-gray-900 leading-none mb-1">
             Create Account

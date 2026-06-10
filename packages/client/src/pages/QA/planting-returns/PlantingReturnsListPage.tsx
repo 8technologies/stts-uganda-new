@@ -1,5 +1,9 @@
 import { Fragment, useCallback, useMemo, useState } from "react";
-import { useApolloClient, useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import {
+  useApolloClient,
+  useLazyQuery,
+  useMutation,
+} from "@apollo/client/react";
 
 import { Container } from "@/components/container";
 import {
@@ -21,44 +25,25 @@ import {
   DataGridRowSelectAll,
   KeenIcon,
   TDataGridRequestParams,
-  useDataGrid,
 } from "@/components";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type { ColumnDef, Column } from "@tanstack/react-table";
-import { formatDateTime, formatIsoDate } from "@/utils/Date";
+import { formatDateTime } from "@/utils/Date";
 import { useAuthContext } from "@/auth";
 import { getPermissionsFromToken } from "@/utils/permissions";
 import { toAbsoluteUrl } from "@/utils";
 import { Link } from "react-router-dom";
-import {
-  DropdownMenu,
-  DropdownMenuSeparator,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { URL_2 } from "@/config/urls";
-import {
-  LOAD_PLANTING_RETURNS,
-  LOAD_PLANTING_RETURN,
-  LOAD_INSPECTORS,
-} from "@/gql/queries";
+import { LOAD_PLANTING_RETURNS, LOAD_PLANTING_RETURN } from "@/gql/queries";
 import {
   CREATE_PLANTING_RETURN,
   UPDATE_PLANTING_RETURN,
   DELETE_PLANTING_RETURN,
-  ASSIGN_PLANTING_RETURN_INSPECTOR,
 } from "@/gql/mutations";
 import { ImportSubGrowersSheet } from "./blocks/ImportSubGrowersSheet";
+import { PlantingReturnActionsMenu } from "./components/PlantingReturnActionsMenu";
+import { PlantingReturnStatusBadge } from "./components/PlantingReturnStatusBadge";
+import { PlantingReturnsGridToolbar } from "./components/PlantingReturnsGridToolbar";
 
 type PlantingReturn = {
   id: string;
@@ -86,7 +71,7 @@ type PlantingReturn = {
   seedSource?: string;
   seedLotCode?: string;
   intendedMerchant?: string;
-  seedRatePerHa?: string;
+  quantityPlanted?: number;
   status?: string;
   inspector?: {
     id: string;
@@ -108,17 +93,6 @@ type PlantingReturnDetailResponse = {
   plantingReturn?: any;
 };
 
-type AssignPlantingReturnInspectorResponse = {
-  assignPlantingReturnInspector?: {
-    success?: boolean;
-    message?: string;
-  };
-};
-
-type InspectorsResponse = {
-  inspectors?: any[];
-};
-
 const PlantingReturnsListPage = () => {
   const client = useApolloClient();
   const { currentLayout } = useLayout();
@@ -131,9 +105,7 @@ const PlantingReturnsListPage = () => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
   const canCreatePlantingReturns = !!perms["can_create_planting_returns"];
-  const [fetching, setFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [currentPageData, setCurrentPageData] = useState<PlantingReturn[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -141,14 +113,27 @@ const PlantingReturnsListPage = () => {
   const LIST_VARS = { filter: {} } as const;
 
   const fetchPlantingReturns = useCallback(
-    async ({ pageIndex, pageSize }: TDataGridRequestParams) => {
-      setFetching(true);
+    async ({ pageIndex, pageSize, columnFilters }: TDataGridRequestParams) => {
+      const searchFilter = columnFilters?.find((entry) =>
+        [
+          "sr8Number",
+          "applicant_name",
+          "fieldName",
+          "inspector",
+          "crop",
+          "variety",
+        ].includes(entry.id),
+      )?.value;
+      const search =
+        typeof searchFilter === "string" && searchFilter.trim()
+          ? searchFilter.trim()
+          : undefined;
 
       try {
         const response = await client.query<PlantingReturnsResponse>({
           query: LOAD_PLANTING_RETURNS,
           variables: {
-            filter: {},
+            filter: search ? { search } : {},
             pagination: {
               page: pageIndex + 1,
               size: pageSize,
@@ -160,7 +145,6 @@ const PlantingReturnsListPage = () => {
         const items = response?.data?.plantingReturns?.items || [];
         const total = Number(response?.data?.plantingReturns?.total || 0);
 
-        setCurrentPageData(items);
         setTotalCount(total);
         setFetchError(null);
 
@@ -169,7 +153,6 @@ const PlantingReturnsListPage = () => {
           totalCount: total,
         };
       } catch (error: any) {
-        setCurrentPageData([]);
         setTotalCount(0);
         setFetchError(error?.message || "Failed to load planting returns");
 
@@ -177,16 +160,13 @@ const PlantingReturnsListPage = () => {
           data: [],
           totalCount: 0,
         };
-      } finally {
-        setFetching(false);
       }
     },
-    [client]
+    [client],
   );
 
   const [importOpen, setImportOpen] = useState(false);
 
-  const rows = useMemo(() => currentPageData as any[], [currentPageData]);
   const total = totalCount;
 
   const [createReturn] = useMutation(CREATE_PLANTING_RETURN, {
@@ -201,9 +181,8 @@ const PlantingReturnsListPage = () => {
     refetchQueries: [{ query: LOAD_PLANTING_RETURNS, variables: LIST_VARS }],
     awaitRefetchQueries: true,
   });
-  const [loadDetail] = useLazyQuery<PlantingReturnDetailResponse>(
-    LOAD_PLANTING_RETURN,
-  );
+  const [loadDetail] =
+    useLazyQuery<PlantingReturnDetailResponse>(LOAD_PLANTING_RETURN);
 
   const reloadGrid = () => {
     setRefreshKey((prev) => prev + 1);
@@ -229,11 +208,11 @@ const PlantingReturnsListPage = () => {
       seedClass: vals.seedClass || null,
       areaHa: vals.areaHa ? Number(vals.areaHa) : null,
       dateSown: vals.dateSown || null,
-      expectedHarvest: vals.expectedHarvest || null,
+      quantityPlanted: vals.quantityPlanted ? Number(vals.quantityPlanted) : null,
+      expectedHarvest: vals.expectedHarvest ? Number(vals.expectedHarvest) : null,
       seedSource: vals.seedSource || null,
       seedLotCode: vals.seedLotCode || null,
       intendedMerchant: vals.intendedMerchant || null,
-      seedRatePerHa: vals.seedRatePerHa || null,
     };
     try {
       if (id) {
@@ -353,14 +332,13 @@ const PlantingReturnsListPage = () => {
         )}
 
         <Container>
-          {fetchError && rows.length === 0 && !fetching ? (
+          {fetchError && total === 0 ? (
             <div className="p-6 text-danger bg-white rounded-lg border flex items-center justify-between">
               <span>{fetchError}</span>
             </div>
           ) : (
             <PlantingReturnsGrid
               key={refreshKey}
-              rows={rows}
               onEdit={handleEdit}
               fetchPlantingReturns={fetchPlantingReturns}
               onDelete={handleDelete}
@@ -400,7 +378,7 @@ const PlantingReturnsListPage = () => {
                 seedSource: editing.seedSource,
                 seedLotCode: editing.seedLotCode,
                 intendedMerchant: editing.intendedMerchant,
-                seedRatePerHa: editing.seedRatePerHa,
+                quantityPlanted: editing.quantityPlanted,
                 receipt_id: editing.receipt_id,
                 notes: "",
               }
@@ -428,14 +406,12 @@ const PlantingReturnsListPage = () => {
 export default PlantingReturnsListPage;
 
 const PlantingReturnsGrid = ({
-  rows,
   onEdit,
   fetchPlantingReturns,
   onDelete,
   deletingId,
   onPreview,
 }: {
-  rows: any[];
   onEdit: (p: any) => void;
   fetchPlantingReturns: (params: TDataGridRequestParams) => Promise<{
     data: PlantingReturn[];
@@ -447,10 +423,11 @@ const PlantingReturnsGrid = ({
 }) => {
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
-  const canCreatePlantingReturns = !!perms["can_create_planting_returns"];
   const canManagePlantingReturns = !!perms["can_manage_planting_returns"];
   const canEditPlantingReturns = !!perms["can_edit_planting_returns"];
   const canDeletePlantingReturns = !!perms["can_delete_planting_returns"];
+  const [searchInput, setSearchInput] = useState("");
+
   const ColumnInputFilter = <TData, TValue>({
     column,
   }: {
@@ -463,8 +440,6 @@ const PlantingReturnsGrid = ({
       className="h-9 w-full max-w-40"
     />
   );
-
-  console.log("Rows", rows);
 
   const columns = useMemo<ColumnDef<any>[]>(() => {
     const cols: ColumnDef<any>[] = [
@@ -606,27 +581,9 @@ const PlantingReturnsGrid = ({
           <DataGridColumnHeader title="Status" column={column} />
         ),
         enableSorting: true,
-        cell: ({ row }) => {
-          const s = String(row.original.status || "pending");
-          const color =
-            s === "approved" || s === "recommended"
-              ? "success"
-              : s === "rejected" || s === "halted"
-                ? "danger"
-                : s === "assigned" || s === "assigned_inspector"
-                  ? "info"
-                  : "warning";
-          return (
-            <span
-              className={`badge badge-${color} shrink-0 badge-outline rounded-[30px]`}
-            >
-              <span
-                className={`size-1.5 rounded-full bg-${color} me-1.5`}
-              ></span>
-              {s}
-            </span>
-          );
-        },
+        cell: ({ row }) => (
+          <PlantingReturnStatusBadge status={row.original.status} />
+        ),
         meta: { headerClassName: "min-w-[140px]" },
       },
       {
@@ -651,7 +608,7 @@ const PlantingReturnsGrid = ({
         ),
         meta: { headerClassName: "min-w-[180px]" },
       },
-      
+
       // {
       //   accessorKey: 'dateSown',
       //   id: 'dateSown',
@@ -666,197 +623,47 @@ const PlantingReturnsGrid = ({
         id: "edit",
         header: () => "",
         enableSorting: false,
-        cell: (info) => (
-          <>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="btn btn-sm btn-icon btn-clear btn-light">
-                  <KeenIcon icon="dots-vertical" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[190px]">
-                <DropdownMenuLabel className="font-medium">
-                  Actions
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                {canEditPlantingReturns &&
-                  info?.row?.original?.status === "pending" && (
-                    <DropdownMenuItem onClick={() => onEdit(info.row.original)}>
-                      <KeenIcon icon="note" /> Edit
-                    </DropdownMenuItem>
-                  )}
-
-                {canDeletePlantingReturns &&
-                  info.row.original.status === "pending" && (
-                    <DropdownMenuItem
-                      onClick={() => onDelete(info.row.original)}
-                      disabled={
-                        String(deletingId) === String(info.row.original.id)
-                      }
-                    >
-                      <KeenIcon icon="trash" /> Delete
-                    </DropdownMenuItem>
-                  )}
-
-                <DropdownMenuItem onClick={() => onPreview(info.row.original)}>
-                  <KeenIcon icon="eye" /> Details
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
+        cell: ({ row }) => (
+          <PlantingReturnActionsMenu
+            row={row.original}
+            canEdit={canEditPlantingReturns}
+            canDelete={canDeletePlantingReturns}
+            deletingId={deletingId}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onPreview={onPreview}
+          />
         ),
         meta: { headerClassName: "w-[60px]" },
       },
     );
 
     return cols;
-  }, [canCreatePlantingReturns, deletingId]);
-
-  const HeaderToolbar = () => {
-    const { table } = useDataGrid();
-    const [searchInput, setSearchInput] = useState("");
-    const { auth } = useAuthContext();
-    const perms = getPermissionsFromToken(auth?.access_token);
-    const canAssignInspector = !!perms["qa_can_assign_inspector"];
-
-    const [inspector, setInspector] = useState("");
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
-    const {
-      data: inspectorsData,
-      loading: inspectorsLoading,
-      error: inspectorsError,
-      refetch,
-    } = useQuery<InspectorsResponse>(LOAD_INSPECTORS);
-
-    const [assignInspector, { loading: assigning }] =
-      useMutation<AssignPlantingReturnInspectorResponse>(
-        ASSIGN_PLANTING_RETURN_INSPECTOR,
-        {
-          refetchQueries: [
-            {
-              query: LOAD_PLANTING_RETURNS,
-              variables: { filter: {}, pagination: { page: 1, size: 200 } },
-            },
-          ],
-          awaitRefetchQueries: true,
-        },
-    );
-
-    const selectedIds = table
-      .getSelectedRowModel()
-      .flatRows.map((r) => String(r.original.id));
-
-    const handleAssign = async () => {
-      setErrorMsg(null);
-      if (!inspector || selectedIds.length === 0) return;
-      try {
-        const res = await assignInspector({
-          variables: { input: { ids: selectedIds, inspectorId: inspector } },
-        });
-        const ok = res?.data?.assignPlantingReturnInspector?.success;
-        if (!ok)
-          throw new Error(
-            res?.data?.assignPlantingReturnInspector?.message ||
-              "Failed to assign inspector",
-          );
-        toast("Inspector assigned");
-        setInspector("");
-        // Clear selection after success
-        table.toggleAllRowsSelected(false);
-      } catch (e: any) {
-        const msg = e?.message || "Failed to assign inspector";
-        setErrorMsg(msg);
-        toast("Failed to assign inspector", { description: msg });
-      }
-    };
-    return (
-      <div className="card-header flex-wrap gap-2 border-b-0 px-5">
-        <h3 className="card-title font-medium text-sm">
-          Showing {rows.length} returns
-        </h3>
-        <div className="flex flex-wrap gap-2 lg:gap-5 items-center">
-          <div className="flex">
-            <label className="input input-sm">
-              <KeenIcon icon="magnifier" />
-              <input
-                type="text"
-                placeholder="Search returns"
-                value={searchInput}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setSearchInput(val);
-                  table.getColumn("applicant_name")?.setFilterValue(val);
-                }}
-              />
-            </label>
-          </div>
-
-          {canAssignInspector && (
-            <div className="flex items-center gap-2">
-              <div className="text-xs text-gray-600 mr-1">
-                Selected: {selectedIds.length}
-              </div>
-              <Select
-                value={inspector}
-                onValueChange={setInspector}
-                disabled={inspectorsLoading || !!inspectorsError || assigning}
-              >
-                <SelectTrigger className="h-9 w-[220px]">
-                  <SelectValue
-                    placeholder={
-                      inspectorsLoading ? "Loading…" : "Choose inspector"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {inspectorsData?.inspectors?.map((ins: any) => (
-                    <SelectItem key={ins.id} value={ins.id}>
-                      {ins.name ||
-                        ins.username ||
-                        ins.company_initials ||
-                        "Unknown"}
-                      {ins.district ? ` (${ins.district})` : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                size="sm"
-                onClick={handleAssign}
-                disabled={!inspector || selectedIds.length === 0 || assigning}
-              >
-                <KeenIcon icon="tick-square" />
-                {assigning ? "Assigning…" : "Assign Inspector"}
-              </Button>
-              {inspectorsError && (
-                <button
-                  className="btn btn-xs btn-light"
-                  onClick={() => refetch?.()}
-                >
-                  Retry
-                </button>
-              )}
-              {errorMsg && (
-                <span className="text-[11px] text-danger">{errorMsg}</span>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
+  }, [
+    canDeletePlantingReturns,
+    canEditPlantingReturns,
+    canManagePlantingReturns,
+    deletingId,
+    onDelete,
+    onEdit,
+    onPreview,
+  ]);
 
   return (
     <DataGrid<any>
       columns={columns}
-      data={rows}
       rowSelection={true}
       serverSide={true}
+      loadingMode="empty"
       pagination={{ size: 10 }}
       onFetchData={fetchPlantingReturns}
       layout={{ card: true, cellSpacing: "xs", cellBorder: true }}
-      toolbar={<HeaderToolbar />}
+      toolbar={
+        <PlantingReturnsGridToolbar
+          searchInput={searchInput}
+          onSearchInputChange={setSearchInput}
+        />
+      }
       messages={{ loading: "Loading...", empty: "No planting returns found" }}
     />
   );

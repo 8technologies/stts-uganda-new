@@ -274,6 +274,8 @@ export const mapLabsRow = (row) => {
     // status: row.status?.toUpperCase(),
     lab_test_number: row.lab_test_number || null,
     lot_number: row.lot_number || null,
+    seed_class: row.seed_class || null,
+    source: row.source || null,
     status: row.status,
     inspector_report: parseJSON(row.inspector_report),
     lab_test_report: parseJSON(row.lab_test_report),

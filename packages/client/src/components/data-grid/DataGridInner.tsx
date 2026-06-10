@@ -8,6 +8,9 @@ import {
 
 const DataGridInner = () => {
   const { props, table, loading } = useDataGrid();
+  const showLoader =
+    loading &&
+    (props.loadingMode !== "empty" || table.getRowModel().rows.length === 0);
 
   return (
     <div
@@ -36,7 +39,7 @@ const DataGridInner = () => {
         data-container
       >
         <DataGridTable />
-        {loading && <DataGridLoader />}
+        {showLoader && <DataGridLoader />}
       </div>
       {table.getRowModel().rows.length > 0 && <DataGridPagination />}
     </div>
