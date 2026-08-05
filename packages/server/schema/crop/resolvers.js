@@ -2,6 +2,7 @@ import { db } from "../../config/config.js";
 import { GraphQLError } from "graphql";
 import { DateTimeResolver } from "graphql-scalars";
 import checkPermission from "../../helpers/checkPermission.js";
+import saveData from "../../utils/db/saveData.js";
 
 const mapCrop = (row) => ({
   id: String(row.id),
@@ -70,11 +71,103 @@ const handleSQLError = (error, fallback = "Database error") => {
   return new GraphQLError(error?.message || fallback);
 };
 
-export const listCrops = async ({ filter = {}, pagination = {} }) => {
+/* const syncCropVarieties = async ({ cropId, varieties, conn }) => {
+  if (!Array.isArray(varieties)) return;
+
+  const [existingRows] = await conn.execute(
+    "SELECT id, name FROM crop_varieties WHERE crop_id = ? ORDER BY id ASC",
+    [cropId]
+  );
+
+  const normalizedVarieties = varieties
+    .map((item) => ({
+      id: item?.id != null ? String(item.id) : null,
+      name: item?.name?.trim(),
+    }))
+    .filter((item) => Boolean(item.name));
+
+  const hasIds = normalizedVarieties.some((item) => item.id);
+
+  if (!hasIds) {
+    const normalizedNames = normalizedVarieties.map((item) => item.name);
+    const overlap = Math.min(existingRows.length, normalizedNames.length);
+
+    for (let index = 0; index < overlap; index += 1) {
+      if (existingRows[index].name !== normalizedNames[index]) {
+        await saveData({
+          table: "crop_varieties",
+          id: existingRows[index].id,
+          data: { name: normalizedNames[index] },
+          connection: conn,
+        });
+      }
+    }
+
+    for (let index = overlap; index < normalizedNames.length; index += 1) {
+      await saveData({
+        table: "crop_varieties",
+        data: { crop_id: cropId, name: normalizedNames[index] },
+        connection: conn,
+      });
+    }
+
+    return;
+  }
+
+  const existingById = new Map(existingRows.map((row) => [String(row.id), row]));
+
+  for (const item of normalizedVarieties) {
+    if (item.id) {
+      const existing = existingById.get(item.id);
+      if (!existing) {
+        throw new GraphQLError("One or more varieties are invalid for this crop.");
+      }
+
+      if (existing.name !== item.name) {
+        await saveData({
+          table: "crop_varieties",
+          id: existing.id,
+          data: { name: item.name },
+          connection: conn,
+        });
+      }
+      continue;
+    }
+
+    await saveData({
+      table: "crop_varieties",
+      data: { crop_id: cropId, name: item.name },
+      connection: conn,
+    });
+  }
+}; */
+
+const syncCropVarieties = async ({ cropId, varieties, conn }) => {
+  if (!Array.isArray(varieties)) return;
+
+  console.log("Syncing crop varieties for cropId:", varieties);
+  if (varieties && Array.isArray(varieties)) {
+    for (const variety of varieties) {
+      const varietyData = {
+        crop_id: cropId,
+        name: variety.name,
+      };
+
+      await saveData({
+        table: "crop_varieties",
+        data: varietyData,
+        id: variety.id || null,
+        idColumn: "id",
+        connection: conn,
+      });
+    }
+  }
+};
+
+
+export const listCrops = async ({ filter = {}, pagination } = {}) => {
   const { search, isQDS } = filter;
-  const page = Math.max(1, Number(pagination.page || 1));
-  const size = Math.max(1, Math.min(100, Number(pagination.size || 20)));
-  const offset = (page - 1) * size;
+  const hasPagination = pagination != null;
 
   const values = [];
   let where = "WHERE 1=1";
@@ -93,10 +186,18 @@ export const listCrops = async ({ filter = {}, pagination = {} }) => {
   );
   const total = Number(countRow.total || 0);
 
-  const [rows] = await db.execute(
-    `SELECT * FROM crops ${where} ORDER BY id desc LIMIT ? OFFSET ?`,
-    [...values, size, offset]
-  );
+  let rows;
+  if (hasPagination) {
+    const page = Math.max(1, Number(pagination.page || 1));
+    const size = Math.max(1, Math.min(100, Number(pagination.size || 20)));
+    const offset = (page - 1) * size;
+    [rows] = await db.execute(
+      `SELECT * FROM crops ${where} ORDER BY id desc LIMIT ? OFFSET ?`,
+      [...values, size, offset]
+    );
+  } else {
+    [rows] = await db.execute(`SELECT * FROM crops ${where} ORDER BY id desc`, values);
+  }
 
   return { items: rows.map(mapCrop), total };
 };
@@ -146,25 +247,22 @@ const cropsResolvers = {
       try {
         await conn.beginTransaction();
 
-        const [res] = await conn.execute(
-          "INSERT INTO crops (name, is_qds, days_before_submission, units) VALUES (?, ?, ?, ?)",
-          [
-            input.name,
-            input.isQDS ? 1 : 0,
-            input.daysBeforeSubmission,
-            input.units,
-          ]
-        );
-        const cropId = res.insertId;
+        const cropId = await saveData({
+          table: "crops",
+          data: {
+            name: input.name,
+            is_qds: input.isQDS ? 1 : 0,
+            days_before_submission: input.daysBeforeSubmission,
+            units: input.units,
+          },
+          connection: conn,
+        });
 
-        if (Array.isArray(input.varieties) && input.varieties.length) {
-          const placeholders = input.varieties.map(() => "(?, ?)").join(", ");
-          const values = input.varieties.flatMap((v) => [cropId, v.name]);
-          await conn.execute(
-            `INSERT INTO crop_varieties (crop_id, name) VALUES ${placeholders}`,
-            values
-          );
-        }
+        await syncCropVarieties({
+          cropId,
+          varieties: input.varieties,
+          conn,
+        });
 
         if (
           Array.isArray(input.inspectionTypes) &&
@@ -209,50 +307,35 @@ const cropsResolvers = {
       try {
         await conn.beginTransaction();
 
-        // Build update dynamically for provided fields
-        const sets = [];
-        const vals = [];
+        const cropData = {};
         if (Object.prototype.hasOwnProperty.call(input, "name")) {
-          sets.push("name = ?");
-          vals.push(input.name);
+          cropData.name = input.name;
         }
         if (Object.prototype.hasOwnProperty.call(input, "isQDS")) {
-          sets.push("is_qds = ?");
-          vals.push(input.isQDS ? 1 : 0);
+          cropData.is_qds = input.isQDS ? 1 : 0;
         }
         if (
           Object.prototype.hasOwnProperty.call(input, "daysBeforeSubmission")
         ) {
-          sets.push("days_before_submission = ?");
-          vals.push(input.daysBeforeSubmission);
+          cropData.days_before_submission = input.daysBeforeSubmission;
         }
         if (Object.prototype.hasOwnProperty.call(input, "units")) {
-          sets.push("units = ?");
-          vals.push(input.units);
+          cropData.units = input.units;
         }
 
-        if (sets.length) {
-          await conn.execute(
-            `UPDATE crops SET ${sets.join(", ")} WHERE id = ?`,
-            [...vals, id]
-          );
+        if (Object.keys(cropData).length) {
+          await saveData({
+            table: "crops",
+            id,
+            data: cropData,
+            connection: conn,
+          });
         }
 
         if (input.replaceChildren !== false) {
           if (Array.isArray(input.varieties)) {
-            await conn.execute("DELETE FROM crop_varieties WHERE crop_id = ?", [
-              id,
-            ]);
-            if (input.varieties.length) {
-              const placeholders = input.varieties
-                .map(() => "(?, ?)")
-                .join(", ");
-              const values = input.varieties.flatMap((v) => [id, v.name]);
-              await conn.execute(
-                `INSERT INTO crop_varieties (crop_id, name) VALUES ${placeholders}`,
-                values
-              );
-            }
+            console.log("Syncing crop varieties for cropId:", input.varieties);
+            await syncCropVarieties({ cropId: id, varieties: input.varieties, conn });
           }
           if (Array.isArray(input.inspectionTypes)) {
             await conn.execute(

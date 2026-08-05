@@ -48,7 +48,7 @@ const cropTypeDefs = `#graphql
         total: Int!
     }
 
-    input CreateCropVarietyInput { name: String! }
+    input CreateCropVarietyInput { name: String!, id: ID }
 
     input CreateCropInspectionTypeInput {
         stageName: String!

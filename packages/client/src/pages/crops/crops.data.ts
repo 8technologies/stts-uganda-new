@@ -5,7 +5,7 @@ export type CropInspectionType = {
   periodAfterPlantingDays: number;
 };
 
-export type CropVariety = { name: string };
+export type CropVariety = { id?: string | null; name: string };
 
 export type Crop = {
   id: string; // slug/id used in routes

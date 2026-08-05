@@ -58,6 +58,7 @@ const CropsListPage = () => {
       daysBeforeSubmission: it.daysBeforeSubmission,
       units: it.units,
       varieties: (it.varieties ?? []).map((v: any) => ({
+        id: String(v.id),
         name: v.name ?? String(v.id),
       })),
       inspectionTypes: [],
@@ -117,7 +118,10 @@ const CropsListPage = () => {
       isQDS: !!c.isQDS,
       daysBeforeSubmission: c.daysBeforeSubmission,
       units: c.units,
-      varieties: (c.varieties ?? []).map((v: any) => ({ name: v.name })),
+      varieties: (c.varieties ?? []).map((v: any) => ({
+        id: String(v.id),
+        name: v.name,
+      })),
       inspectionTypes: (c.inspectionTypes ?? [])
         .map((i: any) => ({
           stageName: i.stageName,
@@ -140,6 +144,10 @@ const CropsListPage = () => {
   };
 
   const handleSubmit = (payload: Omit<Crop, "id"> & { id?: string }) => {
+    const cleanedVarieties = (payload.varieties || [])
+      .map((v) => ({ id: v.id, name: v.name?.trim() }))
+      .filter((v) => v.name);
+
     if (editing) {
       const variables = {
         id: editing.id,
@@ -148,7 +156,7 @@ const CropsListPage = () => {
           isQDS: payload.isQDS,
           daysBeforeSubmission: payload.daysBeforeSubmission,
           units: payload.units,
-          varieties: (payload.varieties || []).map((v) => ({ name: v.name })),
+          varieties: cleanedVarieties.map((v) => ({ id: v.id, name: v.name })),
           inspectionTypes: (payload.inspectionTypes || []).map((i) => ({
             stageName: i.stageName,
             order: i.order,
@@ -166,7 +174,7 @@ const CropsListPage = () => {
           isQDS: payload.isQDS,
           daysBeforeSubmission: payload.daysBeforeSubmission,
           units: payload.units,
-          varieties: (payload.varieties || []).map((v) => ({ name: v.name })),
+          varieties: cleanedVarieties.map((v) => ({ name: v.name })),
           inspectionTypes: (payload.inspectionTypes || []).map((i) => ({
             stageName: i.stageName,
             order: i.order,
@@ -500,7 +508,7 @@ const CropFormDrawer = ({
     setVarieties((prev) => prev.filter((_, i) => i !== idx));
   const updateVariety = (idx: number, nameVal: string) =>
     setVarieties((prev) =>
-      prev.map((v, i) => (i === idx ? { name: nameVal } : v)),
+      prev.map((v, i) => (i === idx ? { ...v, name: nameVal } : v)),
     );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -509,6 +517,7 @@ const CropFormDrawer = ({
     console.log('payload submitting', {
       name,
       isQDS,
+      varieties
     });
 
     
@@ -518,7 +527,9 @@ const CropFormDrawer = ({
       daysBeforeSubmission: Number(daysBeforeSubmission),
       units,
       inspectionTypes,
-      varieties: varieties.filter((v) => v.name.trim().length > 0),
+      varieties: varieties
+    .filter((v) => v.name.trim().length > 0)
+    .map((v) => ({ id: v.id ?? null, name: v.name })),
       createdAt: initialValues?.createdAt || new Date().toISOString(),
     });
   };
