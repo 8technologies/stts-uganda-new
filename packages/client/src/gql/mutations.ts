@@ -965,6 +965,21 @@ export const UPDATE_PRE_ORDER = gql`
   }
 `;
 
+export const MARK_PRE_ORDER_PICKED = gql`
+  mutation MarkPreOrderPicked($id: ID!, $comment: String) {
+    markPreOrderPicked(id: $id, comment: $comment) {
+      success
+      message
+      preOrder {
+        id
+        status
+        comment
+        created_at
+      }
+    }
+  }
+`;
+
 export const DELETE_PRE_ORDER = gql`
   mutation DeletePreOrder($id: ID!) {
     deletePreOrder(id: $id) {

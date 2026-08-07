@@ -206,6 +206,31 @@ const preOrderResolvers = {
       }
     },
 
+    markPreOrderPicked: async (parent, { id, comment }, context) => {
+      try {
+        checkPermission(
+          context.req.user.permissions,
+          "can_create_pre_orders",
+          "You dont have permissions to mark pre-orders as picked"
+        );
+
+        await saveData({
+          table: "pre_orders",
+          id,
+          data: {
+            status: "picked",
+            response: comment || null,
+            updated_at: new Date(),
+          },
+        });
+
+        const results = await getPreOrders({ id });
+        return { success: true, message: "Pre-order marked as picked", preOrder: results[0] };
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+
     deletePreOrder: async (parent, { id }, context) => {
       try {
         await db.execute("UPDATE pre_orders SET deleted = 1 WHERE id = ?", [id]);

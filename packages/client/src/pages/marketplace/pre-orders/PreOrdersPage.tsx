@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { KeenIcon } from '@/components';
-import { CREATE_PRE_ORDER, DELETE_PRE_ORDER, UPDATE_PRE_ORDER } from '@/gql/mutations';
+import { CREATE_PRE_ORDER, DELETE_PRE_ORDER, MARK_PRE_ORDER_PICKED, UPDATE_PRE_ORDER } from '@/gql/mutations';
 import { LOAD_CROPS, LOAD_USERS, PRE_ORDERS } from '@/gql/queries';
 import { toast } from 'sonner';
-import { Calendar, Eye, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Calendar, Check, Eye, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import PreOrderFormSheet, { PreOrderFormValues } from './PreOrderFormSheet.tsx';
 import PreOrderDetailsSheet from './PreOrderDetailsSheet';
 import { useAuthContext } from '@/auth';
@@ -97,6 +97,19 @@ const PreOrdersPage: React.FC = () => {
   const [selectedPreOrder, setSelectedPreOrder] = useState<PreOrderItem | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const { auth } = useAuthContext();
   const perms = getPermissionsFromToken(auth?.access_token);
@@ -136,6 +149,11 @@ const PreOrdersPage: React.FC = () => {
   });
 
   const [deletePreOrder, { loading: deleting }] = useMutation<DeletePreOrderMutationData>(DELETE_PRE_ORDER, {
+    refetchQueries: [{ query: PRE_ORDERS }],
+    awaitRefetchQueries: true,
+  });
+
+  const [markPreOrderPicked, { loading: markingPicked }] = useMutation<UpdatePreOrderMutationData>(MARK_PRE_ORDER_PICKED, {
     refetchQueries: [{ query: PRE_ORDERS }],
     awaitRefetchQueries: true,
   });
@@ -185,6 +203,8 @@ const PreOrdersPage: React.FC = () => {
       case 'accepted':
       case 'confirmed':
       case 'completed':
+      case 'delivered':
+      case 'picked':
         return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'pending':
         return 'bg-amber-100 text-amber-700 border-amber-200';
@@ -303,12 +323,35 @@ const PreOrdersPage: React.FC = () => {
     }
   };
 
+  const handleMarkPicked = async (preOrder: PreOrderItem) => {
+    if (!preOrder.id) {
+      return;
+    }
+
+    try {
+      const response = await markPreOrderPicked({
+        variables: {
+          id: preOrder.id,
+          comment: 'Picked up by the breeder.',
+        },
+      });
+
+      if (response.data?.updatePreOrder?.success) {
+        toast.success(response.data.updatePreOrder.message || 'Pre-order marked as picked.');
+      } else {
+        toast.error(response.data?.updatePreOrder?.message || 'Failed to mark pre-order as picked.');
+      }
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to mark pre-order as picked.');
+    }
+  };
+
   const handleModerationAction = async ({
     status,
     moderationComment,
     supplyDate,
   }: {
-    status: 'accepted' | 'rejected';
+    status: 'accepted' | 'rejected' | 'delivered';
     supplyDate?: string;
     moderationComment: string;
   }) => {
@@ -404,6 +447,12 @@ const PreOrdersPage: React.FC = () => {
             moderationComment: `Rejection reason: ${reason}`,
           })
         }
+        onConfirmDelivered={({ notes }) =>
+          handleModerationAction({
+            status: 'delivered',
+            moderationComment: notes ? `Delivery confirmed: ${notes}` : 'Delivery confirmed.',
+          })
+        }
       />
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -430,6 +479,7 @@ const PreOrdersPage: React.FC = () => {
           <option value="pending">Pending</option>
           <option value="accepted">Accepted</option>
           <option value="rejected">Rejected</option>
+          <option value="delivered">Delivered</option>
           <option value="completed">Completed</option>
         </select>
       </div>
@@ -446,7 +496,7 @@ const PreOrdersPage: React.FC = () => {
         )}
 
         {!preOrdersLoading && !preOrdersError && filteredPreOrders.length > 0 && (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-h-[300px]">
             <table className="w-full text-sm">
               <thead className="border-b bg-gray-50">
                 <tr>
@@ -488,28 +538,76 @@ const PreOrdersPage: React.FC = () => {
                         {preOrder.comment || '-'}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <button className="btn btn-sm btn-ghost" onClick={() => openDetailsSheet(preOrder)}>
-                                <Eye className="w-4 h-4 mr-1" />
+                        <div className="relative" ref={openMenuId === preOrder.id ? menuRef : undefined}>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-ghost p-2"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setOpenMenuId(openMenuId === preOrder.id ? null : preOrder.id);
+                            }}
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+
+                          {openMenuId === preOrder.id && (
+                            <div className="absolute right-0 z-10 mt-2 w-44 rounded-lg border border-gray-200 bg-white shadow-lg">
+                              <button
+                                type="button"
+                                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                                onClick={() => {
+                                  openDetailsSheet(preOrder);
+                                  setOpenMenuId(null);
+                                }}
+                              >
+                                <Eye className="w-4 h-4" />
                                 View
-                            </button>
-                            {canCreatePreOrders && (
+                              </button>
+
+                              {canCreatePreOrders && preOrder.status === 'pending' && (
                                 <>
-                                <button className="btn btn-sm btn-ghost" onClick={() => openEditSheet(preOrder)}>
-                                    <Pencil className="w-4 h-4 mr-1" />
+                                  <button
+                                    type="button"
+                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                                    onClick={() => {
+                                      openEditSheet(preOrder);
+                                      setOpenMenuId(null);
+                                    }}
+                                  >
+                                    <Pencil className="w-4 h-4" />
                                     Edit
-                                </button>
-                                <button
-                                    className="btn btn-sm btn-danger"
-                                    onClick={() => handleDelete(preOrder.id)}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                                    onClick={() => {
+                                      handleDelete(preOrder.id);
+                                      setOpenMenuId(null);
+                                    }}
                                     disabled={deleting}
-                                >
-                                    <Trash2 className="w-4 h-4 mr-1" />
+                                  >
+                                    <Trash2 className="w-4 h-4" />
                                     Delete
-                                </button>
+                                  </button>
                                 </>
-                            )}
-                          
+                              )}
+
+                              {canCreatePreOrders && preOrder.status === 'delivered' && (
+                                <button
+                                  type="button"
+                                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                                  onClick={() => {
+                                    setOpenMenuId(null);
+                                    handleMarkPicked(preOrder);
+                                  }}
+                                  disabled={markingPicked}
+                                >
+                                  <Check className="w-4 h-4" />
+                                  Mark as Picked
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>

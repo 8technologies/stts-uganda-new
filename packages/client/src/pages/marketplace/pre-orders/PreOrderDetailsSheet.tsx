@@ -25,6 +25,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   onApprove: (payload: { collectionDate: string; notes: string }) => Promise<void>;
   onReject: (reason: string) => Promise<void>;
+  onConfirmDelivered: (payload: { notes: string }) => Promise<void>;
 };
 
 const PreOrderDetailsSheet: React.FC<Props> = ({
@@ -35,13 +36,15 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
   onOpenChange,
   onApprove,
   onReject,
+  onConfirmDelivered,
 }) => {
   const item = preOrder;
-  const [actionMode, setActionMode] = React.useState<null | 'approve' | 'reject'>(null);
+  const [actionMode, setActionMode] = React.useState<null | 'approve' | 'reject' | 'deliver'>(null);
   const [supplyDate, setSupplyDate] = React.useState('');
 //   const [approveCollectionDate, setApproveCollectionDate] = React.useState('');
   const [approveNotes, setApproveNotes] = React.useState('');
   const [rejectReason, setRejectReason] = React.useState('');
+  const [deliveryNotes, setDeliveryNotes] = React.useState('');
 
   React.useEffect(() => {
     if (!open) {
@@ -49,6 +52,7 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
       setSupplyDate('');
       setApproveNotes('');
       setRejectReason('');
+      setDeliveryNotes('');
       return;
     }
 
@@ -69,7 +73,9 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
   };
 
   const status = String(item?.status ?? 'pending').toLowerCase();
-  const canTakeAction = canReceivePreOrders && status === 'pending';
+  const canApproveOrReject = canReceivePreOrders && status === 'pending';
+  const canConfirmDelivery = canReceivePreOrders && status === 'accepted';
+  const canTakeAction = canApproveOrReject || canConfirmDelivery;
 
   const submitApprove = async () => {
     if (!supplyDate) {
@@ -83,6 +89,10 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
       return;
     }
     await onReject(rejectReason.trim());
+  };
+
+  const submitDelivered = async () => {
+    await onConfirmDelivered({ notes: deliveryNotes.trim() });
   };
 
   return (
@@ -156,49 +166,79 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
               </div>
               <div className="text-sm text-gray-700 whitespace-pre-wrap">{item.detail || '-'}</div>
             </div>
-            {!(item.status === 'pending') && item.comment && (
+            {!(item.status === 'pending') && (
+              <>
+              <div className="text-xs uppercase tracking-wide text-gray-500 pt-4 mb-1"><center>Breeder's response</center></div>
+                <div className="rounded-lg border-l-4 border-green-500 bg-green-50/50 p-3">
+                  <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Response date</div>
+                  <div className="text-sm text-gray-900">{formatDate(item.created_at)}</div>
+                </div>
                 <div className="rounded-lg border-l-4 border-green-500 bg-green-50/50 p-3">
                   <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">Breeder's response</div>
                   <div className="text-sm text-gray-900">{item.comment}</div>
                 </div>
+      
+              </>
             )}
             
             {canTakeAction && (
               <div className="pt-2 border-t border-gray-200">
                 <div className="text-xs uppercase tracking-wide text-gray-500 pt-4 mb-1"><center>Breeder's response</center></div>
                 <div className="text-sm font-medium text-gray-900 mb-2">Select Action</div>
-                <div className="flex items-center gap-6">
-                  <label className="inline-flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="moderation-action"
-                      value="approve"
-                      checked={actionMode === 'approve'}
-                      onChange={() => setActionMode('approve')}
-                      disabled={loading}
-                      className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500"
-                    />
-                    <span className="inline-flex items-center text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 mr-1 text-primary-600" />
-                      Approve
-                    </span>
-                  </label>
+                <div className="flex flex-wrap items-center gap-6">
+                  {canApproveOrReject && (
+                    <>
+                      <label className="inline-flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="moderation-action"
+                          value="approve"
+                          checked={actionMode === 'approve'}
+                          onChange={() => setActionMode('approve')}
+                          disabled={loading}
+                          className="h-4 w-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                        />
+                        <span className="inline-flex items-center text-sm text-gray-700">
+                          <CheckCircle2 className="w-4 h-4 mr-1 text-primary-600" />
+                          Approve
+                        </span>
+                      </label>
 
-                  <label className="inline-flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="moderation-action"
-                      value="reject"
-                      checked={actionMode === 'reject'}
-                      onChange={() => setActionMode('reject')}
-                      disabled={loading}
-                      className="h-4 w-4 text-red-600 border-gray-300 focus:ring-red-500"
-                    />
-                    <span className="inline-flex items-center text-sm text-gray-700">
-                      <CircleX className="w-4 h-4 mr-1 text-red-600" />
-                      Reject
-                    </span>
-                  </label>
+                      <label className="inline-flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="moderation-action"
+                          value="reject"
+                          checked={actionMode === 'reject'}
+                          onChange={() => setActionMode('reject')}
+                          disabled={loading}
+                          className="h-4 w-4 text-red-600 border-gray-300 focus:ring-red-500"
+                        />
+                        <span className="inline-flex items-center text-sm text-gray-700">
+                          <CircleX className="w-4 h-4 mr-1 text-red-600" />
+                          Reject
+                        </span>
+                      </label>
+                    </>
+                  )}
+
+                  {canConfirmDelivery && (
+                    <label className="inline-flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="moderation-action"
+                        value="deliver"
+                        checked={actionMode === 'deliver'}
+                        onChange={() => setActionMode('deliver')}
+                        disabled={loading}
+                        className="h-4 w-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                      />
+                      <span className="inline-flex items-center text-sm text-gray-700">
+                        <CheckCircle2 className="w-4 h-4 mr-1 text-emerald-600" />
+                        Confirm delivery
+                      </span>
+                    </label>
+                  )}
                 </div>
               </div>
             )}
@@ -260,6 +300,31 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
                   </button>
                   <button className="btn btn-danger" onClick={submitReject} disabled={loading || !rejectReason.trim()}>
                     {loading ? 'Processing...' : 'Confirm Rejection'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {canTakeAction && actionMode === 'deliver' && (
+              <div className="rounded-lg border p-4 space-y-3 bg-emerald-50/50">
+                <div className="text-sm font-medium text-gray-900">Confirm Delivery</div>
+                <div>
+                  <label className="text-sm text-gray-700 block mb-1">Delivery notes</label>
+                  <textarea
+                    className="w-full px-3 py-2 rounded-lg border bg-white text-sm"
+                    rows={3}
+                    value={deliveryNotes}
+                    onChange={(event) => setDeliveryNotes(event.target.value)}
+                    placeholder="Add delivery confirmation notes"
+                    disabled={loading}
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2">
+                  <button className="btn btn-ghost" onClick={() => setActionMode(null)} disabled={loading}>
+                    Cancel
+                  </button>
+                  <button className="btn btn-primary" onClick={submitDelivered} disabled={loading}>
+                    {loading ? 'Processing...' : 'Confirm Delivery'}
                   </button>
                 </div>
               </div>

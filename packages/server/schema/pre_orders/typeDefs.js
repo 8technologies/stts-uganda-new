@@ -26,6 +26,8 @@ const PreOrderType = `#graphql
         pending
         accepted
         rejected
+        delivered
+        picked
         completed
     }
 
@@ -55,6 +57,7 @@ const PreOrderType = `#graphql
     type Mutation {
         savePreOrder(input: savePreOrderInput!): PreOrderResponse
         updatePreOrder(id: ID!, input: UpdatePreOrderInput!): PreOrderResponse
+        markPreOrderPicked(id: ID!, comment: String): PreOrderResponse
         deletePreOrder(id: ID!): PreOrderResponse
     }
 
