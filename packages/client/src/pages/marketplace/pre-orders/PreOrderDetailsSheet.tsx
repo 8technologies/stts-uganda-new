@@ -14,6 +14,7 @@ type PreOrderItem = {
   collection_date?: string | null;
   Crop?: { name?: string | null } | null;
   Variety?: { name?: string | null } | null;
+  createdBy?: { name?: string | null; username?: string | null } | null;
   breeder?: { name?: string | null; username?: string | null } | null;
 };
 
@@ -150,7 +151,17 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
                 <div className="font-medium text-gray-900">{item.pickup_location || '-'}</div>
               </div>
             </div>
-
+            {canReceivePreOrders ? (
+              <div className="rounded-lg border p-3">
+                <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
+                  <UserRound className="w-3 h-3" /> Requested by
+                </div>
+                <div className="font-medium text-gray-900">
+                  {item.createdBy?.name || item.createdBy?.username || '-'}
+                </div>
+              </div>
+            )
+            :(
             <div className="rounded-lg border p-3">
               <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
                 <UserRound className="w-3 h-3" /> Breeder
@@ -159,6 +170,7 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
                 {item.breeder?.name || item.breeder?.username || '-'}
               </div>
             </div>
+            )}
 
             <div className="rounded-lg border p-3">
               <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">

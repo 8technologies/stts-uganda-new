@@ -34,6 +34,7 @@ type PreOrderItem = {
   comment?: string | null;
   created_at?: string | null;
   collection_date?: string | null;
+  createdBy?: {id: string; name?: string | null } | null;
   breeder?: { name?: string | null; username?: string | null } | null;
   Crop?: { id: string; name: string } | null;
   Variety?: { id: string; name: string, cropId: string } | null;
@@ -504,6 +505,11 @@ const PreOrdersPage: React.FC = () => {
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Crop</th>
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Variety</th>
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Quantity</th>
+                  {canReceivePreOrders ? (
+                    <th className="text-left px-4 py-3 font-semibold text-gray-700">Requested by</th>
+                  ) : (
+                    <th className="text-left px-4 py-3 font-semibold text-gray-700">Breeder</th>
+                  )}
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Requested</th>
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Status</th>
                   <th className="text-left px-4 py-3 font-semibold text-gray-700">Comment</th>
@@ -521,6 +527,11 @@ const PreOrdersPage: React.FC = () => {
                       <td className="px-4 py-3 text-gray-700">{preOrder.Crop?.name || '-'}</td>
                       <td className="px-4 py-3 text-gray-700">{preOrder.Variety?.name || '-'}</td>
                       <td className="px-4 py-3 text-gray-700">{preOrder.quantity} kg</td>
+                      {canReceivePreOrders ? (
+                        <td className="px-4 py-3 text-gray-700">{preOrder?.createdBy?.name || '-'}</td>
+                      ) : (
+                        <td className="px-4 py-3 text-gray-700">{preOrder?.breeder?.name || '-'}</td>
+                      )}
                       <td className="px-4 py-3 text-gray-700">
                         <div className="inline-flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
