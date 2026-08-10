@@ -4,8 +4,7 @@ const PreOrderType = `#graphql
         id: ID!
         user_id: ID!
         breeder_id: ID
-        variety_id: ID!
-        quantity: Float!
+        crops: JSON
         seed_class: String!
         collection_date: Date!
         detail: String
@@ -18,7 +17,7 @@ const PreOrderType = `#graphql
         updated_at: Date
         createdBy: User
         breeder: User
-        Crop: Crop
+        # Crop: Crop
         Variety: CropVariety
     }
 
@@ -30,15 +29,22 @@ const PreOrderType = `#graphql
         picked
         completed
     }
-
+    input PreOrderCropInput {
+        cropId: ID!
+        cropName: String
+        varieties: [PreOrderVarietyInput!]!
+    }
+    input PreOrderVarietyInput {
+        varietyId: ID!
+        varietyName: String
+        quantity: Float
+    }
     input savePreOrderInput {
         id: ID
-        cropId: ID!
-        varietyId: ID!
-        breederId: ID!  
+        breederId: ID
+        crops: [PreOrderCropInput!]!
         seedClass: String
-        quantity: Float!
-        requestedDate: String!
+        requestedDate: String
         pickup_location: String
         comment: String
     }

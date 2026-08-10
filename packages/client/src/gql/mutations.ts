@@ -926,7 +926,7 @@ export const DELETESEEDLABELPACKAGE = gql`
 `;
 
 export const CREATE_PRE_ORDER = gql`
-  mutation savePreOrder($input: savePreOrderInput!) {
+  mutation SavePreOrder($input: savePreOrderInput!) {
   savePreOrder(input: $input) {
     success
     message
@@ -934,16 +934,18 @@ export const CREATE_PRE_ORDER = gql`
       id
       user_id
       breeder_id
-      variety_id
-      quantity
+      crops
+      seed_class
       collection_date
       detail
       supply_date
       pickup_location
       status
       comment
+      response
       created_at
       updated_at
+      
     }
   }
 }

@@ -1143,33 +1143,25 @@ export const PRE_ORDERS = gql`
     id
     user_id
     breeder_id
-    variety_id
-    quantity
+    crops
+    seed_class
     collection_date
     detail
-    seed_class
     supply_date
     pickup_location
     status
     comment
+    response
     created_at
     updated_at
     createdBy {
-      username
+      id
       name
     }
     breeder {
-      username
-      name
-    }
-    Variety {
-      cropId
-      name
-    }
-    Crop {
+      id
       name
     }
   }
 }
-    
 `;

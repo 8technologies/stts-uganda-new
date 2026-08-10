@@ -99,7 +99,9 @@ const HEADER_ALIASES: Record<string, string[]> = {
     "date_planted",
     "sowing date",
     "sowing_date",
-    "planting date (D/M/Y)"
+    "planting date (D/M/Y)",
+    "planting date (DD/MM/YYYY)",
+
   ],
   expected_harvest: [
     "expected_harvest",
