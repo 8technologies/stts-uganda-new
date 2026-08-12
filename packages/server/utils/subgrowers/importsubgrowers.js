@@ -213,25 +213,61 @@ const rowHasImportData = (row) => {
 const formatDateOnly = (date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
+// function parseExcelDate(value) {
+//   if (value === null || value === undefined || value === "") return null;
+//   if (typeof value === "number") {
+//     const info = xlsx.SSF?.parse_date_code?.(value);
+//     if (info) {
+//       return `${info.y}-${String(info.m).padStart(2, "0")}-${String(info.d).padStart(2, "0")}`;
+//     }
+//   }
+//   if (value instanceof Date) return formatDateOnly(value);
+//   const str = String(value).trim();
+//   const parts = str.match(/^(\d{1,4})[\/-](\d{1,2})[\/-](\d{1,4})$/);
+//   if (parts) {
+//     const [, first, second, third] = parts;
+//     const isYearFirst = first.length === 4;
+//     const year = isYearFirst
+//       ? first
+//       : third.length === 2
+//         ? `20${third}`
+//         : third;
+//     const month = second;
+//     const day = isYearFirst ? third : first;
+//     const candidate = new Date(Number(year), Number(month) - 1, Number(day));
+//     if (
+//       candidate.getFullYear() === Number(year) &&
+//       candidate.getMonth() === Number(month) - 1 &&
+//       candidate.getDate() === Number(day)
+//     ) {
+//       return formatDateOnly(candidate);
+//     }
+//   }
+//   const direct = new Date(str);
+//   if (!isNaN(direct.getTime())) return formatDateOnly(direct);
+//   return str;
+// }
+
 function parseExcelDate(value) {
   if (value === null || value === undefined || value === "") return null;
+
   if (typeof value === "number") {
-    const info = xlsx.SSF?.parse_date_code?.(value);
-    if (info) {
-      return `${info.y}-${String(info.m).padStart(2, "0")}-${String(info.d).padStart(2, "0")}`;
-    }
+    // Excel serial date -> JS Date, no dependency on xlsx.SSF
+    // Excel epoch is 1899-12-30; also correct for Excel's fake 1900 leap-year bug
+    const excelEpoch = Date.UTC(1899, 11, 30);
+    const ms = excelEpoch + Math.round(value) * 86400000;
+    const d = new Date(ms);
+    if (!isNaN(d.getTime())) return formatDateOnly(d);
   }
+
   if (value instanceof Date) return formatDateOnly(value);
+
   const str = String(value).trim();
   const parts = str.match(/^(\d{1,4})[\/-](\d{1,2})[\/-](\d{1,4})$/);
   if (parts) {
     const [, first, second, third] = parts;
     const isYearFirst = first.length === 4;
-    const year = isYearFirst
-      ? first
-      : third.length === 2
-        ? `20${third}`
-        : third;
+    const year = isYearFirst ? first : third.length === 2 ? `20${third}` : third;
     const month = second;
     const day = isYearFirst ? third : first;
     const candidate = new Date(Number(year), Number(month) - 1, Number(day));
@@ -243,9 +279,11 @@ function parseExcelDate(value) {
       return formatDateOnly(candidate);
     }
   }
+
   const direct = new Date(str);
   if (!isNaN(direct.getTime())) return formatDateOnly(direct);
-  return str;
+
+  return null; // was: return str — never return an unparsed raw value into a date field
 }
 
 function parseNumber(value) {
