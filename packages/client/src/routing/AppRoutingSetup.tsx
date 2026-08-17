@@ -121,15 +121,7 @@ const AppRoutingSetup = (): ReactElement => {
     <Routes>
       {/* Explicit reset-password route registrations + legacy URL compatibility */}
       <Route path="/reset-password" element={<Navigate to="/auth/reset-password" replace />} />
-      <Route
-        path="/reset-password/change"
-        element={
-          <Navigate
-            to={{ pathname: "/auth/reset-password/change", search: window.location.search }}
-            replace
-          />
-        }
-      />
+      
       <Route
         path="/classic/reset-password"
         element={<Navigate to="/auth/classic/reset-password" replace />}
@@ -143,10 +135,7 @@ const AppRoutingSetup = (): ReactElement => {
           />
         }
       />
-      <Route
-        path="/auth/reset-password"
-        element={<Navigate to="/auth/reset-password" replace />}
-      />
+      
       <Route
         path="/auth/reset-password/change"
         element={
