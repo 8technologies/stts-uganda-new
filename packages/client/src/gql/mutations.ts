@@ -200,6 +200,15 @@ const SAVE_SR6_FORMS = gql`
   }
 `;
 
+export const DELETE_FORM = gql`
+  mutation DeleteForm($formId: String!) {
+    deleteForm(form_id: $formId) {
+      success
+      message
+    }
+  }
+`;
+
 const ASSIGN_INSPECTOR = gql`
   mutation AssignInspector($payload: AsignInspectorInput!) {
     assignInspector(payload: $payload) {
@@ -942,6 +951,7 @@ export const CREATE_PRE_ORDER = gql`
       pickup_location
       status
       comment
+      receipt_id
       response
       created_at
       updated_at

@@ -11,6 +11,8 @@ import tryParseJSON from "../../helpers/tryParseJSON.js";
 import { getRoles } from "../role/resolvers.js";
 import { getForms } from "../application_form/resolvers.js";
 import sendEmail from "../../utils/emails/email_server.js";
+import checkPasswordStrength from "../../helpers/password_strength.js";
+import { isValidUgandanPhoneNumber } from "../../helpers/checkValidPhoneNumber.js";
 
 const loginUser = async ({ username, password, user_id, context }) => {
   try {
@@ -295,6 +297,16 @@ const userResolvers = {
         if (usernameExists && !id)
           throw new GraphQLError("Username already exists!");
 
+        // enforce password strength before hashing
+        const { isValid, errors } = checkPasswordStrength(password);
+        if (!isValid) {
+          throw new GraphQLError(errors.join(", "));
+        }
+
+        if (!isValidUgandanPhoneNumber(phone_number))
+            throw new GraphQLError("Enter a correct Ugandan phone number");
+
+
         // generate unique password for employee
         const salt = await bcrypt.genSalt();
         const hashedPwd = await bcrypt.hash(password, salt);
@@ -382,65 +394,73 @@ const userResolvers = {
         if (!isUpdate) {
           if (!password)
             throw new GraphQLError("Password is required for new users!");
-          const salt = await bcrypt.genSalt();
-          hashedPwd = await bcrypt.hash(password, salt);
-        }
+          // enforce password strength before hashing
+          const { isValid, errors } = checkPasswordStrength(password);
+          if (!isValid) {
+            throw new GraphQLError(errors);
+          }
 
-        // save user image
-        if (image) {
-          imageId = await saveImage({
-            image,
-          });
-        }
-
-        // Build data payload
-        const data = {
-          username,
-          email,
-          name,
-          company_initials,
-          premises_location,
-          phone_number,
-          district,
-          updated_at: new Date(),
-        };
-
-        if (image) {
-          data.image = imageId;
-        }
-
-        // Include role if provided
-        if (role_id) data.role_id = role_id;
-
-        // Only set password and created_at on create
-        if (!isUpdate) {
-          data.password = hashedPwd;
-          data.created_at = new Date();
-          // Assign UUID if not supplied by DB
-          data.id = uuidv4();
-        } else {
-          if (password && password !== "") {
-            // if its an update and the password is provided, then update the password
             const salt = await bcrypt.genSalt();
             hashedPwd = await bcrypt.hash(password, salt);
-            data.password = hashedPwd;
-          }
         }
 
-        // Persist
-        await saveData({
-          table: "users",
-          data,
-          id: isUpdate ? id : null,
-        });
+          // save user image
+          if (image) {
+            imageId = await saveImage({
+              image,
+            });
+          }
 
-        return {
-          success: true,
-          message: isUpdate
-            ? "User Account updated successfully"
-            : "User Account created successfully",
-          user: { id, ...data },
-        };
+          // Build data payload
+          const data = {
+            username,
+            email,
+            name,
+            company_initials,
+            premises_location,
+            phone_number,
+            district,
+            updated_at: new Date(),
+          };
+
+          if (image) {
+            data.image = imageId;
+          }
+          if (!isValidUgandanPhoneNumber(phone_number))
+            throw new GraphQLError("Enter a correct Ugandan phone number");
+
+          // Include role if provided
+          if (role_id) data.role_id = role_id;
+
+          // Only set password and created_at on create
+          if (!isUpdate) {
+            data.password = hashedPwd;
+            data.created_at = new Date();
+            // Assign UUID if not supplied by DB
+            data.id = uuidv4();
+          } else {
+            if (password && password !== "") {
+              // if its an update and the password is provided, then update the password
+              const salt = await bcrypt.genSalt();
+              hashedPwd = await bcrypt.hash(password, salt);
+              data.password = hashedPwd;
+            }
+          }
+
+          // Persist
+          await saveData({
+            table: "users",
+            data,
+            id: isUpdate ? id : null,
+          });
+
+          return {
+            success: true,
+            message: isUpdate
+              ? "User Account updated successfully"
+              : "User Account created successfully",
+            user: { id, ...data },
+          };
       } catch (error) {
         throw new GraphQLError(error.message);
       }
@@ -856,12 +876,15 @@ const userResolvers = {
           { expiresIn: "15m" },
         );
 
-        const resetBaseUrl =
-          process.env.CLIENT_RESET_PASSWORD_URL ||
-          process.env.CLIENT_URL ||
-          "https://new.seedtracking.net/auth/reset-password";
+        // const resetBaseUrl =
+        //   process.env.CLIENT_RESET_PASSWORD_URL ||
+        //   process.env.CLIENT_URL ||
+        //   "https://seedtracking.net/auth/reset-password";
 
-        const resetLink = `${resetBaseUrl}?token=${encodeURIComponent(resetToken)}`;
+        const clientBaseUrl =
+          process.env.CLIENT_URL || context?.req?.headers?.origin
+
+        const resetLink = `${clientBaseUrl}?token=${encodeURIComponent(resetToken)}`;
         const params = {
           to: email,
           subject: "STTS Password Reset Request",

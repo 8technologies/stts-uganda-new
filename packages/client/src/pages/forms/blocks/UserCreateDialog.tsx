@@ -65,15 +65,58 @@ const UserCreateDialog = ({
     ...defaultCreateValues,
   });
 
+  const REQUIRED_FIELDS: [string, string][] = [
+  ["applicationCategory", "Application Category"],
+  ["experienceIn", "Experience in"],
+  ["yearsOfExperience", "Years of experience"],
+  ["dealersIn", "Applicant is applying for production of"],
+  ["sourceOfSeed", "Source of seed"],
+  ["adequateLand", "Adequate land"],
+  ["adequateStorage", "Adequate storage"],
+  ["adequateEquipment", "Adequate equipment"],
+  ["contractualAgreement", "Contractual agreement"],
+  ["fieldOfficers", "Field officers"],
+  ["conversantSeedMatters", "Conversant with seed matters"],
+  ["adequateLandForProduction", "Adequate land for production"],
+  ["internalQualityProgram", "Internal quality program"],
+  ["receipt", "Receipt"],
+];
+
+const [errors, setErrors] = useState<string[]>([]);
+
+const validate = (v: Record<string, any>) => {
+  const missing = REQUIRED_FIELDS.filter(([key]) => {
+    const val = v[key];
+    return val === undefined || val === null || val === "";
+  }).map(([, label]) => label);
+
+  if (v.dealersIn === "other" && !v.otherDealersIn) {
+    missing.push("Please specify (production)");
+  }
+  if (v.marketingOf === "other" && !v.otherMarketingOf) {
+    missing.push("Please specify (marketing)");
+  }
+  if (v.acceptDeclaration !== true) {
+    missing.push("You must accept the declaration");
+  }
+
+  return missing;
+};
+
+const handleSubmit = async () => {
+  const missing = validate(values);
+  if (missing.length > 0) {
+    setErrors(missing);
+    return; // block submission
+  }
+  setErrors([]);
+  await onSave?.(values);
+  setValues({ ...defaultCreateValues });
+};
+
   const handleChange = (key: string, value: any) =>
     setValues((v) => ({ ...v, [key]: value }));
 
-  const handleSubmit = async () => {
-    await onSave?.(values);
-    // Reset the form after successful save
-    setValues({ ...defaultCreateValues });
-    // Parent controls closing once mutation + refetch complete
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -382,23 +425,43 @@ const UserCreateDialog = ({
               </p>
               <div className="flex items-center gap-2">
                 <input
-                  type="radio"
+                  type="checkbox"
+                  checked={values.acceptDeclaration === true}
                   id="accept-declaration"
                   name="declaration"
-                  className="text-blue-600"
+                  onChange={(e) => handleChange("acceptDeclaration", e.target.checked)}
+                  required
+                  // className="text-blue-600"
                 />
-                <label
+                  <label
                   htmlFor="accept-declaration"
                   className="form-label text-sm cursor-pointer"
-                >
+                  >
                   I Accept
-                </label>
+                  </label>
+                {/* <Input
+                    value={values.otherMarketingOf || ""}
+                    onChange={(e) =>
+                      handleChange("otherMarketingOf", e.target.value)
+                    }
+                    placeholder="Please specify what you are producing"
+                  /> */}
               </div>
             </div>
           </div>
 
           {/* Application Status Section */}
         </DialogBody>
+        {errors.length > 0 && (
+  <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3 mb-2">
+    <p className="font-medium mb-1">Please complete the following:</p>
+    <ul className="list-disc list-inside">
+      {errors.map((e) => (
+        <li key={e}>{e}</li>
+      ))}
+    </ul>
+  </div>
+)}
 
         <DialogFooter className="flex items-center justify-between border-t pt-4">
           <div className="flex gap-2">

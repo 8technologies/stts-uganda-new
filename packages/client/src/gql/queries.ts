@@ -1151,6 +1151,7 @@ export const PRE_ORDERS = gql`
     pickup_location
     status
     comment
+    receipt_id
     response
     created_at
     updated_at
@@ -1164,4 +1165,23 @@ export const PRE_ORDERS = gql`
     }
   }
 }
+`;
+
+export const MY_ACTIVE_SR6_FORM = gql`
+  query MyActiveSr6Form {
+    my_active_sr6_form {
+      id
+      type
+    }
+  }
+`;
+
+export const SR6_BREEDERS = gql`
+  query Sr6Breeders($type: Sr6Type!) {
+    sr6_breeders(type: $type) {
+      id
+      name
+      username
+    }
+  }
 `;

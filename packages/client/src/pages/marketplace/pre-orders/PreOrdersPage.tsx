@@ -7,7 +7,12 @@ import {
   MARK_PRE_ORDER_PICKED,
   UPDATE_PRE_ORDER,
 } from '@/gql/mutations';
-import { LOAD_CROPS, LOAD_USERS, PRE_ORDERS } from '@/gql/queries';
+import {
+  LOAD_CROPS,
+  MY_ACTIVE_SR6_FORM,
+  PRE_ORDERS,
+  SR6_BREEDERS,
+} from '@/gql/queries';
 import { toast } from 'sonner';
 import {
   Calendar,
@@ -87,7 +92,33 @@ type BreederItem = {
 };
 
 type BreedersQueryData = {
-  users: BreederItem[];
+  sr6_breeders: BreederItem[];
+};
+
+type ActiveSr6FormQueryData = {
+  my_active_sr6_form: { id: string; type: string } | null;
+};
+
+// Seed multiplication chain: mirrors the server-side rule in
+// packages/server/schema/pre_orders/resolvers.js (SR6_PREORDER_RULES).
+// A Basic Seed Breeder supplies pre-basic seed to Plant Breeders, who in
+// turn supply basic seed to Seed Producers.
+const SR6_PREORDER_RULES: Record<
+  string,
+  { seedClass: string; seedClassLabel: string; breederType: string; breederLabel: string }
+> = {
+  seed_producer: {
+    seedClass: 'basic',
+    seedClassLabel: 'Basic',
+    breederType: 'plant_breeder',
+    breederLabel: 'Plant Breeder',
+  },
+  plant_breeder: {
+    seedClass: 'pre_basic',
+    seedClassLabel: 'Pre-basic',
+    breederType: 'basic_seed_breeder',
+    breederLabel: 'Basic Seed Breeder',
+  },
 };
 
 type PreOrdersQueryData = {
@@ -179,14 +210,23 @@ const PreOrdersPage: React.FC = () => {
   });
 
   const {
+    data: mySr6FormData,
+    loading: mySr6FormLoading,
+  } = useQuery<ActiveSr6FormQueryData>(MY_ACTIVE_SR6_FORM, {
+    fetchPolicy: 'cache-first',
+  });
+
+  const myActiveSr6Type = mySr6FormData?.my_active_sr6_form?.type;
+  const preOrderRule = myActiveSr6Type
+    ? SR6_PREORDER_RULES[myActiveSr6Type]
+    : undefined;
+
+  const {
     data: breedersData,
     loading: breedersLoading,
-  } = useQuery<BreedersQueryData>(LOAD_USERS, {
-    variables: {
-      limit: 1000,
-      offset: 0,
-      roleName: 'breeder',
-    },
+  } = useQuery<BreedersQueryData>(SR6_BREEDERS, {
+    variables: { type: preOrderRule?.breederType },
+    skip: !preOrderRule?.breederType,
     fetchPolicy: 'cache-first',
   });
 
@@ -215,7 +255,7 @@ const PreOrdersPage: React.FC = () => {
     });
 
   const crops: CropItem[] = cropsData?.crops?.items ?? [];
-  const breeders: BreederItem[] = breedersData?.users ?? [];
+  const breeders: BreederItem[] = breedersData?.sr6_breeders ?? [];
   const preOrders: PreOrderItem[] =
     preOrdersData?.getPreOrders ?? [];
 
@@ -751,7 +791,7 @@ const PreOrdersPage: React.FC = () => {
             Refresh
           </button>
 
-          {canCreatePreOrders && (
+          {canCreatePreOrders && preOrderRule && (
             <button
               className="btn btn-primary"
               onClick={openCreateSheet}
@@ -763,15 +803,28 @@ const PreOrdersPage: React.FC = () => {
         </div>
       </div>
 
+      {canCreatePreOrders &&
+        !mySr6FormLoading &&
+        !preOrderRule && (
+          <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            You need an active SR6 licence as a Seed Producer or Plant
+            Breeder to create a pre-order. Basic Seed Breeders and
+            unlicensed users are not eligible to request seed this way.
+          </div>
+        )}
+
       {/* Create/Edit Form */}
       <PreOrderFormSheet
         open={sheetOpen}
         mode={sheetMode}
         crops={crops}
         breeders={breeders}
+        breederLabel={preOrderRule?.breederLabel}
+        lockedSeedClass={preOrderRule?.seedClass}
         loading={
           cropsLoading ||
           breedersLoading ||
+          mySr6FormLoading ||
           creating ||
           updating
         }

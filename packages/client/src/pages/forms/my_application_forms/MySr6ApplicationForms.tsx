@@ -17,7 +17,7 @@ import { useLayout } from "@/providers";
 import { useAuthContext } from "@/auth";
 
 import { LOAD_SR6_FORMS } from "@/gql/queries";
-import { SAVE_SR6_FORMS } from "@/gql/mutations";
+import { DELETE_FORM, SAVE_SR6_FORMS } from "@/gql/mutations";
 
 import { SR6CreateDialog } from "../SR6 forms/blocks/SR6CreateDialog";
 import { SR6EditDialog } from "../SR6 forms/blocks/SR6EditDialog";
@@ -42,7 +42,7 @@ type Sr6Application = {
   created_at?: string;
   valid_from?: string | null;
   valid_until?: string | null;
-  type: "plant_breeder" | "seed_producer";
+  type: "plant_breeder" | "seed_producer" | "basic_seed_breeder";
   status?: string | null;
   previous_grower_number?: string | null;
   years_of_experience?: string | null;
@@ -59,7 +59,11 @@ type Sr6Application = {
 };
 
 const typeLabel = (t?: string) =>
-  t === "plant_breeder" ? "Plant Breeder" : "Seed Producer";
+  t === "plant_breeder"
+    ? "Plant Breeder"
+    : t === "basic_seed_breeder"
+      ? "Basic Seed Breeder"
+      : "Seed Producer";
 
 const statusToColor = (status?: string | null) => {
   switch (status) {
@@ -103,6 +107,11 @@ const MySr6ApplicationForms = () => {
     [myForms],
   );
 
+  const [deleteForm, { loading: deleting }] = useMutation(DELETE_FORM, {
+      refetchQueries: [{ query: LOAD_SR6_FORMS }],
+      awaitRefetchQueries: true,
+    });
+
   const handleCreateSave = async (vals: Record<string, any>) => {
     const toBool = (v: any) => String(v).toLowerCase() === "yes";
     const crops = vals.selectedCrops ? vals.selectedCrops.map((c: any) => c.value) : [];
@@ -140,6 +149,24 @@ const MySr6ApplicationForms = () => {
       });
     }
   };
+
+  const handleDelete = async (formId: string) => {
+      if (!formId) return;
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this application? This action cannot be undone.",
+      );
+      if (!confirmed) return;
+      if (confirmed) {
+        try {
+          await deleteForm({ variables: { formId } });
+          toast("SR6 application deleted");
+        } catch (e: any) {
+          toast("Failed to delete application", {
+            description: e?.message ?? "Unknown error",
+          });
+        }
+      }
+    };
 
   const handleEditSave = async (vals: Record<string, any>) => {
     if (!selectedForm?.id) return;
@@ -391,6 +418,7 @@ const MySr6ApplicationForms = () => {
                                   <KeenIcon icon="eye" /> View Details
                                 </Button>
                                 {(f.status || "pending") === "pending" && (
+                                  <>
                                   <Button
                                     variant="outline"
                                     className="w-full"
@@ -401,6 +429,17 @@ const MySr6ApplicationForms = () => {
                                   >
                                     <KeenIcon icon="note" /> Edit Application
                                   </Button>
+                                  <Button
+                                    variant="outline"
+                                    className="w-full"
+                                    onClick={() => {
+                                      handleDelete(f.id);
+                                    }}
+                                  >
+                                    <KeenIcon icon="note" /> Delete Application
+                                  </Button>
+                                  </>
+                                  
                                 )}
                                 {f.status === "approved" && (
                                   <Button

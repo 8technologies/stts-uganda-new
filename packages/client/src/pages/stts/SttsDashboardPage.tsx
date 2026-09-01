@@ -628,10 +628,10 @@ const SttsDashboardPage = () => {
                 className="pl-10"
               />
             </div> */}
-            <Button type="button" variant="outline" className="gap-2">
+            {/* <Button type="button" variant="outline" className="gap-2">
               <FolderInput />
-              Export files
-            </Button>
+              Export files 
+            </Button>*/}
           </div>
         </Toolbar>
       </Container>

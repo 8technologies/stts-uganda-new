@@ -135,6 +135,7 @@ const SR6EditDialog = ({
                   <SelectContent>
                     <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                     <SelectItem value="seed_producer">Seed Producer</SelectItem>
+                    <SelectItem value="basic_seed_breeder">Basic Seed Breeder</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -6,7 +6,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Upload } from 'lucide-react';
+import { URL_2 } from '@/config/urls';
 
 type CropVariety = {
   id: string;
@@ -66,12 +67,21 @@ type Props = {
   mode: 'create' | 'edit';
   crops: CropItem[];
   breeders: BreederItem[];
+  breederLabel?: string;
+  lockedSeedClass?: string;
   loading?: boolean;
   initialValues: PreOrderFormValues;
   onOpenChange: (open: boolean) => void;
   onSubmit: (
     payload: SubmitPayload
   ) => Promise<void>;
+};
+
+const SEED_CLASS_LABELS: Record<string, string> = {
+  certified: 'Certified',
+  quality_declared: 'Quality Declared',
+  basic: 'Basic',
+  pre_basic: 'Pre-basic',
 };
 
 const emptyForm: PreOrderFormValues = {
@@ -89,6 +99,8 @@ const PreOrderFormSheet: React.FC<Props> = ({
   mode,
   crops,
   breeders,
+  breederLabel = 'Breeder',
+  lockedSeedClass,
   loading = false,
   initialValues,
   onOpenChange,
@@ -99,6 +111,9 @@ const PreOrderFormSheet: React.FC<Props> = ({
       initialValues || emptyForm
     );
 
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+
   useEffect(() => {
     if (open) {
       setForm(
@@ -106,6 +121,21 @@ const PreOrderFormSheet: React.FC<Props> = ({
       );
     }
   }, [open, initialValues]);
+
+  /**
+   * When creation is restricted to a single seed class (based on the
+   * requester's active SR6 licence), keep the form in sync with it.
+   */
+  useEffect(() => {
+    if (open && mode !== 'edit' && lockedSeedClass) {
+      setForm((prev) =>
+        prev.seedClass === lockedSeedClass
+          ? prev
+          : { ...prev, seedClass: lockedSeedClass }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, lockedSeedClass]);
 
   const isEdit = mode === 'edit';
 
@@ -383,7 +413,7 @@ const PreOrderFormSheet: React.FC<Props> = ({
           {/* Breeder */}
           <div>
             <label className="text-sm text-gray-700 block mb-1">
-              Breeder
+              {breederLabel}
             </label>
 
             <select
@@ -399,7 +429,7 @@ const PreOrderFormSheet: React.FC<Props> = ({
               disabled={loading}
             >
               <option value="">
-                Select breeder
+                Select {breederLabel.toLowerCase()}
               </option>
 
               {breeders.map(
@@ -777,39 +807,58 @@ const PreOrderFormSheet: React.FC<Props> = ({
                 Seed class
               </label>
 
-              <select
-                className="w-full px-3 py-2 rounded-lg border bg-white text-sm"
-                value={form.seedClass}
-                onChange={(event) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    seedClass:
-                      event.target
-                        .value,
-                  }))
-                }
-                disabled={loading}
-              >
-                <option value="">
-                  Select seed class
-                </option>
+              {lockedSeedClass ? (
+                <>
+                  <input
+                    className="w-full px-3 py-2 rounded-lg border bg-gray-100 text-sm"
+                    value={
+                      SEED_CLASS_LABELS[
+                        lockedSeedClass
+                      ] || lockedSeedClass
+                    }
+                    disabled
+                    readOnly
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Determined by your active
+                    SR6 licence.
+                  </p>
+                </>
+              ) : (
+                <select
+                  className="w-full px-3 py-2 rounded-lg border bg-white text-sm"
+                  value={form.seedClass}
+                  onChange={(event) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      seedClass:
+                        event.target
+                          .value,
+                    }))
+                  }
+                  disabled={loading}
+                >
+                  <option value="">
+                    Select seed class
+                  </option>
 
-                <option value="certified">
-                  Certified
-                </option>
+                  <option value="certified">
+                    Certified
+                  </option>
 
-                <option value="quality_declared">
-                  Quality Declared
-                </option>
+                  <option value="quality_declared">
+                    Quality Declared
+                  </option>
 
-                <option value="basic">
-                  Basic
-                </option>
+                  <option value="basic">
+                    Basic
+                  </option>
 
-                <option value="pre_basic">
-                  Pre-basic
-                </option>
-              </select>
+                  <option value="pre_basic">
+                    Pre-basic
+                  </option>
+                </select>
+              )}
             </div>
           </div>
 
@@ -901,6 +950,38 @@ const PreOrderFormSheet: React.FC<Props> = ({
               disabled={loading}
             />
           </div>
+          {/* receipt upload */}
+          <div className="space-y-2">
+                <label className="text-sm font-medium">Attach advance payment receipt</label>
+                <div className="border-2 border-dashed rounded-lg p-4 text-center hover:bg-slate-50 transition-colors cursor-pointer relative">
+                  <input 
+                    type="file" 
+                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                    accept=".pdf" 
+                    onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setReceiptFile(file);
+                        if (file) setReceiptPreview(URL.createObjectURL(file)); // Show new preview
+                    }} 
+                  />
+                    {receiptFile || receiptPreview ? (
+                    <div className="flex flex-col items-center gap-2">
+                        {/* If it's an image, show a thumbnail */}
+                        { ( receiptPreview) && (
+                        <a href={`${URL_2}/attachments/${(receiptPreview)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 font-medium">View Certificate</a>
+                        )}
+                        <p className="text-xs text-blue-600 font-medium">
+                        {receiptFile ? receiptFile.name : 'Existing Certificate (Click to change)'}
+                        </p>
+                    </div>
+                    ) : (
+                    <>
+                        <Upload className="mx-auto text-slate-400 mb-2" size={20} />
+                        <p className="text-xs text-slate-500">Click to upload PDF (Max 2MB)</p>
+                    </>
+                    )}
+                </div>
+              </div>
 
           {isEdit && (
             <div className="text-xs text-gray-500 bg-gray-50 border rounded-lg p-3">

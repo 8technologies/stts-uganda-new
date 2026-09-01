@@ -1,4 +1,5 @@
 const PreOrderType = `#graphql
+    scalar Upload
 
     type PreOrder {
         id: ID!
@@ -17,6 +18,7 @@ const PreOrderType = `#graphql
         updated_at: Date
         createdBy: User
         breeder: User
+        receipt_id: String
         # Crop: Crop
         Variety: CropVariety
     }
@@ -47,6 +49,7 @@ const PreOrderType = `#graphql
         requestedDate: String
         pickup_location: String
         comment: String
+        receipt: Upload
     }
 
     input UpdatePreOrderInput {

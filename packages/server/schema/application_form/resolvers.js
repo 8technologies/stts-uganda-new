@@ -149,6 +149,28 @@ export const getForms = async ({
   }
 };
 
+// Approved SR6 forms that are still within their validity window.
+export const getActiveSr6Forms = async ({ user_id = null, type = null } = {}) => {
+  const forms = await getForms({
+    user_id,
+    form_type: "sr6",
+    status: "approved",
+  });
+
+  const today = new Date();
+
+  return forms.filter((f) => {
+    if (!f.valid_until || new Date(f.valid_until) < today) return false;
+    if (type && f.type !== type) return false;
+    return true;
+  });
+};
+
+export const getActiveSr6Form = async (user_id) => {
+  const forms = await getActiveSr6Forms({ user_id });
+  return forms[0] || null;
+};
+
 const fetchCrops = async (sr6_applications_id, conn = db) => {
   const [rows] = await conn.execute(
     `
@@ -337,6 +359,33 @@ const applicationFormsResolvers = {
         throw new GraphQLError(error.message);
       }
     },
+    my_active_sr6_form: async (_, args, context) => {
+      try {
+        const user_id = context.req.user.id;
+        return await getActiveSr6Form(user_id);
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
+    sr6_breeders: async (_, { type }, context) => {
+      try {
+        const forms = await getActiveSr6Forms({ type });
+        const userIds = [...new Set(forms.map((f) => f.user_id))];
+
+        if (userIds.length === 0) return [];
+
+        const users = await Promise.all(
+          userIds.map(async (id) => {
+            const [user] = await getUsers({ id });
+            return user;
+          })
+        );
+
+        return users.filter(Boolean);
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    },
   },
   SR4ApplicationForm: {
     inspector: async (parent, args, context) => {
@@ -494,16 +543,32 @@ const applicationFormsResolvers = {
             throw new GraphQLError("Editing this form is no longer allowed");
         } else {
           const existingForms = await getForms({ user_id, 
-          form_type: "sr4", status: "approved" });
-          console.log("existingForms", existingForms);
+          form_type: "sr4" });
+          // console.log("existingForms", existingForms);
           const today = new Date();
 
           const activeForm = existingForms.find((form) => {
             return (
-              form.type === type &&
+              form.type === type && form.status === "approved" &&
               new Date(form.valid_until) >= today
             );
           });
+
+          const formUnderReview = existingForms.find((form) => {
+            return (
+              form.type === type &&
+              (form.status === "pending" || 
+                form.status === "assigned_inspector" ||
+                form.status === "halted" ||
+                form.status === "recommended"
+              )
+            );
+          });
+
+          if (formUnderReview) {
+            console.log("Found form under review:", formUnderReview);
+            throw new GraphQLError("You already have a form of type " + type + " under review");
+          }
 
           if (activeForm) {
             // A matching and still-valid form exists
@@ -674,13 +739,13 @@ const applicationFormsResolvers = {
             throw new GraphQLError("Editing this form is no longer allowed");
         }else {
           const existingForms = await getForms({ user_id, 
-          form_type: "sr6", status: "approved" });
+          form_type: "sr6" });
           console.log("existingForms", existingForms);
           const today = new Date();
 
           const activeForm = existingForms.find((form) => {
             return (
-              form.type === type &&
+              form.type === type && form.status === "approved" &&
               new Date(form.valid_until) >= today
             );
           });
@@ -692,6 +757,22 @@ const applicationFormsResolvers = {
           } else {
             // No active form of this type exists
             console.log("No valid form found");
+          }
+
+          const formUnderReview = existingForms.find((form) => {
+            return (
+              form.type === type &&
+              (form.status === "pending" || 
+                form.status === "assigned_inspector" ||
+                form.status === "halted" ||
+                form.status === "recommended"
+              )
+            );
+          });
+
+          if (formUnderReview) {
+            console.log("Found form under review:", formUnderReview);
+            throw new GraphQLError("You already have a form of type " + type + " under review");
           }
         }
         // construct the data object for application forms
@@ -898,6 +979,42 @@ const applicationFormsResolvers = {
 
           if (form.status !== "pending")
             throw new GraphQLError("Editing this form is no longer allowed");
+        }else {
+          const existingForms = await getForms({ user_id, 
+          form_type: "qds" });
+          console.log("existingForms", existingForms);
+          const today = new Date();
+
+          const activeForm = existingForms.find((form) => {
+            return (
+              form.status === "approved" &&
+              new Date(form.valid_until) >= today
+            );
+          });
+
+          if (activeForm) {
+            // A matching and still-valid form exists
+            console.log("Found valid form:", activeForm);
+            throw new GraphQLError("You already have an active  form ");
+          } else {
+            // No active form of this type exists
+            console.log("No valid form found");
+          }
+
+          const formUnderReview = existingForms.find((form) => {
+            return (
+              form.status === "pending" || 
+                form.status === "assigned_inspector" ||
+                form.status === "halted" ||
+                form.status === "recommended"
+              
+            );
+          });
+
+          if (formUnderReview) {
+            console.log("Found form under review:", formUnderReview);
+            throw new GraphQLError("You already have a form under review");
+          }
         }
 
         // construct the data object for application forms
@@ -1462,6 +1579,9 @@ const applicationFormsResolvers = {
             if (formDetails.type == "plant_breeder") {
               seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/SB" });
               growerReg = generateSeedBoardRegNo({ prefix: "NSCS/SB" });
+            } else if (formDetails.type == "basic_seed_breeder") {
+              seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/BSB" });
+              growerReg = generateSeedBoardRegNo({ prefix: "NSCS/BSB" });
             } else {
               seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/PB" });
               growerReg = generateSeedBoardRegNo({ prefix: "NSCS/PB" });
@@ -1592,11 +1712,10 @@ const applicationFormsResolvers = {
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Approval`,
-          message: `Congragfulations!!!, Dear ${formOwner.name}, Your form has been approved.`,
+          message: `Congratulations!!!, Dear ${formOwner.name}, Your form has been approved.`,
           // attachments,
         });
 
-        
 
         return {
           success: true,
@@ -1609,6 +1728,32 @@ const applicationFormsResolvers = {
         connection.release();
       }
     },
+    deleteForm: async (parent, args, context) => {
+      try {
+        const { form_id } = args;
+        const userPermissions = context.req.user.permissions;
+
+        // check if user has permission to delete a form
+        checkPermission(
+          userPermissions,
+          "can_delete_sr4_forms",
+          "You don't have permissions to delete a form"
+        );
+        await saveData({
+          table: "application_forms",
+          id: form_id,
+          data:{deleted: 1},
+          connection: context.req.dbConnection,
+        });
+
+        return {
+          success: true,
+          message: "Form deleted successfully",
+        };
+      } catch (error) {
+        throw new GraphQLError(error.message);
+      }
+    }
   },
 };
 

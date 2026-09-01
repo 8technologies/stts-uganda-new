@@ -30,12 +30,12 @@ import {
 } from "antd";
 import { URL_2 } from "@/config/urls";
 import { LOAD_QDS_FORMS } from "@/gql/queries";
-import { SAVE_QDS_FORMS } from "@/gql/mutations";
+import { DELETE_FORM, SAVE_QDS_FORMS } from "@/gql/mutations";
 import { QDSFormDialog } from "../QDS forms/blocks/QDSFormDialog";
 import { QDSDetailsDialog } from "../QDS forms/blocks/QDSDetailsDialog";
 
 type QdsApplication = {
-  id: string | number;
+  id: string;
   user_id: string | number;
   certification: string;
   receipt: string;
@@ -309,6 +309,11 @@ const MyQdsApplicationForms = () => {
     awaitRefetchQueries: true,
   });
 
+  const [deleteForm, { loading: deleting }] = useMutation(DELETE_FORM, {
+      refetchQueries: [{ query: LOAD_QDS_FORMS }],
+      awaitRefetchQueries: true,
+    });
+
   const myForms = useMemo(() => {
     const forms = ((data?.qds_applications || []) as QdsApplication[]) || [];
     if (!currentUser?.id) return forms;
@@ -356,6 +361,24 @@ const MyQdsApplicationForms = () => {
       toast("Failed to save application", {
         description: e?.message ?? "Unknown error",
       });
+    }
+  };
+
+  const handleDelete = async (formId: string) => {
+    if (!formId) return;
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this application? This action cannot be undone.",
+    );
+    if (!confirmed) return;
+    if (confirmed) {
+      try {
+        await deleteForm({ variables: { formId } });
+        toast("QDS application deleted");
+      } catch (e: any) {
+        toast("Failed to delete application", {
+          description: e?.message ?? "Unknown error",
+        });
+      }
     }
   };
 
@@ -617,6 +640,7 @@ const MyQdsApplicationForms = () => {
                                   <KeenIcon icon="eye" /> View Details
                                 </Button>
                                 {(f.status || "pending") === "pending" && (
+                                  <>
                                   <Button
                                     variant="outline"
                                     className="w-full"
@@ -627,6 +651,16 @@ const MyQdsApplicationForms = () => {
                                   >
                                     <KeenIcon icon="note" /> Edit Application
                                   </Button>
+                                  <Button
+                                    variant="outline"
+                                    className="w-full"
+                                    onClick={() => {
+                                      handleDelete(f.id);
+                                    }}
+                                  >
+                                    <KeenIcon icon="note" /> Delete Application
+                                  </Button>
+                                  </>
                                 )}
                                 {f.status === "approved" && (
                                   <Button

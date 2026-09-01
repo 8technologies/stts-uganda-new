@@ -129,6 +129,7 @@ const applicationFormsTypeDefs = `#graphql
     enum Sr6Type {
         plant_breeder
         seed_producer
+        basic_seed_breeder
     }
     
     enum StatusType {
@@ -154,6 +155,8 @@ const applicationFormsTypeDefs = `#graphql
         qds_applications:[QDsApplicationForm!]!
         qds_application_details(id: ID!): QDsApplicationForm
         inspectors: [User!]
+        my_active_sr6_form: SR6ApplicationForm
+        sr6_breeders(type: Sr6Type!): [User!]!
     }
 
     type Mutation{
@@ -164,7 +167,8 @@ const applicationFormsTypeDefs = `#graphql
         haltForm(payload: HaltPayload!): ResponseMessage 
         rejectForm(payload: HaltPayload!): ResponseMessage 
         approveForm(payload: ApprovePayload!): ResponseMessage
-        recommend(payload: HaltPayload!): ResponseMessage 
+        recommend(payload: HaltPayload!): ResponseMessage
+        deleteForm(form_id: String!): ResponseMessage 
     }
 
     input ApprovePayload {

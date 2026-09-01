@@ -1,9 +1,20 @@
 import { GraphQLError } from "graphql";
 import { db } from "../../config/config.js";
 import { getUsers } from "../user/resolvers.js";
+import { getActiveSr6Form } from "../application_form/resolvers.js";
 import saveData from "../../utils/db/saveData.js";
 import checkPermission from "../../helpers/checkPermission.js";
 import hasPermission from "../../helpers/hasPermission.js";
+
+// Seed multiplication chain: who may pre-order which seed class from whom.
+// A Basic Seed Breeder produces pre-basic seed for Plant Breeders, who in
+// turn produce basic seed for Seed Producers.
+const SR6_PREORDER_RULES = {
+  seed_producer: { seedClass: "basic", breederType: "plant_breeder" },
+  plant_breeder: { seedClass: "pre_basic", breederType: "basic_seed_breeder" },
+};
+
+const humanize = (value) => String(value || "").replace(/_/g, " ");
 
 // const mapPreOrderRow = (row) => ({
 //   id: row.id?.toString(),
@@ -44,6 +55,7 @@ const mapPreOrderRow = (row) => ({
   pickup_location: row.pickup_location,
 
   detail: row.detail,
+  receipt_id: row.receipt_id,
 
   status: row.status || "pending",
 
@@ -217,14 +229,44 @@ const preOrderResolvers = {
     // },
 
     savePreOrder: async (parent, { input }, context) => {
+      const connection = await db.getConnection();
   try {
     const user_id = context.req.user.id;
+
+      await connection.beginTransaction();
 
     checkPermission(
       context.req.user.permissions,
       "can_create_pre_orders",
       "You dont have permissions to create pre-orders"
     );
+
+    const requesterForm = await getActiveSr6Form(user_id);
+    const rule = requesterForm && SR6_PREORDER_RULES[requesterForm.type];
+
+    if (!rule) {
+      throw new GraphQLError(
+        "You need an active SR6 licence (Seed Producer or Plant Breeder) to create a seed pre-order."
+      );
+    }
+
+    if (input.seedClass !== rule.seedClass) {
+      throw new GraphQLError(
+        `As a ${humanize(requesterForm.type)}, you can only pre-order ${humanize(rule.seedClass)} seed.`
+      );
+    }
+
+    if (!input.breederId) {
+      throw new GraphQLError("Please select a breeder for this pre-order.");
+    }
+
+    const breederForm = await getActiveSr6Form(input.breederId);
+
+    if (!breederForm || breederForm.type !== rule.breederType) {
+      throw new GraphQLError(
+        `The selected breeder must have an active ${humanize(rule.breederType)} SR6 licence.`
+      );
+    }
 
     const data = {
       user_id,
@@ -245,7 +287,6 @@ const preOrderResolvers = {
       detail: input.comment || null,
 
       status: "pending",
-
       created_at: new Date(),
       updated_at: new Date(),
     };
@@ -254,7 +295,41 @@ const preOrderResolvers = {
       table: "pre_orders",
       data,
       id: input.id || null,
+      connection
     });
+
+    let savedReceiptInfo = null;
+      if (input.receipt) {
+        try {
+          savedReceiptInfo = await saveUpload({
+            file: input.receipt,
+            subdir: "pre_order_receipts",
+          });
+        } catch (e) {
+          // If upload fails, rollback and bubble up
+          throw new GraphQLError(`Receipt upload failed: ${e.message}`);
+        }
+      }
+
+        //save the receipt and subgrower file info
+      if (savedReceiptInfo ) {
+        try {
+          // Update application_forms with receipt_id
+          await saveData({
+            table: "pre_orders",
+            data: { receipt_id: savedReceiptInfo.filename},
+            id: id,
+            connection,
+          });
+        } catch (e) {
+          // Non-fatal for the core form save; log but do not block
+          console.error(
+            "Failed to save form_attachments record or update receipt_id:",
+            e.message
+          );
+        }
+      }
+      await connection.commit();
 
     const results = await getPreOrders({
       id: insertId,
@@ -269,9 +344,17 @@ const preOrderResolvers = {
     };
 
   } catch (error) {
+    try {
+      await connection.rollback();
+    } catch (rollbackError) {
+      console.error("savePreOrder rollback error:", rollbackError);
+    }
+
     console.error("savePreOrder error:", error);
 
     throw new GraphQLError(error.message);
+  } finally {
+    connection.release();
   }
 },
 

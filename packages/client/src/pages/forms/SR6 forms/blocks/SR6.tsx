@@ -45,7 +45,7 @@ interface IColumnFilterProps<TData, TValue> {
 type Sr6Application = {
   id: string;
   status?: string | null;
-  type: 'plant_breeder' | 'seed_producer';
+  type: 'plant_breeder' | 'seed_producer' | 'basic_seed_breeder';
   valid_until?: string | null;
   created_at?: string | null;
   inspector?: { name?: string; district?: string } | null;
@@ -341,7 +341,12 @@ const SR6s = () => {
           userName: f.user?.name || '-',
           userGmail: f.phone_number || ''
         },
-        role: f.type === 'plant_breeder' ? 'Plant Breeder' : 'Seed Producer',
+        role:
+          f.type === 'plant_breeder'
+            ? 'Plant Breeder'
+            : f.type === 'basic_seed_breeder'
+              ? 'Basic Seed Breeder'
+              : 'Seed Producer',
         status: { label: f.status || 'pending', color: statusToColor(f.status) },
         location: f.user?.premises_location || f.user?.premises_location || '-',
         // flag: 'uganda.svg',

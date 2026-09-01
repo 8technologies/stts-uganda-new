@@ -340,7 +340,11 @@ const SR6DetailsDialog = ({
     const premisesLocation = formDetails.user?.premises_location || "";
     const phoneNumber = formDetails.user?.phone_number || "";
     const category =
-      formDetails.type === "plant_breeder" ? "Plant Breeder" : "Seed Producer";
+      formDetails.type === "plant_breeder"
+        ? "Plant Breeder"
+        : formDetails.type === "basic_seed_breeder"
+          ? "Basic Seed Breeder"
+          : "Seed Producer";
     const issueDate = _formatDate(new Date());
     const verifyUrl = `${URL_2}/certificates/sr6/${String(formDetails?.id ?? "")}`;
 
