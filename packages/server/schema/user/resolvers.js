@@ -891,7 +891,7 @@ const userResolvers = {
           message: `Hello ${user.name},\n\nYou requested a password reset. Please use the following link to reset your password:\n\n${resetLink}\n\nThis link expires in 15 minutes. If you did not request this, please ignore this email.\n\nBest regards,\nPWD Observatory Team`,
         };
 
-        await sendEmail(params);
+        sendEmail(params);
 
         return {
           success: true,

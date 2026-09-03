@@ -1237,7 +1237,7 @@ const applicationFormsResolvers = {
         });
 
         // send another email to the form owner
-         await sendEmail({
+         sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: "Inspector Assignment",
@@ -1298,7 +1298,7 @@ const applicationFormsResolvers = {
 
         try{
           // send another email to the form owner
-          await sendEmail({
+          sendEmail({
             from: '"STTS MAAIF" <info@seedtracking.net>',
             to: formOwner.email,
             subject: `${formDetails.form_type} Form Halted`,
@@ -1357,7 +1357,7 @@ const applicationFormsResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Rejection`,
@@ -1412,7 +1412,7 @@ const applicationFormsResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Recommendation`,
@@ -1711,7 +1711,7 @@ const applicationFormsResolvers = {
         await connection.commit();
 
         // send email with attachment if any
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.form_type} Form Approval`,

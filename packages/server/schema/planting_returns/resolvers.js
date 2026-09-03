@@ -598,7 +598,7 @@ const plantingReturnsResolvers = {
         );
          try {
             // Notify inspector (one email). Optionally include a list of returns.
-            await sendEmail({
+            sendEmail({
               from: '"STTS MAAIF" <info@seedtracking.net>',
               to: inspector.email,
               subject: `Planting Return Inspector Assignment`,

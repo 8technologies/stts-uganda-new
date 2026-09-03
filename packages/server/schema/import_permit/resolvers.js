@@ -579,7 +579,7 @@ const importPermitsResolvers = {
 
         try{
           // send a notification to the assigned inspector
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: `${formDetails.permitType} Permit Inspector Assignment`,
@@ -587,7 +587,7 @@ const importPermitsResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Inspector Assignment`,
@@ -646,7 +646,7 @@ const importPermitsResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Halted`,
@@ -700,7 +700,7 @@ const importPermitsResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Rejection`,
@@ -790,7 +790,7 @@ const importPermitsResolvers = {
         });
 
         // send email with attachment if any
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: `${formDetails.permitType} Permit Approval`,

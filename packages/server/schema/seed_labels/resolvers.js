@@ -461,7 +461,7 @@ const seedLabelResolvers = {
 
                 
                 // send email with attachment if any
-                await sendEmail({
+                sendEmail({
                 from: '"STTS MAAIF" <info@seedtracking.net>',
                 to: formOwner.email,
                 subject: `${formDetails.form_type} Form Approval`,
@@ -574,7 +574,7 @@ const seedLabelResolvers = {
                 });
 
                 // send email with attachment if any
-                await sendEmail({
+                sendEmail({
                 from: '"STTS MAAIF" <info@seedtracking.net>',
                 to: formOwner.email,
                 subject: `${formDetails.form_type} Form Approval`,

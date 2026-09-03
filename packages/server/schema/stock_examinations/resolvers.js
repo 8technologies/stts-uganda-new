@@ -369,7 +369,7 @@ const stockExaminationResolvers = {
         );
 
         // Notify inspector
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: `Stock Examination Inspector Assignment`,
@@ -487,7 +487,7 @@ const stockExaminationResolvers = {
 
         try {
           // Send email notification
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: owner.email,
           subject: `Stock Examination Inspection ${decision.toUpperCase()}`,

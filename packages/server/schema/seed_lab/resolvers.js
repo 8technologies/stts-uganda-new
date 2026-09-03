@@ -743,7 +743,7 @@ const seedLabResolvers = {
         });
 
         // send a notification to the assigned inspector
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: "Inspector Assignment",
@@ -751,7 +751,7 @@ const seedLabResolvers = {
         });
 
         // send another email to the form owner
-        await sendEmail({
+        sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: formOwner.email,
           subject: "Inspector Assignment",
