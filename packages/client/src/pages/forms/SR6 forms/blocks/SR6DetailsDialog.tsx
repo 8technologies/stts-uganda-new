@@ -342,8 +342,8 @@ const SR6DetailsDialog = ({
     const category =
       formDetails.type === "plant_breeder"
         ? "Plant Breeder"
-        : formDetails.type === "basic_seed_breeder"
-          ? "Basic Seed Breeder"
+        : formDetails.type === "basic_seed_producer"
+          ? "Basic Seed Producer"
           : "Seed Producer";
     const issueDate = _formatDate(new Date());
     const verifyUrl = `${URL_2}/certificates/sr6/${String(formDetails?.id ?? "")}`;

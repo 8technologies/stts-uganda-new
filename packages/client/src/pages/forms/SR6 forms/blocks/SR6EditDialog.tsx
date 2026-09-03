@@ -41,7 +41,7 @@ const SR6EditDialog = ({
   const [values, setValues] = useState<Record<string, any>>({
     // applicationCategory: data?.role || 'Seed Merchant/Company',
     id: null,
-    applicationCategory: "plant_breeder",
+    applicationCategory: "seed_producer",
     registrationNumber: "",
     croppingHistory: "",
     yearsOfExperience: "",
@@ -63,7 +63,7 @@ const SR6EditDialog = ({
     const d: any = data;
     const yesno = (b: any) => (b ? "Yes" : "No");
     setValues({
-      applicationCategory: d.type ?? "plant_breeder",
+      applicationCategory: d.type ?? "seed_producer",
       registrationNumber: d.seed_board_registration_number ?? "",
       croppingHistory: d.cropping_history ?? "",
       yearsOfExperience: d.years_of_experience ?? "",
@@ -133,9 +133,9 @@ const SR6EditDialog = ({
                     <SelectValue placeholder="Select an Option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                     <SelectItem value="seed_producer">Seed Producer</SelectItem>
-                    <SelectItem value="basic_seed_breeder">Basic Seed Breeder</SelectItem>
+                    <SelectItem value="basic_seed_producer">Basic Seed Producer</SelectItem>
+                    <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -7,11 +7,11 @@ import checkPermission from "../../helpers/checkPermission.js";
 import hasPermission from "../../helpers/hasPermission.js";
 
 // Seed multiplication chain: who may pre-order which seed class from whom.
-// A Basic Seed Breeder produces pre-basic seed for Plant Breeders, who in
+// A Plant Breeder produces pre-basic seed for Basic Seed Producers, who in
 // turn produce basic seed for Seed Producers.
 const SR6_PREORDER_RULES = {
-  seed_producer: { seedClass: "basic", breederType: "plant_breeder" },
-  plant_breeder: { seedClass: "pre_basic", breederType: "basic_seed_breeder" },
+  seed_producer: { seedClass: "basic", breederType: "basic_seed_producer" },
+  basic_seed_producer: { seedClass: "pre_basic", breederType: "plant_breeder" },
 };
 
 const humanize = (value) => String(value || "").replace(/_/g, " ");

@@ -36,7 +36,7 @@ const SR6CreateDialog = ({
   saving,
 }: ISR6EditDialogProps) => {
   const [values, setValues] = useState<Record<string, any>>({
-    applicationCategory: "plant_breeder",
+    applicationCategory: "seed_producer",
     registrationNumber: "",
     croppingHistory: "",
     yearsOfExperience: "",
@@ -102,9 +102,9 @@ const SR6CreateDialog = ({
                     <SelectValue placeholder="Select an Option" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                     <SelectItem value="seed_producer">Seed Producer</SelectItem>
-                    <SelectItem value="basic_seed_breeder">Basic Seed Breeder</SelectItem>
+                    <SelectItem value="basic_seed_producer">Basic Seed Producer</SelectItem>
+                    <SelectItem value="plant_breeder">Plant Breeder</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -1577,12 +1577,15 @@ const applicationFormsResolvers = {
           let growerReg = formDetails.grower_number;
           if (!seedBoardReg) {
             if (formDetails.type == "plant_breeder") {
+              // top tier
               seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/SB" });
               growerReg = generateSeedBoardRegNo({ prefix: "NSCS/SB" });
-            } else if (formDetails.type == "basic_seed_breeder") {
+            } else if (formDetails.type == "basic_seed_producer") {
+              // middle tier
               seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/BSB" });
               growerReg = generateSeedBoardRegNo({ prefix: "NSCS/BSB" });
             } else {
+              // seed_producer (bottom tier)
               seedBoardReg = generateSeedBoardRegNo({ prefix: "MAAIF/PB" });
               growerReg = generateSeedBoardRegNo({ prefix: "NSCS/PB" });
             }

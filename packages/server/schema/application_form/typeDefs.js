@@ -127,9 +127,9 @@ const applicationFormsTypeDefs = `#graphql
     }
 
     enum Sr6Type {
-        plant_breeder
         seed_producer
-        basic_seed_breeder
+        basic_seed_producer
+        plant_breeder
     }
     
     enum StatusType {

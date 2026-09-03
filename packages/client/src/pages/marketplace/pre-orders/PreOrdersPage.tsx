@@ -101,7 +101,7 @@ type ActiveSr6FormQueryData = {
 
 // Seed multiplication chain: mirrors the server-side rule in
 // packages/server/schema/pre_orders/resolvers.js (SR6_PREORDER_RULES).
-// A Basic Seed Breeder supplies pre-basic seed to Plant Breeders, who in
+// A Plant Breeder supplies pre-basic seed to Basic Seed Producers, who in
 // turn supply basic seed to Seed Producers.
 const SR6_PREORDER_RULES: Record<
   string,
@@ -110,14 +110,14 @@ const SR6_PREORDER_RULES: Record<
   seed_producer: {
     seedClass: 'basic',
     seedClassLabel: 'Basic',
-    breederType: 'plant_breeder',
-    breederLabel: 'Plant Breeder',
+    breederType: 'basic_seed_producer',
+    breederLabel: 'Basic Seed Producer',
   },
-  plant_breeder: {
+  basic_seed_producer: {
     seedClass: 'pre_basic',
     seedClassLabel: 'Pre-basic',
-    breederType: 'basic_seed_breeder',
-    breederLabel: 'Basic Seed Breeder',
+    breederType: 'plant_breeder',
+    breederLabel: 'Plant Breeder',
   },
 };
 
@@ -807,8 +807,8 @@ const PreOrdersPage: React.FC = () => {
         !mySr6FormLoading &&
         !preOrderRule && (
           <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            You need an active SR6 licence as a Seed Producer or Plant
-            Breeder to create a pre-order. Basic Seed Breeders and
+            You need an active SR6 licence as a Seed Producer or Basic
+            Seed Producer to create a pre-order. Plant Breeders and
             unlicensed users are not eligible to request seed this way.
           </div>
         )}

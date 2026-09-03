@@ -42,7 +42,7 @@ type Sr6Application = {
   created_at?: string;
   valid_from?: string | null;
   valid_until?: string | null;
-  type: "plant_breeder" | "seed_producer" | "basic_seed_breeder";
+  type: "seed_producer" | "basic_seed_producer" | "plant_breeder";
   status?: string | null;
   previous_grower_number?: string | null;
   years_of_experience?: string | null;
@@ -61,8 +61,8 @@ type Sr6Application = {
 const typeLabel = (t?: string) =>
   t === "plant_breeder"
     ? "Plant Breeder"
-    : t === "basic_seed_breeder"
-      ? "Basic Seed Breeder"
+    : t === "basic_seed_producer"
+      ? "Basic Seed Producer"
       : "Seed Producer";
 
 const statusToColor = (status?: string | null) => {
