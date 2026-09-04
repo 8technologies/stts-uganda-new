@@ -1229,7 +1229,7 @@ const applicationFormsResolvers = {
 
         try{
           // send a notification to the assigned inspector
-       await  sendEmail({
+         sendEmail({
           from: '"STTS MAAIF" <info@seedtracking.net>',
           to: inspector.email,
           subject: "Inspector Assignment",
@@ -1242,7 +1242,7 @@ const applicationFormsResolvers = {
           to: formOwner.email,
           subject: "Inspector Assignment",
           message: `Dear ${formOwner.name}, You have been assigned to an inspector for the ${formDetails.form_type} application that you submitted`,
-        });
+        }); 
         }catch(e){
           console.log("Failed to send assignment emails:", e.message);
         }

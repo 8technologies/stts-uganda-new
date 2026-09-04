@@ -82,11 +82,18 @@ const getPreOrders = async ({ id = null, user_id = null, breeder_id = null } = {
     where += " AND po.id = ? ";
     values.push(id);
   }
-  if (user_id) {
+
+  // A user can be both a requester (user_id) and a breeder receiving
+  // requests (breeder_id) at the same time -- e.g. a Basic Seed Producer
+  // who orders from Plant Breeders and also receives orders from Seed
+  // Producers. In that case show the union of both, not the intersection.
+  if (user_id && breeder_id) {
+    where += " AND (po.user_id = ? OR po.breeder = ?) ";
+    values.push(user_id, breeder_id);
+  } else if (user_id) {
     where += " AND po.user_id = ? ";
     values.push(user_id);
-  }
-  if (breeder_id) {
+  } else if (breeder_id) {
     where += " AND po.breeder = ? ";
     values.push(breeder_id);
   }

@@ -186,21 +186,12 @@ const PreOrdersPage: React.FC = () => {
     };
   }, []);
 
-  const { auth } = useAuthContext();
+  const { auth, currentUser } = useAuthContext();
 
   const perms = getPermissionsFromToken(auth?.access_token);
 
   const canCreatePreOrders = !!perms['can_create_pre_orders'];
   const canReceivePreOrders = !!perms['can_receive_pre_orders'];
-
-  const {
-    data: preOrdersData,
-    loading: preOrdersLoading,
-    error: preOrdersError,
-    refetch: refetchPreOrders,
-  } = useQuery<PreOrdersQueryData>(PRE_ORDERS, {
-    fetchPolicy: 'cache-and-network',
-  });
 
   const {
     data: cropsData,
@@ -229,6 +220,40 @@ const PreOrdersPage: React.FC = () => {
     skip: !preOrderRule?.breederType,
     fetchPolicy: 'cache-first',
   });
+
+
+  // Someone can both send pre-orders (as a buyer) and receive them (as a
+  // breeder) at the same time -- e.g. a Basic Seed Producer who orders
+  // pre-basic seed from Plant Breeders and supplies basic seed to Seed
+  // Producers. When that's the case, split the list into Sent / Received
+  // tabs instead of showing one ambiguous merged table.
+  
+   const breederLabel = preOrderRule;
+   console.log('ber\\\\\\', myActiveSr6Type);
+  const isDualRole = canCreatePreOrders && canReceivePreOrders && myActiveSr6Type == "basic_seed_producer";
+
+
+  const [activeTab, setActiveTab] = useState<'sent' | 'received'>(
+    canReceivePreOrders ? 'received' : 'sent'
+  );
+
+  const myUserId = String(currentUser?.id ?? '');
+
+  // Which column/actions to show: for a dual-role user this follows the
+  // active tab; otherwise it's fixed by their single role.
+  const showingReceived = isDualRole
+    ? activeTab === 'received'
+    : canReceivePreOrders;
+
+  const {
+    data: preOrdersData,
+    loading: preOrdersLoading,
+    error: preOrdersError,
+    refetch: refetchPreOrders,
+  } = useQuery<PreOrdersQueryData>(PRE_ORDERS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
 
   const [savePreOrder, { loading: creating }] =
     useMutation<SavePreOrderMutationData>(CREATE_PRE_ORDER, {
@@ -304,6 +329,14 @@ const PreOrdersPage: React.FC = () => {
 
     let result = [...preOrders];
 
+    if (isDualRole) {
+      result = result.filter((order) =>
+        activeTab === 'sent'
+          ? String(order.createdBy?.id ?? '') === myUserId
+          : String(order.breeder_id ?? '') === myUserId
+      );
+    }
+
     if (q) {
       result = result.filter((order) => {
         const crop = getCropNames(order).toLowerCase();
@@ -339,7 +372,7 @@ const PreOrdersPage: React.FC = () => {
           String(a.created_at ?? 0)
         ).getTime()
     );
-  }, [preOrders, search, statusFilter]);
+  }, [preOrders, search, statusFilter, isDualRole, activeTab, myUserId]);
 
   const formatDate = (isoDate?: string | null) => {
     if (!isoDate) return '-';
@@ -773,7 +806,7 @@ const PreOrdersPage: React.FC = () => {
 
           <p className="text-sm text-gray-600">
             Request seed supply in advance and
-            track request status.
+            track request status.......
           </p>
         </div>
 
@@ -848,7 +881,9 @@ const PreOrdersPage: React.FC = () => {
         preOrder={selectedPreOrder}
         loading={updating}
         canReceivePreOrders={
-          canReceivePreOrders
+          canReceivePreOrders &&
+          String(selectedPreOrder?.breeder_id ?? '') ===
+            myUserId
         }
         onOpenChange={(open) => {
           setDetailsOpen(open);
@@ -889,6 +924,35 @@ const PreOrdersPage: React.FC = () => {
           })
         }
       />
+
+      {/* Sent / Received tabs (only shown when a user both sends and receives pre-orders) */}
+      {isDualRole && (
+        <div className="flex gap-2 mb-4 border-b">
+          <button
+            type="button"
+            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+              activeTab === 'sent'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab('sent')}
+          >
+            Sent by me
+          </button>
+
+          <button
+            type="button"
+            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+              activeTab === 'received'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab('received')}
+          >
+            Sent to me
+          </button>
+        </div>
+      )}
 
       {/* Search / Filter */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -985,7 +1049,7 @@ const PreOrdersPage: React.FC = () => {
                       Total Quantity
                     </th>
 
-                    {canReceivePreOrders ? (
+                    {showingReceived ? (
                       <th className="text-left px-4 py-3 font-semibold text-gray-700">
                         Requested by
                       </th>
@@ -1023,6 +1087,14 @@ const PreOrdersPage: React.FC = () => {
                       const status =
                         preOrder.status ||
                         'pending';
+
+                      // For a dual-role user, "created it" actions (edit,
+                      // delete, mark picked) only apply to orders they
+                      // themselves placed, not ones sent to them.
+                      const isOwnOrder =
+                        String(
+                          preOrder.createdBy?.id ?? ''
+                        ) === myUserId;
 
                       const totalQuantity =
                         getTotalQuantity(
@@ -1097,7 +1169,7 @@ const PreOrdersPage: React.FC = () => {
                           </td>
 
                           {/* Requester / Breeder */}
-                          {canReceivePreOrders ? (
+                          {showingReceived ? (
                             <td className="px-4 py-3 text-gray-700">
                               {preOrder
                                 ?.createdBy
@@ -1197,6 +1269,7 @@ const PreOrdersPage: React.FC = () => {
 
                                   {/* Edit / Delete */}
                                   {canCreatePreOrders &&
+                                    isOwnOrder &&
                                     preOrder.status ===
                                       'pending' && (
                                       <>
@@ -1239,6 +1312,7 @@ const PreOrdersPage: React.FC = () => {
 
                                   {/* Mark picked */}
                                   {canCreatePreOrders &&
+                                    isOwnOrder &&
                                     preOrder.status ===
                                       'delivered' && (
                                       <button
