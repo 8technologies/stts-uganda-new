@@ -137,6 +137,9 @@ type SavePreOrderMutationData = {
 type UpdatePreOrderMutationData = {
   updatePreOrder: PreOrderMutationResult;
 };
+type MarkPreOrderPickedMutationData = {
+  markPreOrderPicked: PreOrderMutationResult;
+};
 
 type DeletePreOrderMutationData = {
   deletePreOrder: PreOrderMutationResult;
@@ -274,7 +277,7 @@ const PreOrdersPage: React.FC = () => {
     });
 
   const [markPreOrderPicked, { loading: markingPicked }] =
-    useMutation<UpdatePreOrderMutationData>(MARK_PRE_ORDER_PICKED, {
+    useMutation<MarkPreOrderPickedMutationData>(MARK_PRE_ORDER_PICKED, {
       refetchQueries: [{ query: PRE_ORDERS }],
       awaitRefetchQueries: true,
     });
@@ -710,17 +713,17 @@ const PreOrdersPage: React.FC = () => {
         });
 
       if (
-        response.data?.updatePreOrder
+        response.data?.markPreOrderPicked
           ?.success
       ) {
         toast.success(
-          response.data.updatePreOrder
+          response.data.markPreOrderPicked
             .message ||
             'Pre-order marked as picked.'
         );
       } else {
         toast.error(
-          response.data?.updatePreOrder
+          response.data?.markPreOrderPicked
             ?.message ||
             'Failed to mark pre-order as picked.'
         );
