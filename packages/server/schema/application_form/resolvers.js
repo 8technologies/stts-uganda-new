@@ -160,6 +160,7 @@ export const getActiveSr6Forms = async ({ user_id = null, type = null } = {}) =>
   const today = new Date();
 
   return forms.filter((f) => {
+    console.log('today: ', today, "valid :", new Date(f.valid_until), new Date(f.valid_until) < today)
     if (!f.valid_until || new Date(f.valid_until) < today) return false;
     if (type && f.type !== type) return false;
     return true;

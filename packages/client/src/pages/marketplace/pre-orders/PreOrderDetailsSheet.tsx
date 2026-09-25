@@ -14,6 +14,7 @@ import {
   Sprout,
   UserRound,
 } from 'lucide-react';
+import { getSeasonLabelFromDateString } from '@/utils/season';
 
 type PreOrderVariety = {
   varietyId: string;
@@ -339,15 +340,15 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
               </div>
             </div>
 
-            {/* Requested date */}
+            {/* Requested season */}
             <div className="rounded-lg border p-3">
               <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                Requested date
+                Season
               </div>
 
               <div className="font-medium text-gray-900">
-                {formatDate(
+                {getSeasonLabelFromDateString(
                   item.collection_date
                 )}
               </div>

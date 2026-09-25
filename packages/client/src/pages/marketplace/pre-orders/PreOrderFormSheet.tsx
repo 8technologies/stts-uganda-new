@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -8,6 +9,10 @@ import {
 } from '@/components/ui/sheet';
 import { Plus, Trash2, Upload } from 'lucide-react';
 import { URL_2 } from '@/config/urls';
+import {
+  getSeasonLabelFromDateString,
+  getUpcomingSeasonOptions,
+} from '@/utils/season';
 
 type CropVariety = {
   id: string;
@@ -138,6 +143,48 @@ const PreOrderFormSheet: React.FC<Props> = ({
   }, [open, lockedSeedClass]);
 
   const isEdit = mode === 'edit';
+
+  /**
+   * Pre-orders must be placed at least a full season cycle in advance --
+   * only next calendar year's seasons can be ordered for, never the
+   * current or upcoming season within this year.
+   */
+  const seasonOptions = useMemo(() => {
+    const upcoming = getUpcomingSeasonOptions(2);
+
+    // Editing an older order whose season predates the current advance
+    // window? Keep it selectable so the field doesn't silently blank out.
+    if (
+      form.requestedDate &&
+      !upcoming.some((option) => option.value === form.requestedDate)
+    ) {
+      return [
+        {
+          label: getSeasonLabelFromDateString(form.requestedDate),
+          value: form.requestedDate,
+        },
+        ...upcoming,
+      ];
+    }
+
+    return upcoming;
+  }, [form.requestedDate]);
+
+  /**
+   * Default a new pre-order to the earliest orderable season.
+   */
+  useEffect(() => {
+    if (open && mode !== 'edit' && !form.requestedDate) {
+      const [firstOption] = getUpcomingSeasonOptions(1);
+      if (firstOption) {
+        setForm((prev) => ({
+          ...prev,
+          requestedDate: firstOption.value,
+        }));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, mode]);
 
   /**
    * Add a new crop to the preorder.
@@ -776,16 +823,15 @@ const PreOrderFormSheet: React.FC<Props> = ({
             )}
           </div>
 
-          {/* Requested date + seed class */}
+          {/* Season + seed class */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-700 block mb-1">
-                Requested date
+                Season
               </label>
 
-              <input
+              <select
                 className="w-full px-3 py-2 rounded-lg border bg-white text-sm"
-                type="date"
                 value={
                   form.requestedDate
                 }
@@ -799,7 +845,28 @@ const PreOrderFormSheet: React.FC<Props> = ({
                 }
                 disabled={loading}
                 required
-              />
+              >
+                <option value="">
+                  Select season
+                </option>
+
+                {seasonOptions.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  )
+                )}
+              </select>
+
+              <p className="text-xs text-gray-500 mt-1">
+                Pre-orders must be
+                placed at least a
+                season ahead.
+              </p>
             </div>
 
             <div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
+import * as XLSX from 'xlsx';
 import { KeenIcon } from '@/components';
 import {
   CREATE_PRE_ORDER,
@@ -17,6 +18,7 @@ import { toast } from 'sonner';
 import {
   Calendar,
   Check,
+  Download,
   Eye,
   MoreHorizontal,
   Pencil,
@@ -29,6 +31,7 @@ import PreOrderFormSheet, {
 import PreOrderDetailsSheet from './PreOrderDetailsSheet';
 import { useAuthContext } from '@/auth';
 import { getPermissionsFromToken } from '@/utils/permissions';
+import { getSeasonLabelFromDateString } from '@/utils/season';
 
 type CropVariety = {
   id: string;
@@ -797,6 +800,62 @@ const PreOrdersPage: React.FC = () => {
     }
   };
 
+  /*
+   * Export the currently visible pre-orders (respects the active
+   * Sent/Received tab, search, and status filter) to an Excel file.
+   */
+  const handleExport = () => {
+    if (filteredPreOrders.length === 0) {
+      toast.error('There are no pre-orders to export.');
+      return;
+    }
+
+    const humanize = (value?: string | null) =>
+      value
+        ? value
+            .split('_')
+            .map(
+              (word) =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            )
+            .join(' ')
+        : '-';
+
+    const exportData = filteredPreOrders.map((order) => ({
+      ID: order.id,
+      'Requested By': order.createdBy?.name || '-',
+      Breeder: order.breeder?.name || '-',
+      Crop: getCropNames(order) || '-',
+      Varieties: getVarietyNames(order) || '-',
+      'Total Quantity (kg)': getTotalQuantity(order),
+      'Seed Class': humanize(order.seed_class),
+      'Pickup Location': order.pickup_location || '-',
+      Season: getSeasonLabelFromDateString(
+        order.collection_date
+      ),
+      Status: humanize(order.status || 'pending'),
+      Comment: order.comment || order.detail || '-',
+      'Created At': formatDate(order.created_at),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Pre-orders');
+
+    const today = new Date();
+    const stamp = `${today.getFullYear()}-${String(
+      today.getMonth() + 1
+    ).padStart(2, '0')}-${String(today.getDate()).padStart(
+      2,
+      '0'
+    )}`;
+
+    XLSX.writeFile(workbook, `pre-orders-${stamp}.xlsx`);
+    toast.success(
+      `Exported ${filteredPreOrders.length} pre-order(s).`
+    );
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-4">
 
@@ -825,6 +884,14 @@ const PreOrdersPage: React.FC = () => {
               className="mr-1"
             />
             Refresh
+          </button>
+
+          <button
+            className="btn btn-outline"
+            onClick={handleExport}
+          >
+            <Download className="w-4 h-4 mr-1" />
+            Export
           </button>
 
           {canCreatePreOrders && preOrderRule && (
@@ -1063,7 +1130,7 @@ const PreOrdersPage: React.FC = () => {
                     )}
 
                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
-                      Requested
+                      Season
                     </th>
 
                     <th className="text-left px-4 py-3 font-semibold text-gray-700">
@@ -1083,10 +1150,6 @@ const PreOrdersPage: React.FC = () => {
                 <tbody>
                   {filteredPreOrders.map(
                     (preOrder) => {
-                      const requestDate =
-                        preOrder.collection_date ||
-                        preOrder.created_at;
-
                       const status =
                         preOrder.status ||
                         'pending';
@@ -1186,12 +1249,12 @@ const PreOrdersPage: React.FC = () => {
                             </td>
                           )}
 
-                          {/* Requested date */}
+                          {/* Requested season */}
                           <td className="px-4 py-3 text-gray-700">
                             <div className="inline-flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              {formatDate(
-                                requestDate
+                              {getSeasonLabelFromDateString(
+                                preOrder.collection_date
                               )}
                             </div>
                           </td>
