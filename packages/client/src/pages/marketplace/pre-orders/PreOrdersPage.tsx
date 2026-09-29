@@ -67,6 +67,7 @@ type PreOrderItem = {
   created_at?: string | null;
   collection_date?: string | null;
   supplyDate?: string | null;
+  receipt_id?: string | null;
 
   crops: PreOrderCrop[];
 
@@ -238,8 +239,11 @@ const PreOrdersPage: React.FC = () => {
    console.log('ber\\\\\\', myActiveSr6Type);
   const isDualRole = canCreatePreOrders && canReceivePreOrders && myActiveSr6Type == "basic_seed_producer";
 
+  // Plant Breeders can also browse every pre-order in the chain (e.g. those
+  // sent to Basic Seed Producers), but only act on the ones sent to them.
+  const isPlantBreeder = myActiveSr6Type === 'plant_breeder';
 
-  const [activeTab, setActiveTab] = useState<'sent' | 'received'>(
+  const [activeTab, setActiveTab] = useState<'sent' | 'received' | 'all'>(
     canReceivePreOrders ? 'received' : 'sent'
   );
 
@@ -247,7 +251,9 @@ const PreOrdersPage: React.FC = () => {
 
   // Which column/actions to show: for a dual-role user this follows the
   // active tab; otherwise it's fixed by their single role.
-  const showingReceived = isDualRole
+  const showingAll = isPlantBreeder && activeTab === 'all';
+
+  const showingReceived = isDualRole || isPlantBreeder
     ? activeTab === 'received'
     : canReceivePreOrders;
 
@@ -340,6 +346,10 @@ const PreOrdersPage: React.FC = () => {
         activeTab === 'sent'
           ? String(order.createdBy?.id ?? '') === myUserId
           : String(order.breeder_id ?? '') === myUserId
+      );
+    } else if (isPlantBreeder && activeTab !== 'all') {
+      result = result.filter(
+        (order) => String(order.breeder_id ?? '') === myUserId
       );
     }
 
@@ -514,9 +524,11 @@ const PreOrdersPage: React.FC = () => {
   const handleSheetSubmit = async ({
     values,
     mode,
+    receipt,
   }: {
     values: PreOrderFormValues;
     mode: 'create' | 'edit';
+    receipt?: File | null;
   }) => {
     try {
       if (
@@ -629,6 +641,9 @@ const PreOrdersPage: React.FC = () => {
               comment:
                 values.comment.trim() ||
                 null,
+
+              // Omitted when no new file is chosen, so an edit keeps the existing receipt.
+              receipt: receipt ?? undefined,
             },
           },
         });
@@ -934,6 +949,9 @@ const PreOrdersPage: React.FC = () => {
         initialValues={getInitialFormValues(
           editingPreOrder
         )}
+        existingReceiptId={
+          editingPreOrder?.receipt_id
+        }
         onOpenChange={(open) => {
           setSheetOpen(open);
 
@@ -954,6 +972,11 @@ const PreOrdersPage: React.FC = () => {
           canReceivePreOrders &&
           String(selectedPreOrder?.breeder_id ?? '') ===
             myUserId
+        }
+        readOnly={
+          !!selectedPreOrder &&
+          String(selectedPreOrder.breeder_id ?? '') !== myUserId &&
+          String(selectedPreOrder.createdBy?.id ?? '') !== myUserId
         }
         onOpenChange={(open) => {
           setDetailsOpen(open);
@@ -1020,6 +1043,35 @@ const PreOrdersPage: React.FC = () => {
             onClick={() => setActiveTab('received')}
           >
             Sent to me
+          </button>
+        </div>
+      )}
+
+      {/* Sent to me / All tabs for Plant Breeders */}
+      {isPlantBreeder && !isDualRole && (
+        <div className="flex gap-2 mb-4 border-b">
+          <button
+            type="button"
+            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+              activeTab !== 'all'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab('received')}
+          >
+            Sent to me
+          </button>
+
+          <button
+            type="button"
+            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px ${
+              activeTab === 'all'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab('all')}
+          >
+            All pre-orders
           </button>
         </div>
       )}
@@ -1119,7 +1171,16 @@ const PreOrdersPage: React.FC = () => {
                       Total Quantity
                     </th>
 
-                    {showingReceived ? (
+                    {showingAll ? (
+                      <>
+                        <th className="text-left px-4 py-3 font-semibold text-gray-700">
+                          Requested by
+                        </th>
+                        <th className="text-left px-4 py-3 font-semibold text-gray-700">
+                          Breeder
+                        </th>
+                      </>
+                    ) : showingReceived ? (
                       <th className="text-left px-4 py-3 font-semibold text-gray-700">
                         Requested by
                       </th>
@@ -1235,7 +1296,20 @@ const PreOrdersPage: React.FC = () => {
                           </td>
 
                           {/* Requester / Breeder */}
-                          {showingReceived ? (
+                          {showingAll ? (
+                            <>
+                              <td className="px-4 py-3 text-gray-700">
+                                {preOrder
+                                  ?.createdBy
+                                  ?.name || '-'}
+                              </td>
+                              <td className="px-4 py-3 text-gray-700">
+                                {preOrder
+                                  ?.breeder
+                                  ?.name || '-'}
+                              </td>
+                            </>
+                          ) : showingReceived ? (
                             <td className="px-4 py-3 text-gray-700">
                               {preOrder
                                 ?.createdBy

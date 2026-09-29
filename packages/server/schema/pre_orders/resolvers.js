@@ -5,6 +5,7 @@ import { getActiveSr6Form } from "../application_form/resolvers.js";
 import saveData from "../../utils/db/saveData.js";
 import checkPermission from "../../helpers/checkPermission.js";
 import hasPermission from "../../helpers/hasPermission.js";
+import saveUpload from "../../helpers/saveUpload.js";
 
 // Seed multiplication chain: who may pre-order which seed class from whom.
 // A Plant Breeder produces pre-basic seed for Basic Seed Producers, who in
@@ -104,6 +105,28 @@ const getPreOrders = async ({ id = null, user_id = null, breeder_id = null } = {
   return rows.map(mapPreOrderRow);
 };
 
+// Loads a pre-order and makes sure the current user is on the given side of
+// it: "requester" (user_id) or "breeder" (the one it was sent to).
+const assertPreOrderAccess = async (id, user_id, side) => {
+  const [order] = await getPreOrders({ id });
+
+  if (!order) {
+    throw new GraphQLError("Pre-order not found");
+  }
+
+  const ownerId = side === "breeder" ? order.breeder_id : order.user_id;
+
+  if (String(ownerId ?? "") !== String(user_id)) {
+    throw new GraphQLError(
+      side === "breeder"
+        ? "You can only respond to pre-orders sent to you."
+        : "You can only modify your own pre-orders."
+    );
+  }
+
+  return order;
+};
+
 const preOrderResolvers = {
   Query: {
     getPreOrders: async (parent, args, context) => {
@@ -124,10 +147,18 @@ const preOrderResolvers = {
                 "can_view_own_pre_orders"
             );
 
-        const orders = await getPreOrders({
-          user_id: can_create_pre_orders ? user_id : null,
-          breeder_id: can_view_own_pre_orders ? user_id : null
-        });
+        // Plant Breeders see every pre-order in the chain, including those
+        // sent to Basic Seed Producers (read-only; mutations below enforce
+        // ownership).
+        const activeSr6Form = await getActiveSr6Form(user_id);
+
+        const orders =
+          activeSr6Form?.type === "plant_breeder"
+            ? await getPreOrders()
+            : await getPreOrders({
+                user_id: can_create_pre_orders ? user_id : null,
+                breeder_id: can_view_own_pre_orders ? user_id : null,
+              });
 
         console.log("Fetched pre-orders", orders);
         return orders;
@@ -248,6 +279,10 @@ const preOrderResolvers = {
       "You dont have permissions to create pre-orders"
     );
 
+    if (input.id) {
+      await assertPreOrderAccess(input.id, user_id, "requester");
+    }
+
     const requesterForm = await getActiveSr6Form(user_id);
     const rule = requesterForm && SR6_PREORDER_RULES[requesterForm.type];
 
@@ -307,6 +342,11 @@ const preOrderResolvers = {
 
     let savedReceiptInfo = null;
       if (input.receipt) {
+        const { filename: receiptName } = await input.receipt;
+        if (!/\.(pdf|png|jpe?g)$/i.test(receiptName || "")) {
+          throw new GraphQLError("Receipt must be a PDF or image (PNG, JPG).");
+        }
+
         try {
           savedReceiptInfo = await saveUpload({
             file: input.receipt,
@@ -325,7 +365,7 @@ const preOrderResolvers = {
           await saveData({
             table: "pre_orders",
             data: { receipt_id: savedReceiptInfo.filename},
-            id: id,
+            id: insertId,
             connection,
           });
         } catch (e) {
@@ -374,6 +414,8 @@ const preOrderResolvers = {
           "You dont have permissions to receive pre-orders"
         );
 
+        await assertPreOrderAccess(id, context.req.user.id, "breeder");
+
         console.log("Updating pre-order", { id, input });
 
         await saveData({
@@ -401,6 +443,8 @@ const preOrderResolvers = {
           "You dont have permissions to mark pre-orders as picked"
         );
 
+        await assertPreOrderAccess(id, context.req.user.id, "requester");
+
         await saveData({
           table: "pre_orders",
           id,
@@ -420,6 +464,8 @@ const preOrderResolvers = {
 
     deletePreOrder: async (parent, { id }, context) => {
       try {
+        await assertPreOrderAccess(id, context.req.user.id, "requester");
+
         await db.execute("UPDATE pre_orders SET deleted = 1 WHERE id = ?", [id]);
         return { success: true, message: "Pre-order deleted" };
       } catch (error) {

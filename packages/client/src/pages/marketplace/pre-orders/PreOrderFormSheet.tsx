@@ -8,6 +8,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Plus, Trash2, Upload } from 'lucide-react';
+import { toast } from 'sonner';
 import { URL_2 } from '@/config/urls';
 import {
   getSeasonLabelFromDateString,
@@ -65,7 +66,11 @@ export type PreOrderFormValues = {
 type SubmitPayload = {
   values: PreOrderFormValues;
   mode: 'create' | 'edit';
+  receipt?: File | null;
 };
+
+const MAX_RECEIPT_SIZE = 2 * 1024 * 1024;
+const RECEIPT_EXTENSIONS = /\.(pdf|png|jpe?g)$/i;
 
 type Props = {
   open: boolean;
@@ -76,6 +81,7 @@ type Props = {
   lockedSeedClass?: string;
   loading?: boolean;
   initialValues: PreOrderFormValues;
+  existingReceiptId?: string | null;
   onOpenChange: (open: boolean) => void;
   onSubmit: (
     payload: SubmitPayload
@@ -108,6 +114,7 @@ const PreOrderFormSheet: React.FC<Props> = ({
   lockedSeedClass,
   loading = false,
   initialValues,
+  existingReceiptId,
   onOpenChange,
   onSubmit,
 }) => {
@@ -117,7 +124,14 @@ const PreOrderFormSheet: React.FC<Props> = ({
     );
 
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
-  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+
+  // Reset the selected receipt only when the sheet opens, so parent
+  // re-renders don't discard a file the user just picked.
+  useEffect(() => {
+    if (open) {
+      setReceiptFile(null);
+    }
+  }, [open]);
 
   useEffect(() => {
     if (open) {
@@ -408,6 +422,7 @@ const PreOrderFormSheet: React.FC<Props> = ({
     await onSubmit({
       values: form,
       mode,
+      receipt: receiptFile,
     });
   };
 
@@ -1021,30 +1036,47 @@ const PreOrderFormSheet: React.FC<Props> = ({
           <div className="space-y-2">
                 <label className="text-sm font-medium">Attach advance payment receipt</label>
                 <div className="border-2 border-dashed rounded-lg p-4 text-center hover:bg-slate-50 transition-colors cursor-pointer relative">
-                  <input 
-                    type="file" 
-                    className="absolute inset-0 opacity-0 cursor-pointer" 
-                    accept=".pdf" 
+                  <input
+                    type="file"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    disabled={loading}
                     onChange={(e) => {
                         const file = e.target.files?.[0] || null;
+                        if (file && !RECEIPT_EXTENSIONS.test(file.name)) {
+                          toast.error('Receipt must be a PDF or image (PNG, JPG).');
+                          e.target.value = '';
+                          return;
+                        }
+                        if (file && file.size > MAX_RECEIPT_SIZE) {
+                          toast.error('Receipt must be 2MB or smaller.');
+                          e.target.value = '';
+                          return;
+                        }
                         setReceiptFile(file);
-                        if (file) setReceiptPreview(URL.createObjectURL(file)); // Show new preview
-                    }} 
+                    }}
                   />
-                    {receiptFile || receiptPreview ? (
-                    <div className="flex flex-col items-center gap-2">
-                        {/* If it's an image, show a thumbnail */}
-                        { ( receiptPreview) && (
-                        <a href={`${URL_2}/attachments/${(receiptPreview)}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 font-medium">View Certificate</a>
-                        )}
-                        <p className="text-xs text-blue-600 font-medium">
-                        {receiptFile ? receiptFile.name : 'Existing Certificate (Click to change)'}
-                        </p>
+                    {receiptFile ? (
+                    <div className="flex flex-col items-center gap-1">
+                        <p className="text-xs text-blue-600 font-medium">{receiptFile.name}</p>
+                        <p className="text-xs text-slate-500">Click to change</p>
+                    </div>
+                    ) : isEdit && existingReceiptId ? (
+                    <div className="flex flex-col items-center gap-1">
+                        <a
+                          href={`${URL_2}/pre_order_receipts/${existingReceiptId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="relative z-10 text-xs text-blue-600 font-medium hover:underline"
+                        >
+                          View current receipt
+                        </a>
+                        <p className="text-xs text-slate-500">Click to replace</p>
                     </div>
                     ) : (
                     <>
                         <Upload className="mx-auto text-slate-400 mb-2" size={20} />
-                        <p className="text-xs text-slate-500">Click to upload PDF (Max 2MB)</p>
+                        <p className="text-xs text-slate-500">Click to upload PDF or image (Max 2MB)</p>
                     </>
                     )}
                 </div>

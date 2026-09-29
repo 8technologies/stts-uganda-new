@@ -10,11 +10,13 @@ import {
   Calendar,
   CheckCircle2,
   CircleX,
+  FileText,
   MapPin,
   Sprout,
   UserRound,
 } from 'lucide-react';
 import { getSeasonLabelFromDateString } from '@/utils/season';
+import { URL_2 } from '@/config/urls';
 
 type PreOrderVariety = {
   varietyId: string;
@@ -40,6 +42,7 @@ type PreOrderItem = {
   pickup_location?: string | null;
   created_at?: string | null;
   collection_date?: string | null;
+  receipt_id?: string | null;
 
   createdBy?: {
     name?: string | null;
@@ -57,6 +60,9 @@ type Props = {
   preOrder: PreOrderItem | null;
   loading?: boolean;
   canReceivePreOrders?: boolean;
+  // Viewing someone else's pre-order (e.g. a Plant Breeder browsing orders
+  // sent to a Basic Seed Producer): show both parties, no actions.
+  readOnly?: boolean;
   onOpenChange: (open: boolean) => void;
 
   onApprove: (payload: {
@@ -76,6 +82,7 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
   preOrder,
   loading = false,
   canReceivePreOrders = false,
+  readOnly = false,
   onOpenChange,
   onApprove,
   onReject,
@@ -206,8 +213,9 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
           </SheetTitle>
 
           <p className="text-primary-foreground/80 text-sm mt-1">
-            Review request information and
-            take approval action.
+            {readOnly
+              ? 'View-only: this request was sent to another breeder.'
+              : 'Review request information and take approval action.'}
           </p>
         </SheetHeader>
 
@@ -355,7 +363,35 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
             </div>
 
             {/* Requested by / breeder */}
-            {canReceivePreOrders ? (
+            {readOnly ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
+                    <UserRound className="w-3 h-3" />
+                    Requested by
+                  </div>
+
+                  <div className="font-medium text-gray-900">
+                    {item.createdBy?.name ||
+                      item.createdBy?.username ||
+                      '-'}
+                  </div>
+                </div>
+
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
+                    <UserRound className="w-3 h-3" />
+                    Breeder
+                  </div>
+
+                  <div className="font-medium text-gray-900">
+                    {item.breeder?.name ||
+                      item.breeder?.username ||
+                      '-'}
+                  </div>
+                </div>
+              </div>
+            ) : canReceivePreOrders ? (
               <div className="rounded-lg border p-3">
                 <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
                   <UserRound className="w-3 h-3" />
@@ -395,6 +431,47 @@ const PreOrderDetailsSheet: React.FC<Props> = ({
               <div className="text-sm text-gray-700 whitespace-pre-wrap">
                 {item.detail || '-'}
               </div>
+            </div>
+
+            {/* Advance payment receipt */}
+            <div className="rounded-lg border p-3">
+              <div className="text-xs text-gray-500 mb-1 inline-flex items-center gap-1">
+                <FileText className="w-3 h-3" />
+                Advance payment receipt
+              </div>
+
+              {item.receipt_id ? (
+                <div className="space-y-2">
+                  {/\.(png|jpe?g|gif|bmp|webp)$/i.test(
+                    item.receipt_id
+                  ) && (
+                    <a
+                      href={`${URL_2}/pre_order_receipts/${item.receipt_id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={`${URL_2}/pre_order_receipts/${item.receipt_id}`}
+                        alt="Payment receipt"
+                        className="max-h-48 rounded-md border object-contain"
+                      />
+                    </a>
+                  )}
+
+                  <a
+                    href={`${URL_2}/pre_order_receipts/${item.receipt_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-600 font-medium hover:underline"
+                  >
+                    View receipt
+                  </a>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-700">
+                  No receipt attached.
+                </div>
+              )}
             </div>
 
             {/* Breeder response */}
